@@ -65,6 +65,7 @@ switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
         break;
     case 'push':
         exec('/var/www/mylocation/sync.sh');
+        echo 'success!';
         break;
 //    case 'push':
 //        break;
