@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use PHPUnit\Framework\Attributes\After;
 
 return new class extends Migration
 {
@@ -12,11 +13,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->id("user_id");
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password'); // hash`
+            $table->string('user_status');
+            $table->string('role_name');
+            $table->string('name');
+            $table->bigInteger('manager')->unsigned()->nullable();
+            // $table->foreignId('manager')->nullable()->constrained('users', 'user_id')->after('name');
             $table->rememberToken();
             $table->timestamps();
         });
