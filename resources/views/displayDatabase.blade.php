@@ -8,8 +8,8 @@
 </head>
 <body>
 
-    <h1>User Information</h1>
-    <p>{{ $user }}</p>
+    <h1>Information</h1>
+    <p>{{ $value }}</p>
 
 </body>
 </html>
