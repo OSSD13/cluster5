@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class OrdersFactory extends Factory
+class Branch_storeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,10 +17,12 @@ class OrdersFactory extends Factory
     public function definition(): array
     {
         return [
-            'order_name' => fake()-> word(),
-            'total_amount' => fake()-> randomFloat(),
-            'quantity' => fake()-> randomDigit(),
-            'order_bs_id' => fake()-> randomDigit()
+            'bs_map_id' => fake()-> randomDigit(),
+            'bs_user_id' => fake()-> randomDigit(),
+            'bs_sales_id' => fake()-> randomDigit(),
+            'bs_name' => fake()-> name()
+            
+            //
         ];
     }
 }

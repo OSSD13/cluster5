@@ -17,7 +17,8 @@ class SalesFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'total_amount' => fake()-> randomFloat(),
+            'total_order_sale' => fake()-> randomNumber(5, false)
         ];
     }
 }

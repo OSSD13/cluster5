@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Sales extends Model
+class Branch_store extends Model
 {
     
-    /** @use HasFactory<\Database\Factories\SalesFactory> */
+    /** @use HasFactory<\Database\Factories\Branch_storeFactory> */
     use HasFactory;
 
     /**
@@ -17,9 +17,10 @@ class Sales extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'total_amount',
-        'total_order_sale'
-
+        'bs_map_id',
+        'bs_user_id',
+        'bs_sales_id',
+        'bs_name'
     ];
     //
 }
