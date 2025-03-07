@@ -20,9 +20,9 @@ class DatabaseTestController extends Controller
         return view('ok');
     }
 
-    function displayUser()
+    function displayLogin()
     {
-        $value = User::where('email', '=', 'test@example.com')->first();
-        return view('displayDatabase', ['value' => $value]);
+        $value = User::where('user_id', '=', '1')->first();
+        return view('displayDatabase', ['value' => $value -> role_name]);
     }
 }
