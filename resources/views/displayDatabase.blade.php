@@ -11,5 +11,6 @@
     <h1>Information</h1>
     <p>{{ $value }}</p>
 
+
 </body>
 </html>
