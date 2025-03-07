@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Point_of_interest extends Model
 {
-
     /** @use HasFactory<\Database\Factories\Point_of_interestFactory> */
     use HasFactory;
 
@@ -17,8 +16,11 @@ class Point_of_interest extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'gps',
-        'poi_name'
+        'poi_name',
+        'type',
+        'gps_lat',
+        'gps_lng',
+        'address',
+        'location_id',
     ];
-    //
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
@@ -16,10 +17,28 @@ class Point_of_interestFactory extends Factory
      */
     public function definition(): array
     {
+        // get all max location_id from locations table
+        $max_location_id = DB::table('locations')->max('location_id');
+
         return [
-            'gps' => fake()-> latitude() ,
-            'poi_name' => fake()-> company()
+            "poi_name" => $this->faker->name(),
+            "type" => $this->faker->name(),
+            "gps_lat" => $this->faker->randomFloat(15, -180, 180),
+            "gps_lng" => $this->faker->randomFloat(15, -180, 180),
+            "address" => $this->faker->address(),
+            "location_id" => $this->faker->numberBetween(1, $max_location_id),
+            "created_at" => now(),
+            "updated_at" => now(),
             //
         ];
     }
+    // $table->string('poi_name');
+    // $table->string('type');
+    // $table->double('gps_lat');
+    // $table->double('gps_lng');
+    // $table->string('address');
+    // $table->bigInteger('location_id')->unsigned();
+    // $table->foreign('location_id')->references('location_id')->on('locations');
+    // $table->timestamps();
+
 }
