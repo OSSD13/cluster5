@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('point_of_interests', function (Blueprint $table) {
             $table->id('poi_id');
             $table->string('poi_name');
-            $table->string('type');
-            $table->double('gps_lat');
-            $table->double('gps_lng');
-            $table->string('address');
-            $table->bigInteger('location_id')->unsigned();
-            $table->foreign('location_id')->references('location_id')->on('locations');
+            $table->string('poi_type');
+            $table->double('poi_gps_lat');
+            $table->double('poi_gps_lng');
+            $table->string('poi_address');
+            $table->bigInteger('poi_location_id')->unsigned();
+            $table->foreign('poi_location_id')->references('location_id')->on('locations');
 
             $table->timestamps();
         });

@@ -12,3 +12,5 @@ Route::get('/', function () {
 
 Route::get('/register', [DatabaseTestController::class, 'createUser']);
 Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
+Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
+Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);

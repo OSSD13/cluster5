@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Point_of_interest>
  */
 class Point_of_interestFactory extends Factory
 {
@@ -22,11 +22,11 @@ class Point_of_interestFactory extends Factory
 
         return [
             "poi_name" => $this->faker->name(),
-            "type" => $this->faker->name(),
-            "gps_lat" => $this->faker->randomFloat(15, -180, 180),
-            "gps_lng" => $this->faker->randomFloat(15, -180, 180),
-            "address" => $this->faker->address(),
-            "location_id" => $this->faker->numberBetween(1, $max_location_id),
+            "poi_type" => $this->faker->name(),
+            "poi_gps_lat" => $this->faker->randomFloat(15, -180, 180),
+            "poi_gps_lng" => $this->faker->randomFloat(15, -180, 180),
+            "poi_address" => $this->faker->address(),
+            "poi_location_id" => $this->faker->numberBetween(1, $max_location_id),
             "created_at" => now(),
             "updated_at" => now(),
             //

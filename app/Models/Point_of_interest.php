@@ -23,4 +23,10 @@ class Point_of_interest extends Model
         'address',
         'location_id',
     ];
+
+    public function getPOIId(): int
+    {
+        return $this->poi_id;
+
+    }
 }
