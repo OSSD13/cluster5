@@ -3,9 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Location;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,13 +13,30 @@ return new class extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->id('location_id');
-            $table->string('location_poi_id'); // foreign key ******************
+            $table->string('district');
+            $table->string('amphoe');
             $table->string('province');
-            $table->string('district'); 
-            $table->string('sub_district');
-            $table->string('postal_code'); 
-            $table->timestamps();
+            $table->string('zipcode');
         });
+
+        // insert data from raw database
+        // database/raw/raw_location_database.json
+
+        $json = File::get(path: database_path('/raw/raw_location_database.json'));
+        $data = json_decode($json);
+        // Prepare an array of rows to be inserted
+        $locations = [];
+        foreach ($data as $obj) {
+            $locations[] = [
+                'district' => $obj->district,
+                'amphoe' => $obj->amphoe,
+                'province' => $obj->province,
+                'zipcode' => $obj->zipcode,
+            ];
+        }
+
+        // Insert all rows at once
+        Location::insert($locations);
     }
 
     /**

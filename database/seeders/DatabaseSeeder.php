@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Orders;
 use App\Models\Sales;
 use App\Models\Branch_store;
-use App\Models\Location;
 use App\Models\Point_of_interest;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -22,7 +21,6 @@ class DatabaseSeeder extends Seeder
         Orders::factory(100)->create();
         Sales::factory(100)->create();
         Branch_store::factory(100)->create();
-        Location::factory(100)->create();
         Point_of_interest::factory(100)->create();
 
         // User::factory(10)->create([
