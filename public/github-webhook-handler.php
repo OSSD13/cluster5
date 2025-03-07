@@ -64,6 +64,7 @@ switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
         echo 'pong';
         break;
     case 'push':
+        exec('chmod +x /var/www/mylocation/sync.sh');
         exec('/var/www/mylocation/sync.sh');
         echo 'success!';
         break;
