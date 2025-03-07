@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id("order_id");
-            $table->string('order_name');
-            $table->string('total_amount'); 
-            $table->integer('quantity');
-            $table->string('order_bs_id');
+        Schema::create('point_of_interests', function (Blueprint $table) {
+            $table->id('poi_id');
+            $table->string('gps'); // Lat, Lng
+            $table->string('poi_name');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('point_of_interests');
     }
 };

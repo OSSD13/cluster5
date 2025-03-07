@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Sales extends Model
+class Point_of_interest extends Model
 {
-    
-    /** @use HasFactory<\Database\Factories\SalesFactory> */
+
+    /** @use HasFactory<\Database\Factories\Point_of_interestFactory> */
     use HasFactory;
 
     /**
@@ -17,9 +17,8 @@ class Sales extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'total_amount',
-        'total_order_sale'
-
+        'gps',
+        'poi_name'
     ];
     //
 }
