@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -23,15 +24,28 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Determine the role for this user.
+        $role = fake()->randomElement(['ceo', 'supervisor', 'sale']);
+
+        // For sales, assign a manager from existing users (if any); for others, keep manager as null.
+        $managerId = null;
+        if ($role === 'sale') {
+            $existingUserIds = DB::table('users')->where('role_name', '=', 'supervisor')->pluck('user_id')->toArray();
+            if (!empty($existingUserIds)) {
+                $managerId = fake()->randomElement($existingUserIds);
+            }
+        }
+
         return [
-            'email' => fake()->unique()->safeEmail(),
-            'password' => static::$password ??= Hash::make('password'),
-            'user_status' => fake()->randomElement(['normal', 'ban']),
-            'role_name' => fake()->randomElement(['ceo', 'supervisor', 'sale']),
-            'name' => fake()->name(),
+            'email'          => fake()->unique()->safeEmail(),
+            'password'       => static::$password ??= Hash::make('password'),
+            'user_status'    => fake()->randomElement(['normal', 'disabled']),
+            'role_name'      => $role,
+            'name'           => fake()->name(),
             'remember_token' => Str::random(10),
-            'created_at' => fake()->dateTime(),
-            'updated_at' => fake()->dateTime(),
+            'manager'        => $managerId,
+            'created_at'     => fake()->dateTime(),
+            'updated_at'     => fake()->dateTime(),
         ];
     }
 

@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\Attributes\After;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,8 +18,8 @@ return new class extends Migration
             $table->string('user_status');
             $table->string('role_name');
             $table->string('name');
-            $table->bigInteger('manager')->unsigned()->nullable();
-            // $table->foreignId('manager')->nullable()->constrained('users', 'user_id')->after('name');
+            $table->unsignedBigInteger('manager')->nullable();
+            $table->foreign('manager')->references('user_id')->on('users');
             $table->rememberToken();
             $table->timestamps();
         });

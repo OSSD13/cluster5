@@ -25,4 +25,17 @@ class DatabaseTestController extends Controller
         $value = User::where('user_id', '=', '1')->first();
         return view('displayDatabase', ['value' => $value -> role_name]);
     }
+
+    function displaySub()
+    {
+        $user = User::where('user_id', '=', '20')->first();
+        $value = json_encode(value: $user->getSubordinateIds());
+        return view('displayDatabase', ['value' => $value]);
+    }
+    function displayBs()
+    {
+        $user = User::where('user_id', '=', '20')->first();
+        $value = json_encode(value: $user->getBranches());
+        return view('displayDatabase', ['value' => $value]);
+    }
 }

@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('branch_stores', function (Blueprint $table) {
             $table->id('bs_id');
-            $table->string('bs_map_id'); // foreign key ******************
-            $table->string('bs_user_id'); // foreign key ******************
-            $table->string('bs_sales_id'); // foreign key ******************
             $table->string('bs_name');
+            $table->string('bs_detail');
+            $table->string('bs_address');
+            $table->bigInteger('bs_poi_id')->unsigned();
+            $table->foreign('bs_poi_id')->references('poi_id')->on('point_of_interests');
+            $table->bigInteger('bs_manager')->unsigned();
+            $table->foreign('bs_manager')->references('user_id')->on('users');
             $table->timestamps();
         });
     }
