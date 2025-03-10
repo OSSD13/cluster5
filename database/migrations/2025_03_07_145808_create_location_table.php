@@ -17,6 +17,10 @@ return new class extends Migration {
             $table->string('amphoe');
             $table->string('province');
             $table->string('zipcode');
+            $table->string('district_code');
+            $table->string('amphoe_code');
+            $table->string('province_code');
+            $table->string('region');
         });
 
         // insert data from raw database
@@ -32,6 +36,10 @@ return new class extends Migration {
                 'amphoe' => $obj->amphoe,
                 'province' => $obj->province,
                 'zipcode' => $obj->zipcode,
+                'district_code' => $obj->district_code,
+                'amphoe_code' => $obj->amphoe_code,
+                'province_code' => $obj->province_code,
+                'region' => $obj->region,
             ];
         }
 

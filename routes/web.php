@@ -14,3 +14,7 @@ Route::get('/register', [DatabaseTestController::class, 'createUser']);
 Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
 Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
 Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
+
+use App\Http\Controllers\AnotherController;
+
+Route::get('/convert-link', [AnotherController::class, 'handleConversion']);
