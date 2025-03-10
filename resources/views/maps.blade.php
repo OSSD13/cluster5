@@ -32,12 +32,12 @@
                 return;
             }
 
+            document.getElementById('result').innerHTML = '';
             $.ajax({
                 url: "{{ route('handleConversion') }}",
                 type: "POST",
                 data: { url: url, _token: "{{ csrf_token() }}" },
                 success: function(response) {
-                    document.getElementById('result').innerHTML = '';
                     const viewer = document.createElement('andypf-json-viewer');
                     viewer.setAttribute('data', JSON.stringify(response));
                     viewer.setAttribute('expanded', '3');
