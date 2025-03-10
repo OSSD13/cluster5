@@ -34,4 +34,9 @@ class AnotherController extends Controller
         $data = $this->mapService->convertLink($url);
         return response()->json($data);
     }
+
+    public function showMapForm() {
+        return view('maps');
+    }
+
 }
