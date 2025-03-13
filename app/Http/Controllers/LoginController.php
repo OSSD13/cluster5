@@ -37,6 +37,6 @@ class LoginController extends Controller
         // ล้าง session ทั้งหมด
         $req->session()->flush();
         // Redirect ไปหน้า login
-        return redirect('/')->with('success', 'ออกจากระบบสำเร็จ');
+        return redirect('/login')->with('logoutSuccess', 'ออกจากระบบสำเร็จ');
     }
 }
