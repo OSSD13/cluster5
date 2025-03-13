@@ -33,6 +33,14 @@ class DatabaseSeeder extends Seeder
             'role_name' => 'ceo',
         ]);
 
+        User::create([
+            'name' => 'jeng',
+            'email' => 'torlap.ritchai@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_status' => 'normal',
+            'role_name' => 'sale',
+        ]);
+
         Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();
         Sales::factory(100)->create();
