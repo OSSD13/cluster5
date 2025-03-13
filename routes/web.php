@@ -21,3 +21,7 @@ Route::get('/convert-link', [AnotherController::class, 'showForm']);
 Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
 
 Route::get('/login', [LoginController::class, 'index']);
+ 
+Route::get('/user', function() {
+    return view('/user');
+}); 
