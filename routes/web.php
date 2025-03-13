@@ -6,9 +6,11 @@ use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
 
 // Default welcome page
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', [LoginController::class, 'index']);
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm']);
 Route::post('/login', [LoginController::class, 'login']); // แก้ชื่อ method ให้ตรง (Login → login)
