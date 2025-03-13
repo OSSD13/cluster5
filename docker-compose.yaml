@@ -2,7 +2,7 @@
 services:
   build-one-php:
     build: .
-    container_name: laravel-osssd-5
+    container_name: ossd-5-mylocation
     ports:
       - "1305:80"
     env_file:
