@@ -50,7 +50,11 @@
                     document.getElementById('result').appendChild(mapLink);
                 },
                 error: function(xhr) {
-                    document.getElementById('result').innerText = "Error: " + xhr.responseJSON.error;
+                    const viewer = document.createElement('andypf-json-viewer');
+                    viewer.setAttribute('data', JSON.stringify(xhr.responseJSON));
+                    viewer.setAttribute('expanded', '1');
+                    document.getElementById('result').appendChild(viewer);
+                    // document.getElementById('result').innerText = "Error: " + xhr.responseJSON;
                 }
             });
         }
