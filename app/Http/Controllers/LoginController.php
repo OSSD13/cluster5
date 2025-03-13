@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\User;
+
+use Illuminate\Support\Facades\Hash;
+
+
 class LoginController extends Controller
 {
-<<<<<<< HEAD
-    function login()
-    {
-=======
     //
-    function index(){
->>>>>>> d4d74f8 (ทmoo)
+    function login(){
         return view('login');
     }
 }
