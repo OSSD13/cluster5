@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\LoginController;
 
 // Default welcome page
 Route::get('/', function () {
