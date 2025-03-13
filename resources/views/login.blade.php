@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
-<<<<<<< HEAD
     <link rel="stylesheet" href="styles.css">
-=======
-    <link rel="stylesheet" href="styles.css">
->>>>>>> origin/moo
 </head>
 <style>
     body {
