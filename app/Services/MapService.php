@@ -85,7 +85,7 @@ class MapService
 
     /**
      * Extract coordinates from a Google Maps URL.
-     * Supports patterns: '!3d<lat>!4d<lng>', '@<lat>,<lng>', and '/search/<lat>,<lng>'
+     * Supports patterns: '!3d<lat>!4d<lng>', '<lat>,<lng>', and '/search/<lat>,<lng>'
      *
      * @param string $url
      * @return array|null
@@ -100,19 +100,19 @@ class MapService
             ];
         }
 
-        // Pattern 2: @<lat>,<lng>
-        if (preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/', $url, $matches)) {
-            return [
-                'lat' => floatval($matches[1]),
-                'lng' => floatval($matches[2]),
-            ];
-        }
-
-        // Pattern 3: /search/<lat>,<lng>
+        // Pattern 2: /search/<lat>,<lng>
         if (preg_match('/\/search\/((-|\+)?\d+\.\d+),((-|\+)?\d+\.\d+)/', $url, $matches)) {
             return [
                 'lat' => floatval($matches[1]),
                 'lng' => floatval($matches[3]),
+            ];
+        }
+
+        // Pattern 3: <lat>,<lng>
+        if (preg_match('/(-?\d+\.\d+),(-?\d+\.\d+)/', $url, $matches)) {
+            return [
+                'lat' => floatval($matches[1]),
+                'lng' => floatval($matches[2]),
             ];
         }
 
