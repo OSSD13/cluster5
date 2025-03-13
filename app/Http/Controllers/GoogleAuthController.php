@@ -24,10 +24,10 @@ class GoogleAuthController extends Controller
 
 
             if (!$user) {
-                return redirect('/displayTestLogin');
+                return redirect('/login');
             } else {
                 // auth()->login($user, true);
-                return redirect('/home');
+                return redirect('/user');
             }
         // } catch (\Exception $e) {
         //     return redirect('/error');

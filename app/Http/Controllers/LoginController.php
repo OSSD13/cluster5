@@ -11,13 +11,14 @@ use Illuminate\Support\Facades\Hash;
 class LoginController extends Controller
 {
     //เปิดหน้า login
-    public function index(){
+    public function index()
+    {
         return view('login');
     }
 
     public function login(Request $req)
     {
-        $user = User::where('email', $req->email)->first();
+        $user = User::where('email', '=', $req->email)->first();
 
         if ($user && $req->password && Hash::check($req->password, $user->password)) {
             $req->session()->forget('error');
@@ -25,7 +26,7 @@ class LoginController extends Controller
             return redirect("/user");
         } else {
             $req->session()->put('error', 'ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง');
-            return view("login");
+            return redirect("/login");
         }
     }
 }
