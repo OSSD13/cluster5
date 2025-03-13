@@ -19,5 +19,5 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 RUN composer install --no-dev --optimize-autoloader
 # RUN php artisan migrate
-RUN npm run build
+RUN npm install && npm run build
 CMD ["apache2-foreground"]
