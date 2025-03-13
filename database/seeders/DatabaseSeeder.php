@@ -24,6 +24,15 @@ class DatabaseSeeder extends Seeder
 
         // Then create sales, ensuring they can get assigned managers
         User::factory(100)->create(['role_name' => 'sale']);
+        // create ceo user with mail ttawan475@gmail.com password 123456
+        User::create([
+            'name' => 'tawan',
+            'email' => 'ttawan475@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_status' => 'normal',
+            'role_name' => 'ceo',
+        ]);
+
         Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();
         Sales::factory(100)->create();

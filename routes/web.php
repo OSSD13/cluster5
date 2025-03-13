@@ -18,3 +18,9 @@ Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
 // Google Maps URL conversion routes
 Route::get('/convert-link', [AnotherController::class, 'showForm']);
 Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
+
+use App\Http\Controllers\GoogleAuthController;
+
+Route::get('/displayTestLogin', [DatabaseTestController::class, 'displayTestLogin']);
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
+Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
