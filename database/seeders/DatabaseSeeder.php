@@ -24,22 +24,30 @@ class DatabaseSeeder extends Seeder
 
         // Then create sales, ensuring they can get assigned managers
         User::factory(100)->create(['role_name' => 'sale']);
-        // create ceo user with mail ttawan475@gmail.com password 123456
-        User::create([
-            'name' => 'tawan',
-            'email' => 'ttawan475@gmail.com',
-            'password' => bcrypt('123456'),
-            'user_status' => 'normal',
-            'role_name' => 'ceo',
-        ]);
 
-        User::create([
-            'name' => 'jeng',
-            'email' => 'torlap.ritchai@gmail.com',
-            'password' => bcrypt('123456'),
-            'user_status' => 'normal',
-            'role_name' => 'sale',
-        ]);
+        $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
+        if (!$testUserJeng) {
+            User::create([
+                'name' => 'tawan',
+                'email' => 'ttawan475@gmail.com',
+                'password' => bcrypt('123456'),
+                'user_status' => 'normal',
+                'role_name' => 'ceo',
+            ]);
+        }
+
+        $testUserJeng = User::where('email', '=', value: 'torlap.ritchai@gmail.com')->first();
+        if (!$testUserJeng) {
+            User::create([
+                'name' => 'jeng',
+                'email' => 'torlap.ritchai@gmail.com',
+                'password' => bcrypt('123456'),
+                'user_status' => 'normal',
+                'role_name' => 'sale',
+            ]);
+        }
+
+
 
         Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();

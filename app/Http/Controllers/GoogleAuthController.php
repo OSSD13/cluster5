@@ -15,7 +15,7 @@ class GoogleAuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function callbackGoogle()
+    public function callbackGoogle(Request $req)
     {
         // try {
             $google_user = Socialite::driver('google')->user();
@@ -26,7 +26,8 @@ class GoogleAuthController extends Controller
             if (!$user) {
                 return redirect('/login');
             } else {
-                // auth()->login($user, true);
+                $req->session()->forget('error');
+                $req->session()->put('user', $user);
                 return redirect('/user');
             }
         // } catch (\Exception $e) {
