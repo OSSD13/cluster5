@@ -10,6 +10,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', [LoginController::class, 'showLoginForm']);
+Route::post('/login', [LoginController::class, 'login']); // แก้ชื่อ method ให้ตรง (Login → login)
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
+
 // Database test routes
 Route::get('/register', [DatabaseTestController::class, 'createUser']);
 Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
@@ -19,4 +23,14 @@ Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
 // Google Maps URL conversion routes
 Route::get('/convert-link', [AnotherController::class, 'showForm']);
 Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
-Route::get('/login', [LoginController::class, 'login']);
+
+use App\Http\Controllers\GoogleAuthController;
+
+Route::get('/displayTestLogin', [DatabaseTestController::class, 'displayTestLogin']);
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
+Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
+Route::get('/login', [LoginController::class, 'index']);
+
+Route::get('/user', function() {
+    return view('user');
+});
