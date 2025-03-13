@@ -10,6 +10,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', [LoginController::class, 'showLoginForm']);
+Route::post('/login', [LoginController::class, 'login']); // แก้ชื่อ method ให้ตรง (Login → login)
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
+
 // Database test routes
 Route::get('/register', [DatabaseTestController::class, 'createUser']);
 Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);

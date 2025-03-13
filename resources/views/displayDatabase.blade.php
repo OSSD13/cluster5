@@ -10,7 +10,8 @@
 
     <h1>Information</h1>
     <p>{{ $value }}</p>
-
+    
+    <div class=Top_Navigation_Bar></div>
 
 </body>
 </html>

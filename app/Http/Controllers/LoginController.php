@@ -29,4 +29,14 @@ class LoginController extends Controller
             return redirect("/login");
         }
     }
+
+    public function logout(Request $req)
+    {
+        // ลบข้อมูล user ออกจาก session
+        $req->session()->forget('user');
+        // ล้าง session ทั้งหมด
+        $req->session()->flush();
+        // Redirect ไปหน้า login
+        return redirect('/')->with('success', 'ออกจากระบบสำเร็จ');
+    }
 }
