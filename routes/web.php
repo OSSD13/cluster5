@@ -30,6 +30,7 @@ Route::get('/displayTestLogin', [DatabaseTestController::class, 'displayTestLogi
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 Route::get('/login', [LoginController::class, 'index']);
-Route::post('/login', [LoginController::class, 'login']);
 
-Route::get('/user', [DatabaseTestController::class, 'displayTestLogin']);
+Route::get('/user', function() {
+    return view('/user');
+});
