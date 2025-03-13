@@ -1,0 +1,9 @@
+
+services:
+  apache-php:
+    build: .
+    container_name: laravel-osssd-${CLUSTER_NAME}
+    ports:
+      - "1305:80"
+    env_file:
+      - .env

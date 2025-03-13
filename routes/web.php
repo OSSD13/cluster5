@@ -32,5 +32,5 @@ Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoog
 Route::get('/login', [LoginController::class, 'index']);
 
 Route::get('/user', function() {
-    return view('/user');
+    return view('user');
 });

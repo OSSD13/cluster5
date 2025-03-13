@@ -70,7 +70,7 @@
         height: 64px;
         margin-bottom: 10px;
         align-items: left;
-    
+
     }
     .arrow-line {
         width: 1px;
@@ -96,6 +96,14 @@
             <div class="bar"></div>
         </button>
     </header>
+
+    <main>
+        {{ session('user') }}
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="submit">Logout</button>
+        </form>
+    </main>
 
 </body>
 </html>

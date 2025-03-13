@@ -171,14 +171,11 @@
                 <a href="#" class="forgot-password">Forgot password?</a>
                 <button class="login-btn">Login</button>
             </div>
-<<<<<<< HEAD
             @if (session('error'))
                 <div class="text-red-500 text-sm mt-2">
                     {{ session('error') }}
                 </div>
             @endif
-=======
->>>>>>> origin/moo
 
             <div class="separator">
                 <hr class="line">
@@ -186,17 +183,10 @@
                 <hr class="line">
             </div>
 
-<<<<<<< HEAD
             <a class="google-btn" href="{{  route('google-auth') }}">
                 <img src="/assets/img/LogoGg.png" class="google-icon">
                 Login with Google
             </a>
-=======
-            <button class="google-btn">
-                <img src="/assets/img/LogoGg.png" class="google-icon">
-                Login with Google
-            </button>
->>>>>>> origin/moo
         </form>
     </div>
 </div>
