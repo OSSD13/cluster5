@@ -8,7 +8,13 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <h1>hello</h1>
+=======
+    <h1>Information</h1>
+    <p>{{ $value }}</p>
+
+>>>>>>> d4d74f8 (ทmoo)
 
 </body>
 </html>
