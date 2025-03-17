@@ -7,6 +7,10 @@
         "dev": "vite"
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+<<<<<<< HEAD
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
+=======
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
     },
