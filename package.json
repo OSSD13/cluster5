@@ -8,11 +8,19 @@
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
 =======
+<<<<<<< HEAD
+        "dev": "vite build --watch"
+>>>>>>> cad366f (S)
+=======
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
+=======
+        "dev": "vite build --watch"
+>>>>>>> c1027ec (S)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",
