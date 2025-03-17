@@ -36,3 +36,8 @@ Route::get('/login', [LoginController::class, 'index']);
 Route::get('/user', function() {
     return view('user');
 });
+
+
+Route::get('/jeng', function() {
+    return view('ok');
+});
