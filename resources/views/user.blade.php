@@ -85,7 +85,7 @@
     <header class="header">
         <!-- Logo Section -->
         <div class="logo-container" >
-            <img src="/assets/img/MY LOCITION.png"  class="iconMyOrder" alt="">
+            <img src="/assets/img/MY LOCITION.png" class="iconMyOrder" alt="">
             <hr class="arrow-line">
         </div>
 
