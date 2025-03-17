@@ -62,8 +62,11 @@ Route::middleware([CheckLogin::class])->group(function () {
 
 Route::get('/jeng', function() {
     return view('ok');
+<<<<<<< HEAD
 });
 
 Route::get('/wacha', function() {
     return view('test');
+=======
+>>>>>>> 30d3bf4 (Chg)
 });

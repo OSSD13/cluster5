@@ -10,6 +10,7 @@
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
 =======
@@ -25,6 +26,9 @@
 =======
         "dev": "vite"
 >>>>>>> 9632875 (fix(package): update dev script to use vite for development)
+=======
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",

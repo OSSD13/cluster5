@@ -18,6 +18,7 @@
         @endif
     </head>
     <!-- component -->
+<<<<<<< HEAD
 <<!-- component -->
 <!-- This is an example component -->
 <div class="flex flex-col">
@@ -69,4 +70,24 @@
     </button>
   </div>
 </div>
+=======
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+<style>
+.fortnite-btn {
+  	background: linear-gradient(#fefb72, #fefca3);
+	font-family: 'Luckiest Guy';
+}
+  
+.fortnite-btn-inner {
+  	background: linear-gradient(#ede801, #fefb72);
+	transform: skew(-5deg);
+	color: #343F65;
+}
+</style>
+
+<button class="fortnite-btn flex items-center justify-center h-32 w-64">
+	<span class="fortnite-btn-inner p-3 pt-5 w-11/12 text-5xl truncate">Play</span>
+</button>
+>>>>>>> 30d3bf4 (Chg)
 </html>
