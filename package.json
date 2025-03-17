@@ -3,8 +3,7 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-//        "dev": "vite",
-        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\""
+        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
         "dev": "nodemon --exec \"npm run build\" --ignore public"
     },
     "devDependencies": {
