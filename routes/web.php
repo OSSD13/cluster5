@@ -48,10 +48,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-<<<<<<< HEAD
-=======
-
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
@@ -69,6 +65,7 @@ Route::middleware([CheckLogin::class])->group(function () {
 >>>>>>> 53db682 (fix(login):แก้ไขเลย์เอ้า2)
 });
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 Route::get('/test', function () {
 =======
@@ -139,4 +136,9 @@ Route::get('/wacha', function() {
     
 >>>>>>> f9d4b34 (fix(login):แก้ไขเลย์เอ้า2)
 >>>>>>> 53db682 (fix(login):แก้ไขเลย์เอ้า2)
+=======
+
+Route::get('/jeng', function() {
+    return view('ok');
+>>>>>>> 216687f (Chg)
 });

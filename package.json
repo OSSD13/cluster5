@@ -37,12 +37,19 @@
 >>>>>>> c1027ec (S)
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+<<<<<<< HEAD
         "dev": "vite build --watch"
+<<<<<<< HEAD
 >>>>>>> 43137b6 (fix(package): update dev script to use vite build with watch mode)
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
         "dev": "vite build --watch"
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+=======
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
+>>>>>>> 216687f (Chg)
     },
     "devDependencies": {
         "@iconify/json": "^2.2.318",
