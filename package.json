@@ -11,6 +11,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
 =======
@@ -29,6 +30,9 @@
 =======
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
+=======
+        "dev": "vite build --watch"
+>>>>>>> c1027ec (S)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",
