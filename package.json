@@ -5,10 +5,14 @@
         "build": "vite build",
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "vite build --watch"
 =======
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
+=======
+        "dev": "vite build --watch"
+>>>>>>> c1027ec (S)
     },
     "devDependencies": {
         "@iconify/json": "^2.2.318",
