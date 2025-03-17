@@ -49,7 +49,9 @@
 >>>>>>> 43137b6 (fix(package): update dev script to use vite build with watch mode)
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+<<<<<<< HEAD
         "dev": "vite build --watch"
+<<<<<<< HEAD
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
 =======
 =======
@@ -68,6 +70,11 @@
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
 >>>>>>> 13cc927 (Chg)
+=======
+=======
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
+>>>>>>> 23c27df (Chg)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",

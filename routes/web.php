@@ -67,6 +67,7 @@ Route::middleware([CheckLogin::class])->group(function () {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Route::get('/test', function () {
 =======
 
@@ -161,4 +162,9 @@ Route::get('/wacha', function() {
 >>>>>>> 13cc927 (Chg)
 =======
 >>>>>>> ac6b4be (Add new component layout and route for test view)
+=======
+
+Route::get('/jeng', function() {
+    return view('ok');
+>>>>>>> 23c27df (Chg)
 });

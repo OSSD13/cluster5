@@ -21,6 +21,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -90,6 +91,8 @@
 =======
 =======
 >>>>>>> 216687f (Chg)
+=======
+>>>>>>> 23c27df (Chg)
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
 <style>
@@ -108,6 +111,7 @@
 <button class="fortnite-btn flex items-center justify-center h-32 w-64">
 	<span class="fortnite-btn-inner p-3 pt-5 w-11/12 text-5xl truncate">Play</span>
 </button>
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 30d3bf4 (Chg)
 =======
@@ -144,4 +148,6 @@
 >>>>>>> 216687f (Chg)
 =======
 >>>>>>> 2f5f2d0 (Add new component layout and route for test view)
+=======
+>>>>>>> 23c27df (Chg)
 </html>
