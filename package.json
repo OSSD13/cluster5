@@ -3,7 +3,12 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
+<<<<<<< HEAD
         "dev": "vite"
+=======
+        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",
