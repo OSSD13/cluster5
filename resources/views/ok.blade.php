@@ -19,6 +19,9 @@
     </head>
     <!-- component -->
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d77ac94 (Add new component layout and route for test view)
 <<!-- component -->
 <!-- This is an example component -->
 <div class="flex flex-col">
@@ -47,6 +50,7 @@
       	New
     </button>
   </div>
+<<<<<<< HEAD
   
   
   <div class="mt-8 flex">
@@ -90,4 +94,29 @@
 	<span class="fortnite-btn-inner p-3 pt-5 w-11/12 text-5xl truncate">Play</span>
 </button>
 >>>>>>> 30d3bf4 (Chg)
+=======
+  
+  
+  <div class="mt-8 flex">
+    <button type="button" class="rounded-full px-4 mr-2 bg-blue-600 text-white p-2 rounded  leading-none flex items-center">
+      	New
+    </button>
+    <button type="button" class="rounded-full px-4 mr-2 bg-red-600 text-white p-2 rounded  leading-none flex items-center">
+      	New
+    </button>
+    
+    <button type="button" class="rounded-full px-4 mr-2 bg-orange-600 text-white p-2 rounded  leading-none flex items-center">
+      	New
+    </button>
+    
+    <button type="button" class="rounded-full px-4 mr-2 bg-green-600 text-white p-2 rounded  leading-none flex items-center">
+      	New
+    </button>
+    
+    <button type="button" class="rounded-full px-4 bg-white text-black p-2 rounded  leading-none flex items-center">
+      	New
+    </button>
+  </div>
+</div>
+>>>>>>> d77ac94 (Add new component layout and route for test view)
 </html>
