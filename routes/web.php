@@ -68,6 +68,7 @@ Route::get('/test', function () {
 Route::get('/jeng', function() {
     return view('ok');
 <<<<<<< HEAD
+<<<<<<< HEAD
 });
 
 Route::get('/wacha', function() {
@@ -75,4 +76,10 @@ Route::get('/wacha', function() {
     return view('test');
 =======
 >>>>>>> 883039d (Chg)
+=======
+});
+
+Route::get('/wacha', function() {
+    return view('test');
+>>>>>>> fe56918 (Add new component layout and route for test view)
 });
