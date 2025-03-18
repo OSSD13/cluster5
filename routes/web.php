@@ -140,5 +140,12 @@ Route::get('/wacha', function() {
 
 Route::get('/jeng', function() {
     return view('ok');
+<<<<<<< HEAD
 >>>>>>> 216687f (Chg)
+=======
+});
+
+Route::get('/wacha', function() {
+    return view('test');
+>>>>>>> 2f5f2d0 (Add new component layout and route for test view)
 });

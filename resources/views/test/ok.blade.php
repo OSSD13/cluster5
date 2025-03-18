@@ -20,12 +20,15 @@
     <!-- component -->
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> d77ac94 (Add new component layout and route for test view)
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+>>>>>>> 2f5f2d0 (Add new component layout and route for test view)
 <<!-- component -->
 <!-- This is an example component -->
 <div class="flex flex-col">
@@ -54,6 +57,7 @@
       	New
     </button>
   </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -108,6 +112,9 @@
 >>>>>>> 30d3bf4 (Chg)
 =======
   
+=======
+  
+>>>>>>> 2f5f2d0 (Add new component layout and route for test view)
   
   <div class="mt-8 flex">
     <button type="button" class="rounded-full px-4 mr-2 bg-blue-600 text-white p-2 rounded  leading-none flex items-center">
@@ -130,8 +137,11 @@
     </button>
   </div>
 </div>
+<<<<<<< HEAD
 >>>>>>> d77ac94 (Add new component layout and route for test view)
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
 =======
 >>>>>>> 216687f (Chg)
+=======
+>>>>>>> 2f5f2d0 (Add new component layout and route for test view)
 </html>
