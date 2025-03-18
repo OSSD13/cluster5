@@ -41,3 +41,7 @@ Route::get('/user', function() {
 Route::get('/jeng', function() {
     return view('ok');
 });
+
+Route::get('/wacha', function() {
+    return view('test');
+});
