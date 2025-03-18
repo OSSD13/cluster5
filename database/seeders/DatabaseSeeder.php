@@ -47,9 +47,47 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // create if not exist these mails with password 123456 and role_name = ceo
+        // 66160106@go.buu.ac.th
+        // 66160082@go.buu.ac.th
+        // 66160084@go.buu.ac.th
+        // 66160230@go.buu.ac.th
+        // 66160229@go.buu.ac.th
+        // 66160354@go.buu.ac.th
+        // 66160357@go.buu.ac.th
+        // 66160358@go.buu.ac.th
+        // 66160369@go.buu.ac.th
+        // 66160370@go.buu.ac.th
+
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
+
+        foreach ($emails as $email) {
+            $user = User::where('email', '=', $email)->first();
+            if (!$user) {
+                User::create([
+                    'name' => explode('@', $email)[0],
+                    'email' => $email,
+                    'password' => bcrypt('123456'),
+                    'user_status' => 'normal',
+                    'role_name' => 'ceo',
+                ]);
+            }
+        }
 
 
-        Point_of_interest::factory(100)->create();
+
+        // Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();
         Sales::factory(100)->create();
         Orders::factory(100)->create();
