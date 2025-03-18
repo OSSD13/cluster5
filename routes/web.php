@@ -71,6 +71,7 @@ Route::get('/jeng', function() {
     return view('ok');
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 });
 
 Route::get('/wacha', function() {
@@ -82,12 +83,17 @@ Route::get('/wacha', function() {
 =======
     return view('/test/ok');
 >>>>>>> fa0476f (fix(routes): update view path for jeng route)
+=======
+>>>>>>> 1478690 (Add new component layout and route for test view)
 });
 
 Route::get('/wacha', function() {
     return view('test');
+<<<<<<< HEAD
 >>>>>>> fe56918 (Add new component layout and route for test view)
 =======
     return view('ok');
 >>>>>>> 8e2818b (Chg)
+=======
+>>>>>>> 1478690 (Add new component layout and route for test view)
 });
