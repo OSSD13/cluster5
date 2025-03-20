@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id('poi_id');
             $table->string('poi_name');
             $table->string('poi_type');
+            $table->foreign('poi_type')->references('poit_type')->on('point_of_interest_type');
             $table->double('poi_gps_lat');
             $table->double('poi_gps_lng');
             $table->string('poi_address')->nullable();
@@ -38,18 +39,12 @@ return new class extends Migration {
 
         Log::info('Filtering for .geojson files');
         $geojsonFiles = collect($files)
-            ->filter(function ($file) {
-                return Str::endsWith($file, '.geojson');
-            })
-            ->groupBy(function ($file) {
-                return preg_replace('/-v\d+\.geojson$/', '', $file->getFilename());
-            })
-            ->map(function ($group) {
-                return $group->sortByDesc(function ($file) {
-                    preg_match('/-v(\d+)\.geojson$/', $file->getFilename(), $matches);
-                    return $matches[1] ?? 0;
-                })->first();
-            });
+            ->filter(fn($file) => Str::endsWith($file->getFilename(), '.geojson'))
+            ->groupBy(fn($file) => preg_replace('/(-v\d+)?\.geojson$/', '', $file->getFilename()))
+            ->map(fn($group) => $group->sortByDesc(function ($file) {
+                preg_match('/-v(\d+)\.geojson$/', $file->getFilename(), $matches);
+                return $matches[1] ?? PHP_INT_MIN;
+            })->first());
         Log::info('GeoJSON files to be processed: ' . $geojsonFiles->implode(', '));
         Log::info('Processing each geojson file');
         foreach ($geojsonFiles as $file) {
