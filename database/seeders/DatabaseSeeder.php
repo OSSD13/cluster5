@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // First, create at least one manager (CEO or Supervisor)
+        // First, create at least one manager (CEO or   )
         User::factory()->count(20)->state(fn() => [
             'role_name' => fake()->randomElement(['ceo', 'supervisor']),
         ])->create();

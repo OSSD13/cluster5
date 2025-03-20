@@ -9,7 +9,24 @@ use App\Http\Controllers\LoginController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+// testing
 Route::get('/', [LoginController::class, 'index']);
+Route::get('/user', function() {
+    return view('user');
+});
+Route::get('/map', function() {
+    return view('user');
+});
+Route::get('/branch', function() {
+    return view('user');
+});
+Route::get('/poi', function() {
+    return view('user');
+});
+Route::get('/manageuser', function() {
+    return view('user');
+});
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm']);
@@ -31,8 +48,4 @@ use App\Http\Controllers\GoogleAuthController;
 Route::get('/displayTestLogin', [DatabaseTestController::class, 'displayTestLogin']);
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
-Route::get('/login', [LoginController::class, 'index']);
-
-Route::get('/user', function() {
-    return view('user');
-});
+Route::get('/login', action: [LoginController::class, 'index']);

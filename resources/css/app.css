@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@iconify/tailwind4";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -13,9 +14,9 @@
 }
 
 @theme {
-    --color-primary-light: #434689;
-    --color-primary-dark: #232649;
-    --color-secondary: #2BACDD;
+    --color-primary-light: #3062B8;
+    --color-primary-dark: #424588;
+    --color-secondary: #5E00FF;
     --color-trinary: #3062B8;
     --color-lightblue: #CBEBF8;
     --color-lightwhite: #F5F5F5;
