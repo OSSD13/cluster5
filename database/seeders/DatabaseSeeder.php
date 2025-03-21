@@ -89,8 +89,16 @@ class DatabaseSeeder extends Seeder
 
         // Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();
-        Sales::factory(100)->create();
-        Orders::factory(100)->create();
+        $branches = Branch_store::all();
+        foreach ($branches as $branch) {
+            for ($month = 0; $month < 12; $month++) {
+                Sales::factory()->create([
+                    'sales_branch_id' => $branch->bs_id,
+                    'created_at' => now()->subMonths($month),
+                    'sales_month' => now()->subMonths($month),
+                ]);
+            }
+        }
 
         // User::factory(10)->create([
         //     'name' => 'Test User',

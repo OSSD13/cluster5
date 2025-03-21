@@ -3,9 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', '') | MyLocation</title>
+
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -13,6 +14,9 @@
     @else
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     @endif
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     {{-- jquery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -52,12 +56,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-
-
 </head>
 
-<body>
+<body class="font-lunasima antialiased bg-gray-300">
     @yield('body')
 </body>
+
+@yield('script')
 
 </html>

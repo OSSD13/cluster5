@@ -28,10 +28,11 @@ class SalesFactory extends Factory
         // $table->foreign('sales_branch_id')->references('bs_id')->on('branch_stores');
         // $table->timestamps();
         return [
-            'sales_amount' => fake()-> randomFloat(),
-            'sales_order_amount' => fake()-> randomNumber(4, false),
-            'sales_branch_id' => fake()-> numberBetween(1, $max_bs_id),
+            'sales_package_amount' => $sales_package_amount = fake()->numberBetween(1, 400),
+            'sales_amount' => $sales_package_amount * fake()->randomFloat(2, 20, 50),
+            'sales_branch_id' => fake()->numberBetween(1, $max_bs_id),
             'created_at' => fake()->dateTimeBetween('-1 years','now'),
+            'sales_month' => fake()-> dateTimeBetween('-1 years','now'),
         ];
     }
 }

@@ -7,18 +7,65 @@
 @source "../**/*.js";
 @source "../**/*.vue";
 
+@import url("https://fonts.googleapis.com/css2?family=Lunasima:wght@400;700&display=swap");
+
 @theme {
     --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
+    --font-lunasima: "Lunasima", sans-serif, ui-sans-serif, system-ui,
+        sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 }
 
 @theme {
-    --color-primary-light: #3062B8;
+    --color-primary-light: #3062b8;
     --color-primary-dark: #424588;
-    --color-secondary: #5E00FF;
-    --color-trinary: #3062B8;
-    --color-lightblue: #CBEBF8;
-    --color-lightwhite: #F5F5F5;
-    --color-accent: #FFDC5A;
+    --color-secondary: #5e00ff;
+    --color-trinary: #3062b8;
+    --color-lightblue: #cbebf8;
+    --color-lightwhite: #f5f5f5;
+    --color-purpur: #e8e9fd;
+    --color-accent: #ffdc5a;
+
+    --color-success: #28a745;
+    --color-green: #d6f2d4;
+    --color-red-light: #F2DDD4;
+    --color-red-dark: #A72828;
 }
+
+@layer utilities {
+    /* Custom Scrollbar for Firefox and others */
+    .custom-scrollbar {
+      scrollbar-width: thin; /* Firefox support */
+      scrollbar-color: rgba(0, 0, 0, 0) transparent; /* Fully transparent by default */
+    }
+
+    /* WebKit Browsers */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px; /* Thin scrollbar */
+      height: 6px;
+      margin-right: 1rem; /* Add right margin */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent; /* Invisible track */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0); /* Fully transparent by default */
+      border-radius: 10px; /* Rounded */
+      transition: background 1s ease; /* Smooth fade in/out */
+      transition: scrollbar-color 1s ease; /* Smooth fade in/out */
+      margin-right: 1rem; /* Ensure spacing */
+    }
+
+    /* When scrolling, update scrollbar colors */
+    .custom-scrollbar.scrolling {
+      /* Firefox: update scrollbar-color */
+      scrollbar-color: rgba(0, 0, 0, 1) transparent;
+    }
+    .custom-scrollbar.scrolling::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 1); /* Visible thumb when scrolling */
+    }
+  }

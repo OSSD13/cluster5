@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id("sales_id");
             $table->double("sales_amount");
-            $table->integer('sales_order_amount');
+            $table->integer('sales_package_amount');
+            $table->date('sales_month');
             $table->unsignedBigInteger('sales_branch_id');
             // foreign key
             $table->foreign('sales_branch_id')->references('bs_id')->on('branch_stores');

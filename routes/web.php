@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\BranchReportController;
 
 // Default welcome page
 // Route::get('/', function () {
@@ -16,10 +17,11 @@ use App\Http\Middleware\CheckLogin;
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
-Route::get('/login', action: [LoginController::class, 'index']);
-Route::post('/login', function () {
+Route::get('/login', function () {
     return view('auth.login');
 }); // แก้ชื่อ method ให้ตรง (Login → login)
+
+Route::post('/login', action: [LoginController::class, 'login']);
 
 
 // testing
@@ -28,21 +30,24 @@ Route::middleware([CheckLogin::class])->group(function () {
         return view('dashboard.index');
     });
     Route::get('/map', function () {
-        return view('dashboard.index');
+        return view('map.index');
     });
     Route::get('/branch', function () {
-        return view('dashboard.index');
+        return view('branch.index');
     });
     Route::get('/poi', function () {
-        return view('dashboard.index');
+        return view('poi.index');
     });
     Route::get('/user', function () {
-        return view('dashboard.index');
+        return view('user.index');
     });
 
-
-
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
+
+
+    // APIs
+    Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
+    Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
 
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
