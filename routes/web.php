@@ -66,6 +66,7 @@ Route::get('/test', function () {
 =======
 
 Route::get('/jeng', function() {
+<<<<<<< HEAD
     return view('ok');
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -77,6 +78,9 @@ Route::get('/wacha', function() {
 =======
 >>>>>>> 883039d (Chg)
 =======
+=======
+    return view('/test/ok');
+>>>>>>> fa0476f (fix(routes): update view path for jeng route)
 });
 
 Route::get('/wacha', function() {
