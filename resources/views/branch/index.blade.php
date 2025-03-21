@@ -1,9 +1,9 @@
 @extends('layouts.main')
 
-@section('title', 'User')
+@section('title', 'Dashboard')
 
 @section('content')
-    @for ($i = 0; $i < 15; $i++)
+    @for ($i = 0; $i < 1; $i++)
         <p>{{ session('user') }}</p>
     @endfor
     <form method="POST" action="{{ route('logout') }}">

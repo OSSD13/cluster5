@@ -28,8 +28,8 @@ class GoogleAuthController extends Controller
                 return redirect('/login');
             } else {
                 $req->session()->forget('error');
-                $req->session()->put('user', value: $user);
-                return redirect('/user');
+                $req->session()->put(key: 'user', value: $user);
+                return redirect('/');
             }
         // } catch (\Exception $e) {
         //     return redirect('/error');
