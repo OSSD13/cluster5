@@ -74,6 +74,7 @@ Route::get('/jeng', function() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 80e8106 (fix(routes): update view path for jeng route)
     return view('ok');
@@ -109,6 +110,9 @@ Route::get('/wacha', function() {
     return view('/test/ok');
 >>>>>>> 4c99e81 (fix(routes): update view path for jeng route)
 >>>>>>> 80e8106 (fix(routes): update view path for jeng route)
+=======
+    return view('/test/ok');
+>>>>>>> 452a675 (fix(routes): update view path for jeng route)
 });
 
 Route::get('/wacha', function() {
