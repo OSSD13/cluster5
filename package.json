@@ -10,6 +10,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "vite"
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
@@ -93,8 +94,14 @@
 =======
         "dev": "vite build --watch"
 >>>>>>> c1027ec (S)
+=======
+        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+        "dev": "vite build --watch"
+>>>>>>> 43137b6 (fix(package): update dev script to use vite build with watch mode)
     },
     "devDependencies": {
+        "@iconify/json": "^2.2.318",
+        "@iconify/tailwind4": "^1.0.6",
         "@tailwindcss/vite": "^4.0.13",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
