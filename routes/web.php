@@ -61,11 +61,15 @@ Route::middleware([CheckLogin::class])->group(function () {
 
 
 Route::get('/jeng', function() {
+<<<<<<< HEAD
     return view('ok');
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> d77ac94 (Add new component layout and route for test view)
+=======
+    return view('/test/ok');
+>>>>>>> 4c99e81 (fix(routes): update view path for jeng route)
 });
 
 Route::get('/wacha', function() {
