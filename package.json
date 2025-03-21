@@ -9,6 +9,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "vite"
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
@@ -81,6 +82,9 @@
 >>>>>>> 23c27df (Chg)
 =======
 >>>>>>> cad366f (S)
+=======
+        "dev": "vite"
+>>>>>>> 9632875 (fix(package): update dev script to use vite for development)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",
