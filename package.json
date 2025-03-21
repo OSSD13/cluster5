@@ -4,6 +4,7 @@
     "scripts": {
         "build": "vite build",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "vite"
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
@@ -21,6 +22,9 @@
 =======
         "dev": "vite build --watch"
 >>>>>>> c1027ec (S)
+=======
+        "dev": "vite"
+>>>>>>> 9632875 (fix(package): update dev script to use vite for development)
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.13",
