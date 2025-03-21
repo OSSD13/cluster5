@@ -3,14 +3,12 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-<<<<<<< HEAD
-        "dev": "vite"
-=======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
-        "dev": "nodemon --exec \"npm run build\" --ignore public/"
->>>>>>> 30d3bf4 (Chg)
+        "dev": "vite build --watch"
     },
     "devDependencies": {
+        "@iconify/json": "^2.2.318",
+        "@iconify/tailwind4": "^1.0.6",
         "@tailwindcss/vite": "^4.0.13",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
