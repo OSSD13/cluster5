@@ -7,6 +7,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dev": "vite"
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
@@ -56,10 +57,11 @@
 >>>>>>> 216687f (Chg)
 =======
 >>>>>>> 3944a9c (S)
+=======
+        "dev": "vite"
+>>>>>>> d985e39 (fix(package): update dev script to use vite for development)
     },
     "devDependencies": {
-        "@iconify/json": "^2.2.318",
-        "@iconify/tailwind4": "^1.0.6",
         "@tailwindcss/vite": "^4.0.13",
         "axios": "^1.7.4",
         "concurrently": "^9.0.1",
