@@ -26,7 +26,7 @@
                 <div class="flex items-center gap-4">
                     <label for="timePeriod" class=" text-base font-bold text-black">พนักงาน</label>
                     <select
-                        class="p-2 flex-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        class="p-2 w-full flex-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         id="subordinateSelect" onchange="handleSubordinateChange()">
                         <option value="{{ session()->get('user')->user_id }}">{{ session()->get('user')->role_name }} -
                             {{ session()->get('user')->name }}</option>
@@ -65,8 +65,12 @@
                 // search param user_id, date
 
                 function getBranchReport() {
-                    const userId = document.getElementById('subordinateSelect').value ?? {{ session()->get('user')->user_id }};
-                    const date = document.getElementById('timePeriod').value ?? new Date().toISOString();
+                    const userId = document.getElementById('subordinateSelect') ?
+                        document.getElementById('subordinateSelect').value :
+                        {{ session()->get('user')->user_id }};
+                    const date = document.getElementById('timePeriod') ?
+                        document.getElementById('timePeriod').value :
+                        new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
 
                     fetch(`/api/getBranchReport?user_id=${userId}&date=${date}`)
                         .then(response => response.json())
@@ -74,23 +78,21 @@
                             console.log('Branch report:', data);
 
                             let allMonthlySales = {};
-                            // Prepare data for chart by grouping into 20 equal sales amount ranges
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
+                            let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
 
-                            // Calculate the max sales amount
+                            // Calculate max sales amount only for the selected month
                             data.forEach(b => {
-                                let monthlySales = b.monthly_sales || {}; // Ensure it's an object
-                                Object.entries(monthlySales).forEach(([key, value]) => {
-                                    let salesAmount = parseFloat(value?.sales_amount ||
-                                    0); // Handle undefined values
+                                let monthlySales = b.monthly_sales || {};
+                                if (monthlySales[selectedMonth]) {
+                                    let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
                                     maxRange = Math.max(maxRange, salesAmount);
-                                });
+                                }
                             });
 
-                            // Define step size dynamically to get around 20 bins
+                            // Define step size dynamically (20 bins)
                             const step = maxRange > 0 ? Math.ceil(maxRange / 20) : 20000;
-
                             let chartLabels = [];
                             let chartData = {};
 
@@ -100,20 +102,19 @@
                                 chartData[i] = 0;
                             }
 
-                            // Fill in the actual sales data
+                            // Fill in the sales data only for the selected month
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
-                                Object.entries(monthlySales).forEach(([key, value]) => {
-                                    let salesAmount = parseFloat(value?.sales_amount || 0);
-                                    let range = Math.floor(salesAmount / step) * step; // Assign to nearest bin
+                                if (monthlySales[selectedMonth]) {
+                                    let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
+                                    let range = Math.floor(salesAmount / step) * step;
                                     chartData[range] += 1;
-                                });
+                                }
                             });
 
                             // Convert chartData object to an array for Chart.js
                             let chartValues = Object.keys(chartData).map(key => chartData[key]);
 
-                            // Debugging output
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
 
@@ -127,8 +128,8 @@
                                     labels: chartLabels,
                                     datasets: [{
                                         label: 'จำนวนสาขา', // "Number of Branches"
-                                        data: chartValues, // Ensure this is an array
-                                        backgroundColor: '#F846E1', // Adjust color as you wish
+                                        data: chartValues,
+                                        backgroundColor: '#F846E1',
                                         borderWidth: 1
                                     }]
                                 },
@@ -138,46 +139,14 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-                                            max: Math.max(...chartValues) + 10 // Fix: Ensure correct max calculation
-                                        }
-                                    },
-                                    plugins: {
-                                        legend: {
-                                            labels: {
-                                                // Adjust legend styling if needed
-                                            }
+                                            max: Math.max(...chartValues) + 10
                                         }
                                     }
                                 }
                             });
 
-
-                            // sum all branch sales_package_amount
-
+                            // Summing up monthly sales data
                             data.forEach(b => {
-                                // {
-                                //     "2024-11": {
-                                //         "sales_amount": 14532859.429561,
-                                //         "sales_package_amount": "4277"
-                                //     },
-                                //     "2024-10": {
-                                //         "sales_amount": 1294.063592,
-                                //         "sales_package_amount": "4642"
-                                //     },
-                                //     "2025-02": {
-                                //         "sales_amount": 334.08032,
-                                //         "sales_package_amount": "8801"
-                                //     },
-                                //     "2025-01": {
-                                //         "sales_amount": 15198558.233,
-                                //         "sales_package_amount": "5967"
-                                //     },
-                                //     "2024-08": {
-                                //         "sales_amount": 639518,
-                                //         "sales_package_amount": "9252"
-                                //     }
-                                // }
-
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
                                     if (allMonthlySales[key]) {
@@ -193,79 +162,60 @@
                                         };
                                     }
                                 });
+                            });
 
-                            })
-                            console.log('allMonthlySales:', allMonthlySales);
+                            console.log('Filtered Monthly Sales:', allMonthlySales);
 
-                            let thisMonth = new Date(date).toISOString().slice(0, 7);
-                            let thisMonthTotalPackage = allMonthlySales[thisMonth]?.sales_package_amount ?? 0;
-                            let thisMonthTotalSales = allMonthlySales[thisMonth]?.sales_amount ?? 0;
+                            let thisMonthTotalPackage = allMonthlySales[selectedMonth]?.sales_package_amount ?? 0;
+                            let thisMonthTotalSales = allMonthlySales[selectedMonth]?.sales_amount ?? 0;
 
                             let lastMonth = new Date(new Date(date).setMonth(new Date(date).getMonth() - 1)).toISOString()
                                 .slice(0, 7);
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            // change in percentage
-                            let packageChange = ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100;
-                            let salesChange = ((thisMonthTotalSales - lastMonthTotalSales) / lastMonthTotalSales) * 100;
+                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) /
+                                lastMonthTotalPackage) * 100 : 0;
+                            let salesChange = lastMonthTotalSales > 0 ? ((thisMonthTotalSales - lastMonthTotalSales) /
+                                lastMonthTotalSales) * 100 : 0;
 
-                            console.log('This month total package:', thisMonthTotalPackage);
-                            console.log('This month total sales:', thisMonthTotalSales);
-                            console.log('Last month total package:', lastMonthTotalPackage);
-                            console.log('Last month total sales:', lastMonthTotalSales);
-                            console.log('Package change:', packageChange);
-                            console.log('Sales change:', salesChange);
-
-                            // handle thisMonthTotalPackage
                             document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
                                 .toLocaleString();
                             document.getElementById('thisMonthTotalPackagePercent').textContent = packageChange.toFixed(2);
-                            document.getElementById('thisMonthTotalPackageIcon').classList.remove('text-success',
-                                'text-danger');
-                            document.getElementById('thisMonthTotalPackageArrow').classList.remove('icon-[line-md--arrow-up]',
-                                'icon-[line-md--arrow-down]');
-                            document.getElementById('thisMonthTotalPackagePercentParent').classList.remove('text-success',
-                                'text-danger');
-                            if (packageChange > 0) {
-                                document.getElementById('thisMonthTotalPackageIcon').classList.add('text-success');
-                                document.getElementById('thisMonthTotalPackageArrow').classList.add('icon-[line-md--arrow-up]');
-                                document.getElementById('thisMonthTotalPackagePercentParent').classList.add('text-success');
-                            } else {
-                                document.getElementById('thisMonthTotalPackageIcon').classList.add('text-danger');
-                                document.getElementById('thisMonthTotalPackageArrow').classList.add(
-                                    'icon-[line-md--arrow-down]');
-                                document.getElementById('thisMonthTotalPackagePercentParent').classList.add('text-danger');
-                            }
-                            document.getElementById('thisMonthTotalPackagePercent').textContent = (packageChange).toFixed(2);
-
-                            // handle thisMonthTotalMoney
                             document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
                                 .toLocaleString();
                             document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
-                            document.getElementById('thisMonthTotalMoneyIcon').classList.remove('text-success', 'text-danger');
-                            document.getElementById('thisMonthTotalMoneyArrow').classList.remove('icon-[line-md--arrow-up]',
-                                'icon-[line-md--arrow-down]');
-                            document.getElementById('thisMonthTotalMoneyPercentParent').classList.remove('text-success',
-                                'text-danger');
-                            if (salesChange > 0) {
-                                document.getElementById('thisMonthTotalMoneyIcon').classList.add('text-success');
-                                document.getElementById('thisMonthTotalMoneyArrow').classList.add('icon-[line-md--arrow-up]');
-                                document.getElementById('thisMonthTotalMoneyPercentParent').classList.add('text-success');
-                            } else {
-                                document.getElementById('thisMonthTotalMoneyIcon').classList.add('text-danger');
-                                document.getElementById('thisMonthTotalMoneyArrow').classList.add('icon-[line-md--arrow-down]');
-                                document.getElementById('thisMonthTotalMoneyPercentParent').classList.add('text-danger');
-                            }
-                            document.getElementById('thisMonthTotalMoneyPercent').textContent = (salesChange).toFixed(2);
 
+                            updateIndicator('thisMonthTotalPackage', packageChange);
+                            updateIndicator('thisMonthTotalMoney', salesChange);
 
                         })
                         .catch(error => console.error('Error fetching branch report:', error));
                 }
 
+                function updateIndicator(prefix, change) {
+                    const icon = document.getElementById(`${prefix}Icon`);
+                    const arrow = document.getElementById(`${prefix}Arrow`);
+                    const percentParent = document.getElementById(`${prefix}PercentParent`);
+
+                    icon.classList.remove('text-success', 'text-danger');
+                    arrow.classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
+                    percentParent.classList.remove('text-success', 'text-danger');
+
+                    if (change > 0) {
+                        icon.classList.add('text-success');
+                        arrow.classList.add('icon-[line-md--arrow-up]');
+                        percentParent.classList.add('text-success');
+                    } else {
+                        icon.classList.add('text-danger');
+                        arrow.classList.add('icon-[line-md--arrow-down]');
+                        percentParent.classList.add('text-danger');
+                    }
+                }
+
                 document.addEventListener('DOMContentLoaded', function() {
-                    getBranchReport()
+                    console.log("Fetching report...");
+                    getBranchReport();
                 });
             </script>
 
