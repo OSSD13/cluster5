@@ -58,6 +58,8 @@ class DatabaseSeeder extends Seeder
         // 66160358@go.buu.ac.th
         // 66160369@go.buu.ac.th
         // 66160370@go.buu.ac.th
+<<<<<<< HEAD
+=======
 
         $emails = [
             '66160106@go.buu.ac.th',
@@ -84,6 +86,34 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
+
+<<<<<<< HEAD
+        foreach ($emails as $email) {
+            $user = User::where('email', '=', $email)->first();
+            if (!$user) {
+                User::create([
+                    'name' => explode('@', $email)[0],
+                    'email' => $email,
+                    'password' => bcrypt('123456'),
+                    'user_status' => 'normal',
+                    'role_name' => 'ceo',
+                ]);
+            }
+        }
 
         // Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create()->each(function ($branch) {
@@ -96,6 +126,11 @@ class DatabaseSeeder extends Seeder
             }
         });
 
+=======
+
+        // Point_of_interest::factory(100)->create();
+        Branch_store::factory(100)->create();
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
             for ($month = 0; $month < 12; $month++) {

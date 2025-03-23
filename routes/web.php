@@ -48,6 +48,10 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
