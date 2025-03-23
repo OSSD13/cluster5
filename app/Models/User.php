@@ -66,7 +66,19 @@ class User extends Authenticatable
      */
     public function getSubordinateIds(): array
     {
-        return DB::table('users')->where('manager', '=', $this->user_id)->pluck('user_id')->toArray();
+        $role = $this->getRole();
+        if ($role === 'ceo') {
+            return DB::table('users')
+            ->where('role_name', '!=', 'ceo')
+            ->where('user_id', '!=', $this->user_id)
+            ->pluck('user_id')
+            ->toArray();
+        }
+        return DB::table('users')
+            ->where('manager', '=', $this->user_id)
+            ->where('user_id', '!=', $this->user_id)
+            ->pluck('user_id')
+            ->toArray();
     }
 
     /**
