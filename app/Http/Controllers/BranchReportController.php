@@ -54,8 +54,8 @@ class BranchReportController extends Controller
         $branches_ids = array_map(fn($branch) => $branch->bs_id, $branches);
         /*
             get all branches with $branches_ids
-            I want 
-            bs_id 
+            I want
+            bs_id
             bs_name
             bs_detail
             bs_address
@@ -103,7 +103,7 @@ class BranchReportController extends Controller
                 created_at
                 updated_at
                 where sales_branch_id is same
-            ) only where sales_month is the same month as date 
+            ) only where sales_month is the same month as date
         */
         $branches = DB::table('branch_stores')
             ->whereIn('branch_stores.bs_id', $branches_ids)
@@ -172,16 +172,5 @@ class BranchReportController extends Controller
         }
 
         return response()->json($branches);
-    }
-
-    function displayBs()
-    {
-        $user = User::where('user_id', '=', '20')->first();
-        $value = json_encode(value: $user->getBranches());
-        return view('displayDatabase', ['value' => $value]);
-    }
-    function displayTestLogin()
-    {
-        return view('displayTestLogin');
     }
 }
