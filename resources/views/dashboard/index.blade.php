@@ -76,27 +76,26 @@
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
-<<<<<<< HEAD
 
                             const branchCount = data.branch_count;
                             const branches = data.branches;
 
-=======
+
                             const branchCount = data.branch_count;
                             const branches = data.branches;
->>>>>>> origin/pangCode
+
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
                             let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
-<<<<<<< HEAD
+
 
                             // Calculate max sales amount only for the selected month
-                            branches.forEach(b => {
-=======
                             data.forEach(b => {
                             data.forEach(b => {
->>>>>>> origin/pangCode
+
+                            data.forEach(b => {
+
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -116,12 +115,14 @@
                             }
 
                             // Fill in the sales data only for the selected month
-<<<<<<< HEAD
+
                             branches.forEach(b => {
-=======
+
                             data.forEach(b => {
                             data.forEach(b => {
->>>>>>> origin/pangCode
+
+                            data.forEach(b => {
+
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -164,13 +165,15 @@
                             });
 
                             // Summing up monthly sales data
-<<<<<<< HEAD
+
                             branches.forEach(b => {
-=======
+
 
                             data.forEach(b => {
                             data.forEach(b => {
->>>>>>> origin/pangCode
+
+                            data.forEach(b => {
+
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
                                     if (allMonthlySales[key]) {
@@ -198,16 +201,17 @@
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 : 0;
+                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) /
+                                lastMonthTotalPackage) * 100 : 0;
                             let salesChange = lastMonthTotalSales > 0 ? ((thisMonthTotalSales - lastMonthTotalSales) /
                                 lastMonthTotalSales) * 100 : 0;
 
-                            document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage.toLocaleString();
+                            document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
+                                .toLocaleString();
                             document.getElementById('thisMonthTotalPackagePercent').textContent = packageChange.toFixed(2);
-                            document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales.toLocaleString();
+                            document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
+                                .toLocaleString();
                             document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
-
-                            console.log(thisMonthTotalPackage, thisMonthTotalPackage.toLocaleString())
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
@@ -343,19 +347,15 @@
             </div>
         </div>
 
-<<<<<<< HEAD
+
         <h3 class="text-left px-2" id='regionBranchCount'>สาขาทั้งหมด 3500 สาขา</h3>
-=======
-<<<<<<< HEAD
+
         <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
-=======
-<<<<<<< HEAD
-        <h3 class="text-left px-2" id='regionBranchCount'>สาขาทั้งหมด 3500 สาขา</h3>
-=======
+
         <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
->>>>>>> origin/jeng-branch
->>>>>>> origin/pangCode
+
+        <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
+
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-lightblue">
                 <tr>
@@ -363,26 +363,6 @@
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
-                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
-                @php
-                    $regions = [
-                        'NORTH' => 'ภาคเหนือ',
-                        'NORTHEAST' => 'ภาคตะวันออกเฉียงเหนือ',
-                        'WEST' => 'ภาคตะวันตก',
-                        'CENTRAL' => 'ภาคกลาง',
-                        'EAST' => 'ภาคตะวันออก',
-                        'SOUTH' => 'ภาคใต้',
-                    ];
-                @endphp
-                @foreach ($regions as $regionKey => $regionName)
-                    <tr onclick="getReport('{{ $regionKey }}')" class="cursor-pointer">
-                        <td class="px-6 py-2 whitespace-nowrap">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-2 whitespace-nowrap">{{ $regionName }}</td>
-<<<<<<< HEAD
-=======
                     <th scope="col" class="px-6 py-3"></th>
                 </tr>
             </thead>
@@ -390,11 +370,24 @@
                 @php
                     $regions = ['ภาคเหนือ', 'ภาคตะวันออกเฉียงเหนือ', 'ภาคตะวันตก', 'ภาคกลาง', 'ภาคตะวันออก', 'ภาคใต้'];
                 @endphp
+
+                @foreach ($regions as $regionKey => $regionName)
+                    <tr onclick="getReport('{{ $regionKey }}')" class="cursor-pointer">
+                        <td class="px-6 py-2 whitespace-nowrap">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap">{{ $regionName }}</td>
+                    <th scope="col" class="px-6 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @php
+                    $regions = ['ภาคเหนือ', 'ภาคตะวันออกเฉียงเหนือ', 'ภาคตะวันตก', 'ภาคกลาง', 'ภาคตะวันออก', 'ภาคใต้'];
+                @endphp
+
                 @foreach ($regions as $index => $region)
                     <tr onclick="alert('hi')" class="cursor-pointer">
                         <td class="px-6 py-2 whitespace-nowrap">{{ $index + 1 }}</td>
                         <td class="px-6 py-2 whitespace-nowrap">{{ $region }}</td>
->>>>>>> origin/pangCode
+
                         <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">
                             >
                         </td>
@@ -403,10 +396,8 @@
             </tbody>
         </table>
 
-<<<<<<< HEAD
-=======
         <table class="w-full border-collapse rounded-lg overflow-hidden">
->>>>>>> origin/pangCode
+
         <script>
             function getReport(region, province) {
                 const userId = document.getElementById('subordinateSelect') ?
@@ -510,10 +501,10 @@
         </script>
 
         <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
-<<<<<<< HEAD
-=======
         <table class="w-full border-collapse rounded-lg overflow-hidden">
->>>>>>> origin/pangCode
+
+        <table class="w-full border-collapse rounded-lg overflow-hidden">
+
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 text-left">ID</th>
@@ -532,182 +523,6 @@
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-<<<<<<< HEAD
-
-        {{-- <script>
-            const branches = [{
-                    name: "บางแสน",
-                    province: "ชลบุรี",
-                    sales: 50,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "อุดรธานี",
-                    province: "อุดรธานี",
-                    sales: 30,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "ศรีราชา",
-                    province: "ชลบุรี",
-                    sales: 20,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "พัทยา",
-                    province: "ชลบุรี",
-                    sales: 10,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "เซนทรัล",
-                    province: "ชลบุรี",
-                    sales: 5,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "ท่าพระ",
-                    province: "ขอนแก่น",
-                    sales: -5,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "กรุงเทพฯ",
-                    province: "กรุงเทพมหานคร",
-                    sales: -10,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "ปราจีนบุรี",
-                    province: "ปราจีนบุรี",
-                    sales: -20,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "ฉะเชิงเทรา",
-                    province: "ฉะเชิงเทรา",
-                    sales: -30,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "สระบุรี",
-                    province: "สระบุรี",
-                    sales: -40,
-                    status: "ยังไม่เพิ่ม"
-                }
-            ];
-
-            let currentPage = 1;
-            const rowsPerPage = 5;
-            let sortedColumn = null;
-            let sortDirection = 1; // 1 for ascending, -1 for descending
-
-            function renderTable() {
-                const tableBody = document.getElementById("tableBody");
-                tableBody.innerHTML = "";
-                const start = (currentPage - 1) * rowsPerPage;
-                const paginatedData = branches.slice(start, start + rowsPerPage);
-
-                paginatedData.forEach((branch, index) => {
-                    const row = document.createElement("tr");
-                    row.classList.add("hover:bg-gray-100");
-                    row.innerHTML = `
-                        <td class="py-3 px-4">${start + index + 1}</td>
-                        <td class="py-3 px-4">${branch.name}</td>
-                        <td class="py-3 px-4">${branch.province}</td>
-                        <td class="py-3 px-4">${branch.sales}</td>
-                        <td class="py-3 px-4">
-                            <span class="px-3 py-1 text-white rounded-full ${branch.status === "เพิ่มแล้ว" ? "bg-green-500" : "bg-red-500"}">
-                                ${branch.status}
-                            </span>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-
-                renderPagination();
-            }
-
-            function renderPagination() {
-                const pagination = document.getElementById("pagination");
-                pagination.innerHTML = "";
-                const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-                for (let i = 1; i <= Math.min(6, totalPages); i++) {
-                    const btn = createPageButton(i);
-                    pagination.appendChild(btn);
-                }
-
-                if (totalPages > 6) {
-                    const dotsBtn = document.createElement("button");
-                    dotsBtn.innerText = "...";
-                    dotsBtn.className = "px-3 py-1 bg-gray-300 rounded hover:bg-gray-400";
-                    dotsBtn.onclick = showPageInput;
-                    pagination.appendChild(dotsBtn);
-                }
-            }
-
-            function createPageButton(pageNumber) {
-                const btn = document.createElement("button");
-                btn.innerText = pageNumber;
-                btn.className =
-                    `px-3 py-1 ${pageNumber === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"} rounded hover:bg-gray-400`;
-                btn.onclick = () => goToPage(pageNumber);
-                return btn;
-            }
-
-            function showPageInput() {
-                Swal.fire({
-                    title: 'Go to page',
-                    input: 'number',
-                    inputAttributes: {
-                        min: 1,
-                        max: Math.ceil(branches.length / rowsPerPage),
-                        step: 1
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'Go',
-                    preConfirm: (page) => {
-                        if (page < 1 || page > Math.ceil(branches.length / rowsPerPage)) {
-                            Swal.showValidationMessage('Invalid page number');
-                        }
-                        return page;
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        goToPage(result.value);
-                    }
-                });
-            }
-
-            function goToPage(page) {
-                currentPage = page;
-                renderTable();
-            }
-
-            function sortTable(column) {
-                if (sortedColumn === column) {
-                    sortDirection *= -1;
-                } else {
-                    sortedColumn = column;
-                    sortDirection = 1;
-                }
-
-                branches.sort((a, b) => {
-                    if (a[column] < b[column]) return -1 * sortDirection;
-                    if (a[column] > b[column]) return 1 * sortDirection;
-                    return 0;
-                });
-
-                renderTable();
-            }
-
-            renderTable();
-        </script> --}}
-
-
-=======
->>>>>>> origin/pangCode
     </div>
 @endsection
 

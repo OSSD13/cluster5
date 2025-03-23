@@ -58,7 +58,7 @@
 
 </head>
 
-<body class="font-lunasima antialiased bg-gray-100">
+<body class="font-lunasima antialiased bg-gray-300">
     @yield('body')
 </body>
 

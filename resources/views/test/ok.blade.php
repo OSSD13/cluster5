@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -48,6 +49,8 @@
     </button>
   </div>
 
+  
+  
   <div class="mt-8 flex">
     <button type="button" class="rounded-full px-4 mr-2 bg-blue-600 text-white p-2 rounded  leading-none flex items-center">
       	New
@@ -114,3 +117,4 @@
 </div>
 
 </html>
+

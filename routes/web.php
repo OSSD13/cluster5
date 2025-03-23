@@ -48,11 +48,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-<<<<<<< HEAD
-    // Database test routes
-    // Route::get('/register', [DatabaseTestController::class, 'createUser']);
-=======
->>>>>>> origin/pangCode
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
     Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
     Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
@@ -60,17 +55,9 @@ Route::middleware([CheckLogin::class])->group(function () {
     // Google Maps URL conversion routes
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
-});
-
-<<<<<<< HEAD
-    
 
 });
 
-Route::get('/asd', function () {
-    return view('test');
-});
-=======
 Route::get('/test', function () {
     return view('test');
 });
@@ -84,4 +71,6 @@ Route::get('/jeng', function() {
 Route::get('/wacha', function() {
     return view('test');
 });
->>>>>>> origin/pangCode
+
+
+
