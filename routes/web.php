@@ -61,6 +61,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     // Google Maps URL conversion routes
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
+<<<<<<< HEAD
 });
 
 
@@ -83,4 +84,8 @@ Route::get('/wacha', function() {
 >>>>>>> 30d3bf4 (Chg)
 =======
 >>>>>>> d77ac94 (Add new component layout and route for test view)
+=======
+
+    
+>>>>>>> f9d4b34 (fix(login):แก้ไขเลย์เอ้า2)
 });
