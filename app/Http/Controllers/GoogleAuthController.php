@@ -15,11 +15,7 @@ class GoogleAuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-<<<<<<< HEAD
     public function callbackGoogle(Request $req)
-=======
-    public function callbackGoogle()
->>>>>>> develop
     {
         // try {
             $google_user = Socialite::driver('google')->user();
@@ -28,19 +24,12 @@ class GoogleAuthController extends Controller
 
 
             if (!$user) {
-<<<<<<< HEAD
                 $req->session()->put('error', 'ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง');
                 return redirect('/login');
             } else {
                 $req->session()->forget('error');
                 $req->session()->put(key: 'user', value: $user);
                 return redirect('/');
-=======
-                return redirect('/displayTestLogin');
-            } else {
-                // auth()->login($user, true);
-                return redirect('/home');
->>>>>>> develop
             }
         // } catch (\Exception $e) {
         //     return redirect('/error');

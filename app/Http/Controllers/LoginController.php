@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,14 +32,5 @@ class LoginController extends Controller
         $req->session()->flush();
         // Redirect ไปหน้า login
         return redirect('/login')->with('logoutSuccess', 'ออกจากระบบสำเร็จ');
-=======
-use Illuminate\Http\Request;
-
-class LoginController extends Controller
-{
-    //
-    function login(){
-        return view('login');
->>>>>>> develop
     }
 }

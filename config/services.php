@@ -38,11 +38,7 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-<<<<<<< HEAD
         'redirect' => env('APP_URL') . '/auth/google/call-back',
-=======
-        'redirect' => env('GOOGLE_CLIENT_CALLBACK'),
->>>>>>> develop
     ],
 
 ];
