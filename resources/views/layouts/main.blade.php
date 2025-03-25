@@ -18,7 +18,6 @@
                 </div>
             </div>
         </nav>
-
         <!-- Main Content -->
         <main class="flex-1 p-4 px-8">
             @yield('content')
