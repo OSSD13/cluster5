@@ -61,6 +61,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     // Google Maps URL conversion routes
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
+
+    
 <<<<<<< HEAD
 });
 
