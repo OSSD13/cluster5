@@ -91,6 +91,7 @@
                                 }
                             });
 
+<<<<<<< HEAD
                             // Determine bin size: at least 1000, at most 20 bins
                             let step = Math.ceil(Math.max(1000, maxRange / 20));
                             let numBins = Math.ceil(maxRange / step);
@@ -101,16 +102,24 @@
                                 numBins = 20;
                             }
 
+=======
+                            // Define step size dynamically (20 bins)
+                            const step = maxRange > 0 ? Math.ceil(maxRange / 20) : 20000;
+>>>>>>> origin/moo
                             let chartLabels = [];
                             let chartData = {};
 
                             // Initialize bins to 0
                             for (let i = 0; i <= maxRange; i += step) {
+<<<<<<< HEAD
                                 if (i === 0) {
                                     chartLabels.push("0");
                                 } else {
                                     chartLabels.push(`${Math.round(i / 1000)}k`);
                                 }
+=======
+                                chartLabels.push(`${Math.round(i / 1000)}k`);
+>>>>>>> origin/moo
                                 chartData[i] = 0;
                             }
 
@@ -130,7 +139,10 @@
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/moo
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {
                                 window.branchChart.destroy();
@@ -152,7 +164,11 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
+<<<<<<< HEAD
                                             max: Math.max(...chartValues) + 5
+=======
+                                            max: Math.max(...chartValues) + 10
+>>>>>>> origin/moo
                                         }
                                     }
                                 }
@@ -263,6 +279,12 @@
             </div>
         </div>
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> origin/moo
         {{-- <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
             <div class="flex flex-row items-baseline">
                 <div class="mr-4">ยอดรวม</div>
@@ -274,8 +296,11 @@
                 บาท
             </div>
         </div> --}}
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/moo
         <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
             <canvas id="branchVSprofit"></canvas>
         </div>
