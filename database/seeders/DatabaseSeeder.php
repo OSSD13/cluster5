@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         // Then create sales, ensuring they can get assigned managers
         User::factory(100)->create(['role_name' => 'sale']);
+<<<<<<< HEAD
 
         $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
         if (!$testUserJeng) {
@@ -88,6 +89,18 @@ class DatabaseSeeder extends Seeder
 
 
         // Point_of_interest::factory(100)->create();
+=======
+        // create ceo user with mail ttawan475@gmail.com password 123456
+        User::create([
+            'name' => 'tawan',
+            'email' => 'ttawan475@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_status' => 'normal',
+            'role_name' => 'ceo',
+        ]);
+
+        Point_of_interest::factory(100)->create();
+>>>>>>> develop
         Branch_store::factory(100)->create();
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
