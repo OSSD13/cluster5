@@ -1,0 +1,15 @@
+services:
+  build-one-php:
+    build: .
+    container_name: ossd-5-mylocation
+    ports:
+      - "1305:80"
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html:delegated
+      - /var/www/html/storage
+      - /var/www/html/bootstrap/cache
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+      - /var/www/html/public
