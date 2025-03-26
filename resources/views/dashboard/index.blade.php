@@ -76,13 +76,13 @@
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
-
+                            const branchCount = data.branch_count;
+                            const branches = data.branches;
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
                             let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
-
-                            // Calculate max sales amount only for the selected month
+                            data.forEach(b => {
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
@@ -115,6 +115,7 @@
                             }
 
                             // Fill in the sales data only for the selected month
+                            data.forEach(b => {
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
@@ -159,6 +160,8 @@
                             });
 
                             // Summing up monthly sales data
+
+                            data.forEach(b => {
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
@@ -332,7 +335,15 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
+=======
+<<<<<<< HEAD
+        <h3 class="text-left px-2" id='regionBranchCount'>สาขาทั้งหมด 3500 สาขา</h3>
+=======
+        <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+>>>>>>> origin/jeng-branch
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-lightblue">
                 <tr>
@@ -340,6 +351,24 @@
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
+                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
+                @php
+                    $regions = [
+                        'NORTH' => 'ภาคเหนือ',
+                        'NORTHEAST' => 'ภาคตะวันออกเฉียงเหนือ',
+                        'WEST' => 'ภาคตะวันตก',
+                        'CENTRAL' => 'ภาคกลาง',
+                        'EAST' => 'ภาคตะวันออก',
+                        'SOUTH' => 'ภาคใต้',
+                    ];
+                @endphp
+                @foreach ($regions as $regionKey => $regionName)
+                    <tr onclick="getReport('{{ $regionKey }}')" class="cursor-pointer">
+                        <td class="px-6 py-2 whitespace-nowrap">{{ $loop->iteration }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap">{{ $regionName }}</td>
                     <th scope="col" class="px-6 py-3"></th>
                 </tr>
             </thead>
@@ -360,6 +389,110 @@
         </table>
 
         <table class="w-full border-collapse rounded-lg overflow-hidden">
+        <script>
+            function getReport(region, province) {
+                const userId = document.getElementById('subordinateSelect') ?
+                    document.getElementById('subordinateSelect').value :
+                    {{ session()->get('user')->user_id }};
+                const date = document.getElementById('timePeriod') ?
+                    document.getElementById('timePeriod').value :
+                    new Date().toISOString().slice(0, 7);
+
+                fetch(`/api/getBranchReport?user_id=${userId}&date=${date}${region ? `&region=${region}` : ''}${province ? `&province=${province}` : ''}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Filtered Branch Report:', data);
+
+
+                        if (data.distinct_provinces) {
+                            const tableBody = document.getElementById('regionTableBody');
+                            tableBody.innerHTML = ''; // Clear existing data
+                            data.distinct_provinces.forEach((province, index) => {
+                                let row = `<tr class="cursor-pointer" onclick="getReport('${region}', '${province}')">
+                                    <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
+                                    <td class="px-6 py-2 whitespace-nowrap">${province}</td>
+                                    <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">></td>
+                                </tr>`;
+                                tableBody.innerHTML += row;
+                            });
+                        }
+
+                        // update branchTable
+                        const branchTable = document.getElementById('branchTable');
+                        branchTable.innerHTML = '';
+                        data.branches.forEach((branch, index) => {
+                            // check if branch.monthly_sale 2025-03 #
+                            let thisMonthSale = branch.monthly_sales[date];
+                            let salesAdded = thisMonthSale ? 'เพิ่มแล้ว' : 'ยังไม่เพิ่ม';
+                            let salesPrice = thisMonthSale ? thisMonthSale.sales_amount : '';
+                            let row = `<tr class="hover:bg-gray-100">
+                                <td class="py-3 px-4">${branch.bs_id}</td>
+                                <td class="py-3 px-4">${branch.bs_name}</td>
+                                <td class="py-3 px-4">${branch.province}</td>
+                                <td class="py-3 px-4">${salesPrice}</td>
+                                <td class="py-3 px-4">
+                                    <span class="px-3 py-1 text-white rounded-full ${salesAdded === "เพิ่มแล้ว" ? "bg-green-500" : "bg-red-500"}">
+                                        ${salesAdded}
+                                    </span>
+                                </td>
+                            </tr>`;
+                            branchTable.innerHTML += row;
+                        });
+
+                        // update pagination
+                        const pagination = document.getElementById('pagination');
+                        function renderPagination() {
+                            const pagination = document.getElementById("pagination");
+                            pagination.innerHTML = "";
+                            const totalPages = Math.ceil(branches.length / rowsPerPage);
+
+                            // Previous button
+                            const prevBtn = document.createElement("button");
+                            prevBtn.innerText = "Previous";
+                            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "bg-gray-300" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
+                            prevBtn.disabled = currentPage === 1;
+                            prevBtn.onclick = () => goToPage(currentPage - 1);
+                            pagination.appendChild(prevBtn);
+
+                            // Page buttons
+                            for (let i = 1; i <= totalPages; i++) {
+                                const btn = createPageButton(i);
+                                pagination.appendChild(btn);
+                            }
+
+                            // Next button
+                            const nextBtn = document.createElement("button");
+                            nextBtn.innerText = "Next";
+                            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "bg-gray-300" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
+                            nextBtn.disabled = currentPage === totalPages;
+                            nextBtn.onclick = () => goToPage(currentPage + 1);
+                            pagination.appendChild(nextBtn);
+                        }
+
+                        function createPageButton(pageNumber) {
+                            const btn = document.createElement("button");
+                            btn.innerText = pageNumber;
+                            btn.className = `px-3 py-1 ${pageNumber === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"} rounded hover:bg-gray-400`;
+                            btn.onclick = () => goToPage(pageNumber);
+                            return btn;
+                        }
+
+                        function goToPage(page) {
+                            currentPage = page;
+                            renderTable();
+                        }
+
+
+
+                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${data.branch_count} สาขา`;
+
+                    })
+                    .catch(error => console.error('Error fetching region report:', error));
+            }
+        </script>
+
+        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
+        <table class="w-full border-collapse rounded-lg overflow-hidden">
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 text-left">ID</th>
@@ -378,179 +511,6 @@
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-
-        <script>
-            const branches = [{
-                    name: "บางแสน",
-                    province: "ชลบุรี",
-                    sales: 50,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "อุดรธานี",
-                    province: "อุดรธานี",
-                    sales: 30,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "ศรีราชา",
-                    province: "ชลบุรี",
-                    sales: 20,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "พัทยา",
-                    province: "ชลบุรี",
-                    sales: 10,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "เซนทรัล",
-                    province: "ชลบุรี",
-                    sales: 5,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "ท่าพระ",
-                    province: "ขอนแก่น",
-                    sales: -5,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "กรุงเทพฯ",
-                    province: "กรุงเทพมหานคร",
-                    sales: -10,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "ปราจีนบุรี",
-                    province: "ปราจีนบุรี",
-                    sales: -20,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "ฉะเชิงเทรา",
-                    province: "ฉะเชิงเทรา",
-                    sales: -30,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "สระบุรี",
-                    province: "สระบุรี",
-                    sales: -40,
-                    status: "ยังไม่เพิ่ม"
-                }
-            ];
-
-            let currentPage = 1;
-            const rowsPerPage = 5;
-            let sortedColumn = null;
-            let sortDirection = 1; // 1 for ascending, -1 for descending
-
-            function renderTable() {
-                const tableBody = document.getElementById("tableBody");
-                tableBody.innerHTML = "";
-                const start = (currentPage - 1) * rowsPerPage;
-                const paginatedData = branches.slice(start, start + rowsPerPage);
-
-                paginatedData.forEach((branch, index) => {
-                    const row = document.createElement("tr");
-                    row.classList.add("hover:bg-gray-100");
-                    row.innerHTML = `
-                        <td class="py-3 px-4">${start + index + 1}</td>
-                        <td class="py-3 px-4">${branch.name}</td>
-                        <td class="py-3 px-4">${branch.province}</td>
-                        <td class="py-3 px-4">${branch.sales}</td>
-                        <td class="py-3 px-4">
-                            <span class="px-3 py-1 text-white rounded-full ${branch.status === "เพิ่มแล้ว" ? "bg-green-500" : "bg-red-500"}">
-                                ${branch.status}
-                            </span>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-
-                renderPagination();
-            }
-
-            function renderPagination() {
-                const pagination = document.getElementById("pagination");
-                pagination.innerHTML = "";
-                const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-                for (let i = 1; i <= Math.min(6, totalPages); i++) {
-                    const btn = createPageButton(i);
-                    pagination.appendChild(btn);
-                }
-
-                if (totalPages > 6) {
-                    const dotsBtn = document.createElement("button");
-                    dotsBtn.innerText = "...";
-                    dotsBtn.className = "px-3 py-1 bg-gray-300 rounded hover:bg-gray-400";
-                    dotsBtn.onclick = showPageInput;
-                    pagination.appendChild(dotsBtn);
-                }
-            }
-
-            function createPageButton(pageNumber) {
-                const btn = document.createElement("button");
-                btn.innerText = pageNumber;
-                btn.className =
-                    `px-3 py-1 ${pageNumber === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"} rounded hover:bg-gray-400`;
-                btn.onclick = () => goToPage(pageNumber);
-                return btn;
-            }
-
-            function showPageInput() {
-                Swal.fire({
-                    title: 'Go to page',
-                    input: 'number',
-                    inputAttributes: {
-                        min: 1,
-                        max: Math.ceil(branches.length / rowsPerPage),
-                        step: 1
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'Go',
-                    preConfirm: (page) => {
-                        if (page < 1 || page > Math.ceil(branches.length / rowsPerPage)) {
-                            Swal.showValidationMessage('Invalid page number');
-                        }
-                        return page;
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        goToPage(result.value);
-                    }
-                });
-            }
-
-            function goToPage(page) {
-                currentPage = page;
-                renderTable();
-            }
-
-            function sortTable(column) {
-                if (sortedColumn === column) {
-                    sortDirection *= -1;
-                } else {
-                    sortedColumn = column;
-                    sortDirection = 1;
-                }
-
-                branches.sort((a, b) => {
-                    if (a[column] < b[column]) return -1 * sortDirection;
-                    if (a[column] > b[column]) return 1 * sortDirection;
-                    return 0;
-                });
-
-                renderTable();
-            }
-
-            renderTable();
-        </script>
-
-
     </div>
 @endsection
 
