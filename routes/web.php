@@ -48,10 +48,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-<<<<<<< HEAD
-=======
-
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
@@ -63,31 +59,9 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
 
     
-<<<<<<< HEAD
+
 });
 
-
-Route::get('/jeng', function() {
-<<<<<<< HEAD
-    return view('ok');
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d77ac94 (Add new component layout and route for test view)
-=======
-    return view('/test/ok');
->>>>>>> 4c99e81 (fix(routes): update view path for jeng route)
-});
-
-Route::get('/wacha', function() {
+Route::get('/asd', function () {
     return view('test');
-<<<<<<< HEAD
-=======
->>>>>>> 30d3bf4 (Chg)
-=======
->>>>>>> d77ac94 (Add new component layout and route for test view)
-=======
-
-    
->>>>>>> f9d4b34 (fix(login):แก้ไขเลย์เอ้า2)
 });

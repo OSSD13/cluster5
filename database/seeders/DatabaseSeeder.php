@@ -58,8 +58,6 @@ class DatabaseSeeder extends Seeder
         // 66160358@go.buu.ac.th
         // 66160369@go.buu.ac.th
         // 66160370@go.buu.ac.th
-<<<<<<< HEAD
-=======
 
         $emails = [
             '66160106@go.buu.ac.th',
@@ -86,7 +84,6 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
 
         $emails = [
             '66160106@go.buu.ac.th',
@@ -101,36 +98,9 @@ class DatabaseSeeder extends Seeder
             '66160370@go.buu.ac.th',
         ];
 
-<<<<<<< HEAD
-        foreach ($emails as $email) {
-            $user = User::where('email', '=', $email)->first();
-            if (!$user) {
-                User::create([
-                    'name' => explode('@', $email)[0],
-                    'email' => $email,
-                    'password' => bcrypt('123456'),
-                    'user_status' => 'normal',
-                    'role_name' => 'ceo',
-                ]);
-            }
-        }
-
-        // Point_of_interest::factory(100)->create();
-        Branch_store::factory(100)->create()->each(function ($branch) {
-            $poi = Point_of_interests::factory()->create();
-            \Log::info('Created Point of Interest', ['poi_id' => $poi]);
-            if ($poi) {
-                $poi_id = $poi->id;
-                $branch->bs_poi_id = $poi_id;
-                $branch->save();
-            }
-        });
-
-=======
 
         // Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
             for ($month = 0; $month < 12; $month++) {
