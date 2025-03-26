@@ -76,17 +76,27 @@
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
+<<<<<<< HEAD
 
                             const branchCount = data.branch_count;
                             const branches = data.branches;
 
+=======
+                            const branchCount = data.branch_count;
+                            const branches = data.branches;
+>>>>>>> origin/pangCode
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
                             let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
+<<<<<<< HEAD
 
                             // Calculate max sales amount only for the selected month
                             branches.forEach(b => {
+=======
+                            data.forEach(b => {
+                            data.forEach(b => {
+>>>>>>> origin/pangCode
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -106,7 +116,12 @@
                             }
 
                             // Fill in the sales data only for the selected month
+<<<<<<< HEAD
                             branches.forEach(b => {
+=======
+                            data.forEach(b => {
+                            data.forEach(b => {
+>>>>>>> origin/pangCode
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -149,7 +164,13 @@
                             });
 
                             // Summing up monthly sales data
+<<<<<<< HEAD
                             branches.forEach(b => {
+=======
+
+                            data.forEach(b => {
+                            data.forEach(b => {
+>>>>>>> origin/pangCode
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
                                     if (allMonthlySales[key]) {
@@ -322,7 +343,19 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <h3 class="text-left px-2" id='regionBranchCount'>สาขาทั้งหมด 3500 สาขา</h3>
+=======
+<<<<<<< HEAD
+        <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
+=======
+<<<<<<< HEAD
+        <h3 class="text-left px-2" id='regionBranchCount'>สาขาทั้งหมด 3500 สาขา</h3>
+=======
+        <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+>>>>>>> origin/jeng-branch
+>>>>>>> origin/pangCode
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-lightblue">
                 <tr>
@@ -348,6 +381,20 @@
                     <tr onclick="getReport('{{ $regionKey }}')" class="cursor-pointer">
                         <td class="px-6 py-2 whitespace-nowrap">{{ $loop->iteration }}</td>
                         <td class="px-6 py-2 whitespace-nowrap">{{ $regionName }}</td>
+<<<<<<< HEAD
+=======
+                    <th scope="col" class="px-6 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @php
+                    $regions = ['ภาคเหนือ', 'ภาคตะวันออกเฉียงเหนือ', 'ภาคตะวันตก', 'ภาคกลาง', 'ภาคตะวันออก', 'ภาคใต้'];
+                @endphp
+                @foreach ($regions as $index => $region)
+                    <tr onclick="alert('hi')" class="cursor-pointer">
+                        <td class="px-6 py-2 whitespace-nowrap">{{ $index + 1 }}</td>
+                        <td class="px-6 py-2 whitespace-nowrap">{{ $region }}</td>
+>>>>>>> origin/pangCode
                         <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">
                             >
                         </td>
@@ -356,6 +403,10 @@
             </tbody>
         </table>
 
+<<<<<<< HEAD
+=======
+        <table class="w-full border-collapse rounded-lg overflow-hidden">
+>>>>>>> origin/pangCode
         <script>
             function getReport(region, province) {
                 const userId = document.getElementById('subordinateSelect') ?
@@ -459,6 +510,10 @@
         </script>
 
         <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
+<<<<<<< HEAD
+=======
+        <table class="w-full border-collapse rounded-lg overflow-hidden">
+>>>>>>> origin/pangCode
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 text-left">ID</th>
@@ -477,6 +532,7 @@
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
+<<<<<<< HEAD
 
         {{-- <script>
             const branches = [{
@@ -650,6 +706,8 @@
         </script> --}}
 
 
+=======
+>>>>>>> origin/pangCode
     </div>
 @endsection
 

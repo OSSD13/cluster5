@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 class BranchReportController extends Controller
 {
+<<<<<<< HEAD
     function getSubordinate()
     {
         $requestUserId = session()->get('user')->user_id;
@@ -17,6 +18,19 @@ class BranchReportController extends Controller
         $subordinates = User::whereIn('users.user_id', $subordinateIds)
             ->where('users.user_status', 'normal')
             // ->where('users.role_name', '!=', 'ceo')
+=======
+    /**
+     * Returns the list of subordinate users.
+     */
+    public function getSubordinate()
+    {
+        $requestUserId = session()->get('user')->user_id;
+        $user = User::where('user_id', $requestUserId)->first();
+        $subordinateIds = $user->getSubordinateIds();
+
+        $subordinates = User::whereIn('users.user_id', $subordinateIds)
+            ->where('users.user_status', 'normal')
+>>>>>>> origin/pangCode
             ->leftJoin('users as managers', 'users.manager', '=', 'managers.user_id')
             ->get([
                 'users.user_id',
@@ -38,6 +52,7 @@ class BranchReportController extends Controller
      */
     public function getBranchReport(Request $request)
     {
+<<<<<<< HEAD
         $userId = $request->query('user_id');
         $date = $request->query('date') ? Carbon::parse($request->query('date')) : now();
         $requestUserId = session()->get('user')->user_id;
@@ -53,16 +68,25 @@ class BranchReportController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
 
+=======
+>>>>>>> origin/pangCode
         // Build the base branch query with required joins and selected fields.
         $branchQuery = DB::table('branch_stores')
             ->leftJoin('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
             ->leftJoin('locations', 'point_of_interests.poi_location_id', '=', 'locations.location_id')
             ->leftJoin('users as managers', 'branch_stores.bs_manager', '=', 'managers.user_id')
             ->select(
+<<<<<<< HEAD
             'branch_stores.bs_id',
             'branch_stores.bs_name',
             'locations.province',
             'locations.region'
+=======
+                'branch_stores.bs_id',
+                'branch_stores.bs_name',
+                'locations.province',
+                'locations.region'
+>>>>>>> origin/pangCode
             );
 
         // Filter by userId if provided
@@ -118,7 +142,11 @@ class BranchReportController extends Controller
             ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
 
+<<<<<<< HEAD
         // Transform sales data into an associative array by branch ID
+=======
+        // Transform sales data into an associative array by branch ID.
+>>>>>>> origin/pangCode
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -127,7 +155,11 @@ class BranchReportController extends Controller
             ];
         }
 
+<<<<<<< HEAD
         // Attach sales data to branches
+=======
+        // Attach sales data to branches.
+>>>>>>> origin/pangCode
         foreach ($branches as $branch) {
             $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
         }
@@ -137,6 +169,7 @@ class BranchReportController extends Controller
             'branch_count' => $branches->count(),
             'distinct_provinces' => $distinctProvinces
         ]);
+<<<<<<< HEAD
     }
 
     function displayBs()
@@ -148,5 +181,7 @@ class BranchReportController extends Controller
     function displayTestLogin()
     {
         return view('displayTestLogin');
+=======
+>>>>>>> origin/pangCode
     }
 }

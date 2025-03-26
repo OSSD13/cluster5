@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
                 'role_name' => 'sale',
             ]);
         }
+<<<<<<< HEAD
 
         // create if not exist these mails with password 123456 and role_name = ceo
         // 66160106@go.buu.ac.th
@@ -61,6 +62,8 @@ class DatabaseSeeder extends Seeder
         // 66160369@go.buu.ac.th
         // 66160370@go.buu.ac.th
 
+=======
+>>>>>>> origin/pangCode
         $emails = [
             '66160106@go.buu.ac.th',
             '66160082@go.buu.ac.th',
@@ -100,6 +103,7 @@ class DatabaseSeeder extends Seeder
             '66160370@go.buu.ac.th',
         ];
 
+<<<<<<< HEAD
 
         // Point_of_interest::factory(100)->create();
 =======
@@ -163,6 +167,8 @@ class DatabaseSeeder extends Seeder
             '66160370@go.buu.ac.th',
         ];
 
+=======
+>>>>>>> origin/pangCode
         foreach ($emails as $email) {
             $user = User::where('email', '=', $email)->first();
             if (!$user) {
@@ -177,7 +183,10 @@ class DatabaseSeeder extends Seeder
         }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/pangCode
         // Point_of_interest::factory(100)->create();
 >>>>>>> origin/pangCode
         Branch_store::factory(100)->create();
@@ -191,10 +200,5 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        // User::factory(10)->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }
