@@ -13,7 +13,7 @@
 
     <!-- กล่อง Login -->
     <div class="w-[360px] max-w-sm bg-white/80 backdrop-lg p-6 rounded-xl shadow-2xl">
-        <h2 class="text-xl font-bold text-gray-100 text-center mb-3">Loginldkf;jksd</h2>
+        <h2 class="text-xl font-bold text-gray-100 text-center mb-3">Loginjjjjjj</h2>
 
         <!-- ฟอร์ม -->
         <form class="mt-2">

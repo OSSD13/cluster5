@@ -61,3 +61,7 @@ Route::middleware([CheckLogin::class])->group(function () {
 
     
 });
+
+Route::get('/test', function () {
+    return view('test');
+});
