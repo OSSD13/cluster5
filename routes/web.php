@@ -48,10 +48,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/moo
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
@@ -61,29 +58,18 @@ Route::middleware([CheckLogin::class])->group(function () {
     // Google Maps URL conversion routes
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
-<<<<<<< HEAD
-<<<<<<< HEAD
-});
-<<<<<<< HEAD
 
-Route::get('/login', [LoginController::class, 'view']);
-Route::post('/login', [LoginController::class, 'login']);
-// Database test routes
-Route::get('/register', [DatabaseTestController::class, 'createUser']);
-Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
-Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
-Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
 
-// Google Maps URL conversion routes
-Route::get('/convert-link', [AnotherController::class, 'showForm']);
-Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
-=======
->>>>>>> origin/develop
-=======
 
-    
 });
->>>>>>> origin/pangCode
-=======
+
+Route::get('/jeng', function() {
+
+    return view('ok');
 });
->>>>>>> origin/moo
+
+Route::get('/wacha', function() {
+    return view('test');
+
+});
+

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @extends('layouts.screen')
 
 @section('title', 'Login')
@@ -14,7 +13,7 @@
 
     <!-- กล่อง Login -->
     <div class="w-[360px] max-w-sm bg-white/80 backdrop-lg p-6 rounded-xl shadow-2xl">
-        <h2 class="text-xl font-bold text-gray-900 text-center mb-3">Login</h2>
+        <h2 class="text-xl font-bold text-gray-800 text-center mb-3">Login</h2>
 
         <!-- ฟอร์ม -->
         <form class="mt-2">
@@ -45,7 +44,6 @@
             <a class="flex items-center justify-center w-full p-3 rounded-lg border border-gray-300 shadow-md bg-white 
                 hover:bg-gray-100" href="{{ route('google-auth') }}">
                 <img src="/assets/img/LogoGg.png" class="w-6 h-6 mr-2"> Log in with Google
-=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -230,14 +228,18 @@
             <a class="google-btn" href="{{  route('google-auth') }}">
                 <img src="/assets/img/LogoGg.png" class="google-icon">
                 Login with Google
->>>>>>> origin/moo
             </a>
         </form>
     </div>
 </div>
-<<<<<<< HEAD
-@endsection
-=======
 </body>
 </html>
->>>>>>> origin/moo
+
+            </a>
+        </form>
+    </div>
+</body>
+</html>
+
+</div>
+@endsection

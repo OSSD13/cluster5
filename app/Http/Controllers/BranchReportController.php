@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class BranchReportController extends Controller
 {
+
     function getSubordinate()
     {
         $requestUserId = session()->get('user')->user_id;
@@ -32,7 +32,6 @@ class BranchReportController extends Controller
 
         return response()->json($subordinates);
     }
-
     function getBranchReport(Request $request)
     {
         $userId = $request->query('user_id');
@@ -156,11 +155,9 @@ class BranchReportController extends Controller
             )
             ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
-
-
         // Transform sales data into an associative array by branch ID
         // Transform sales data into an associative array by branch ID
-
+        // Transform sales data into an associative array by branch ID
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -168,8 +165,6 @@ class BranchReportController extends Controller
                 'sales_package_amount' => $sale->total_sales_package_amount
             ];
         }
-
-
         // Attach sales data to branches
         // Attach sales data to branches
         foreach ($branches as $branch) {
@@ -188,5 +183,11 @@ class BranchReportController extends Controller
     function displayTestLogin()
     {
         return view('displayTestLogin');
+        // Attach sales data to branches
+        foreach ($branches as $branch) {
+            $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
+        }
+
+        return response()->json($branches);
     }
 }

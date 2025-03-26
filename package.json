@@ -3,8 +3,46 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        "dev": "vite"
+=======
+        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
+=======
+<<<<<<< HEAD
+        "dev": "vite build --watch"
+>>>>>>> cad366f (S)
+=======
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
+=======
+        "dev": "vite build --watch"
+>>>>>>> c1027ec (S)
+=======
+        "dev": "vite"
+>>>>>>> 9632875 (fix(package): update dev script to use vite for development)
+=======
+        "dev": "nodemon --exec \"npm run build\" --ignore public/"
+>>>>>>> 30d3bf4 (Chg)
+=======
+        "dev": "vite build --watch"
+>>>>>>> c1027ec (S)
+=======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
         "dev": "vite build --watch"
+>>>>>>> 43137b6 (fix(package): update dev script to use vite build with watch mode)
+=======
+        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+        "dev": "vite build --watch"
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
     },
     "devDependencies": {
         "@iconify/json": "^2.2.318",

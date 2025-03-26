@@ -76,13 +76,14 @@
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
-
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
                             let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
 
                             // Calculate max sales amount only for the selected month
+
+                            data.forEach(b => {
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
@@ -91,39 +92,18 @@
                                 }
                             });
 
-<<<<<<< HEAD
-                            // Determine bin size: at least 1000, at most 20 bins
-                            let step = Math.ceil(Math.max(1000, maxRange / 20));
-                            let numBins = Math.ceil(maxRange / step);
-
-                            // Ensure there are at most 20 bins
-                            if (numBins > 20) {
-                                step = Math.ceil(maxRange / 20);
-                                numBins = 20;
-                            }
-
-=======
                             // Define step size dynamically (20 bins)
                             const step = maxRange > 0 ? Math.ceil(maxRange / 20) : 20000;
->>>>>>> origin/moo
                             let chartLabels = [];
                             let chartData = {};
-
                             // Initialize bins to 0
                             for (let i = 0; i <= maxRange; i += step) {
-<<<<<<< HEAD
-                                if (i === 0) {
-                                    chartLabels.push("0");
-                                } else {
-                                    chartLabels.push(`${Math.round(i / 1000)}k`);
-                                }
-=======
                                 chartLabels.push(`${Math.round(i / 1000)}k`);
->>>>>>> origin/moo
                                 chartData[i] = 0;
                             }
-
                             // Fill in the sales data only for the selected month
+
+                            data.forEach(b => {
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
@@ -139,10 +119,6 @@
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/moo
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {
                                 window.branchChart.destroy();
@@ -164,17 +140,15 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-<<<<<<< HEAD
-                                            max: Math.max(...chartValues) + 5
-=======
                                             max: Math.max(...chartValues) + 10
->>>>>>> origin/moo
                                         }
                                     }
                                 }
                             });
 
                             // Summing up monthly sales data
+
+                            data.forEach(b => {
                             data.forEach(b => {
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
@@ -279,12 +253,9 @@
             </div>
         </div>
 
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> origin/moo
         {{-- <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
             <div class="flex flex-row items-baseline">
                 <div class="mr-4">ยอดรวม</div>
@@ -296,11 +267,6 @@
                 บาท
             </div>
         </div> --}}
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/moo
         <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
             <canvas id="branchVSprofit"></canvas>
         </div>
@@ -356,7 +322,7 @@
                 ภูมิภาค
             </div>
         </div>
-
+        <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
         <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
             <thead class="bg-lightblue">
@@ -383,7 +349,7 @@
                 @endforeach
             </tbody>
         </table>
-
+        <table class="w-full border-collapse rounded-lg overflow-hidden">
         <table class="w-full border-collapse rounded-lg overflow-hidden">
             <thead class="bg-blue-500 text-white">
                 <tr>
@@ -404,6 +370,7 @@
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
+        <script>
         <script>
             const branches = [{
                     name: "บางแสน",
@@ -573,6 +540,7 @@
             }
 
             renderTable();
+        </script>
         </script>
 
 
