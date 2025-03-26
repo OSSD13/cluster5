@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Orders;
 use App\Models\Sales;
 use App\Models\Branch_store;
-use App\Models\Point_of_interest;
+use App\Models\Point_of_interests;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -87,6 +87,18 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
 
 
         // Point_of_interest::factory(100)->create();
