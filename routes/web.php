@@ -48,7 +48,10 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/develop
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
@@ -58,8 +61,11 @@ Route::middleware([CheckLogin::class])->group(function () {
     // Google Maps URL conversion routes
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
+<<<<<<< HEAD
 
     
+=======
+>>>>>>> origin/develop
 });
 
 Route::get('/test', function () {
