@@ -28,13 +28,6 @@
     background-position: center;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<h1>hello</h1>
-=======
-    <h1>Information</h1>
-    <p>{{ $value }}</p>
-=======
 .login-box {
     background: rgba(255, 255, 255, 0.7);
     padding: 2rem;
@@ -153,9 +146,6 @@
     margin: 0 auto 10px auto; /* จัดให้อยู่กึ่งกลางแนวนอน */
     display: block; /* ทำให้ margin auto มีผล */
 }
->>>>>>> 81b3fa3 (style(login): เพิ่ม UI login)
-
->>>>>>> d4d74f8 (ทmoo)
 
 </style>
 <body class="flex items-center justify-center min-h-screen" >
@@ -190,8 +180,4 @@
     </div>
 </div>
 </body>
-<<<<<<< HEAD
-</html>
-=======
-</html>
->>>>>>> origin/moo
+

@@ -3,14 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/pangCode
-=======
-
->>>>>>> origin/moo
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -61,13 +54,8 @@ class BranchReportController extends Controller
         $branches_ids = array_map(fn($branch) => $branch->bs_id, $branches);
         /*
             get all branches with $branches_ids
-<<<<<<< HEAD
-            I want
-            bs_id
-=======
             I want 
             bs_id 
->>>>>>> origin/moo
             bs_name
             bs_detail
             bs_address
@@ -115,11 +103,7 @@ class BranchReportController extends Controller
                 created_at
                 updated_at
                 where sales_branch_id is same
-<<<<<<< HEAD
-            ) only where sales_month is the same month as date
-=======
             ) only where sales_month is the same month as date 
->>>>>>> origin/moo
         */
         $branches = DB::table('branch_stores')
             ->whereIn('branch_stores.bs_id', $branches_ids)
@@ -129,37 +113,6 @@ class BranchReportController extends Controller
             ->select(
                 'branch_stores.bs_id',
                 'branch_stores.bs_name',
-<<<<<<< HEAD
-<<<<<<< HEAD
-                'locations.province',
-                'locations.region'
-            );
-
-        $distinctProvinces = [];
-
-        // Determine filtering method.
-        if ($request->has('province')) {
-            $province = $request->query('province');
-            $branchQuery->where('locations.province', '=', $province);
-        } elseif ($request->has('region')) {
-            $region = $request->query('region');
-            $branchQuery->where('locations.region', '=', $region);
-
-            // Fetch distinct provinces in this region
-            $distinctProvinces = DB::table('locations')
-                ->where('region', $region)
-                ->distinct()
-                ->pluck('province');
-        }
-
-        // Execute the branch query.
-        $branches = $branchQuery->get();
-        $branches_ids = $branches->pluck('bs_id')->toArray();
-
-        // Fetch sales data for the past 12 months.
-=======
-=======
->>>>>>> origin/moo
                 'branch_stores.bs_detail',
                 'branch_stores.bs_address',
                 'branch_stores.created_at',
@@ -189,10 +142,6 @@ class BranchReportController extends Controller
             ->get();
 
         // Fetch sales data for the past 12 months
-<<<<<<< HEAD
->>>>>>> origin/pangCode
-=======
->>>>>>> origin/moo
         $salesData = DB::table('sales')
             ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
@@ -208,15 +157,10 @@ class BranchReportController extends Controller
             ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        // Transform sales data into an associative array by branch ID.
-=======
+
         // Transform sales data into an associative array by branch ID
->>>>>>> origin/pangCode
-=======
         // Transform sales data into an associative array by branch ID
->>>>>>> origin/moo
+
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -225,30 +169,13 @@ class BranchReportController extends Controller
             ];
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        // Attach sales data to branches.
-=======
+
         // Attach sales data to branches
->>>>>>> origin/pangCode
-=======
         // Attach sales data to branches
->>>>>>> origin/moo
         foreach ($branches as $branch) {
             $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
         }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return response()->json([
-            'branches' => $branches,
-            'branch_count' => $branches->count(),
-            'distinct_provinces' => $distinctProvinces
-        ]);
-=======
         return response()->json($branches);
->>>>>>> origin/pangCode
-=======
         return response()->json($branches);
     }
 
@@ -261,6 +188,5 @@ class BranchReportController extends Controller
     function displayTestLogin()
     {
         return view('displayTestLogin');
->>>>>>> origin/moo
     }
 }
