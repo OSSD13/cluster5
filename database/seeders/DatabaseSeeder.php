@@ -24,8 +24,7 @@ class DatabaseSeeder extends Seeder
 
         // Then create sales, ensuring they can get assigned managers
         User::factory(100)->create(['role_name' => 'sale']);
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
         $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
         if (!$testUserJeng) {
@@ -48,22 +47,6 @@ class DatabaseSeeder extends Seeder
                 'role_name' => 'sale',
             ]);
         }
-<<<<<<< HEAD
-
-        // create if not exist these mails with password 123456 and role_name = ceo
-        // 66160106@go.buu.ac.th
-        // 66160082@go.buu.ac.th
-        // 66160084@go.buu.ac.th
-        // 66160230@go.buu.ac.th
-        // 66160229@go.buu.ac.th
-        // 66160354@go.buu.ac.th
-        // 66160357@go.buu.ac.th
-        // 66160358@go.buu.ac.th
-        // 66160369@go.buu.ac.th
-        // 66160370@go.buu.ac.th
-
-=======
->>>>>>> origin/pangCode
         $emails = [
             '66160106@go.buu.ac.th',
             '66160082@go.buu.ac.th',
@@ -103,10 +86,6 @@ class DatabaseSeeder extends Seeder
             '66160370@go.buu.ac.th',
         ];
 
-<<<<<<< HEAD
-
-        // Point_of_interest::factory(100)->create();
-=======
         // create ceo user with mail ttawan475@gmail.com password 123456
         User::create([
             'name' => 'tawan',
@@ -117,8 +96,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Point_of_interest::factory(100)->create();
->>>>>>> develop
-=======
 
         $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
         if (!$testUserJeng) {
@@ -167,8 +144,6 @@ class DatabaseSeeder extends Seeder
             '66160370@go.buu.ac.th',
         ];
 
-=======
->>>>>>> origin/pangCode
         foreach ($emails as $email) {
             $user = User::where('email', '=', $email)->first();
             if (!$user) {
@@ -183,12 +158,8 @@ class DatabaseSeeder extends Seeder
         }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/pangCode
         // Point_of_interest::factory(100)->create();
->>>>>>> origin/pangCode
+
         Branch_store::factory(100)->create();
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
