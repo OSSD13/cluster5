@@ -6,8 +6,6 @@ use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
 
-
-
 // Default welcome page
 // Route::get('/', function () {
 //     return view('welcome');
@@ -50,7 +48,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-
     // Database test routes
     // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);

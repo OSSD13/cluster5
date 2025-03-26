@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Orders;
 use App\Models\Sales;
 use App\Models\Branch_store;
-use App\Models\Point_of_interest;
+use App\Models\Point_of_interests;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -85,10 +85,17 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-
-
         // Point_of_interest::factory(100)->create();
-        Branch_store::factory(100)->create();
+        Branch_store::factory(100)->create()->each(function ($branch) {
+            $poi = Point_of_interests::factory()->create();
+            \Log::info('Created Point of Interest', ['poi_id' => $poi]);
+            if ($poi) {
+                $poi_id = $poi->id;
+                $branch->bs_poi_id = $poi_id;
+                $branch->save();
+            }
+        });
+
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
             for ($month = 0; $month < 12; $month++) {
