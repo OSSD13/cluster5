@@ -190,17 +190,16 @@
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) /
-                                lastMonthTotalPackage) * 100 : 0;
+                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 : 0;
                             let salesChange = lastMonthTotalSales > 0 ? ((thisMonthTotalSales - lastMonthTotalSales) /
                                 lastMonthTotalSales) * 100 : 0;
 
-                            document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
-                                .toLocaleString();
+                            document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage.toLocaleString();
                             document.getElementById('thisMonthTotalPackagePercent').textContent = packageChange.toFixed(2);
-                            document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
-                                .toLocaleString();
+                            document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales.toLocaleString();
                             document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
+
+                            console.log(thisMonthTotalPackage, thisMonthTotalPackage.toLocaleString())
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
