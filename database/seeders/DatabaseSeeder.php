@@ -25,6 +25,78 @@ class DatabaseSeeder extends Seeder
         // Then create sales, ensuring they can get assigned managers
         User::factory(100)->create(['role_name' => 'sale']);
 
+
+        $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
+        if (!$testUserJeng) {
+            User::create([
+                'name' => 'tawan',
+                'email' => 'ttawan475@gmail.com',
+                'password' => bcrypt('123456'),
+                'user_status' => 'normal',
+                'role_name' => 'ceo',
+            ]);
+        }
+
+        $testUserJeng = User::where('email', '=', value: 'torlap.ritchai@gmail.com')->first();
+        if (!$testUserJeng) {
+            User::create([
+                'name' => 'jeng',
+                'email' => 'torlap.ritchai@gmail.com',
+                'password' => bcrypt('123456'),
+                'user_status' => 'normal',
+                'role_name' => 'sale',
+            ]);
+        }
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
+
+        foreach ($emails as $email) {
+            $user = User::where('email', '=', $email)->first();
+            if (!$user) {
+                User::create([
+                    'name' => explode('@', $email)[0],
+                    'email' => $email,
+                    'password' => bcrypt('123456'),
+                    'user_status' => 'normal',
+                    'role_name' => 'ceo',
+                ]);
+            }
+        }
+
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
+
+        // create ceo user with mail ttawan475@gmail.com password 123456
+        User::create([
+            'name' => 'tawan',
+            'email' => 'ttawan475@gmail.com',
+            'password' => bcrypt('123456'),
+            'user_status' => 'normal',
+            'role_name' => 'ceo',
+        ]);
+
+        Point_of_interest::factory(100)->create();
+
         $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
         if (!$testUserJeng) {
             User::create([
@@ -85,21 +157,9 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        $emails = [
-            '66160106@go.buu.ac.th',
-            '66160082@go.buu.ac.th',
-            '66160084@go.buu.ac.th',
-            '66160230@go.buu.ac.th',
-            '66160229@go.buu.ac.th',
-            '66160354@go.buu.ac.th',
-            '66160357@go.buu.ac.th',
-            '66160358@go.buu.ac.th',
-            '66160369@go.buu.ac.th',
-            '66160370@go.buu.ac.th',
-        ];
-
 
         // Point_of_interest::factory(100)->create();
+
         Branch_store::factory(100)->create();
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
@@ -111,10 +171,5 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        // User::factory(10)->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

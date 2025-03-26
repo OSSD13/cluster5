@@ -7,16 +7,19 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class BranchReportController extends Controller
+class c extends Controller
 {
-    function getSubordinate()
+    /**
+     * Returns the list of subordinate users.
+     */
+    public function getSubordinate()
     {
         $requestUserId = session()->get('user')->user_id;
-        $user = User::where('user_id', '=', $requestUserId)->first();
+        $user = User::where('user_id', $requestUserId)->first();
         $subordinateIds = $user->getSubordinateIds();
+
         $subordinates = User::whereIn('users.user_id', $subordinateIds)
             ->where('users.user_status', 'normal')
-            // ->where('users.role_name', '!=', 'ceo')
             ->leftJoin('users as managers', 'users.manager', '=', 'managers.user_id')
             ->get([
                 'users.user_id',
@@ -32,12 +35,9 @@ class BranchReportController extends Controller
         return response()->json($subordinates);
     }
 
-        /**
-     * Combines branch report and branch filtering by region or province,
-     * and returns branch details with the sales data for the past 12 months.
-     */
-    public function getBranchReport(Request $request)
+    function getBranchReport(Request $request)
     {
+
         $userId = $request->query('user_id');
         $date = $request->query('date') ? Carbon::parse($request->query('date')) : now();
         $requestUserId = session()->get('user')->user_id;
@@ -102,7 +102,7 @@ class BranchReportController extends Controller
         $branches = $branchQuery->get();
         $branches_ids = $branches->pluck('bs_id')->toArray();
 
-        // Fetch sales data for the past 12 months.
+        // Fetch sales data for the past 12 months
         $salesData = DB::table('sales')
             ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
@@ -118,7 +118,7 @@ class BranchReportController extends Controller
             ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
 
-        // Transform sales data into an associative array by branch ID
+        // Transform sales data into an associative array by branch ID.
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -127,7 +127,7 @@ class BranchReportController extends Controller
             ];
         }
 
-        // Attach sales data to branches
+        // Attach sales data to branches.
         foreach ($branches as $branch) {
             $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
         }
