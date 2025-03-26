@@ -45,38 +45,14 @@
     font-weight: 600;
 }
 
-        <!-- โลโก้ -->
-        <div class="flex flex-col items-center">
-            <img src="/assets/img/LogoMyx.png" class="w-48 mb-3" alt="Logo">
-        </div>
+    <!-- โลโก้ -->
+    <div class="absolute top-10 flex flex-col items-center w-full">
+        <img src="/assets/img/LogoMyx.png" class="w-48 mb-3" alt="Logo">
+    </div>
 
-/* สไตล์ของ Input Field */
-.input-email {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 0.25rem;
-    outline: none;
-    transition: border 0.2s, box-shadow 0.2s;
-}
-.input-password {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 0.25rem;
-    outline: none;
-    transition: border 0.2s, box-shadow 0.2s;
-}
-
-
-.input-field:focus {
-    border-color: #3b82f6; /* blue-400 */
-    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
-}
+    <!-- กล่อง Login -->
+    <div class="w-[360px] max-w-sm bg-white/80 backdrop-lg p-6 rounded-xl shadow-2xl">
+        <h2 class="text-xl font-bold text-gray-100 text-center mb-3">Loginldkf;jksd</h2>
 
 /* Forgot Password Link */
 .forgot-password {
