@@ -49,8 +49,6 @@
     </button>
   </div>
 
-  
-  
   <div class="mt-8 flex">
     <button type="button" class="rounded-full px-4 mr-2 bg-blue-600 text-white p-2 rounded  leading-none flex items-center">
       	New
