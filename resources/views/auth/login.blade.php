@@ -7,13 +7,13 @@
     style="background-image: url('/assets/img/bgLogin.jpg'); background-position: 30% center;">
 
     <!-- โลโก้ -->
-    <div class="absolute top-40 flex flex-col items-center">
+    <div class="absolute top-10 flex flex-col items-center w-full">
         <img src="/assets/img/LogoMyx.png" class="w-48 mb-3" alt="Logo">
     </div>
 
     <!-- กล่อง Login -->
     <div class="w-[360px] max-w-sm bg-white/80 backdrop-lg p-6 rounded-xl shadow-2xl">
-        <h2 class="text-xl font-bold text-gray-800 text-center mb-3">Login</h2>
+        <h2 class="text-xl font-bold text-gray-100 text-center mb-3">Loginldkf;jksd</h2>
 
         <!-- ฟอร์ม -->
         <form class="mt-2">
