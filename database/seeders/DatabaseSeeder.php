@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Models\Orders;
 use App\Models\Sales;
 use App\Models\Branch_store;
-use App\Models\Point_of_interests;
+use App\Models\PointOfInterest;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -97,7 +97,7 @@ class DatabaseSeeder extends Seeder
 
         // Create points of interest
         Log::info('Creating points of interest...');
-        Point_of_interests::factory(100)->create();
+        PointOfInterest::factory(100)->create();
         Log::info('Points of interest created.');
 
         // Assign at least one branch to each sales user
