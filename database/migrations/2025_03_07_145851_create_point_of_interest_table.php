@@ -70,7 +70,7 @@ return new class extends Migration {
             Log::info('Found ' . count($poiData) . ' POIs in file: ' . $file->getFilename());
 
             // Chunk the data into smaller parts
-            $chunks = array_chunk($poiData, 1000);
+            $chunks = array_chunk($poiData, 7000);
             DB::transaction(function () use ($chunks, $poiType) {
                 foreach ($chunks as $chunk) {
                     DB::table('point_of_interests')->insert($chunk);

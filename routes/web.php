@@ -56,26 +56,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
 
-    
+
 });
-
-Route::get('/test', function () {
-    return view('test');
-});
-
-Route::get('/test', function () {
-    return view('test');
-});
-
-
-Route::get('/jeng', function() {
-    return view('ok');
-    return view('/test/ok');
-});
-
-Route::get('/wacha', function() {
-    return view('test');
-});
-
 
 

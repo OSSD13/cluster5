@@ -7,19 +7,16 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class c extends Controller
+class BranchReportController extends Controller
 {
-    /**
-     * Returns the list of subordinate users.
-     */
-    public function getSubordinate()
+    function getSubordinate()
     {
         $requestUserId = session()->get('user')->user_id;
-        $user = User::where('user_id', $requestUserId)->first();
+        $user = User::where('user_id', '=', $requestUserId)->first();
         $subordinateIds = $user->getSubordinateIds();
-
         $subordinates = User::whereIn('users.user_id', $subordinateIds)
             ->where('users.user_status', 'normal')
+            // ->where('users.role_name', '!=', 'ceo')
             ->leftJoin('users as managers', 'users.manager', '=', 'managers.user_id')
             ->get([
                 'users.user_id',
@@ -35,9 +32,12 @@ class c extends Controller
         return response()->json($subordinates);
     }
 
-    function getBranchReport(Request $request)
+        /**
+     * Combines branch report and branch filtering by region or province,
+     * and returns branch details with the sales data for the past 12 months.
+     */
+    public function getBranchReport(Request $request)
     {
-
         $userId = $request->query('user_id');
         $date = $request->query('date') ? Carbon::parse($request->query('date')) : now();
         $requestUserId = session()->get('user')->user_id;
@@ -75,12 +75,6 @@ class c extends Controller
             });
         }
 
-        // Filter by month from Date if provided
-        if ($date) {
-            $branchQuery->whereMonth('branch_stores.created_at', '=', $date->month)
-                ->whereYear('branch_stores.created_at', '=', $date->year);
-        }
-
         $distinctProvinces = [];
 
         // Determine filtering method.
@@ -102,12 +96,12 @@ class c extends Controller
         $branches = $branchQuery->get();
         $branches_ids = $branches->pluck('bs_id')->toArray();
 
-        // Fetch sales data for the past 12 months
+        // Fetch sales data for the past 12 months.
         $salesData = DB::table('sales')
             ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
-                now()->subMonths(11)->startOfMonth()->format('Y-m-d'),
-                now()->endOfMonth()->format('Y-m-d')
+                $date->copy()->subMonths(11)->startOfMonth()->format('Y-m-d'),
+                $date->endOfMonth()->format('Y-m-d')
             ])
             ->select(
                 'sales.sales_branch_id',
@@ -118,7 +112,7 @@ class c extends Controller
             ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
 
-        // Transform sales data into an associative array by branch ID.
+        // Transform sales data into an associative array by branch ID
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -127,7 +121,7 @@ class c extends Controller
             ];
         }
 
-        // Attach sales data to branches.
+        // Attach sales data to branches
         foreach ($branches as $branch) {
             $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
         }
