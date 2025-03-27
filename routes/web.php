@@ -5,12 +5,6 @@ use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
-
-// Default welcome page
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Middleware\CheckLogin;
 
@@ -35,7 +29,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch', function () {
         return view('branch.index');
     });
-    Route::get('/poi/create', function () {
+    Route::get('/pc', function () {
         return view('poi.create');
     });
     Route::get('/poi', function () {
