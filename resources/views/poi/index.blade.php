@@ -40,7 +40,7 @@
     <!-- **************************************************************************** -->
 
 <!-- Pagination Controls -->
-<div class="overflow-x-auto">
+<div class="overflow-visible">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
         <thead class="bg-blue-500 text-white">
             <tr>
@@ -70,7 +70,7 @@
         { id: 8, name: "ปราจีนบุรี", type: "ร้านกาแฟ", province: "ปราจีนบุรี" },
         { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
         { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
-        { id: 10, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
+        { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
     ]; // Your existing data
     let currentPage = 1;
     const rowsPerPage = 5;
