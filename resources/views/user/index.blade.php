@@ -15,7 +15,7 @@
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" placeholder="ค้นหาสมาชิก" class="w-full p-2 border border-gray-300 rounded mb-3">
 
         <!-- Dropdowns -->
         <div class="mb-3">
