@@ -75,12 +75,6 @@ class BranchReportController extends Controller
             });
         }
 
-        // Filter by month from Date if provided
-        if ($date) {
-            $branchQuery->whereMonth('branch_stores.created_at', '=', $date->month)
-                ->whereYear('branch_stores.created_at', '=', $date->year);
-        }
-
         $distinctProvinces = [];
 
         // Determine filtering method.
@@ -106,8 +100,8 @@ class BranchReportController extends Controller
         $salesData = DB::table('sales')
             ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
-                now()->subMonths(11)->startOfMonth()->format('Y-m-d'),
-                now()->endOfMonth()->format('Y-m-d')
+                $date->copy()->subMonths(11)->startOfMonth()->format('Y-m-d'),
+                $date->endOfMonth()->format('Y-m-d')
             ])
             ->select(
                 'sales.sales_branch_id',
