@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Point_of_interests extends Model
+class PointOfInterest extends Model
 {
-    /** @use HasFactory<\Database\Factories\Point_of_interestsFactory> */
+    /** @use HasFactory<\Database\Factories\PointOfInterestFactory> */
     use HasFactory;
 
     /**
