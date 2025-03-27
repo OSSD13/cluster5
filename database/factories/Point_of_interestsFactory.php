@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Point_of_interests>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PointOfInterest>
  */
 class Point_of_interestsFactory extends Factory
 {

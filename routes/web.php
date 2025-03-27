@@ -21,7 +21,7 @@ Route::get('/login', function () {
     return view('auth.login');
 }); // แก้ชื่อ method ให้ตรง (Login → login)
 
-Route::post('/login', action: [LoginController::class, 'login']);
+Route::post('/login',[LoginController::class, 'login']);
 
 
 // testing
@@ -35,9 +35,13 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch', function () {
         return view('branch.index');
     });
+    Route::get('/poi/create', function () {
+        return view('poi.create');
+    });
     Route::get('/poi', function () {
         return view('poi.index');
     });
+    
     Route::get('/user', function () {
         return view('user.index');
     });
