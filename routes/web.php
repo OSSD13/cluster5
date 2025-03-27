@@ -32,11 +32,11 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch', function () {
         return view('branch.index');
     });
-    
+
     Route::get('/poi', function () {
         return view('poi.index');
     });
-    
+
     Route::get('/user', function () {
         return view('user.index');
     });
