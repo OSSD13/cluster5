@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PointOfInterestController;
+use App\Http\Controllers\PointOfInterestTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\AnotherController;
@@ -16,9 +18,7 @@ Route::get('/login', function () {
 }); // แก้ชื่อ method ให้ตรง (Login → login)
 
 Route::post('/login',[LoginController::class, 'login']);
-Route::get('/aa', function () {
-    return view('poi.create');
-});
+
 
 
 // testing
@@ -36,6 +36,13 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/poi', function () {
         return view('poi.index');
     });
+    Route::get('/poi/create', [PointOfInterestController::class, 'create'])->name('poi.create');
+    Route::get('/poi/edit', [PointOfInterestController::class, 'edit'])->name('poi.edit');
+    Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
+    Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
+    Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
+    Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');
+
 
     Route::get('/user', function () {
         return view('user.index');
