@@ -31,10 +31,10 @@
             @php
                 $navItems = [
                     ['name' => 'หน้าหลัก', 'path' => '/', 'icon' => 'icon-[material-symbols--home]'],
-                    ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]'],
-                    ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]'],
-                    ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]'],
-                    ['name' => 'จัดการสมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]'],
+                    ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]', 'startsWith' => true],
+                    ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]', 'startsWith' => true],
+                    ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]', 'startsWith' => true],
+                    ['name' => 'จัดการสมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]', 'startsWith' => true],
                 ];
             @endphp
 
@@ -42,7 +42,7 @@
                 @php
                     $isActive =
                         ($item['path'] === '/' && request()->path() === '/') ||
-                        request()->is(ltrim($item['path'], '/'));
+                        (isset($item['startsWith']) && $item['startsWith'] ? str_starts_with(request()->path(), ltrim($item['path'], '/')) : request()->is(ltrim($item['path'], '/')));
                 @endphp
                 <a href="{{ $item['path'] }}"
                     class="flex flex-col items-center text-center w-1/5 {{ $isActive ? 'text-black' : 'text-gray-500' }}">
