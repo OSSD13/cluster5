@@ -43,7 +43,7 @@
     </select>
 
     <div class="flex justify-between">
-        <a href="{{ route('poi.index') }}">
+        <a href="{{ route('poi.type.index') }}">
                 <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
         </a>
         <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
@@ -62,7 +62,7 @@ document.getElementById("saveButton").addEventListener("click", function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // เปลี่ยนหน้าไปที่ poi.index
-            window.location.href = "{{ route('poi.index') }}";
+            window.location.href = "{{ route('poi.type.index') }}";
         }
     });
 });
