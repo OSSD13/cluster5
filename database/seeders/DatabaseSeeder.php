@@ -105,8 +105,10 @@ class DatabaseSeeder extends Seeder
         $salesUsers = User::where('role_name', 'sale')->get();
 
         foreach ($salesUsers as $user) {
+            $poiWithLocation = PointOfInterest::whereNotNull('poi_location_id')->inRandomOrder()->first();
             Branch_store::factory()->create([
                 'bs_manager' => $user->user_id,
+                'bs_poi_id' => PointOfInterest::inRandomOrder()->first()->poi_id,
             ]);
             Log::info("Branch assigned to sales user with ID: {$user->user_id}");
         }
