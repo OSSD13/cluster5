@@ -19,6 +19,7 @@
                     console.log('Selected month:', selectedMonth);
                     // Add your logic here to handle the month change event
                     getBranchReport();
+                    buildRegionTable();
                 }
             </script>
 
@@ -39,6 +40,7 @@
                         console.log('Selected subordinate:', selectedValue);
                         // Add your logic here to handle the change event
                         getBranchReport();
+                        buildRegionTable();
                     }
                 </script>
 
@@ -89,6 +91,7 @@
                             branches.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
+
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
                                     maxRange = Math.max(maxRange, salesAmount);
                                 }
@@ -119,6 +122,7 @@
 
                             // Fill in the sales data only for the selected month
                             branches.forEach(b => {
+                                console.log(1, b)
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -201,8 +205,6 @@
                             document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
                                 .toLocaleString();
                             document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
-
-                            console.log(thisMonthTotalPackage, thisMonthTotalPackage.toLocaleString())
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
@@ -413,11 +415,6 @@
                     arrow.classList.add('icon-[line-md--arrow-down]');
                 }
             }
-
-            // Example usage: Call this function with data from your API
-            document.addEventListener('DOMContentLoaded', function() {
-
-            });
         </script>
 
         <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 ">
@@ -502,10 +499,20 @@
                     'SOUTH': 'ภาคใต้',
                 };
 
-                fetch('/api/getRegionBranch')
+                const date = document.getElementById('timePeriod') ?
+                    document.getElementById('timePeriod').value :
+                    new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
+                const user_id = document.getElementById('subordinateSelect') ?
+                    document.getElementById('subordinateSelect').value :
+                    {{ session()->get('user')->user_id }}
+                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                        date,
+                        user_id
+                    }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Region Branch Data:', data);
+                        clearTableBody();
                         const regionTableBody = document.getElementById('regionTableBody');
                         regionTableBody.innerHTML = ''; // Clear existing data
                         data.branch_count_by_region.forEach((region, index) => {
@@ -577,10 +584,21 @@
                 //         }
                 //     ]
                 // }
-                fetch(`/api/getRegionBranch?region=${region}`)
+                const date = document.getElementById('timePeriod') ?
+                    document.getElementById('timePeriod').value :
+                    new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
+                const user_id = document.getElementById('subordinateSelect') ?
+                    document.getElementById('subordinateSelect').value :
+                    {{ session()->get('user')->user_id }}
+                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                        region,
+                        date,
+                        user_id
+                    }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Province Branch Data:', data);
+                        clearTableBody();
                         const provinceTableBody = document.getElementById('regionTableBody');
                         provinceTableBody.innerHTML = ''; // Clear existing data
                         data.branch_count_by_province.forEach((province, index) => {
@@ -633,25 +651,37 @@
                 //     "branch_count": 3
                 // }
 
-                fetch(`/api/getRegionBranch?region=${region}&province=${province}`)
+                const date = document.getElementById('timePeriod') ?
+                    document.getElementById('timePeriod').value :
+                    new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
+                const user_id = document.getElementById('subordinateSelect') ?
+                    document.getElementById('subordinateSelect').value :
+                    {{ session()->get('user')->user_id }}
+                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                        region,
+                        province,
+                        date,
+                        user_id
+                    }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
-                        const branchTableBody = document.getElementById('branchTable');
-                        branchTableBody.innerHTML = ''; // Clear existing data
+                        clearTableBody();
+                        const tableBody = document.getElementById('tableBody');
+                        tableBody.innerHTML = ''; // Clear existing data
                         data.branches.forEach((branch, index) => {
                             let row = `<tr class="hover:bg-gray-100">
-                                <td class="py-3 px-4">${branch.branchId}</td>
-                                <td class="py-3 px-4">${branch.branchName}</td>
-                                <td class="py-3 px-4">${branch.branchProvince}</td>
-                                <td class="py-3 px-4">${branch.branchSaleChange}</td>
-                                <td class="py-3 px-4">
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchProvince}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">
                                     <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                         ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
                                     </span>
                                 </td>
                             </tr>`;
-                            branchTableBody.innerHTML += row;
+                            tableBody.innerHTML += row;
                         });
                         hideRegionTable();
                         showBackButton();
@@ -673,14 +703,19 @@
                 backButton.classList.add('hidden');
             }
 
-            function hideRegionTable(){
+            function hideRegionTable() {
                 const regionTable = document.getElementById('regionTable');
                 regionTable.classList.add('hidden');
             }
 
-            function showRegionTable(){
+            function showRegionTable() {
                 const regionTable = document.getElementById('regionTable');
                 regionTable.classList.remove('hidden');
+            }
+
+            function clearTableBody() {
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = ''; // Clear existing data
             }
 
             function setBackButtonOnClick(func) {
@@ -694,114 +729,6 @@
             document.addEventListener('DOMContentLoaded', function() {
                 buildRegionTable();
             });
-        </script>
-
-        <script>
-            function getReport(region, province) {
-                const userId = document.getElementById('subordinateSelect') ?
-                    document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
-                const date = document.getElementById('timePeriod') ?
-                    document.getElementById('timePeriod').value :
-                    new Date().toISOString().slice(0, 7);
-
-                fetch(
-                        `/api/getBranchReport?user_id=${userId}&date=${date}${region ? `&region=${region}` : ''}${province ? `&province=${province}` : ''}`
-                    )
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Filtered Branch Report:', data);
-
-
-                        if (data.distinct_provinces) {
-                            const tableBody = document.getElementById('regionTableBody');
-                            tableBody.innerHTML = ''; // Clear existing data
-                            data.distinct_provinces.forEach((province, index) => {
-                                let row = `<tr class="cursor-pointer" onclick="getReport('${region}', '${province}')">
-                                    <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
-                                    <td class="px-6 py-2 whitespace-nowrap">${province}</td>
-                                    <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">></td>
-                                </tr>`;
-                                tableBody.innerHTML += row;
-                            });
-                        }
-
-                        // update branchTable
-                        const branchTable = document.getElementById('branchTable');
-                        branchTable.innerHTML = '';
-                        data.branches.forEach((branch, index) => {
-                            // check if branch.monthly_sale 2025-03 #
-                            let thisMonthSale = branch.monthly_sales[date];
-                            let salesAdded = thisMonthSale ? 'เพิ่มแล้ว' : 'ยังไม่เพิ่ม';
-                            let salesPrice = thisMonthSale ? thisMonthSale.sales_amount : '';
-                            let row = `<tr class="hover:bg-gray-100">
-                                <td class="py-3 px-4">${branch.bs_id}</td>
-                                <td class="py-3 px-4">${branch.bs_name}</td>
-                                <td class="py-3 px-4">${branch.province}</td>
-                                <td class="py-3 px-4">${salesPrice}</td>
-                                <td class="py-3 px-4">
-                                    <span class="px-3 py-1 text-white rounded-full ${salesAdded === "เพิ่มแล้ว" ? "bg-green-500" : "bg-red-500"}">
-                                        ${salesAdded}
-                                    </span>
-                                </td>
-                            </tr>`;
-                            branchTable.innerHTML += row;
-                        });
-
-                        // update pagination
-                        const pagination = document.getElementById('pagination');
-
-                        function renderPagination() {
-                            const pagination = document.getElementById("pagination");
-                            pagination.innerHTML = "";
-                            const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-                            // Previous button
-                            const prevBtn = document.createElement("button");
-                            prevBtn.innerText = "Previous";
-                            prevBtn.className =
-                                `px-3 py-1 ${currentPage === 1 ? "bg-gray-300" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
-                            prevBtn.disabled = currentPage === 1;
-                            prevBtn.onclick = () => goToPage(currentPage - 1);
-                            pagination.appendChild(prevBtn);
-
-                            // Page buttons
-                            for (let i = 1; i <= totalPages; i++) {
-                                const btn = createPageButton(i);
-                                pagination.appendChild(btn);
-                            }
-
-                            // Next button
-                            const nextBtn = document.createElement("button");
-                            nextBtn.innerText = "Next";
-                            nextBtn.className =
-                                `px-3 py-1 ${currentPage === totalPages ? "bg-gray-300" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
-                            nextBtn.disabled = currentPage === totalPages;
-                            nextBtn.onclick = () => goToPage(currentPage + 1);
-                            pagination.appendChild(nextBtn);
-                        }
-
-                        function createPageButton(pageNumber) {
-                            const btn = document.createElement("button");
-                            btn.innerText = pageNumber;
-                            btn.className =
-                                `px-3 py-1 ${pageNumber === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"} rounded hover:bg-gray-400`;
-                            btn.onclick = () => goToPage(pageNumber);
-                            return btn;
-                        }
-
-                        function goToPage(page) {
-                            currentPage = page;
-                            renderTable();
-                        }
-
-
-
-                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${data.branch_count} สาขา`;
-
-                    })
-                    .catch(error => console.error('Error fetching region report:', error));
-            }
         </script>
 
         <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
@@ -818,7 +745,15 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
+            <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                <tr>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">1</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">สาขา A</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">กรุงเทพมหานคร</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">100,000 บาท</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">เพิ่มแล้ว</td>
+                </tr>
+            </tbody>
         </table>
 
         <!-- Pagination Controls -->
