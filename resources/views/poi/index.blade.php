@@ -8,10 +8,10 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-lg font-bold">POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-700">POI จัดการสถานที่ที่สนใจ</h2>
 
             <a href="{{ route('poi.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
                     สร้าง POI
                 </button>
             </a>
@@ -34,11 +34,26 @@
                 <option>จังหวัด</option>
             </select>
         </div>
-
+        <table border="1">
+    <tr>
+        <th>POI ID</th>
+        <th>POI Name</th>
+        <th>POI Type</th>
+        <th>Address</th>
+    </tr>
+    @foreach ($pois as $poi)
+        <tr>
+            <td>{{ $poi->poi_id }}</td>
+            <td>{{ $poi->poi_name }}</td>
+            <td>{{ $poi->poi_type }}</td>
+            <td>{{ $poi->address }}</td>
+        </tr>
+    @endforeach
+</table>
         <!-- Result Count -->
         <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
         <a href="{{ route('poi.type.index') }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
                 ไปหน้า POI type
             </button>
         </a>
@@ -54,10 +69,8 @@
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('type')">ประเภท ⬍
-                    </th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('province')">จังหวัด
-                        ⬍</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
                     <th class="py-3 px-1 w-7 text-center"></th>
                 </tr>
             </thead>
@@ -83,7 +96,7 @@
             { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
         ]; // Your existing data
         let currentPage = 1;
-        const rowsPerPage = 5;
+        const rowsPerPage = 25;
         let currentSort = { column: null, ascending: true };
 
         function renderTable() {
@@ -92,8 +105,9 @@
 
             const start = (currentPage - 1) * rowsPerPage;
             const paginatedData = branches.slice(start, start + rowsPerPage);
+            
 
-            paginatedData.forEach((branch) => {
+            paginatedData.forEach(($pois) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
                 <td class="py-3 px-4 w-16">${branch.id}</td>
@@ -164,16 +178,6 @@
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
 
-        function sortTable(column) {
-            if (currentSort.column === column) {
-                currentSort.ascending = !currentSort.ascending;
-            } else {
-                currentSort.column = column;
-                currentSort.ascending = true;
-            }
-            branches.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-            renderTable();
-        }
 
         function viewDetail(id) {
             const branch = branches.find(item => item.id === id);

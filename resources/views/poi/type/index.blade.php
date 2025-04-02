@@ -8,9 +8,9 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-lg font-bold">POIT จัดการประเภทสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-700">POIT จัดการประเภทสถานที่ที่สนใจ</h2>
             <a href="{{ route('poi.type.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
                     สร้าง POI
                 </button>
             </a>
@@ -48,10 +48,8 @@
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('type')">ประเภท ⬍
-                    </th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('province')">จังหวัด
-                        ⬍</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
                     <th class="py-3 px-1 w-7 text-center font-bold"></th>
                 </tr>
             </thead>
@@ -156,17 +154,6 @@
         document.addEventListener("click", () => {
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
-
-        function sortTable(column) {
-            if (currentSort.column === column) {
-                currentSort.ascending = !currentSort.ascending;
-            } else {
-                currentSort.column = column;
-                currentSort.ascending = true;
-            }
-            branches.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-            renderTable();
-        }
 
         function viewDetail(id) {
             const branch = branches.find(item => item.id === id);
