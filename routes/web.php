@@ -55,6 +55,13 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
+
+    // /api/getRegionBranch
+    Route::get('/api/getRegionBranch', [BranchReportController::class, 'getRegionBranch']);
+
+
+
+
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
     Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
     Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);

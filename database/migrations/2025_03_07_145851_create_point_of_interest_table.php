@@ -47,6 +47,7 @@ return new class extends Migration {
             })->first());
         Log::info('GeoJSON files to be processed: ' . $geojsonFiles->implode(', '));
         Log::info('Processing each geojson file');
+
         foreach ($geojsonFiles as $file) {
             Log::info('Reading file: ' . $file->getFilename());
             $data = json_decode(File::get($file), true);
