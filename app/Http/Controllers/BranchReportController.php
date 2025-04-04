@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class BranchReportController extends Controller
 {
-    function getSubordinate()
+       function getSubordinate()
     {
         $requestUserId = session()->get('user')->user_id;
         $user = User::where('user_id', '=', $requestUserId)->first();

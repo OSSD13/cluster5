@@ -8,8 +8,9 @@ use App\Models\PointOfInterest;  // ใช้ชื่อ Model ที่ตร�
 class PointOfInterestController extends Controller
 {
     //
-    public function index(){
-        // $pointOfInterests = PointOfInterest::all();
+    public function index()
+    {
+        //$pois = PointOfInterest::all(); // Fetch POIs from the database
         return view('poi.index');
     }
     // public function store(Request $request){
@@ -21,10 +22,12 @@ class PointOfInterestController extends Controller
     //     $pointOfInterest->save();
     //     return redirect()->route('poi.index');
     // }
-    public function create(){
+    public function create()
+    {
         return view('poi.create');
     }
-    public function edit(){
+    public function edit()
+    {
         // $pointOfInterest = PointOfInterest::find($id);
         return view('poi.edit');
     }

@@ -1,8 +1,14 @@
 @extends('layouts.main')
 
-@section('title', 'Point of Interest')
+@section('title', 'Branch')
 
 @section('content')
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-gray-700">แก้ไขสาขา</h2>
+        </div>
+    </div>
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
 
@@ -43,7 +49,7 @@
     </select>
 
     <div class="flex justify-between">
-        <a href="{{ route('poi.index') }}">
+        <a href="{{ route('branch.index') }}">
                 <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
         </a>
         <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
@@ -55,7 +61,7 @@
 document.getElementById("saveButton").addEventListener("click", function() {
     // แสดง SweetAlert
     Swal.fire({
-        title: "เพิ่มสำเร็จ",
+        title: "แก้ไขสำเร็จ",
         icon: "success",
         showConfirmButton: true,
         confirmButtonColor: "#1c7d32",
@@ -63,7 +69,7 @@ document.getElementById("saveButton").addEventListener("click", function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // เปลี่ยนหน้าไปที่ poi.index
-            window.location.href = "{{ route('poi.index') }}";
+            window.location.href = "{{ route('branch.index') }}";
         }
     });
 });
