@@ -59,7 +59,8 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-
+    @endsection
+    @section('script')
     <script>
         let branches = [
             { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },

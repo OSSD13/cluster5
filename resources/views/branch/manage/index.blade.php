@@ -1,66 +1,58 @@
 @extends('layouts.main')
 
-@section('title', 'Point of Interest')
+@section('title', 'Branch')
 
 @section('content')
-    <!-- <form method="POST" action="{{ route('logout') }}">
-                            @csrf -->
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-700">POI จัดการสถานที่ที่สนใจ</h2>
-
-            <a href="{{ route('poi.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
-                    สร้าง POI
-                </button>
-            </a>
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-gray-700">จัดการสาขา - sdasd</h2>
         </div>
-
-        <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
-
-        <!-- Dropdowns -->
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">ประเภท</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>ประเภทสถานที่</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">จังหวัด</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>จังหวัด</option>
-            </select>
-        </div>
-        <table border="1">
-            <tr>
-                <th>POI ID</th>
-                <th>POI Name</th>
-                <th>POI Type</th>
-                <th>Address</th>
-            </tr>
-            @foreach ($pois as $poi)
-                <tr>
-                    <td>{{ $poi->poi_id }}</td>
-                    <td>{{ $poi->poi_name }}</td>
-                    <td>{{ $poi->poi_type }}</td>
-                    <td>{{ $poi->address }}</td>
-                </tr>
-            @endforeach
-        </table>
-        <!-- Result Count -->
-        <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
-        <a href="{{ route('poi.type.index') }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
-                ไปหน้า POI type
-            </button>
-        </a>
     </div>
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+        <div class="flex flex-col space-y-2 text-left">
+            <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+                value="${branch.name}" readonly>
 
+            <label class="font-medium text-gray-700 text-sm">ประเภท</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+                value="${branch.type}" readonly>
 
-    <!-- **************************************************************************** -->
+            <label class="font-medium text-gray-700 text-sm">จังหวัด</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+                value="${branch.province}" readonly>
+
+            <label class="font-medium text-gray-700 text-sm">วันที่เพิ่ม</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+                value="17 ก.ย. 2568" readonly>
+
+            <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+                value="jeng@gmail.com" readonly>
+        </div>
+    </div>
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+        <div class="flex flex-col space-y-2 text-left max-w-xs">
+            <label class="font-medium text-gray-700 text-sm">เดือน</label>
+            <select class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+                <option>กุมภาพันธ์ - 2568</option>
+            </select>
+
+            <label class="font-medium text-gray-700 text-sm">จำนวนกล่อง</label>
+            <input type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+
+            <label class="font-medium text-gray-700 text-sm">ยอดเงิน</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+
+            <button
+                class="w-full h-10 bg-blue-600 text-white font-medium rounded-md shadow-md hover:bg-blue-700 transition">
+                เพิ่มรายการ
+            </button>
+
+            <p class="text-sm text-gray-600 mt-2">ผลลัพธ์ 302 รายการ</p>
+        </div>
+    </div>
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
@@ -68,9 +60,9 @@
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">เพิ่มโดย</th>
                     <th class="py-3 px-1 w-7 text-center"></th>
                 </tr>
             </thead>
@@ -80,9 +72,12 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
+
 @endsection
+
+
 @section('script')
-    <script>
+<script>
         let branches = [
             { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
             { id: 2, name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี" },
@@ -108,7 +103,7 @@
             const paginatedData = branches.slice(start, start + rowsPerPage);
 
 
-            paginatedData.forEach(($pois) => {
+            paginatedData.forEach((branch) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
                         <td class="py-3 px-4 w-16">${branch.id}</td>
@@ -120,7 +115,7 @@
                             <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
                                 <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
                                 <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
-                                onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                                onclick="edit(${branch.id})">แก้ไข</button>
                                 <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
                             </div>
                         </td>
@@ -210,6 +205,57 @@
                 confirmButtonColor: "#2D8C42",
             });
         }
+        function edit(id) {
+            const branch = branches.find(item => item.id === id);
+
+            Swal.fire({
+                html: `
+                       <div class="flex flex-col items-center space-y-4 p-6 max-w-xs mx-auto bg-white shadow-lg rounded-lg">
+    <!-- ไอคอนแก้ไข -->
+    <div class="w-16 h-16 bg-black flex items-center justify-center rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16.713 2.299a2.5 2.5 0 1 1 3.535 3.535L6.5 19.583l-3.914.438a.5.5 0 0 1-.548-.548l.438-3.914L16.713 2.299zM15 5l4 4m-1 12H4a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z"/>
+        </svg>
+    </div>
+
+    <!-- หัวข้อ -->
+    <h2 class="text-xl font-bold text-gray-900">แก้ไขยอด</h2>
+
+    <!-- ฟอร์ม -->
+    <div class="w-full space-y-3">
+        <label class="block text-sm font-medium text-gray-700">เดือน</label>
+        <select class="w-full h-12 text-sm px-4 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500">
+            <option>กุมภาพันธ์ - 2568</option>
+        </select>
+
+        <label class="block text-sm font-medium text-gray-700">จำนวน</label>
+        <input type="number" class="w-full h-12 text-sm px-4 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" value="482">
+
+        <label class="block text-sm font-medium text-gray-700">ยอดเงิน</label>
+        <input type="text" class="w-full h-12 text-sm px-4 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" value="234,454">
+    </div>
+
+    <!-- ปุ่ม -->
+    <div class="flex space-x-4 w-full mt-4">
+        <button class="w-1/2 h-12 bg-gray-500 text-white font-medium rounded-md shadow-md hover:bg-gray-600 transition">
+            ยกเลิก
+        </button>
+        <button class="w-1/2 h-12 bg-green-600 text-white font-medium rounded-md shadow-md hover:bg-green-700 transition">
+            ยืนยัน
+        </button>
+    </div>
+</div>
+
+
+
+                        `,
+                customClass: {
+                    popup: 'custom-popup'
+                },
+                confirmButtonText: "ยืนยัน",
+                confirmButtonColor: "#2D8C42",
+            });
+        }
 
         function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
         function deleteBranch(id) {
@@ -245,11 +291,4 @@
         renderTable();
 
     </script>
-
-
-
-
-    <!-- **************************************************************************** -->
-
-    <!-- </form> -->
 @endsection
