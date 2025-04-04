@@ -4,67 +4,69 @@
 
 @section('content')
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">POI เพิ่มสถานประเภที่</h2>
 
-    <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
+    <!-- ประเภทสถานที่ที่สนใจ -->
+    <label class="block text-sm text-gray-600">ประเภทสถานที่ที่สนใจ</label>
+    <input type="text" id="poiType" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ประเภทสถานที่">
 
-    <label class="block text-sm text-gray-600">ละติจูด</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด">
+    <!-- ชื่อสถานที่ที่สนใจ -->
+    <label class="block text-sm text-gray-600">ชื่อสถานที่ที่สนใจ</label>
+    <input type="text" id="poiName" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อสถานที่">
 
-    <label class="block text-sm text-gray-600">ลองจิจูด</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด">
-
-    <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
-        <img src="your-map-image-url.png" alt="Map" class="w-full h-full object-cover rounded-lg">
+    <!-- Icon -->
+    <label class="block text-sm text-gray-600">Icon</label>
+    <div class="relative mb-3">
+        <input type="text" readonly id="iconInput" class="w-full p-2 border border-gray-300 rounded-lg" placeholder="เลือกอีโมจิ">
+        <button type="button" id="emojiButton" class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer bg-primary-dark hover:bg-primary-light text-white rounded-r-lg">😀</button>
+    </div>
+    <div id="emojiPickerContainer" class="hidden">
+        <emoji-picker class="w-full light"></emoji-picker>
     </div>
 
-    <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์">
+    <!-- สี -->
+    <label class="block text-sm text-gray-600">สี</label>
+    <input type="text" id="colorInput" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="สี">
 
-    <label class="block text-sm text-gray-600">จังหวัด</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
+    <!-- รายละเอียดสถานที่ที่สนใจ -->
+    <label class="block text-sm text-gray-600">รายละเอียดสถานที่ที่สนใจ</label>
+    <input type="text" id="poiDetails" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รายละเอียด">
 
-    <label class="block text-sm text-gray-600">อำเภอ</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
-
-    <label class="block text-sm text-gray-600">ตำบล</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
-
-    <label class="block text-sm text-gray-600">ที่อยู่</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่">
-
-    <label class="block text-sm text-gray-600">ชื่อ</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ">
-
-    <label class="block text-sm text-gray-600">ประเภท</label>
-    <select class="w-full p-2 border border-gray-300 rounded-lg mb-3">
-        <option>เลือกประเภทสถานที่</option>
-    </select>
-
+    <!-- ปุ่มบันทึกและยกเลิก -->
     <div class="flex justify-between">
         <a href="{{ route('poi.type.index') }}">
-                <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
+            <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
         </a>
         <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
     </div>
 </div>
+@endsection
 
+
+@section('script')
 <script>
-document.getElementById("saveButton").addEventListener("click", function() {
-    // แสดง SweetAlert
-    Swal.fire({
-        title: "เพิ่มสำเร็จ",
-        icon: "success",
-        showConfirmButton: true,
-        confirmButtonColor: "#1c7d32",
-        confirmButtonText: "ยืนยัน"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // เปลี่ยนหน้าไปที่ poi.index
-            window.location.href = "{{ route('poi.type.index') }}";
-        }
+  document.addEventListener('DOMContentLoaded', () => {
+        const emojiButton = document.getElementById('emojiButton');
+        const emojiPickerContainer = document.getElementById('emojiPickerContainer');
+        const iconInput = document.getElementById('iconInput');
+
+        // แสดงหรือซ่อน Emoji Picker เมื่อคลิกที่ปุ่ม
+        emojiButton.addEventListener('click', () => {
+            emojiPickerContainer.classList.toggle('hidden');
+        });
+
+        // แทรกอีโมจิที่เลือกลงในช่องป้อนข้อมูล
+        emojiPickerContainer.querySelector('emoji-picker').addEventListener('emoji-click', event => {
+            iconInput.value = event.detail.unicode;
+            emojiPickerContainer.classList.add('hidden');
+        });
+
+        // ซ่อน Emoji Picker เมื่อคลิกภายนอก
+        document.addEventListener('click', (event) => {
+            if (!emojiPickerContainer.contains(event.target) && event.target !== emojiButton) {
+                emojiPickerContainer.classList.add('hidden');
+            }
+        });
     });
-});
 </script>
 @endsection
