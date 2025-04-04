@@ -9,12 +9,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-bold">POI จัดการสถานที่ที่สนใจ</h2>
-            <a href="{{ route('poi.type.index') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    ไปหน้า POI type
-                </button>
-            </a>
-            <a href="{{ route('poi.create') }}">
+            <a href="{{ route('poi.type.create') }}">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     สร้าง POI
                 </button>
@@ -104,7 +99,7 @@
                 <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
                     <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
                     <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
-                    onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                    onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
                     <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
                 </div>
             </td>

@@ -54,11 +54,17 @@
 >>>>>>> origin/develop
             </div>
 
-            <div class="flex items-center my-4">
-                <hr class="flex-grow border-gray-400">
-                <span class="px-2 text-gray-600">OR</span>
-                <hr class="flex-grow border-gray-400">
-            </div>
+                @if (session()->has('error'))
+                    <div class="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                        {{ session()->get('error') }}
+                    </div>
+                @endif
+
+                <div class="flex items-center my-5">
+                    <hr class="flex-grow border-gray-400">
+                    <span class="px-3 text-gray-600 text-sm">OR</span>
+                    <hr class="flex-grow border-gray-400">
+                </div>
 
 <<<<<<< HEAD
             <a class="flex items-center justify-center w-full p-2 rounded-md shadow-sm bg-white hover:bg-gray-100" href="{{ route('google-auth') }}">
