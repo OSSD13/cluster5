@@ -46,7 +46,20 @@ class DatabaseSeeder extends Seeder
                 'role_name' => 'sale',
             ]);
         }
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
 
+<<<<<<< HEAD
         // create if not exist these mails with password 123456 and role_name = ceo
         // 66160106@go.buu.ac.th
         // 66160082@go.buu.ac.th
@@ -60,6 +73,20 @@ class DatabaseSeeder extends Seeder
         // 66160370@go.buu.ac.th
 <<<<<<< HEAD
 =======
+=======
+        foreach ($emails as $email) {
+            $user = User::where('email', '=', $email)->first();
+            if (!$user) {
+                User::create([
+                    'name' => explode('@', $email)[0],
+                    'email' => $email,
+                    'password' => bcrypt('123456'),
+                    'user_status' => 'normal',
+                    'role_name' => 'ceo',
+                ]);
+            }
+        }
+>>>>>>> refs/remotes/origin/pangCode
 
         $emails = [
             '66160106@go.buu.ac.th',
@@ -88,6 +115,7 @@ class DatabaseSeeder extends Seeder
         }
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
 
+<<<<<<< HEAD
         $emails = [
             '66160106@go.buu.ac.th',
             '66160082@go.buu.ac.th',
@@ -115,6 +143,8 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+=======
+>>>>>>> refs/remotes/origin/pangCode
         // Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create()->each(function ($branch) {
             $poi = Point_of_interests::factory()->create();
@@ -125,8 +155,11 @@ class DatabaseSeeder extends Seeder
                 $branch->save();
             }
         });
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/pangCode
 
         // Point_of_interest::factory(100)->create();
         Branch_store::factory(100)->create();
@@ -141,10 +174,5 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-
-        // User::factory(10)->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

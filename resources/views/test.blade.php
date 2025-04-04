@@ -1,16 +1,20 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Hilo
 =======
 =======
 >>>>>>> 91d4531 (Add new component layout and route for test view)
 =======
 >>>>>>> d77ac94 (Add new component layout and route for test view)
+=======
+>>>>>>> refs/remotes/origin/pangCode
 <select style="width: 200px; height: 40px;">
   <option>Option 1</option>
   <option>Option 2</option>
   <option>Option 3</option>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 </select>
@@ -21,3 +25,6 @@ Hilo
 =======
 </select>
 >>>>>>> d77ac94 (Add new component layout and route for test view)
+=======
+</select>
+>>>>>>> refs/remotes/origin/pangCode

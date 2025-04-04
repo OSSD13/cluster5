@@ -11,6 +11,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
         "dev": "vite"
 =======
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
@@ -21,14 +24,20 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
         "dev": "nodemon --exec \"npm run build\" --ignore public/"
 >>>>>>> 30d3bf4 (Chg)
 =======
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 3944a9c (S)
 =======
 >>>>>>> cad366f (S)
+=======
+>>>>>>> refs/remotes/origin/pangCode
         "dev": "vite build --watch"
 >>>>>>> cad366f (S)
 =======
@@ -37,6 +46,7 @@
 =======
         "dev": "vite build --watch"
 >>>>>>> c1027ec (S)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -86,6 +96,8 @@
 =======
 >>>>>>> cad366f (S)
 =======
+>>>>>>> refs/remotes/origin/pangCode
+=======
         "dev": "vite"
 >>>>>>> 9632875 (fix(package): update dev script to use vite for development)
 =======
@@ -98,6 +110,13 @@
         "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
         "dev": "vite build --watch"
 >>>>>>> 43137b6 (fix(package): update dev script to use vite build with watch mode)
+<<<<<<< HEAD
+=======
+=======
+        "ossd": "git push ossd --tags \"refs/remotes/origin/*:refs/heads/*\"",
+        "dev": "vite build --watch"
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+>>>>>>> refs/remotes/origin/pangCode
     },
     "devDependencies": {
         "@iconify/json": "^2.2.318",

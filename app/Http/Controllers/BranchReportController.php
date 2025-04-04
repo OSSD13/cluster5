@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+>>>>>>> refs/remotes/origin/pangCode
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -14,10 +17,14 @@ use Carbon\Carbon;
 class BranchReportController extends Controller
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
     /**
      * Returns the list of subordinate users.
      */
     public function getSubordinate()
+<<<<<<< HEAD
     {
         $requestUserId = session()->get('user')->user_id;
         $user = User::where('user_id', $requestUserId)->first();
@@ -27,14 +34,20 @@ class BranchReportController extends Controller
             ->where('users.user_status', 'normal')
 =======
     function getSubordinate()
+=======
+>>>>>>> refs/remotes/origin/pangCode
     {
         $requestUserId = session()->get('user')->user_id;
-        $user = User::where('user_id', '=', $requestUserId)->first();
+        $user = User::where('user_id', $requestUserId)->first();
         $subordinateIds = $user->getSubordinateIds();
+
         $subordinates = User::whereIn('users.user_id', $subordinateIds)
             ->where('users.user_status', 'normal')
+<<<<<<< HEAD
             // ->where('users.role_name', '!=', 'ceo')
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+>>>>>>> refs/remotes/origin/pangCode
             ->leftJoin('users as managers', 'users.manager', '=', 'managers.user_id')
             ->get([
                 'users.user_id',
@@ -51,11 +64,15 @@ class BranchReportController extends Controller
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
         /**
      * Combines branch report and branch filtering by region or province,
      * and returns branch details with the sales data for the past 12 months.
      */
     public function getBranchReport(Request $request)
+<<<<<<< HEAD
     {
         // Build the base branch query with required joins and selected fields.
         $branchQuery = DB::table('branch_stores')
@@ -135,12 +152,18 @@ class BranchReportController extends Controller
         $branches = DB::table('branch_stores')
             ->whereIn('branch_stores.bs_id', $branches_ids)
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+    {
+        // Build the base branch query with required joins and selected fields.
+        $branchQuery = DB::table('branch_stores')
+>>>>>>> refs/remotes/origin/pangCode
             ->leftJoin('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
             ->leftJoin('locations', 'point_of_interests.poi_location_id', '=', 'locations.location_id')
             ->leftJoin('users as managers', 'branch_stores.bs_manager', '=', 'managers.user_id')
             ->select(
                 'branch_stores.bs_id',
                 'branch_stores.bs_name',
+<<<<<<< HEAD
 <<<<<<< HEAD
                 'locations.province',
                 'locations.region'
@@ -199,6 +222,34 @@ class BranchReportController extends Controller
 
         // Fetch sales data for the past 12 months
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+                'locations.province',
+                'locations.region'
+            );
+
+        $distinctProvinces = [];
+
+        // Determine filtering method.
+        if ($request->has('province')) {
+            $province = $request->query('province');
+            $branchQuery->where('locations.province', '=', $province);
+        } elseif ($request->has('region')) {
+            $region = $request->query('region');
+            $branchQuery->where('locations.region', '=', $region);
+
+            // Fetch distinct provinces in this region
+            $distinctProvinces = DB::table('locations')
+                ->where('region', $region)
+                ->distinct()
+                ->pluck('province');
+        }
+
+        // Execute the branch query.
+        $branches = $branchQuery->get();
+        $branches_ids = $branches->pluck('bs_id')->toArray();
+
+        // Fetch sales data for the past 12 months.
+>>>>>>> refs/remotes/origin/pangCode
         $salesData = DB::table('sales')
             ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
@@ -215,10 +266,14 @@ class BranchReportController extends Controller
             ->get();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // Transform sales data into an associative array by branch ID.
 =======
         // Transform sales data into an associative array by branch ID
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+        // Transform sales data into an associative array by branch ID.
+>>>>>>> refs/remotes/origin/pangCode
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -228,22 +283,32 @@ class BranchReportController extends Controller
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // Attach sales data to branches.
 =======
         // Attach sales data to branches
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+        // Attach sales data to branches.
+>>>>>>> refs/remotes/origin/pangCode
         foreach ($branches as $branch) {
             $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
         return response()->json([
             'branches' => $branches,
             'branch_count' => $branches->count(),
             'distinct_provinces' => $distinctProvinces
         ]);
+<<<<<<< HEAD
 =======
         return response()->json($branches);
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+=======
+>>>>>>> refs/remotes/origin/pangCode
     }
 }

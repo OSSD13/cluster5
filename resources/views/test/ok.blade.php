@@ -23,16 +23,22 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
 =======
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> d77ac94 (Add new component layout and route for test view)
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+<<<<<<< HEAD
 =======
 >>>>>>> 2f5f2d0 (Add new component layout and route for test view)
 =======
 >>>>>>> 91d4531 (Add new component layout and route for test view)
+=======
+>>>>>>> refs/remotes/origin/pangCode
 <<!-- component -->
 <!-- This is an example component -->
 <div class="flex flex-col">
@@ -64,6 +70,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/pangCode
 =======
 <<<<<<< HEAD
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
@@ -93,10 +102,13 @@
 <<<<<<< HEAD
 =======
 =======
+<<<<<<< HEAD
 =======
 >>>>>>> 216687f (Chg)
 =======
 >>>>>>> 23c27df (Chg)
+=======
+>>>>>>> refs/remotes/origin/pangCode
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
 <style>
@@ -117,6 +129,7 @@
 </button>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 30d3bf4 (Chg)
 =======
   
@@ -126,6 +139,11 @@
 =======
   
 >>>>>>> 91d4531 (Add new component layout and route for test view)
+=======
+>>>>>>> 30d3bf4 (Chg)
+=======
+  
+>>>>>>> refs/remotes/origin/pangCode
   
   <div class="mt-8 flex">
     <button type="button" class="rounded-full px-4 mr-2 bg-blue-600 text-white p-2 rounded  leading-none flex items-center">
@@ -150,6 +168,7 @@
 </div>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> d77ac94 (Add new component layout and route for test view)
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
 =======
@@ -160,4 +179,8 @@
 >>>>>>> 23c27df (Chg)
 =======
 >>>>>>> 91d4531 (Add new component layout and route for test view)
+=======
+>>>>>>> d77ac94 (Add new component layout and route for test view)
+>>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+>>>>>>> refs/remotes/origin/pangCode
 </html>

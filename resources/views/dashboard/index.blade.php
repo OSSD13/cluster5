@@ -81,6 +81,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                             const branchCount = data.branch_count;
                             const branches = data.branches;
 
@@ -91,12 +92,18 @@
                             const branches = data.branches;
 
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+                            const branchCount = data.branch_count;
+                            const branches = data.branches;
+
+>>>>>>> refs/remotes/origin/pangCode
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
                             let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
 
                             // Calculate max sales amount only for the selected month
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
                             branches.forEach(b => {
@@ -106,6 +113,9 @@
 =======
                             branches.forEach(b => {
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+                            branches.forEach(b => {
+>>>>>>> refs/remotes/origin/pangCode
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
 
@@ -140,6 +150,7 @@
                             // Fill in the sales data only for the selected month
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                             branches.forEach(b => {
 =======
                             data.forEach(b => {
@@ -148,6 +159,10 @@
                             branches.forEach(b => {
                                 console.log(1, b)
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+                            branches.forEach(b => {
+                                console.log(1, b)
+>>>>>>> refs/remotes/origin/pangCode
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -193,6 +208,7 @@
                             // Summing up monthly sales data
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                             branches.forEach(b => {
 =======
                             data.forEach(b => {
@@ -200,6 +216,9 @@
 =======
                             branches.forEach(b => {
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+                            branches.forEach(b => {
+>>>>>>> refs/remotes/origin/pangCode
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
                                     if (allMonthlySales[key]) {
@@ -462,6 +481,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <h3 class="text-left px-2" id='regionBranchCount'>สาขาทั้งหมด 3500 สาขา</h3>
 =======
         <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
@@ -471,11 +491,16 @@
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+        <h3 class="text-left px-2" id='regionBranchCount'></h3>
+        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+>>>>>>> refs/remotes/origin/pangCode
             <thead class="bg-lightblue">
                 <tr>
                     <th scope="col"
                         class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">#</th>
                     <th scope="col"
+<<<<<<< HEAD
 <<<<<<< HEAD
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
 <<<<<<< HEAD
@@ -530,6 +555,18 @@
         </table>
 
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">จำนวนสาขา</th>
+                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
+            </tbody>
+        </table>
+
+>>>>>>> refs/remotes/origin/pangCode
         <script>
             let region = null;
             let province = null;
@@ -818,11 +855,14 @@
 
         <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         <table class="w-full border-collapse rounded-lg overflow-hidden">
 >>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
 =======
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+>>>>>>> refs/remotes/origin/pangCode
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 text-left">ID</th>
@@ -850,6 +890,7 @@
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         {{-- <script>
@@ -1032,6 +1073,8 @@
 
 =======
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+>>>>>>> refs/remotes/origin/pangCode
 
     </div>
 @endsection

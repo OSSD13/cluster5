@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -203,6 +204,9 @@
 =======
 @extends('layouts.dependency')
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+@extends('layouts.dependency')
+>>>>>>> refs/remotes/origin/pangCode
 
 @section('title', 'Login')
 
@@ -210,6 +214,7 @@
     <div class="relative w-screen h-screen items-center justify-center bg-cover bg-center flex flex-col"
         style="background-image: url('/assets/img/bgLogin.jpg'); background-position: 30% center;">
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     <!-- โลโก้ -->
     <div class="absolute top-40 flex flex-col items-center">
@@ -417,6 +422,8 @@
 </html>
 >>>>>>> a67cec6 (feat(login): enhance login page UI with new styles and layout)
 =======
+=======
+>>>>>>> refs/remotes/origin/pangCode
         <!-- โลโก้ -->
         <div class="flex flex-col items-center">
             <img src="/assets/img/logo_myLocation.png" class="w-48 mb-1" alt="Logo">
@@ -464,5 +471,9 @@
             </form>
         </div>
     </div>
+<<<<<<< HEAD
 @endsection
 >>>>>>> 5ee040b (fix(gitignore): change file permissions from 755 to 644 for multiple .gitignore files)
+=======
+@endsection
+>>>>>>> refs/remotes/origin/pangCode

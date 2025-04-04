@@ -48,8 +48,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-    // Database test routes
-    // Route::get('/register', [DatabaseTestController::class, 'createUser']);
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
     Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
     Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
@@ -65,6 +63,7 @@ Route::middleware([CheckLogin::class])->group(function () {
 >>>>>>> 53db682 (fix(login):แก้ไขเลย์เอ้า2)
 });
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -119,10 +118,21 @@ Route::get('/wacha', function() {
 =======
     return view('/test/ok');
 >>>>>>> 4c99e81 (fix(routes): update view path for jeng route)
+=======
+Route::get('/test', function () {
+    return view('test');
+});
+
+
+Route::get('/jeng', function() {
+    return view('ok');
+    return view('/test/ok');
+>>>>>>> refs/remotes/origin/pangCode
 });
 
 Route::get('/wacha', function() {
     return view('test');
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> fe56918 (Add new component layout and route for test view)
@@ -189,4 +199,6 @@ Route::get('/jeng', function() {
 >>>>>>> 30d3bf4 (Chg)
 =======
 >>>>>>> d77ac94 (Add new component layout and route for test view)
+=======
+>>>>>>> refs/remotes/origin/pangCode
 });
