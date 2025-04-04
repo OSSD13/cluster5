@@ -432,12 +432,11 @@
             <thead class="bg-lightblue">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">#</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">จำนวนสาขา
-                    </th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">จำนวนสาขา</th>
                     <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
                 </tr>
             </thead>

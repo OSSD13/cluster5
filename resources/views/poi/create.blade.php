@@ -3,8 +3,9 @@
 @section('title', 'Point of Interest')
 
 @section('content')
+
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
 
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
     <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
@@ -49,7 +50,8 @@
         <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
     </div>
 </div>
-
+@endsection
+@section('script')
 <script>
 document.getElementById("saveButton").addEventListener("click", function() {
     // แสดง SweetAlert

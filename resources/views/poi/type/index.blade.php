@@ -8,9 +8,9 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-lg font-bold">POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-700">POIT จัดการประเภทสถานที่ที่สนใจ</h2>
             <a href="{{ route('poi.type.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
                     สร้าง POI
                 </button>
             </a>
@@ -48,11 +48,9 @@
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('type')">ประเภท ⬍
-                    </th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('province')">จังหวัด
-                        ⬍</th>
-                    <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
+                    <th class="py-3 px-1 w-7 text-center font-bold"></th>
                 </tr>
             </thead>
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -61,7 +59,8 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-
+    @endsection
+    @section('script')
     <script>
         let branches = [
             { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
@@ -118,8 +117,8 @@
 
             // Previous button
             const prevBtn = document.createElement("button");
-            prevBtn.innerText = "<";
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
+            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -128,15 +127,16 @@
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
-                btn.className = `px-3 py-1 ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-200"} rounded hover:bg-gray-300`;
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                             ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
             }
 
             // Next button
             const nextBtn = document.createElement("button");
-            nextBtn.innerText = ">";
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
+            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -155,17 +155,6 @@
         document.addEventListener("click", () => {
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
-
-        function sortTable(column) {
-            if (currentSort.column === column) {
-                currentSort.ascending = !currentSort.ascending;
-            } else {
-                currentSort.column = column;
-                currentSort.ascending = true;
-            }
-            branches.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-            renderTable();
-        }
 
         function viewDetail(id) {
             const branch = branches.find(item => item.id === id);

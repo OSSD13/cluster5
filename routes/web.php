@@ -7,6 +7,7 @@ use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Middleware\CheckLogin;
 
@@ -29,15 +30,16 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/map', function () {
         return view('map.index');
     });
-    Route::get('/branch', function () {
-        return view('branch.index');
-    });
+    Route::get('/branch', function () {return view('branch.index');});
+    Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
+    Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
+    Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
+    Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () {
-        return view('poi.index');
-    });
+    Route::get('/poi', function () {return view('poi.index');});
     Route::get('/poi/create', [PointOfInterestController::class, 'create'])->name('poi.create');
     Route::get('/poi/edit', [PointOfInterestController::class, 'edit'])->name('poi.edit');
+    Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
     Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
     Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
@@ -73,3 +75,6 @@ Route::middleware([CheckLogin::class])->group(function () {
 });
 
 
+Route::get('/test', function () {
+    return view('test');
+});
