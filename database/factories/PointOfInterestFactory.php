@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PointOfInterest>
  */
-class Point_of_interestsFactory extends Factory
+class PointofinterestFactory extends Factory
 {
     /**
      * Define the model's default state.

@@ -1,30 +1,36 @@
 @extends('layouts.main')
 
-@section('title', 'Branch')
+@section('title', 'Point of Interest')
 
 @section('content')
+    <!-- <form method="POST" action="{{ route('logout') }}">
+                @csrf -->
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-700">สาขาทั้งหมด</h2>
-
-            <a href="{{ route('branch.create') }}">
+            <h2 class="text-2xl font-bold text-gray-700">POIT จัดการประเภทสถานที่ที่สนใจ</h2>
+            <a href="{{ route('poi.type.create') }}">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
-                    สร้างสาขา
+                    สร้าง POI
                 </button>
             </a>
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสาขา" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
 
         <!-- Dropdowns -->
         <div class="mb-3">
-            <label class="block text-gray-600 mb-1">บทบาท</label>
+            <label class="block text-gray-600 mb-1">ประเภท</label>
             <select class="w-full p-2 border border-gray-300 rounded">
-                <option>Sale</option>
-                <option>CEO</option>
-                <option>Sale Supervisor</option>
+                <option>ประเภทสถานที่</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="block text-gray-600 mb-1">จังหวัด</label>
+            <select class="w-full p-2 border border-gray-300 rounded">
+                <option>จังหวัด</option>
             </select>
         </div>
 
@@ -33,7 +39,7 @@
     </div>
 
 
-
+    <!-- **************************************************************************** -->
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
@@ -41,10 +47,10 @@
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
+                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center"></th>
+                    <th class="py-3 px-1 w-7 text-center font-bold"></th>
                 </tr>
             </thead>
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -53,12 +59,8 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-
-
-
-@endsection
-
-@section('script')
+    @endsection
+    @section('script')
     <script>
         let branches = [
             { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
@@ -87,21 +89,20 @@
             paginatedData.forEach((branch) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td class="py-3 px-4 w-16">${branch.id}</td>
-                    <td class="py-3 px-4 truncate">${branch.name}</td>
-                    <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-                    <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-                    <td class="py-3 px-1 w-10 text-center relative">
-                        <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                        <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
-                            onclick="window.location.href='{{ route('branch.manage.index') }}'">จัดการ</button>
-                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
-                            onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
-                            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                        </div>
-                    </td>
-                `;
+            <td class="py-3 px-4 w-16">${branch.id}</td>
+            <td class="py-3 px-4 truncate">${branch.name}</td>
+            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+            <td class="py-3 px-1 w-10 text-center relative">
+                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
+                    onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
+                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                </div>
+            </td>
+        `;
                 tableBody.appendChild(row);
             });
 
@@ -127,7 +128,7 @@
                 const btn = document.createElement("button");
                 btn.innerText = i;
                 btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                 ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                             ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
             }
@@ -140,7 +141,6 @@
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
         }
-
 
         function goToPage(pageNumber) {
             currentPage = pageNumber;
@@ -155,6 +155,37 @@
         document.addEventListener("click", () => {
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
+
+        function viewDetail(id) {
+            const branch = branches.find(item => item.id === id);
+
+            Swal.fire({
+                title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
+                html: `
+                <div class="flex flex-col space-y-2 text-left">
+                    <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
+
+                    <label class="font-semibold text-gray-800">ประเภท</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
+
+                    <label class="font-semibold text-gray-800">จังหวัด</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
+
+                    <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
+
+                    <label class="font-semibold text-gray-800">เพิ่มโดย</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
+                </div>
+            `,
+                customClass: {
+                    popup: 'custom-popup'
+                },
+                confirmButtonText: "ยืนยัน",
+                confirmButtonColor: "#2D8C42",
+            });
+        }
 
         function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
         function deleteBranch(id) {
@@ -190,4 +221,11 @@
         renderTable();
 
     </script>
+
+
+
+
+    <!-- **************************************************************************** -->
+
+    <!-- </form> -->
 @endsection

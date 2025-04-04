@@ -23,8 +23,11 @@ class DatabaseSeeder extends Seeder
 
         // Create managers
         Log::info('Creating managers...');
-        User::factory()->count(20)->create([
-            'role_name' => fake()->randomElement(['ceo', 'supervisor']),
+        User::factory()->count(10)->create([
+            'role_name' => 'ceo',
+        ]);
+        User::factory()->count(10)->create([
+            'role_name' => 'supervisor',
         ]);
         Log::info('Managers created.');
 
@@ -105,16 +108,18 @@ class DatabaseSeeder extends Seeder
         $salesUsers = User::where('role_name', 'sale')->get();
 
         foreach ($salesUsers as $user) {
+            $poiWithLocation = PointOfInterest::whereNotNull('poi_location_id')->get();
             Branch_store::factory()->create([
                 'bs_manager' => $user->user_id,
+                'bs_poi_id' => $poiWithLocation->random()->poi_id,
             ]);
             Log::info("Branch assigned to sales user with ID: {$user->user_id}");
         }
         Log::info('Each salesperson assigned at least one branch.');
 
         // Create additional branches in bulk
-        Log::info('Creating additional branches...');
-        Branch_store::factory(100)->create();
+        // Log::info('Creating additional branches...');
+        // Branch_store::factory(100)->create();
         Log::info('Additional branches created.');
 
         // Create sales data for branches efficiently
@@ -125,8 +130,8 @@ class DatabaseSeeder extends Seeder
             for ($month = 0; $month < 12; $month++) {
                 Sales::factory()->create([
                     'sales_branch_id' => $branchId,
-                    'created_at' => now()->subMonths($month),
-                    'sales_month' => now()->subMonths($month),
+                    'created_at' => now()->subMonthsNoOverflow($month)->startOfMonth()->setTimezone('UTC'),
+                    'sales_month' => now()->subMonthsNoOverflow($month)->startOfMonth()->setTimezone('UTC'),
                 ]);
             }
         }
