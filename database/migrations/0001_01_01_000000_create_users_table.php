@@ -21,7 +21,7 @@ return new class extends Migration {
 
             $table->unsignedBigInteger('manager')->nullable();
             $table->foreign('manager')->references('user_id')->on('users');
-            $table->rememberToken();
+            // $table->rememberToken();
             $table->timestamps();
         });
 
