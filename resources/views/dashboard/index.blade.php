@@ -94,29 +94,15 @@
                                 }
                             });
 
-                            // Determine bin size: at least 1000, at most 20 bins
-                            let step = Math.ceil(Math.max(1000, maxRange / 20));
-                            let numBins = Math.ceil(maxRange / step);
-
-                            // Ensure there are at most 20 bins
-                            if (numBins > 20) {
-                                step = Math.ceil(maxRange / 20);
-                                numBins = 20;
-                            }
-
+                            // Define step size dynamically (20 bins)
+                            const step = maxRange > 0 ? Math.ceil(maxRange / 20) : 20000;
                             let chartLabels = [];
                             let chartData = {};
-
                             // Initialize bins to 0
                             for (let i = 0; i <= maxRange; i += step) {
-                                if (i === 0) {
-                                    chartLabels.push("0");
-                                } else {
-                                    chartLabels.push(`${Math.round(i / 1000)}k`);
-                                }
+                                chartLabels.push(`${Math.round(i / 1000)}k`);
                                 chartData[i] = 0;
                             }
-
                             // Fill in the sales data only for the selected month
                             branches.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
@@ -132,7 +118,6 @@
 
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
-
 
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {
@@ -155,7 +140,7 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-                                            max: Math.max(...chartValues) + 5
+                                            max: Math.max(...chartValues) + 10
                                         }
                                     }
                                 }
@@ -190,17 +175,16 @@
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) /
-                                lastMonthTotalPackage) * 100 : 0;
+                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 : 0;
                             let salesChange = lastMonthTotalSales > 0 ? ((thisMonthTotalSales - lastMonthTotalSales) /
                                 lastMonthTotalSales) * 100 : 0;
 
-                            document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
-                                .toLocaleString();
+                            document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage.toLocaleString();
                             document.getElementById('thisMonthTotalPackagePercent').textContent = packageChange.toFixed(2);
-                            document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
-                                .toLocaleString();
+                            document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales.toLocaleString();
                             document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
+
+                            console.log(thisMonthTotalPackage, thisMonthTotalPackage.toLocaleString())
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
@@ -266,6 +250,9 @@
             </div>
         </div>
 
+
+
+
         {{-- <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
             <div class="flex flex-row items-baseline">
                 <div class="mr-4">ยอดรวม</div>
@@ -277,8 +264,6 @@
                 บาท
             </div>
         </div> --}}
-
-
         <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
             <canvas id="branchVSprofit"></canvas>
         </div>

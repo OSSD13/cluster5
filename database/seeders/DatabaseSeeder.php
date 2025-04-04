@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
 
         // Then create sales, ensuring they can get assigned managers
         User::factory(100)->create(['role_name' => 'sale']);
-
         $testUserJeng = User::where('email', '=', value: 'ttawan475@gmail.com')->first();
         if (!$testUserJeng) {
             User::create([
@@ -85,17 +84,22 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Point_of_interest::factory(100)->create();
-        Branch_store::factory(100)->create()->each(function ($branch) {
-            $poi = Point_of_interests::factory()->create();
-            \Log::info('Created Point of Interest', ['poi_id' => $poi]);
-            if ($poi) {
-                $poi_id = $poi->id;
-                $branch->bs_poi_id = $poi_id;
-                $branch->save();
-            }
-        });
+        $emails = [
+            '66160106@go.buu.ac.th',
+            '66160082@go.buu.ac.th',
+            '66160084@go.buu.ac.th',
+            '66160230@go.buu.ac.th',
+            '66160229@go.buu.ac.th',
+            '66160354@go.buu.ac.th',
+            '66160357@go.buu.ac.th',
+            '66160358@go.buu.ac.th',
+            '66160369@go.buu.ac.th',
+            '66160370@go.buu.ac.th',
+        ];
 
+
+        // Point_of_interest::factory(100)->create();
+        Branch_store::factory(100)->create();
         $branches = Branch_store::all();
         foreach ($branches as $branch) {
             for ($month = 0; $month < 12; $month++) {
