@@ -10,8 +10,8 @@ class PointOfInterestController extends Controller
     //
     public function index()
     {
-        $pois = PointOfInterest::all(); // Fetch POIs from the database
-        return view('poi.index', ['pois' => $pois]);
+        //$pois = PointOfInterest::all(); // Fetch POIs from the database
+        return view('poi.index');
     }
     // public function store(Request $request){
     //     $pointOfInterest = new PointOfInterest();

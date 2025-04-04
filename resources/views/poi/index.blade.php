@@ -34,23 +34,7 @@
                 <option>จังหวัด</option>
             </select>
         </div>
-        <table border="1">
-            <tr>
-                <th>POI ID</th>
-                <th>POI Name</th>
-                <th>POI Type</th>
-                <th>Address</th>
-            </tr>
-            @foreach ($pois as $poi)
-                <tr>
-                    <td>{{ $poi->poi_id }}</td>
-                    <td>{{ $poi->poi_name }}</td>
-                    <td>{{ $poi->poi_type }}</td>
-                    <td>{{ $poi->address }}</td>
-                </tr>
-            @endforeach
-        </table>
-        <!-- Result Count -->
+
         <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
         <a href="{{ route('poi.type.index') }}">
             <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
