@@ -45,15 +45,17 @@
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+        
         <thead class="bg-blue-500 text-white">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('type')">อีเมล</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('province')">บทบาท</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">บทบาท</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-            </tr>
+             </tr>
         </thead>
+
+
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
     </table>
 </div>
@@ -92,8 +94,10 @@
     const row = document.createElement("tr");
     row.innerHTML = `
         <td class="py-3 px-4 w-16">${branch.id}</td>
-        <td class="py-3 px-4 truncate">${branch.name}</td>
-        <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+        <td class="py-3 px-4 truncate">
+            <div class="font-semibold">${branch.name}</div>
+            <div class="text-sm text-gray-500">${branch.type}</div>
+        </td>
         <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
         <td class="py-3 px-1 w-10 text-center relative">
             <button onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
@@ -106,6 +110,8 @@
     `;
     tableBody.appendChild(row);
 });
+
+
 
         renderPagination();
     }
