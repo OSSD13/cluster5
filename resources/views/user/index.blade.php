@@ -3,19 +3,22 @@
 @section('title', 'Point of Interest')
 
 @section('content')
+
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
     <!-- <form method="POST" action="{{ route('logout') }}">
             @csrf -->
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-bold">จัดการสมาชิก</h2>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="addMember()" >
                 สร้างสมาชิก
             </button>
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" placeholder="ค้นหาสมาชิก" class="w-full p-2 border border-gray-300 rounded mb-3">
 
         <!-- Dropdowns -->
         <div class="mb-3">
@@ -42,21 +45,25 @@
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+        
         <thead class="bg-blue-500 text-white">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('type')">อีเมล</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('province')">บทบาท</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">บทบาท</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-            </tr>
+             </tr>
         </thead>
+
+
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
     </table>
 </div>
 
 <!-- Pagination Controls -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
+
+
 
 <script>
     let branches = [
@@ -87,8 +94,10 @@
     const row = document.createElement("tr");
     row.innerHTML = `
         <td class="py-3 px-4 w-16">${branch.id}</td>
-        <td class="py-3 px-4 truncate">${branch.name}</td>
-        <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+        <td class="py-3 px-4 truncate">
+            <div class="font-semibold">${branch.name}</div>
+            <div class="text-sm text-gray-500">${branch.type}</div>
+        </td>
         <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
         <td class="py-3 px-1 w-10 text-center relative">
             <button onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
@@ -101,6 +110,8 @@
     `;
     tableBody.appendChild(row);
 });
+
+
 
         renderPagination();
     }
@@ -193,6 +204,80 @@
         confirmButtonColor: "#2D8C42",
     });
 }
+
+function addMember() {
+    Swal.fire({
+        title: `
+            <div class="flex flex-col items-center mb-1 ">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
+            </div>
+            <b class=text-gray-800>สร้างสมาชิก </b>
+        `,
+        html: `
+            <div class="flex flex-col space-y-1 text-left">
+                <label class="font-semibold text-gray-800">Email</label>
+                <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" >
+
+                <label class="font-semibold text-gray-800">Password</label>
+                <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
+
+                <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
+                <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3">
+
+                <label class="font-semibold text-gray-800">บทบาท</label>
+                <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                    <option value="Sale">Sale</option>
+                    <option value="CEO">CEO</option>
+                    <option value="Sale Sup.">Sale Supervisor</option>
+                </select>
+            </div>
+        `,
+        
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        focusCancel: true,
+        customClass: {
+            actions: "flex justify-between w-full px-4",
+            cancelButton: "ml-0",
+            confirmButton: "mr-0",
+        },
+        preConfirm: () => {
+            const email = document.getElementById("memberEmail").value;
+            const password = document.getElementById("memberPassword").value;
+            const name = document.getElementById("memberName").value;
+            const role = document.getElementById("memberRole").value;
+
+            if (!email || !password || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+            
+            // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
+            const newMember = {
+                id: branches.length + 1,
+                name: name,
+                type: email,
+                province: role
+            };
+            branches.push(newMember);
+            renderTable();
+
+            // แจ้งเตือนว่าบันทึกสำเร็จ
+            Swal.fire({
+                title: "สำเร็จ!",
+                text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
+                icon: "success",
+                confirmButtonColor: "#2D8C42",
+                confirmButtonText: "ตกลง"
+            });
+        }
+    });
+}
+
+
+
 
     function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
     function deleteBranch(id) {
