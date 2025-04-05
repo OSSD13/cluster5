@@ -18,7 +18,8 @@ class Sales extends Model
      */
     protected $fillable = [
         'total_amount',
-        'total_order_sale'
+        'sales_package_amount',
+        'sales_month',
 
     ];
     //

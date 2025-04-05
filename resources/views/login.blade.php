@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> 
 </head>
 <style>
     body {
@@ -137,8 +137,8 @@
     width: 1.5rem;
     height: 1.5rem;
     margin-right: 0.75rem;
-
-
+   
+    
 }
 .iconLogo {
     width: 269px;
@@ -152,26 +152,20 @@
 <body class="flex items-center justify-center min-h-screen" >
     <div><img src="/assets/img/LogoMyx.png" class="iconLogo" alt="">
     <div class="login-box">
-
+    
         <h2 class="text-2xl font-bold text-center">Login</h2>
 
-        <form class="mt-4" action="/login" method="POST">
-            @csrf
+        <form class="mt-4">
             <label class="label">Email</label>
-            <input name="email" type="email" placeholder="name@example.com" class="input-email">
+            <input type="email" placeholder="name@example.com" class="input-email">
 
             <label class="label mt-4">Password</label>
-            <input name="password" type="password" placeholder="Your Password" class="input-password">
+            <input type="password" placeholder="Your Password" class="input-password">
 
             <div class="flex justify-between items-center mt-4">
                 <a href="#" class="forgot-password">Forgot password?</a>
                 <button class="login-btn">Login</button>
             </div>
-            @if (session('error'))
-                <div class="text-red-500 text-sm mt-2">
-                    {{ session('error') }}
-                </div>
-            @endif
 
             <div class="separator">
                 <hr class="line">
@@ -179,10 +173,10 @@
                 <hr class="line">
             </div>
 
-            <a class="google-btn" href="{{  route('google-auth') }}">
+            <button class="google-btn">
                 <img src="/assets/img/LogoGg.png" class="google-icon">
                 Login with Google
-            </a>
+            </button>
         </form>
     </div>
 </div>
