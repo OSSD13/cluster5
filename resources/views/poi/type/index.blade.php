@@ -44,7 +44,7 @@
     <!-- Pagination Controls -->
     <div class="overflow-x-auto">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-    <thead class="bg-blue-500 text-white text-sm">
+    <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
         <tr>
             <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ประเภท</th> <!-- เพิ่มความกว้าง -->
             <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th>
@@ -131,10 +131,10 @@
             <td class="py-3 px-1 w-10 text-center small relative">
                 <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
                 <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" style="background-color: #3062B8" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer " style="background-color: #3062B8"
                     onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
-                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" style="background-color: #CF3434" onclick="deleteBranch(${branch.id})">ลบ</button>
                 </div>
             </td>
         `;
