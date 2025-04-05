@@ -73,7 +73,7 @@
         { id: 10, name: "ดลภพ", type: "dol@gmail.com", province: "CEO" }
     ]; // Your existing data
     let currentPage = 1;
-    const rowsPerPage = 5;
+    const rowsPerPage = 10;
     let currentSort = { column: null, ascending: true };
 
     function renderTable() {
@@ -166,23 +166,24 @@
     const branch = branches.find(item => item.id === id);
 
     Swal.fire({
-        title: "<b class=text-gray-800>รายละเอียดข้อมูลสมาชิก </b>",
+        
         html: `
             <div class="flex flex-col space-y-2 text-left">
-                <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
-
-                <label class="font-semibold text-gray-800">อีเมล</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
-
-                <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
-
-                <label class="font-semibold text-gray-800">บทบาท</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
-
-                <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
+                <label class='font-bold text-gray-800 text-3xl mt-3 mb-3'>รายละเอียดข้อมูลสมาชิก</b>
+                <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
+                <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="${branch.name}" readonly>
+                
+                <label class="font-medium text-gray-700 text-sm br">ประเภท</label>
+                <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="${branch.type}" readonly>
+              
+                <label class="font-medium text-gray-700 text-sm">จังหวัด</label>
+                <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="${branch.province}" readonly>
+                
+                <label class="font-medium text-gray-700 text-sm">วันที่เพิ่ม</label>
+                <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="17 ก.ย. 2568" readonly>
+                
+                <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
+                <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="jeng@gmail.com" readonly>
             </div>
         `,
         customClass: {
