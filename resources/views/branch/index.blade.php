@@ -6,22 +6,22 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-700">สาขาทั้งหมด</h2>
+            <h2 class="text-2xl font-bold text-gray-800">สาขาทั้งหมด</h2>
 
             <a href="{{ route('branch.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
+                <button class="hover:bg-blue-700 text-white shadow-lg font-bold py-2 px-4 rounded-md whitespace-nowrap border border-gray-300 " style="background-color: #3062B8">
                     สร้างสาขา
                 </button>
             </a>
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสาขา" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" placeholder="ค้นหาสาขา" class="w-full p-2 border border-gray-300 rounded-md mb-3 shadow-lg">
 
         <!-- Dropdowns -->
         <div class="mb-3">
-            <label class="block text-gray-600 mb-1">บทบาท</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
+            <label class="block text-gray-800 mb-1">บทบาท</label>
+            <select class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
                 <option>Sale</option>
                 <option>CEO</option>
                 <option>Sale Supervisor</option>
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Result Count -->
-        <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
+        <p class="text-gray-800">ผลลัพธ์ 302 รายการ</p>
     </div>
 
 
@@ -37,8 +37,8 @@
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white">
+        <table class="w-full mt-5 border-collapse rounded-md overflow-hidden table-fixed">
+            <thead class=" text-gray-800" style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
@@ -102,12 +102,12 @@
                     <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
                     <td class="py-3 px-1 w-10 text-center relative">
                         <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                        <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
+                        <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
+                            <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
                             onclick="window.location.href='{{ route('branch.manage.index') }}'">จัดการ</button>
-                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
+                            <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
                             onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
-                            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                            <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})" style="background-color: #CF3434">ลบ</button>
                         </div>
                     </td>
                 `;
@@ -126,7 +126,7 @@
             // Previous button
             const prevBtn = document.createElement("button");
             prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-800 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -164,7 +164,7 @@
             // Next button
             const nextBtn = document.createElement("button");
             nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-800 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -185,6 +185,7 @@
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
 
+        // ฟังก์ชันสำหรับจัดการการคลิกที่ปุ่ม "..."
         function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
         function deleteBranch(id) {
             Swal.fire({
@@ -194,7 +195,7 @@
                 iconColor: "#d33",
                 showCancelButton: true,
                 confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d",
+                cancelButtonColor: "#3062B8",
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก"
             }).then((result) => {

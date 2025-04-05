@@ -6,7 +6,7 @@
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
         <!-- Header -->
         <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-gray-700">แก้ไขสาขา</h2>
+            <h2 class="text-2xl font-bold text-gray-800">แก้ไขสาขา</h2>
         </div>
     </div>
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">

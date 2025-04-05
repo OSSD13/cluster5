@@ -141,7 +141,7 @@
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
 
             <button
-                class="w-full h-10 bg-blue-600 text-white font-medium rounded-md shadow-md hover:bg-blue-700 transition">
+                class="w-full h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition" style="background-color: #3062B8">
                 เพิ่มรายการ
             </button>
 
@@ -151,8 +151,8 @@
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white">
+        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed ">
+            <thead class="text-gray-800" style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-3 px-4 w-13 text-left">ID</th>
                     <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
