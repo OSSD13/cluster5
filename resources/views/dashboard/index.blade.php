@@ -19,10 +19,7 @@
                     console.log('Selected month:', selectedMonth);
                     // Add your logic here to handle the month change event
                     getBranchReport();
-<<<<<<< HEAD
-=======
                     buildRegionTable();
->>>>>>> origin/develop
                 }
             </script>
 
@@ -43,10 +40,7 @@
                         console.log('Selected subordinate:', selectedValue);
                         // Add your logic here to handle the change event
                         getBranchReport();
-<<<<<<< HEAD
-=======
                         buildRegionTable();
->>>>>>> origin/develop
                     }
                 </script>
 
@@ -85,37 +79,24 @@
                         .then(data => {
                             console.log('Branch report:', data);
 
-<<<<<<< HEAD
-=======
                             const branchCount = data.branch_count;
                             const branches = data.branches;
 
->>>>>>> origin/develop
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
                             let maxRange = 0;
                             let selectedMonth = date.slice(0, 7); // Extract YYYY-MM format
 
                             // Calculate max sales amount only for the selected month
-<<<<<<< HEAD
-                            data.forEach(b => {
-                                let monthlySales = b.monthly_sales || {};
-                                if (monthlySales[selectedMonth]) {
-=======
                             branches.forEach(b => {
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
 
->>>>>>> origin/develop
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
                                     maxRange = Math.max(maxRange, salesAmount);
                                 }
                             });
 
-<<<<<<< HEAD
-                            // Define step size dynamically (20 bins)
-                            const step = maxRange > 0 ? Math.ceil(maxRange / 20) : 20000;
-=======
                             // Determine bin size: at least 1000, at most 20 bins
                             let step = Math.ceil(Math.max(1000, maxRange / 20));
                             let numBins = Math.ceil(maxRange / step);
@@ -126,31 +107,22 @@
                                 numBins = 20;
                             }
 
->>>>>>> origin/develop
                             let chartLabels = [];
                             let chartData = {};
 
                             // Initialize bins to 0
                             for (let i = 0; i <= maxRange; i += step) {
-<<<<<<< HEAD
-                                chartLabels.push(`${Math.round(i / 1000)}k`);
-=======
                                 if (i === 0) {
                                     chartLabels.push("0");
                                 } else {
                                     chartLabels.push(`${Math.round(i / 1000)}k`);
                                 }
->>>>>>> origin/develop
                                 chartData[i] = 0;
                             }
 
                             // Fill in the sales data only for the selected month
-<<<<<<< HEAD
-                            data.forEach(b => {
-=======
                             branches.forEach(b => {
                                 console.log(1, b)
->>>>>>> origin/develop
                                 let monthlySales = b.monthly_sales || {};
                                 if (monthlySales[selectedMonth]) {
                                     let salesAmount = parseFloat(monthlySales[selectedMonth]?.sales_amount || 0);
@@ -165,10 +137,6 @@
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {
                                 window.branchChart.destroy();
@@ -190,22 +158,14 @@
                                     scales: {
                                         y: {
                                             beginAtZero: true,
-<<<<<<< HEAD
-                                            max: Math.max(...chartValues) + 10
-=======
                                             max: Math.max(...chartValues) + 5
->>>>>>> origin/develop
                                         }
                                     }
                                 }
                             });
 
                             // Summing up monthly sales data
-<<<<<<< HEAD
-                            data.forEach(b => {
-=======
                             branches.forEach(b => {
->>>>>>> origin/develop
                                 let monthlySales = b.monthly_sales;
                                 Object.entries(monthlySales).forEach(([key, value]) => {
                                     if (allMonthlySales[key]) {
@@ -248,8 +208,6 @@
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
 
-<<<<<<< HEAD
-=======
                             let salesArray = [];
                             let lastMonthSalesArray = [];
 
@@ -295,7 +253,6 @@
                             });
 
 
->>>>>>> origin/develop
                         })
                         .catch(error => console.error('Error fetching branch report:', error));
                 }
@@ -334,19 +291,11 @@
                 <div class="flex justify-around items-center">
                     <span class="icon-[streamline--upload-box-1-solid] text-4xl text-trinary"
                         id='thisMonthTotalPackageIcon'></span>
-<<<<<<< HEAD
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalPackageNumber'>1,354</span>ชิ้น
-                </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
-                    <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
-                    <span id='thisMonthTotalPackagePercent'>23</span>% จากก่อนหน้านี้
-=======
                     <span class="text-2xl text-bold text-trinary" id='thisMonthTotalPackageNumber'></span>ชิ้น
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
                     <span id='thisMonthTotalPackagePercent'></span>%
->>>>>>> origin/develop
                 </div>
             </div>
         </div>
@@ -356,65 +305,21 @@
                 <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
                     <span class="icon-[tabler--coin-filled] text-4xl text-trinary" id='thisMonthTotalMoneyIcon'></span>
-<<<<<<< HEAD
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalMoneyNumber'>78,474</span>บาท
-                </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
-                    <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
-                    <span id='thisMonthTotalMoneyPercent'>23</span>% จากก่อนหน้านี้
-=======
                     <span class="text-2xl text-bold text-trinary" id='thisMonthTotalMoneyNumber'></span>บาท
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
                     <span id='thisMonthTotalMoneyPercent'></span>%
->>>>>>> origin/develop
                 </div>
             </div>
         </div>
 
 
-<<<<<<< HEAD
-
-
-        {{-- <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
-            <div class="flex flex-row items-baseline">
-                <div class="mr-4">ยอดรวม</div>
-                <div class="text-success"><span class="icon-[line-md--arrow-up]"></span> 70% จากก่อนหน้านี้</div>
-            </div>
-            <div class="flex justify-around items-center text-success text-4xl text-bold">
-                <span class="icon-[bi--graph-up]"></span>
-                <span class="text-bold">87,456,722</span>
-                บาท
-            </div>
-        </div> --}}
-=======
->>>>>>> origin/develop
         <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
             <canvas id="branchVSprofit"></canvas>
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-<<<<<<< HEAD
-                <div class="flex-1 bg-red-light shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
-                    <div class="">Min</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span class="text-2xl text-bold">500</span>บาท
-                    </div>
-                    <div class="text-sm text-end">
-                        <span class="icon-[line-md--arrow-down]"></span>
-                        23% จากก่อนหน้านี้
-                    </div>
-                </div>
-                <div class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 bg-green text-success">
-                    <div class="">Min</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span class="text-2xl text-bold">500</span>บาท
-                    </div>
-                    <div class="text-sm text-end">
-                        <span class="icon-[line-md--arrow-down]"></span>
-                        23% จากก่อนหน้านี้
-=======
                 <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
                     <div class="">Min</div>
                     <div class="flex justify-center items-center text-bold gap-2">
@@ -433,31 +338,10 @@
                     <div id="maxChange" class="text-sm text-end">
                         <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
                         <span id="maxPercent">0</span>%
->>>>>>> origin/develop
                     </div>
                 </div>
             </div>
             <div class="flex flex-row gap-4">
-<<<<<<< HEAD
-                <div class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 bg-lightblue text-primary-dark">
-                    <div class="">Standard Deviation</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span class="text-2xl text-bold">105.51</span>บาท
-                    </div>
-                    <div class="text-sm text-end">
-                        <span class="icon-[line-md--arrow-down]"></span>
-                        23% จากก่อนหน้านี้
-                    </div>
-                </div>
-                <div class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 bg-lightblue text-primary-dark">
-                    <div class="">Standard Deviation</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span class="text-2xl text-bold">13,000</span>บาท
-                    </div>
-                    <div class="text-sm text-end">
-                        <span class="icon-[line-md--arrow-down]"></span>
-                        23% จากก่อนหน้านี้
-=======
                 <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
                     <div class="">Standard Deviation</div>
                     <div class="flex justify-center items-center text-bold gap-2">
@@ -476,16 +360,11 @@
                     <div id="avgChange" class="text-sm text-end">
                         <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="avgPercent">0</span>%
->>>>>>> origin/develop
                     </div>
                 </div>
             </div>
         </div>
 
-<<<<<<< HEAD
-        <div class="flex-1 bg-lightblue shadow-md rounded-lg flex flex-col p-4 gap-4">
-            <div class="flex justify-around items-center text-primary-dark text-4xl text-bold">
-=======
         <script>
             function updateCardData(data) {
                 const {
@@ -543,41 +422,10 @@
                     onclick="">ย้อนกลับ</button>
             </div>
             <div class="text-primary-dark text-4xl text-bold col-span-1">
->>>>>>> origin/develop
                 ภูมิภาค
             </div>
         </div>
 
-<<<<<<< HEAD
-        <h3 class="text-left px-2">สาขาทั้งหมด 3500 สาขา</h3>
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
-            <thead class="bg-lightblue">
-                <tr>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
-                    <th scope="col" class="px-6 py-3"></th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @php
-                    $regions = ['ภาคเหนือ', 'ภาคตะวันออกเฉียงเหนือ', 'ภาคตะวันตก', 'ภาคกลาง', 'ภาคตะวันออก', 'ภาคใต้'];
-                @endphp
-                @foreach ($regions as $index => $region)
-                    <tr onclick="alert('hi')" class="cursor-pointer">
-                        <td class="px-6 py-2 whitespace-nowrap">{{ $index + 1 }}</td>
-                        <td class="px-6 py-2 whitespace-nowrap">{{ $region }}</td>
-                        <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">
-                            >
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <table class="w-full border-collapse rounded-lg overflow-hidden">
-=======
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
             <thead class="bg-lightblue">
@@ -882,7 +730,6 @@
         </script>
 
         <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
->>>>>>> origin/develop
             <thead class="bg-blue-500 text-white">
                 <tr>
                     <th class="py-3 px-4 text-left">ID</th>
@@ -896,9 +743,6 @@
                     </th>
                 </tr>
             </thead>
-<<<<<<< HEAD
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
-=======
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
                 <tr>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">1</td>
@@ -908,186 +752,11 @@
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">เพิ่มแล้ว</td>
                 </tr>
             </tbody>
->>>>>>> origin/develop
         </table>
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
-<<<<<<< HEAD
-        <script>
-            const branches = [{
-                    name: "บางแสน",
-                    province: "ชลบุรี",
-                    sales: 50,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "อุดรธานี",
-                    province: "อุดรธานี",
-                    sales: 30,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "ศรีราชา",
-                    province: "ชลบุรี",
-                    sales: 20,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "พัทยา",
-                    province: "ชลบุรี",
-                    sales: 10,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "เซนทรัล",
-                    province: "ชลบุรี",
-                    sales: 5,
-                    status: "เพิ่มแล้ว"
-                },
-                {
-                    name: "ท่าพระ",
-                    province: "ขอนแก่น",
-                    sales: -5,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "กรุงเทพฯ",
-                    province: "กรุงเทพมหานคร",
-                    sales: -10,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "ปราจีนบุรี",
-                    province: "ปราจีนบุรี",
-                    sales: -20,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "ฉะเชิงเทรา",
-                    province: "ฉะเชิงเทรา",
-                    sales: -30,
-                    status: "ยังไม่เพิ่ม"
-                },
-                {
-                    name: "สระบุรี",
-                    province: "สระบุรี",
-                    sales: -40,
-                    status: "ยังไม่เพิ่ม"
-                }
-            ];
-
-            let currentPage = 1;
-            const rowsPerPage = 5;
-            let sortedColumn = null;
-            let sortDirection = 1; // 1 for ascending, -1 for descending
-
-            function renderTable() {
-                const tableBody = document.getElementById("tableBody");
-                tableBody.innerHTML = "";
-                const start = (currentPage - 1) * rowsPerPage;
-                const paginatedData = branches.slice(start, start + rowsPerPage);
-
-                paginatedData.forEach((branch, index) => {
-                    const row = document.createElement("tr");
-                    row.classList.add("hover:bg-gray-100");
-                    row.innerHTML = `
-                        <td class="py-3 px-4">${start + index + 1}</td>
-                        <td class="py-3 px-4">${branch.name}</td>
-                        <td class="py-3 px-4">${branch.province}</td>
-                        <td class="py-3 px-4">${branch.sales}</td>
-                        <td class="py-3 px-4">
-                            <span class="px-3 py-1 text-white rounded-full ${branch.status === "เพิ่มแล้ว" ? "bg-green-500" : "bg-red-500"}">
-                                ${branch.status}
-                            </span>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-
-                renderPagination();
-            }
-
-            function renderPagination() {
-                const pagination = document.getElementById("pagination");
-                pagination.innerHTML = "";
-                const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-                for (let i = 1; i <= Math.min(6, totalPages); i++) {
-                    const btn = createPageButton(i);
-                    pagination.appendChild(btn);
-                }
-
-                if (totalPages > 6) {
-                    const dotsBtn = document.createElement("button");
-                    dotsBtn.innerText = "...";
-                    dotsBtn.className = "px-3 py-1 bg-gray-300 rounded hover:bg-gray-400";
-                    dotsBtn.onclick = showPageInput;
-                    pagination.appendChild(dotsBtn);
-                }
-            }
-
-            function createPageButton(pageNumber) {
-                const btn = document.createElement("button");
-                btn.innerText = pageNumber;
-                btn.className =
-                    `px-3 py-1 ${pageNumber === currentPage ? "bg-blue-500 text-white" : "bg-gray-300"} rounded hover:bg-gray-400`;
-                btn.onclick = () => goToPage(pageNumber);
-                return btn;
-            }
-
-            function showPageInput() {
-                Swal.fire({
-                    title: 'Go to page',
-                    input: 'number',
-                    inputAttributes: {
-                        min: 1,
-                        max: Math.ceil(branches.length / rowsPerPage),
-                        step: 1
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'Go',
-                    preConfirm: (page) => {
-                        if (page < 1 || page > Math.ceil(branches.length / rowsPerPage)) {
-                            Swal.showValidationMessage('Invalid page number');
-                        }
-                        return page;
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        goToPage(result.value);
-                    }
-                });
-            }
-
-            function goToPage(page) {
-                currentPage = page;
-                renderTable();
-            }
-
-            function sortTable(column) {
-                if (sortedColumn === column) {
-                    sortDirection *= -1;
-                } else {
-                    sortedColumn = column;
-                    sortDirection = 1;
-                }
-
-                branches.sort((a, b) => {
-                    if (a[column] < b[column]) return -1 * sortDirection;
-                    if (a[column] > b[column]) return 1 * sortDirection;
-                    return 0;
-                });
-
-                renderTable();
-            }
-
-            renderTable();
-        </script>
-
-=======
->>>>>>> origin/develop
 
     </div>
 @endsection
