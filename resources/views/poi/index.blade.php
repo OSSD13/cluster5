@@ -48,15 +48,16 @@
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-        <thead class="bg-blue-500 text-white text-sm">
-            <tr>
-                <th class="py-2 px-4 text-left w-4/12 whitespace-nowrap">ชื่อ / ประเภท</th>
-                <th class="py-2 px-4 text-center w-2/12 whitespace-nowrap">Icon</th>
-                <th class="py-2 px-4 text-center w-5/12 whitespace-nowrap">คำอธิบาย</th>
-                <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap"></th>
-            </tr>
-        </thead>
+        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+            <thead class="bg-blue-500 text-white">
+                <tr>
+                <th class="py-3 px-4 w-13 text-left">ID</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
+                <th class="py-3 px-1 w-7 text-center"></th>
+                </tr>
+            </thead>
     </table>
 </div>
 

@@ -93,6 +93,13 @@
             /* จัดข้อความให้อยู่ตรงกลางแนวตั้ง */
         }
     </style>
+    <style>
+    thead th {
+        height: 50px; /* กำหนดความสูงของหัวตาราง */
+        vertical-align: middle; /* จัดข้อความให้อยู่ตรงกลางแนวตั้ง */
+        text-align: center; /* จัดข้อความให้อยู่ตรงกลางแนวนอน */
+    }
+</style>
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 @endsection
