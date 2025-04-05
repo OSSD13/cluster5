@@ -289,13 +289,13 @@
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-4xl text-trinary"
-                        id='thisMonthTotalPackageIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalPackageNumber'></span>ชิ้น
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-black text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
+                    <span class="font-black text-[24px]">ชิ้น</span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
-                    <span id='thisMonthTotalPackagePercent'></span>%
+                    <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
@@ -304,12 +304,13 @@
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-4xl text-trinary" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalMoneyNumber'></span>บาท
+                    <span class="icon-[tabler--coin-filled] text-trinary" style="font-size: 75px;" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-black text-trinary" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="font-black text-[24px]">บาท</span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
-                    <span id='thisMonthTotalMoneyPercent'></span>%
+                    <span id='thisMonthTotalMoneyPercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
@@ -321,7 +322,7 @@
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
                 <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
-                    <div class="">Min</div>
+                    <div class="font-bold" style="font-size: 14px; color: black;"  >Min</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="minValue" class="text-2xl text-bold">0</span>บาท
                     </div>
@@ -331,7 +332,7 @@
                     </div>
                 </div>
                 <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success">
-                    <div class="">Max</div>
+                    <div class="font-bold" style="font-size: 14px; color: black;">Max</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="maxValue" class="text-2xl text-bold">0</span>บาท
                     </div>
@@ -427,7 +428,7 @@
         </div>
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" style="background-color: #B6D2FF" id="regionTable">
             <thead class="bg-lightblue">
                 <tr>
                     <th scope="col"
