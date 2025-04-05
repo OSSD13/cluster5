@@ -48,18 +48,20 @@
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white">
-                <tr>
-                    <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-1 w-7 text-center"></th>
-                </tr>
-            </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
-        </table>
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+    <thead class="bg-blue-500 text-white text-sm">
+    <tr>
+        <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ประเภท</th>
+        <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
+        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">Icon</th>
+        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">คำอธิบาย</th>
+        <th class="py-2 px-2 text-center w-1/12 whitespace-nowrap"></th>
+    </tr>
+    </thead>
+    <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
+        <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
+    </tbody>
+    </table>
     </div>
 
     <!-- Pagination Controls -->
@@ -68,17 +70,16 @@
 @section('script')
     <script>
         let branches = [
-            { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
-            { id: 2, name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี" },
-            { id: 3, name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี" },
-            { id: 4, name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี" },
-            { id: 5, name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี" },
-            { id: 6, name: "ท่าพระ", type: "ตลาด", province: "ขอนแก่น" },
-            { id: 7, name: "กรุงเทพฯ", type: "ร้านอาหาร", province: "กรุงเทพมหานคร" },
-            { id: 8, name: "ปราจีนบุรี", type: "ร้านกาแฟ", province: "ปราจีนบุรี" },
-            { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
-            { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
-            { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
+            { id: 1, name: "ศูนย์กลางอำเภอ", type: "amphoe-center", province: "ชลบุรี" },
+            { id: 2, name: "ธนาคาร", type: "bank", province: "กรุงเทพมหานคร" },
+            { id: 3, name: "ชายหาด", type: "beach", province: "ภูเก็ต" },
+            { id: 4, name: "อาคารสำคัญ", type: "building-landmark", province: "เชียงใหม่" },
+            { id: 5, name: "ถ้ำ", type: "cave", province: "แม่ฮ่องสอน" },
+            { id: 6, name: "ศูนย์กลางจังหวัด", type: "changwat-center", province: "นครราชสีมา" },
+            { id: 7, name: "เจดีย์", type: "chedi", province: "อยุธยา" },
+            { id: 8, name: "โบสถ์", type: "church", province: "กรุงเทพมหานคร" },
+            { id: 9, name: "วิทยาลัยและมหาวิทยาลัย", type: "college-and-university", province: "ขอนแก่น" },
+            { id: 10, name: "ศาล", type: "court-center", province: "นครปฐม" }
         ]; // Your existing data
         let currentPage = 1;
         const rowsPerPage = 25;

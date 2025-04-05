@@ -42,20 +42,30 @@
     <!-- **************************************************************************** -->
 
     <!-- Pagination Controls -->
-    <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white">
-                <tr>
-                    <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-1 w-7 text-center font-bold"></th>
-                </tr>
-            </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
-        </table>
-    </div>
+    <div class="overflow-x-auto">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+    <thead class="bg-blue-500 text-white text-sm">
+    <tr>
+        <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ประเภท</th>
+        <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
+        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">Icon</th>
+        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">คำอธิบาย</th>
+        <th class="py-2 px-2 text-center w-1/12 whitespace-nowrap"></th>
+    </tr>
+    </thead>
+    <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
+        <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
+    </tbody>
+</table>
+        <td class="py-3 px-1 w-10 text-center relative">
+        <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+        <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
+            onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
+            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+        </div>
+    </td></div>
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
