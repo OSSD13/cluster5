@@ -6,7 +6,11 @@
         <nav class="sticky top-0 w-[100%] h-20 bg-white flex items-center p-2 px-6 rounded-b-lg z-10">
             <!-- Logo Section -->
             <div class="flex items-center flex-grow">
+<<<<<<< HEAD
                 <img src="/assets/img/MY LOCITION.png" alt="Logo" class="h-12 border-r">
+=======
+                <img src="/assets/img/logo_myLocation.png" alt="Logo" class="h-20 border-r-1 border-gray-800 pr-4">
+>>>>>>> origin/develop
             </div>
 
             <!-- Hamburger Menu -->
@@ -31,10 +35,17 @@
             @php
                 $navItems = [
                     ['name' => 'หน้าหลัก', 'path' => '/', 'icon' => 'icon-[material-symbols--home]'],
+<<<<<<< HEAD
                     ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]'],
                     ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]'],
                     ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]'],
                     ['name' => 'จัดการสมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]'],
+=======
+                    ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]', 'startsWith' => true],
+                    ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]', 'startsWith' => true],
+                    ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]', 'startsWith' => true],
+                    ['name' => 'จัดการสมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]', 'startsWith' => true],
+>>>>>>> origin/develop
                 ];
             @endphp
 
@@ -42,7 +53,11 @@
                 @php
                     $isActive =
                         ($item['path'] === '/' && request()->path() === '/') ||
+<<<<<<< HEAD
                         request()->is(ltrim($item['path'], '/'));
+=======
+                        (isset($item['startsWith']) && $item['startsWith'] ? str_starts_with(request()->path(), ltrim($item['path'], '/')) : request()->is(ltrim($item['path'], '/')));
+>>>>>>> origin/develop
                 @endphp
                 <a href="{{ $item['path'] }}"
                     class="flex flex-col items-center text-center w-1/5 {{ $isActive ? 'text-black' : 'text-gray-500' }}">

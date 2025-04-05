@@ -47,6 +47,10 @@ return new class extends Migration {
             })->first());
         Log::info('GeoJSON files to be processed: ' . $geojsonFiles->implode(', '));
         Log::info('Processing each geojson file');
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
         foreach ($geojsonFiles as $file) {
             Log::info('Reading file: ' . $file->getFilename());
             $data = json_decode(File::get($file), true);
@@ -70,7 +74,11 @@ return new class extends Migration {
             Log::info('Found ' . count($poiData) . ' POIs in file: ' . $file->getFilename());
 
             // Chunk the data into smaller parts
+<<<<<<< HEAD
             $chunks = array_chunk($poiData, 1000);
+=======
+            $chunks = array_chunk($poiData, 7000);
+>>>>>>> origin/develop
             DB::transaction(function () use ($chunks, $poiType) {
                 foreach ($chunks as $chunk) {
                     DB::table('point_of_interests')->insert($chunk);
