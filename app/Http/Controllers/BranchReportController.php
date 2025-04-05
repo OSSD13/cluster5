@@ -7,19 +7,16 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class c extends Controller
+class BranchReportController extends Controller
 {
-    /**
-     * Returns the list of subordinate users.
-     */
-    public function getSubordinate()
+       function getSubordinate()
     {
         $requestUserId = session()->get('user')->user_id;
-        $user = User::where('user_id', $requestUserId)->first();
+        $user = User::where('user_id', '=', $requestUserId)->first();
         $subordinateIds = $user->getSubordinateIds();
-
         $subordinates = User::whereIn('users.user_id', $subordinateIds)
             ->where('users.user_status', 'normal')
+            // ->where('users.role_name', '!=', 'ceo')
             ->leftJoin('users as managers', 'users.manager', '=', 'managers.user_id')
             ->get([
                 'users.user_id',
@@ -35,9 +32,12 @@ class c extends Controller
         return response()->json($subordinates);
     }
 
-    function getBranchReport(Request $request)
+    /**
+     * Combines branch report and branch filtering by region or province,
+     * and returns branch details with the sales data for the past 12 months.
+     */
+    public function getBranchReport(Request $request)
     {
-
         $userId = $request->query('user_id');
         $date = $request->query('date') ? Carbon::parse($request->query('date')) : now();
         $requestUserId = session()->get('user')->user_id;
@@ -59,10 +59,10 @@ class c extends Controller
             ->leftJoin('locations', 'point_of_interests.poi_location_id', '=', 'locations.location_id')
             ->leftJoin('users as managers', 'branch_stores.bs_manager', '=', 'managers.user_id')
             ->select(
-            'branch_stores.bs_id',
-            'branch_stores.bs_name',
-            'locations.province',
-            'locations.region'
+                'branch_stores.bs_id',
+                'branch_stores.bs_name',
+                'locations.province',
+                'locations.region'
             );
 
         // Filter by userId if provided
@@ -71,14 +71,8 @@ class c extends Controller
             $subordinateIds = $user->getSubordinateIds();
             $branchQuery->where(function ($query) use ($userId, $subordinateIds) {
                 $query->where('managers.user_id', '=', $userId)
-                      ->orWhereIn('managers.user_id', $subordinateIds);
+                    ->orWhereIn('managers.user_id', $subordinateIds);
             });
-        }
-
-        // Filter by month from Date if provided
-        if ($date) {
-            $branchQuery->whereMonth('branch_stores.created_at', '=', $date->month)
-                ->whereYear('branch_stores.created_at', '=', $date->year);
         }
 
         $distinctProvinces = [];
@@ -102,12 +96,12 @@ class c extends Controller
         $branches = $branchQuery->get();
         $branches_ids = $branches->pluck('bs_id')->toArray();
 
-        // Fetch sales data for the past 12 months
+        // Fetch sales data for the past 12 months.
         $salesData = DB::table('sales')
             ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
-                now()->subMonths(11)->startOfMonth()->format('Y-m-d'),
-                now()->endOfMonth()->format('Y-m-d')
+                $date->copy()->subMonths(11)->startOfMonth()->format('Y-m-d'),
+                $date->endOfMonth()->format('Y-m-d')
             ])
             ->select(
                 'sales.sales_branch_id',
@@ -118,7 +112,7 @@ class c extends Controller
             ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
 
-        // Transform sales data into an associative array by branch ID.
+        // Transform sales data into an associative array by branch ID
         $salesByBranch = [];
         foreach ($salesData as $sale) {
             $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
@@ -127,7 +121,7 @@ class c extends Controller
             ];
         }
 
-        // Attach sales data to branches.
+        // Attach sales data to branches
         foreach ($branches as $branch) {
             $branch->monthly_sales = $salesByBranch[$branch->bs_id] ?? [];
         }
@@ -136,6 +130,123 @@ class c extends Controller
             'branches' => $branches,
             'branch_count' => $branches->count(),
             'distinct_provinces' => $distinctProvinces
+        ]);
+    }
+
+    public function getRegionBranch(Request $request)
+    {
+        $searchingUserId = $request->query('user_id') ?? session()->get('user')->user_id;
+        $date = $request->query('date') ? Carbon::parse(time: $request->query('date')) : now();
+
+        $requestUserId = session()->get('user')->user_id;
+        $requestUser = User::where('user_id', '=', $requestUserId)->first();
+
+        // check if searchingUserId is under the requestUser
+        $subordinateIds = $requestUser->getSubordinateIds();
+        if (!in_array($searchingUserId, $subordinateIds) && $searchingUserId != $requestUserId) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        // check if searchingUserId is valid
+        $user = User::where('user_id', '=', $searchingUserId)->first();
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        $searchingUserId = $user->user_id;
+        $subordinateIds = $user->getSubordinateIds();
+
+        if ($request->has('province')) {
+            $province = $request->query('province');
+            $branches = DB::table('branch_stores')
+                ->leftJoin('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
+                ->leftJoin('locations', 'point_of_interests.poi_location_id', '=', 'locations.location_id')
+                ->leftJoin('users as managers', 'branch_stores.bs_manager', '=', 'managers.user_id')
+                ->where('locations.province', $province)
+                ->where(function ($query) use ($searchingUserId, $subordinateIds) {
+                    $query->where('managers.user_id', '=', $searchingUserId)
+                        ->orWhereIn('managers.user_id', $subordinateIds);
+                })
+                ->select(
+                    'branch_stores.bs_id as branchId',
+                    'branch_stores.bs_name as branchName',
+                    'locations.province as branchProvince'
+                )
+                ->get();
+
+            $currentMonth = $date->format('Y-m');
+            $lastMonth = $date->copy()->subMonth()->format('Y-m');
+
+            foreach ($branches as $branch) {
+                $currentMonthSales = DB::table('sales')
+                    ->where('sales.sales_branch_id', $branch->branchId)
+                    ->where(DB::raw('DATE_FORMAT(sales.sales_month, "%Y-%m")'), $currentMonth)
+                    ->sum('sales.sales_amount');
+
+                $lastMonthSales = DB::table('sales')
+                    ->where('sales.sales_branch_id', $branch->branchId)
+                    ->where(DB::raw('DATE_FORMAT(sales.sales_month, "%Y-%m")'), $lastMonth)
+                    ->sum('sales.sales_amount');
+
+                if ($lastMonthSales > 0) {
+                    $branch->branchSaleChange = (($currentMonthSales - $lastMonthSales) / $lastMonthSales) * 100;
+                } else {
+                    $branch->branchSaleChange = $currentMonthSales > 0 ? 100 : 0;
+                }
+
+                $branch->saleAdded = $currentMonthSales > 0;
+            }
+
+            return response()->json([
+                'branches' => $branches,
+                'branch_count' => $branches->count()
+            ]);
+        }
+
+        if ($request->has('region')) {
+            $region = $request->query('region');
+            $distinctProvinces = DB::table('locations')
+                ->where('region', $region)
+                ->distinct()
+                ->pluck('province');
+
+            $branchCountByProvince = DB::table('branch_stores')
+                ->leftJoin('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
+                ->leftJoin('locations', 'point_of_interests.poi_location_id', '=', 'locations.location_id')
+                ->leftJoin('users as managers', 'branch_stores.bs_manager', '=', 'managers.user_id')
+                ->where('locations.region', $region)
+                ->where(function ($query) use ($searchingUserId, $subordinateIds) {
+                    $query->where('managers.user_id', '=', $searchingUserId)
+                        ->orWhereIn('managers.user_id', $subordinateIds);
+                })
+                ->select('locations.province', DB::raw('COUNT(branch_stores.bs_id) as branch_count'))
+                ->groupBy('locations.province')
+                ->get();
+
+            return response()->json([
+                'distinct_provinces' => $distinctProvinces,
+                'branch_count_by_province' => $branchCountByProvince
+            ]);
+        }
+
+        $distinctRegions = DB::table('locations')
+            ->distinct()
+            ->pluck('region');
+
+        $branchCountByRegion = DB::table('branch_stores')
+            ->leftJoin('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
+            ->leftJoin('locations', 'point_of_interests.poi_location_id', '=', 'locations.location_id')
+            ->leftJoin('users as managers', 'branch_stores.bs_manager', '=', 'managers.user_id')
+            ->where(function ($query) use ($searchingUserId, $subordinateIds) {
+                $query->where('managers.user_id', '=', $searchingUserId)
+                    ->orWhereIn('managers.user_id', $subordinateIds);
+            })
+            ->select('locations.region', DB::raw('COUNT(branch_stores.bs_id) as branch_count'))
+            ->groupBy('locations.region')
+            ->get();
+
+        return response()->json([
+            'distinct_regions' => $distinctRegions,
+            'branch_count_by_region' => $branchCountByRegion
         ]);
     }
 }
