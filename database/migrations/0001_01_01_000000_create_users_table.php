@@ -18,9 +18,10 @@ return new class extends Migration {
             $table->string('user_status');
             $table->string('role_name');
             $table->string('name');
+
             $table->unsignedBigInteger('manager')->nullable();
             $table->foreign('manager')->references('user_id')->on('users');
-            $table->rememberToken();
+            // $table->rememberToken();
             $table->timestamps();
         });
 
