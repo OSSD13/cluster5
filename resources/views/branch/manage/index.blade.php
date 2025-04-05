@@ -140,14 +140,34 @@
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
 
-            // Page number buttons
-            for (let i = 1; i <= totalPages; i++) {
+            // Display first page button if needed
+            if (currentPage > 3) {
+                const firstBtn = document.createElement("button");
+                firstBtn.innerText = "1";
+                firstBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                firstBtn.onclick = () => goToPage(1);
+                pagination.appendChild(firstBtn);
+                pagination.appendChild(document.createTextNode("..."));
+            }
+
+            // Display middle page numbers
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
                 btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                     ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
+            }
+
+            // Display last page button if needed
+            if (currentPage < totalPages - 2) {
+                pagination.appendChild(document.createTextNode("..."));
+                const lastBtn = document.createElement("button");
+                lastBtn.innerText = totalPages;
+                lastBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pagination.appendChild(lastBtn);
             }
 
             // Next button
