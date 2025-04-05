@@ -45,13 +45,13 @@
     <div class="overflow-x-auto">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
     <thead class="bg-blue-500 text-white text-sm">
-    <tr>
-        <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ประเภท</th>
-        <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
-        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">Icon</th>
-        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">คำอธิบาย</th>
-        <th class="py-2 px-2 text-center w-1/12 whitespace-nowrap"></th>
-    </tr>
+        <tr>
+            <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ประเภท</th> <!-- เพิ่มความกว้าง -->
+            <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th>
+            <th class="py-2 px-4 text-center w-2/12 whitespace-nowrap">Icon</th>
+            <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">คำอธิบาย</th>
+            <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap"></th> <!-- ลดความกว้าง -->
+        </tr>
     </thead>
     <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
         <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
@@ -66,6 +66,26 @@
             <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
         </div>
     </td></div>
+    <style>
+    th, td {
+        vertical-align: middle; /* จัดข้อความให้อยู่ตรงกลางแนวตั้ง */
+    }
+
+    td.text-left {
+        text-align: left; /* จัดข้อความชิดซ้าย */
+    }
+
+    td.text-center {
+        text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+    }
+
+    td.truncate {
+        max-width: 200px; /* เพิ่มความกว้างสูงสุดของข้อความ */
+        white-space: nowrap; /* ป้องกันการตัดคำ */
+        overflow: hidden; /* ซ่อนข้อความที่เกิน */
+        text-overflow: ellipsis; /* แสดงจุดสามจุด */
+    }
+</style>
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
@@ -98,31 +118,30 @@
         let currentSort = { column: null, ascending: true };
 
         function renderTable() {
-            const tableBody = document.getElementById("tableBody");
-            tableBody.innerHTML = "";
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
 
-            const start = (currentPage - 1) * rowsPerPage;
-            const paginatedData = branches.slice(start, start + rowsPerPage);
+    branches.forEach((branch) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td class="py-3 px-4 text-left truncate">${branch.type}</td>
+            <td class="py-3 px-4 text-left truncate">${branch.name}</td>
+            <td class="py-3 px-4 text-center">${branch.icon || "🏢"}</td>
+            <td class="py-3 px-4 text-left truncate">${branch.province}</td>
+            <td class="py-3 px-1 w-10 text-center small relative">
+                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
+                    onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
+                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
 
-            paginatedData.forEach((branch) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                <td class="py-3 px-4 w-16">${branch.id}</td>
-                <td class="py-3 px-4 truncate">${branch.name}</td>
-                <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-                <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-                <td class="py-3 px-1 w-10 text-center relative">
-                    <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                    <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
-                        onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
-                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                    </div>
-                </td>
-            `;
-                tableBody.appendChild(row);
-            });
+
 
             renderPagination();
         }
