@@ -49,20 +49,16 @@
     <!-- Pagination Controls -->
     <div class="overflow-visible">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-    <thead class="bg-blue-500 text-white text-sm">
-    <tr>
-        <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ประเภท</th>
-        <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
-        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">Icon</th>
-        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">คำอธิบาย</th>
-        <th class="py-2 px-2 text-center w-1/12 whitespace-nowrap"></th>
-    </tr>
-    </thead>
-    <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
-        <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
-    </tbody>
+        <thead class="bg-blue-500 text-white text-sm">
+            <tr>
+                <th class="py-2 px-4 text-left w-4/12 whitespace-nowrap">ชื่อ / ประเภท</th>
+                <th class="py-2 px-4 text-center w-2/12 whitespace-nowrap">Icon</th>
+                <th class="py-2 px-4 text-center w-5/12 whitespace-nowrap">คำอธิบาย</th>
+                <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap"></th>
+            </tr>
+        </thead>
     </table>
-    </div>
+</div>
 
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
