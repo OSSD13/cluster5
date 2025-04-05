@@ -42,7 +42,7 @@ class UserFactory extends Factory
             'user_status'    => fake()->randomElement(['normal', 'disabled']),
             'role_name'      => $role,
             'name'           => fake()->name(),
-            'remember_token' => Str::random(10),
+            // 'remember_token' => Str::random(10),
             'manager'        => $managerId,
             'created_at'     => fake()->dateTime(),
             'updated_at'     => fake()->dateTime(),

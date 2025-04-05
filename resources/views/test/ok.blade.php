@@ -18,13 +18,7 @@
         @endif
     </head>
     <!-- component -->
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d77ac94 (Add new component layout and route for test view)
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+
 <<!-- component -->
 <!-- This is an example component -->
 <div class="flex flex-col">
@@ -53,12 +47,7 @@
       	New
     </button>
   </div>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
-  
-  
+
   <div class="mt-8 flex">
     <button type="button" class="rounded-full px-4 mr-2 bg-blue-600 text-white p-2 rounded  leading-none flex items-center">
       	New
@@ -80,9 +69,7 @@
     </button>
   </div>
 </div>
-<<<<<<< HEAD
-=======
-=======
+
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
 
 <style>
@@ -101,8 +88,7 @@
 <button class="fortnite-btn flex items-center justify-center h-32 w-64">
 	<span class="fortnite-btn-inner p-3 pt-5 w-11/12 text-5xl truncate">Play</span>
 </button>
->>>>>>> 30d3bf4 (Chg)
-=======
+
   
   
   <div class="mt-8 flex">
@@ -126,6 +112,5 @@
     </button>
   </div>
 </div>
->>>>>>> d77ac94 (Add new component layout and route for test view)
->>>>>>> 014d5eb (fix(login):แก้ไขสวยๆ)
+
 </html>

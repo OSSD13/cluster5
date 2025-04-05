@@ -1,16 +1,13 @@
 <?php
 
+use App\Http\Controllers\PointOfInterestController;
+use App\Http\Controllers\PointOfInterestTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\AnotherController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
-
-// Default welcome page
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Middleware\CheckLogin;
 
@@ -21,7 +18,8 @@ Route::get('/login', function () {
     return view('auth.login');
 }); // แก้ชื่อ method ให้ตรง (Login → login)
 
-Route::post('/login', action: [LoginController::class, 'login']);
+Route::post('/login',[LoginController::class, 'login']);
+
 
 
 // testing
@@ -32,12 +30,22 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/map', function () {
         return view('map.index');
     });
-    Route::get('/branch', function () {
-        return view('branch.index');
-    });
-    Route::get('/poi', function () {
-        return view('poi.index');
-    });
+    Route::get('/branch', function () {return view('branch.index');});
+    Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
+    Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
+    Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
+    Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
+
+    Route::get('/poi', function () {return view('poi.index');});
+    Route::get('/poi/create', [PointOfInterestController::class, 'create'])->name('poi.create');
+    Route::get('/poi/edit', [PointOfInterestController::class, 'edit'])->name('poi.edit');
+    Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
+    Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
+    Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
+    Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
+    Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');
+
+
     Route::get('/user', function () {
         return view('user.index');
     });
@@ -48,8 +56,13 @@ Route::middleware([CheckLogin::class])->group(function () {
     // APIs
     Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
     Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-    // Database test routes
-    // Route::get('/register', [DatabaseTestController::class, 'createUser']);
+
+    // /api/getRegionBranch
+    Route::get('/api/getRegionBranch', [BranchReportController::class, 'getRegionBranch']);
+
+
+
+
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
     Route::get('/displaySub', [DatabaseTestController::class, 'displaySub']);
     Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
@@ -58,10 +71,10 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/convert-link', [AnotherController::class, 'showForm']);
     Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
 
-    
 
 });
 
-Route::get('/asd', function () {
+
+Route::get('/test', function () {
     return view('test');
 });

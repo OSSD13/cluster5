@@ -8,7 +8,7 @@
 
         <!-- โลโก้ -->
         <div class="flex flex-col items-center">
-            <img src="/assets/img/LogoMyx.png" class="w-48 mb-3" alt="Logo">
+            <img src="/assets/img/logo_myLocation.png" class="w-48 mb-1" alt="Logo">
         </div>
 
         <!-- กล่อง Login -->

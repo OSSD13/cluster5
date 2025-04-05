@@ -18,6 +18,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
+    {{-- Sweet Aleart --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- Emoji --}}
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    
     {{-- jquery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -58,7 +64,7 @@
 
 </head>
 
-<body class="font-lunasima antialiased bg-gray-100">
+<body class="font-lunasima antialiased bg-gray-300">
     @yield('body')
 </body>
 
