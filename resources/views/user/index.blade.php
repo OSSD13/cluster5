@@ -63,7 +63,8 @@
 <!-- Pagination Controls -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
-
+<!-- contextMenu Controls-->
+<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
     let branches = [
@@ -71,9 +72,9 @@
         { id: 2, name: "กานต์", type: "knn@gmail.com", province: "CEO" },
         { id: 3, name: "อิทธิ์", type: "itt@gmail.com", province: "Sale" },
         { id: 4, name: "เจษฎา", type: "jess@gmail.com", province: "Sale" },
-        { id: 5, name: "บุญมี", type: "bun@gmail.com", province: "Sale Sup." },
+        { id: 5, name: "บุญมี", type: "bun@gmail.com", province: "Sale Supervisor" },
         { id: 6, name: "เอกรินทร์", type: "egn@gmail.com", province: "CEO" },
-        { id: 7, name: "อิศรา", type: "isra@gmail.com", province: "Sale Sup." },
+        { id: 7, name: "อิศรา", type: "isra@gmail.com", province: "Sale Supervisor" },
         { id: 8, name: "มีนา", type: "me@gmail.com", province: "Sale" },
         { id: 9, name: "น้ำทิพย์", type: "nam@gmail.com", province: "Sale" },
         { id: 10, name: "โอภาส", type: "oop@gmail.com", province: "CEO" },
@@ -101,13 +102,11 @@
         <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
         <td class="py-3 px-1 w-10 text-center relative">
             <button onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-            <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="editBranch(${branch.id})">แก้ไข</button>
-                <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" onclick="deleteBranch(${branch.id})">ลบ</button>
-            </div>
+           
         </td>
     `;
+    
+
     tableBody.appendChild(row);
 });
 
@@ -124,28 +123,29 @@
 
     // Previous button
     const prevBtn = document.createElement("button");
-    prevBtn.innerText = "<";
-    prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => goToPage(currentPage - 1);
-    pagination.appendChild(prevBtn);
+            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
 
-    // Page number buttons
-    for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement("button");
-        btn.innerText = i;
-        btn.className = `px-3 py-1 ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-200"} rounded hover:bg-gray-300`;
-        btn.onclick = () => goToPage(i);
-        pagination.appendChild(btn);
-    }
+            // Page number buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.innerText = i;
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                     ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                btn.onclick = () => goToPage(i);
+                pagination.appendChild(btn);
+            }
 
-    // Next button
-    const nextBtn = document.createElement("button");
-    nextBtn.innerText = ">";
-    nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-gray-500 text-white"} rounded hover:bg-gray-400`;
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.onclick = () => goToPage(currentPage + 1);
-    pagination.appendChild(nextBtn);
+            // Next button
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
 }
 
     function goToPage(pageNumber) {
@@ -153,14 +153,58 @@
         renderTable();
     }
 
+
+    let activeMenuId = null;
+
     function toggleMenu(event, id) {
         event.stopPropagation();
-        document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-        document.getElementById(`menu-${id}`).classList.toggle("hidden");
+
+        const menu = document.getElementById("contextMenu");
+        const button = event.currentTarget;
+        const parentCell = button.closest('td');
+
+        if (activeMenuId === id && !menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+            activeMenuId = null;
+            return;
+        }
+
+        activeMenuId = id;
+
+        menu.innerHTML = `
+            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
+                ดูรายละเอียด
+            </button>
+            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editBranch(${id})">
+                แก้ไข
+            </button>
+            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteBranch(${id})">
+                ลบ
+            </button>
+        `;
+
+        menu.classList.remove("hidden");
+
+        // **แสดงเมนูก่อนเพื่อให้ offsetWidth ทำงาน**
+        menu.classList.remove("hidden");
+
+        // ตั้งตำแหน่งเมนูใหม่
+        const top = parentCell.offsetTop + parentCell.offsetHeight -20; // ลดลงมานิด (4px)
+        const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
+
+
+        menu.style.position = "absolute";
+        menu.style.top = `${top}px`;
+        menu.style.left = `${left}px`;
     }
-    document.addEventListener("click", () => {
-        document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-    });
+
+
+
+
+
 
     function sortTable(column) {
         if (currentSort.column === column) {
@@ -311,7 +355,9 @@ function addMember() {
 
 
     renderTable();
-    
+   
+
+
 </script>
 
 
