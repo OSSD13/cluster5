@@ -67,7 +67,7 @@
 <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
-    let branches = [
+    let members = [
         { id: 1, name: "พีระพัท", type: "per@gmail.com", province: "Sale" },
         { id: 2, name: "กานต์", type: "knn@gmail.com", province: "CEO" },
         { id: 3, name: "อิทธิ์", type: "itt@gmail.com", province: "Sale" },
@@ -89,19 +89,19 @@
         tableBody.innerHTML = "";
 
         const start = (currentPage - 1) * rowsPerPage;
-        const paginatedData = branches.slice(start, start + rowsPerPage);
+        const paginatedData = members.slice(start, start + rowsPerPage);
 
-        paginatedData.forEach((branch) => {
+        paginatedData.forEach((member) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-        <td class="py-3 px-4 w-16">${branch.id}</td>
+        <td class="py-3 px-4 w-16">${member.id}</td>
         <td class="py-3 px-4 truncate">
-            <div class="font-semibold">${branch.name}</div>
-            <div class="text-sm text-gray-500">${branch.type}</div>
+            <div class="font-semibold">${member.name}</div>
+            <div class="text-sm text-gray-500">${member.type}</div>
         </td>
-        <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+        <td class="py-3 px-4 w-32 truncate">${member.province}</td>
         <td class="py-3 px-1 w-10 text-center relative">
-            <button onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+            <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
            
         </td>
     `;
@@ -119,7 +119,7 @@
     const pagination = document.getElementById("pagination");
     pagination.innerHTML = ""; // Clear previous pagination
 
-    const totalPages = Math.ceil(branches.length / rowsPerPage);
+    const totalPages = Math.ceil(members.length / rowsPerPage);
 
     // Previous button
     const prevBtn = document.createElement("button");
@@ -177,7 +177,7 @@
                 ดูรายละเอียด
             </button>
             <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editBranch(${id})">
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
                 แก้ไข
             </button>
             <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
@@ -199,7 +199,7 @@
             menu.classList.add("hidden");
             activeMenuId = null;
         }
-    });
+});
 
 
         // ตั้งตำแหน่งเมนูใหม่
@@ -224,25 +224,25 @@
             currentSort.column = column;
             currentSort.ascending = true;
         }
-        branches.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
+        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
         renderTable();
     }
 
     function viewDetail(id) {
-    const branch = branches.find(item => item.id === id);
+    const member = members.find(item => item.id === id);
 
     Swal.fire({
         title: "<b class=text-gray-800>รายละเอียดข้อมูลสมาชิก </b>",
         html: `
             <div class="flex flex-col space-y-2 text-left">
                 <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
+                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.name}" readonly>
 
                 <label class="font-semibold text-gray-800">อีเมล</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
+                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.type}" readonly>
 
                 <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
+                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.province}" readonly>
 
                 <label class="font-semibold text-gray-800">บทบาท</label>
                 <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
@@ -310,12 +310,12 @@ function addMember() {
             
             // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
             const newMember = {
-                id: branches.length + 1,
+                id: members.length + 1,
                 name: name,
                 type: email,
                 province: role
             };
-            branches.push(newMember);
+            members.push(newMember);
             renderTable();
 
             // แจ้งเตือนว่าบันทึกสำเร็จ
@@ -331,43 +331,75 @@ function addMember() {
 }
 
 
+function editMember(id) {
+    const member = members.find(item => item.id === id);
 
-
-    function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
-    function deleteBranch(id) {
     Swal.fire({
-        title: "ลบสมาชิก",
-        text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
-        icon: "warning",
-        iconColor: "#d33",
+        title: `
+            <div class="flex flex-col items-center mb-1 ">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
+            </div>
+            <b class=text-gray-800>แก้ไขสมาชิก </b>
+        `,
+        html: `
+            <div class="flex flex-col space-y-1 text-left">
+                <label class="font-semibold text-gray-800">Email</label>
+                <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.type}" >
+
+                <label class="font-semibold text-gray-800">Password</label>
+                <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
+
+                <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
+                <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.name}">
+
+                <label class="font-semibold text-gray-800">บทบาท</label>
+                <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                    <option value="Sale" ${member.province === 'Sale' ? 'selected' : ''}>Sale</option>
+                    <option value="CEO" ${member.province === 'CEO' ? 'selected' : ''}>CEO</option>
+                    <option value="Sale Supervisor" ${member.province === 'Sale Supervisor' ? 'selected' : ''}>Sale Supervisor</option>
+                </select>
+            </div>
+        `,
         showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#6c757d",
         confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // ลบรายการออกจากอาร์เรย์
-            branches = branches.filter(branch => branch.id !== id);
-            
-            // อัปเดตตาราง
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        focusCancel: true,
+        customClass: {
+            actions: "flex justify-between w-full px-4",
+            cancelButton: "ml-0",
+            confirmButton: "mr-0",
+        },
+        preConfirm: () => {
+            const email = document.getElementById("memberEmail").value;
+            const name = document.getElementById("memberName").value;
+            const role = document.getElementById("memberRole").value;
+
+            if (!email || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            // อัปเดตข้อมูลใน array
+            member.type = email;
+            member.name = name;
+            member.province = role;
+
             renderTable();
 
-            // แจ้งเตือนว่าลบสำเร็จ
             Swal.fire({
-                title: "ลบแล้ว!",
-                text: "สมาชิกถูกลบเรียบร้อย",
-                icon: "success"
+                title: "สำเร็จ!",
+                text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                icon: "success",
+                confirmButtonColor: "#2D8C42",
+                confirmButtonText: "ตกลง"
             });
         }
     });
 }
 
-
     renderTable();
    
-
-
 </script>
 
 
