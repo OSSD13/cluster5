@@ -72,9 +72,9 @@
         { id: 2, name: "กานต์", type: "knn@gmail.com", province: "CEO" },
         { id: 3, name: "อิทธิ์", type: "itt@gmail.com", province: "Sale" },
         { id: 4, name: "เจษฎา", type: "jess@gmail.com", province: "Sale" },
-        { id: 5, name: "บุญมี", type: "bun@gmail.com", province: "Sale Supervisor" },
+        { id: 5, name: "บุญมี", type: "bun@gmail.com", province: "Sale Sup." },
         { id: 6, name: "เอกรินทร์", type: "egn@gmail.com", province: "CEO" },
-        { id: 7, name: "อิศรา", type: "isra@gmail.com", province: "Sale Supervisor" },
+        { id: 7, name: "อิศรา", type: "isra@gmail.com", province: "Sale Sup." },
         { id: 8, name: "มีนา", type: "me@gmail.com", province: "Sale" },
         { id: 9, name: "น้ำทิพย์", type: "nam@gmail.com", province: "Sale" },
         { id: 10, name: "โอภาส", type: "oop@gmail.com", province: "CEO" },
@@ -279,14 +279,22 @@ function addMember() {
                 <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3">
 
                 <label class="font-semibold text-gray-800">บทบาท</label>
-                <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded" onchange="toggleSupervisor()">
+                    <option value="" selected disabled class="hidden" ></option>
                     <option value="Sale">Sale</option>
                     <option value="CEO">CEO</option>
                     <option value="Sale Sup.">Sale Supervisor</option>
                 </select>
+
+
+                <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
+                <div id="supervisorSection" style="display: none;" class="mt-4">
+                    <label class="font-semibold text-gray-800">Sales supervisor</label>
+                    <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                    </select>
+                </div>
             </div>
         `,
-        
         showCancelButton: true,
         confirmButtonText: "ยืนยัน",
         cancelButtonText: "ยกเลิก",
@@ -307,13 +315,24 @@ function addMember() {
                 Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
                 return false;
             }
-            
+
+            // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
+            let supervisorId = null;
+            if (role === "Sale") {
+                supervisorId = document.getElementById("supervisorDropdown").value;
+                if (!supervisorId) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                    return false;
+                }
+            }
+
             // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
             const newMember = {
                 id: members.length + 1,
                 name: name,
                 type: email,
-                province: role
+                province: role,
+                supervisorId: supervisorId
             };
             members.push(newMember);
             renderTable();
@@ -329,6 +348,32 @@ function addMember() {
         }
     });
 }
+
+// ฟังก์ชันนี้จะทำงานเมื่อเลือกบทบาทเป็น Sale
+function toggleSupervisor() {
+    const role = document.getElementById("memberRole").value;
+    const supervisorSection = document.getElementById("supervisorSection");
+    const dropdown = document.getElementById("supervisorDropdown");
+
+    if (role === "Sale") {
+        supervisorSection.style.display = "block";
+        dropdown.innerHTML = ""; // ล้างก่อน
+
+        // กรองเฉพาะ Sale Supervisor
+        const supervisors = members.filter(m => m.province === "Sale Sup.");
+
+        // เติมตัวเลือก
+        supervisors.forEach(s => {
+            const option = document.createElement("option");
+            option.value = s.id;
+            option.textContent = `${s.name} - ${s.type}`;
+            dropdown.appendChild(option);
+        });
+    } else {
+        supervisorSection.style.display = "none";
+    }
+}
+
 
 
 function editMember(id) {
