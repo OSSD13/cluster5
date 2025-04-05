@@ -68,18 +68,19 @@
 
 <script>
     let members = [
-        { id: 1, name: "พีระพัท", type: "per@gmail.com", province: "Sale" },
-        { id: 2, name: "กานต์", type: "knn@gmail.com", province: "CEO" },
-        { id: 3, name: "อิทธิ์", type: "itt@gmail.com", province: "Sale" },
-        { id: 4, name: "เจษฎา", type: "jess@gmail.com", province: "Sale" },
-        { id: 5, name: "บุญมี", type: "bun@gmail.com", province: "Sale Sup." },
-        { id: 6, name: "เอกรินทร์", type: "egn@gmail.com", province: "CEO" },
-        { id: 7, name: "อิศรา", type: "isra@gmail.com", province: "Sale Sup." },
-        { id: 8, name: "มีนา", type: "me@gmail.com", province: "Sale" },
-        { id: 9, name: "น้ำทิพย์", type: "nam@gmail.com", province: "Sale" },
-        { id: 10, name: "โอภาส", type: "oop@gmail.com", province: "CEO" },
-        { id: 10, name: "ดลภพ", type: "dol@gmail.com", province: "CEO" }
-    ]; // Your existing data
+        { id: 1, name: "พีระพัท", email: "per@gmail.com", role: "Sale", supervisorId: 5 },
+        { id: 2, name: "กานต์", email: "knn@gmail.com", role: "CEO" },
+        { id: 3, name: "อิทธิ์", email: "itt@gmail.com", role: "Sale", supervisorId: 7 },
+        { id: 4, name: "เจษฎา", email: "jess@gmail.com", role: "Sale", supervisorId: 5 },
+        { id: 5, name: "บุญมี", email: "bun@gmail.com", role: "Sale Sup." },
+        { id: 6, name: "เอกรินทร์", email: "egn@gmail.com", role: "CEO" },
+        { id: 7, name: "อิศรา", email: "isra@gmail.com", role: "Sale Sup." },
+        { id: 8, name: "มีนา", email: "me@gmail.com", role: "Sale", supervisorId: 7 },
+        { id: 9, name: "น้ำทิพย์", email: "nam@gmail.com", role: "Sale", supervisorId: 5 },
+        { id: 10, name: "โอภาส", email: "oop@gmail.com", role: "CEO" },
+        { id: 11, name: "ดลภพ", email: "dol@gmail.com", role: "CEO" }
+    ];
+
     let currentPage = 1;
     const rowsPerPage = 10;
     let currentSort = { column: null, ascending: true };
@@ -97,9 +98,9 @@
         <td class="py-3 px-4 w-16">${member.id}</td>
         <td class="py-3 px-4 truncate">
             <div class="font-semibold">${member.name}</div>
-            <div class="text-sm text-gray-500">${member.type}</div>
+            <div class="text-sm text-gray-500">${member.email}</div>
         </td>
-        <td class="py-3 px-4 w-32 truncate">${member.province}</td>
+        <td class="py-3 px-4 w-32 truncate">${member.role}</td>
         <td class="py-3 px-1 w-10 text-center relative">
             <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
            
@@ -229,46 +230,66 @@
     }
 
     function viewDetail(id) {
-    const member = members.find(item => item.id === id);
+        const member = members.find(item => item.id === id);
 
-    Swal.fire({
-        title: "<b class=text-gray-800>รายละเอียดข้อมูลสมาชิก </b>",
-        html: `
-            <div class="flex flex-col space-y-2 text-left">
-                <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.name}" readonly>
+        // เช็คถ้าสมาชิกเป็น "Sale" และมี Sales Supervisor
+        let supervisorInfo = "";
+        if (member.role === "Sale" && member.supervisorId) {
+            const supervisor = members.find(item => item.id === member.supervisorId);
+            if (supervisor) {
+                supervisorInfo = `
+                    <label class="font-semibold text-gray-800">Sales Supervisor</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${supervisor.name} - ${supervisor.email}" readonly>
+                `;
+            } else {
+                supervisorInfo = `
+                    <label class="font-semibold text-gray-800">Sales Supervisor</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="ไม่พบ Supervisor" readonly>
+                `;
+            }
+        }
 
-                <label class="font-semibold text-gray-800">อีเมล</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.type}" readonly>
+        Swal.fire({
+            title: "<b class=text-gray-800>รายละเอียดข้อมูลสมาชิก </b>",
+            html: `
+                <div class="flex flex-col space-y-2 text-left">
+                    <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.name}" readonly>
 
-                <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.province}" readonly>
+                    <label class="font-semibold text-gray-800">อีเมล</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.email}" readonly>
 
-                <label class="font-semibold text-gray-800">บทบาท</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
+                    <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
 
-                <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
-            </div>
-        `,
-        customClass: {
-            popup: 'custom-popup'
-        },
-        confirmButtonText: "ยืนยัน",
-        confirmButtonColor: "#2D8C42",
-    });
-}
+                    <label class="font-semibold text-gray-800">บทบาท</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${member.role}" readonly>
+
+                    <label class="font-semibold text-gray-800">เพิ่มโดย</label>
+                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
+
+                    ${supervisorInfo} <!-- แสดง Sales Supervisor ถ้ามี -->
+                </div>
+            `,
+            customClass: {
+                popup: 'custom-popup'
+            },
+            confirmButtonText: "ยืนยัน",
+            confirmButtonColor: "#2D8C42",
+        });
+
+    }
+
 
 function addMember() {
     Swal.fire({
-        title: `
-            <div class="flex flex-col items-center mb-1 ">
+        title: 
+            `<div class="flex flex-col items-center mb-1">
                 <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
             </div>
-            <b class=text-gray-800>สร้างสมาชิก </b>
-        `,
-        html: `
-            <div class="flex flex-col space-y-1 text-left">
+            <b class=text-gray-800>สร้างสมาชิก </b>`,
+        html: 
+            `<div class="flex flex-col space-y-1 text-left">
                 <label class="font-semibold text-gray-800">Email</label>
                 <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" >
 
@@ -280,21 +301,23 @@ function addMember() {
 
                 <label class="font-semibold text-gray-800">บทบาท</label>
                 <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded" onchange="toggleSupervisor()">
-                    <option value="" selected disabled class="hidden" ></option>
+                    <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
                     <option value="Sale">Sale</option>
                     <option value="CEO">CEO</option>
                     <option value="Sale Sup.">Sale Supervisor</option>
                 </select>
 
-
                 <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
                 <div id="supervisorSection" style="display: none;" class="mt-4">
                     <label class="font-semibold text-gray-800">Sales supervisor</label>
                     <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                        <option value="" selected disabled>เลือก Sales Supervisor</option>
+                        ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
+                            `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
+                        ).join('')}
                     </select>
                 </div>
-            </div>
-        `,
+            </div>`,
         showCancelButton: true,
         confirmButtonText: "ยืนยัน",
         cancelButtonText: "ยกเลิก",
@@ -327,12 +350,12 @@ function addMember() {
             }
 
             // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
-            const newMember = {
+            let newMember = {
                 id: members.length + 1,
                 name: name,
-                type: email,
-                province: role,
-                supervisorId: supervisorId
+                email: email,
+                role: role,
+                supervisorId: supervisorId // เก็บ Sales Supervisor ไว้ใน supervisorId
             };
             members.push(newMember);
             renderTable();
@@ -349,30 +372,36 @@ function addMember() {
     });
 }
 
+
 // ฟังก์ชันนี้จะทำงานเมื่อเลือกบทบาทเป็น Sale
 function toggleSupervisor() {
     const role = document.getElementById("memberRole").value;
-    const supervisorSection = document.getElementById("supervisorSection");
+    const section = document.getElementById("supervisorSection");
     const dropdown = document.getElementById("supervisorDropdown");
 
     if (role === "Sale") {
-        supervisorSection.style.display = "block";
-        dropdown.innerHTML = ""; // ล้างก่อน
+        section.style.display = "block";
+        dropdown.innerHTML = "";
 
-        // กรองเฉพาะ Sale Supervisor
-        const supervisors = members.filter(m => m.province === "Sale Sup.");
+        const supervisors = members.filter(member => member.role === "Sale Sup.");
 
-        // เติมตัวเลือก
-        supervisors.forEach(s => {
-            const option = document.createElement("option");
-            option.value = s.id;
-            option.textContent = `${s.name} - ${s.type}`;
-            dropdown.appendChild(option);
-        });
+        if (supervisors.length === 0) {
+            dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
+        } else {
+            dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
+            supervisors.forEach(sup => {
+                dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
+            });
+        }
     } else {
-        supervisorSection.style.display = "none";
+        section.style.display = "none";
+        dropdown.innerHTML = "";
     }
 }
+
+
+
+
 
 
 
@@ -389,7 +418,7 @@ function editMember(id) {
         html: `
             <div class="flex flex-col space-y-1 text-left">
                 <label class="font-semibold text-gray-800">Email</label>
-                <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.type}" >
+                <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.email}" >
 
                 <label class="font-semibold text-gray-800">Password</label>
                 <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
@@ -426,7 +455,7 @@ function editMember(id) {
             }
 
             // อัปเดตข้อมูลใน array
-            member.type = email;
+            member.email = email;
             member.name = name;
             member.province = role;
 
