@@ -12,7 +12,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-bold">จัดการสมาชิก</h2>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="addMember()" >
+            <button class="hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border border-gray-400" style="background-color: #3062B8" onclick="addMember()" >
                 สร้างสมาชิก
             </button>
         </div>
@@ -44,9 +44,9 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+    <table class="w-full mt-5 rounded-lg overflow-hidden table-fixed">
         
-        <thead class="bg-blue-500 text-white">
+        <thead class="text-gray-800" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
@@ -172,15 +172,15 @@
         activeMenuId = id;
 
         menu.innerHTML = `
-            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap"
+            <button class="block w-full px-4 py-2 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
                 ดูรายละเอียด
             </button>
-            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            <button class="block w-full px-4 py-2 text-white rounded-lg hover:bg-blue-700" style="background-color: #3062B8"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editBranch(${id})">
                 แก้ไข
             </button>
-            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+            <button class="block w-full px-4 py-2 text-white rounded-lg hover:bg-red-700" style="background-color: #CF3434"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteBranch(${id})">
                 ลบ
             </button>
@@ -221,24 +221,37 @@
     const branch = branches.find(item => item.id === id);
 
     Swal.fire({
-        title: "<b class=text-gray-800>รายละเอียดข้อมูลสมาชิก </b>",
         html: `
-            <div class="flex flex-col space-y-2 text-left">
-                <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
-
-                <label class="font-semibold text-gray-800">อีเมล</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
-
-                <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
-
-                <label class="font-semibold text-gray-800">บทบาท</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
-
-                <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
+            <div class="flex flex-col items-center">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
+                <b class="text-gray-800 text-xl mb-1">รายละเอียดข้อมูลสมาชิก</b>
             </div>
+           <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.name}" readonly>
+            </div>
+
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">อีเมล</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.type}" readonly>
+            </div>
+
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">วันที่เพิ่ม</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.province}" readonly>
+            </div>
+
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
+            </div>
+
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">เพิ่มโดย</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
+            </div>
+        </div>
         `,
         customClass: {
             popup: 'custom-popup'
@@ -250,30 +263,39 @@
 
 function addMember() {
     Swal.fire({
-        title: `
-            <div class="flex flex-col items-center mb-1 ">
-                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
-            </div>
-            <b class=text-gray-800>สร้างสมาชิก </b>
-        `,
         html: `
-            <div class="flex flex-col space-y-1 text-left">
-                <label class="font-semibold text-gray-800">Email</label>
-                <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" >
-
-                <label class="font-semibold text-gray-800">Password</label>
-                <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
-
-                <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
-                <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3">
-
-                <label class="font-semibold text-gray-800">บทบาท</label>
-                <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
-                    <option value="Sale">Sale</option>
-                    <option value="CEO">CEO</option>
-                    <option value="Sale Sup.">Sale Supervisor</option>
-                </select>
+        <div class="flex flex-col items-center">
+            <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
+            <b class="text-gray-800 text-xl mb-1">สร้างสมาชิก</b>
+        </div>
+            <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
+                <input type="text" placeholder="สมชาย" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
             </div>
+
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">อีเมล</label>
+                <input type="text" placeholder="somchai@example.com" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">รหัสผ่าน</label>
+                <input type="password" placeholder="password" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">วันที่เพิ่ม</label>
+                <input type="date" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            </div>
+
+            <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
+            <select class="w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                <option>Sale</option>
+                <option>CEO</option>
+                <option>Sale Supervisor</option>
+            </select>
+            </div>
+
         `,
         
         showCancelButton: true,
@@ -282,9 +304,9 @@ function addMember() {
         confirmButtonColor: "#2D8C42",
         focusCancel: true,
         customClass: {
-            actions: "flex justify-between w-full px-4",
-            cancelButton: "ml-0",
-            confirmButton: "mr-0",
+        actions: "flex justify-between w-full px-4",
+        cancelButton: "ml-0",
+        confirmButton: "mr-0",
         },
         preConfirm: () => {
             const email = document.getElementById("memberEmail").value;
@@ -325,6 +347,7 @@ function addMember() {
     function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
     function deleteBranch(id) {
     Swal.fire({
+
         title: "ลบสมาชิก",
         text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
         icon: "warning",
