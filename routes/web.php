@@ -37,6 +37,7 @@ Route::middleware([CheckLogin::class])->group(function () {
         return view('poi.index');
     });
     Route::get('/poi/create', [PointOfInterestController::class, 'create'])->name('poi.create');
+    Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
     Route::get('/poi/edit', [PointOfInterestController::class, 'edit'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
