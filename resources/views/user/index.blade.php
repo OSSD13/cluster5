@@ -186,24 +186,35 @@
             </button>
         `;
 
+        
+
         menu.classList.remove("hidden");
 
         // **แสดงเมนูก่อนเพื่อให้ offsetWidth ทำงาน**
         menu.classList.remove("hidden");
 
-        // ตั้งตำแหน่งเมนูใหม่
-        const top = parentCell.offsetTop + parentCell.offsetHeight -20; // ลดลงมานิด (4px)
-        const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
+        document.addEventListener("click", function () {
+        const menu = document.getElementById("contextMenu");
+        if (!menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+            activeMenuId = null;
+        }
+    });
 
+
+        // ตั้งตำแหน่งเมนูใหม่
+        const top = parentCell.offsetTop + parentCell.offsetHeight - 20; // ลดลงมานิด (4px)
+        const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
 
         menu.style.position = "absolute";
         menu.style.top = `${top}px`;
         menu.style.left = `${left}px`;
+
+        // เพิ่ม z-index ให้เมนูเป็นค่าเล็กสุด เพื่อให้แถบด้านล่างทับ
+        menu.style.zIndex = "5"; // ให้เมนูอยู่ข้างหลังแถบด้านล่าง
+
     }
-
-
-
-
+    
 
 
     function sortTable(column) {
