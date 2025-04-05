@@ -38,4 +38,8 @@ class DatabaseTestController extends Controller
         $value = json_encode(value: $user->getBranches());
         return view('displayDatabase', ['value' => $value]);
     }
+    function displayTestLogin()
+    {
+        return view('displayTestLogin');
+    }
 }
