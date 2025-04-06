@@ -81,17 +81,24 @@
             @enderror
 
             <label class="block text-sm text-gray-600">ประเภท</label>
-            <select class="w-full p-2 border border-gray-300 rounded-lg mb-3">
-                <option>เลือกประเภทสถานที่</option>
-            </select>
+                <select class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('type') error-input-style @enderror"
+                    name="type">
+                    <option class = "hidden "value="" disabled {{ old('type') == '' ? 'selected' : '' }}>เลือกประเภทสถานที่</option>
+                    <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>1</option>
+                </select>
+                @error('type')
+                    <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+                @enderror
 
-            <div class="flex justify-between">
-                <a href="{{ route('poi.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-center">
-                    ยกเลิก
-                </a>
 
-                <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
-            </div>
+                <div class="flex justify-between">
+                    <a href="{{ route('poi.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-center">
+                        ยกเลิก
+                    </a>
+
+                    <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer"
+                        id="saveButton">บันทึก</button>
+                </div>
         </div>
 
         @if (session('success'))
