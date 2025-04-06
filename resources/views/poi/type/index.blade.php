@@ -44,7 +44,7 @@
     <!-- Pagination Controls -->
     <div class="overflow-x-auto">
         <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="text-black text-sm"style="background-color: #B5CFF5">
+            <thead class="text-blac text-sm"style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-2 px-4 text-left w-4/12 whitespace-nowrap">ชื่อ / ประเภท</th>
                     <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap">Icon</th>
@@ -207,30 +207,25 @@
             Swal.fire({
                 title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
                 html: `
-                                                                    <div class="flex flex-col space-y-2 text-left">
-                                                                        <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
-                                                                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
+                    <div class="flex flex-col space-y-2 text-left">
+                        <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
+                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
 
-                                                                        <label class="font-semibold text-gray-800">ประเภท</label>
-                                                                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
+                        <label class="font-semibold text-gray-800">ประเภท</label>
+                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
 
-                                                                        <label class="font-semibold text-gray-800">จังหวัด</label>
-                                                                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
+                        <label class="font-semibold text-gray-800">จังหวัด</label>
+                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
 
-                                                                        <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                                                                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
-
-                                                                        <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                                                                        <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
-                                                                    </div>
-                                                                `,
-                customClass: {
-                    popup: 'custom-popup'
-                },
-                confirmButtonText: "ยืนยัน",
+                        <label class="font-semibold text-gray-800">คำอธิบาย</label>
+                        <textarea class="swal2-textarea w-full text-lg px-3 text-gray-800" readonly>${branch.description}</textarea>
+                    </div>
+                `,
+                confirmButtonText: "ปิด",
                 confirmButtonColor: "#2D8C42",
             });
         }
+
         function getIconByType(type) {
             switch (type) {
                 case "ร้านอาหาร":
