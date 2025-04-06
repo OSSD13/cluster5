@@ -681,8 +681,7 @@
                             let row = `<tr class="hover:bg-gray-100">
                                 <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchProvince}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">
                                     <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                         ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
@@ -744,7 +743,7 @@
                 <tr>
                     <th class="py-3 px-4 text-left" style="color: black">ID</th>
                     <th class="py-3 px-4 text-left" style="color: black">ชื่อสาขา</th>
-                    <th class="py-3 px-4 text-left" style="color: black">จังหวัด</th>
+                    
                     <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')" style="color: black">
                         ยอดขาย ⬍
                     </th>
@@ -757,7 +756,7 @@
                 <tr>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">1</td>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">สาขา A</td>
-                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">กรุงเทพมหานคร</td>
+                    
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">100,000 บาท</td>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">เพิ่มแล้ว</td>
                 </tr>
