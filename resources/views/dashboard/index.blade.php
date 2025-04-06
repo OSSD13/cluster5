@@ -286,14 +286,15 @@
         </div>
         {{-- stat cards --}}
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="">ยอดพัสดุทั้งหมด</div>
+            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-2">
+                <div class="text-lg font-sm">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-black text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
-                    <span class="font-black text-[24px]">ชิ้น</span>
+                    <span class="icon-[streamline--upload-box-1-solid] text-6xl text-trinary"
+                        id='thisMonthTotalPackageIcon'></span>
+                    <span class="text-4xl font-bold text-trinary" id='thisMonthTotalPackageNumber'></span>
+                    <span class="text-2xl font-bold text-black">ชิ้น</span>
                 </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
+                <div class="text-success text-sm flex items-center gap-1" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
                     <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
@@ -459,44 +460,7 @@
             let currentPage = 1;
 
             function buildRegionTable() {
-                // fetch /api/getRegionBranch
-                // example response
-                // {
-                //     "distinct_regions": [
-                //         "SOUTH",
-                //         "CENTRAL",
-                //         "WEST",
-                //         "NORTHEAST",
-                //         "EAST",
-                //         "NORTH"
-                //     ],
-                //     "branch_count_by_region": [{
-                //             "region": "NORTHEAST",
-                //             "branch_count": 79
-                //         },
-                //         {
-                //             "region": "CENTRAL",
-                //             "branch_count": 64
-                //         },
-                //         {
-                //             "region": "EAST",
-                //             "branch_count": 8
-                //         },
-                //         {
-                //             "region": "NORTH",
-                //             "branch_count": 17
-                //         },
-                //         {
-                //             "region": "SOUTH",
-                //             "branch_count": 25
-                //         },
-                //         {
-                //             "region": "WEST",
-                //             "branch_count": 8
-                //         }
-                //     ]
-                // }
-
+               
                 const regions = {
                     'NORTH': 'ภาคเหนือ',
                     'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
@@ -542,55 +506,7 @@
             }
 
             function buildProvinceTable(region) {
-                // fetch /api/getRegionBranch?region=SOUTH
-                // example response
-                // {
-                //     "distinct_provinces": [
-                //         "กระบี่",
-                //         "ชุมพร",
-                //         "ตรัง",
-                //         "นครศรีธรรมราช",
-                //         "นราธิวาส",
-                //         "ปัตตานี",
-                //         "พังงา",
-                //         "พัทลุง",
-                //         "ภูเก็ต",
-                //         "ยะลา",
-                //         "ระนอง",
-                //         "สงขลา",
-                //         "สตูล",
-                //         "สุราษฎร์ธานี"
-                //     ],
-                //     "branch_count_by_province": [{
-                //             "province": "กระบี่",
-                //             "branch_count": 3
-                //         },
-                //         {
-                //             "province": "ชุมพร",
-                //             "branch_count": 2
-                //         },
-                //         {
-                //             "province": "ตรัง",
-                //             "branch_count": 1
-                //         },
-                //         {
-                //             "province": "นครศรีธรรมราช",
-                //             "branch_count": 2
-                //         },
-                //         {
-                //             "province": "ปัตตานี",
-                //             "branch_count": 5
-                //         },
-                //         {
-                //             "province": "ภูเก็ต",
-                //             "branch_count": 1
-                //         },
-                //         {
-                //             "province": "สุราษฎร์ธานี",
-                //             "branch_count": 11
-                //         }
-                //     ]
-                // }
+            
                 const date = document.getElementById('timePeriod') ?
                     document.getElementById('timePeriod').value :
                     new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -630,34 +546,7 @@
             }
 
             function buildBranchesTable(region, province) {
-                // fetch /api/getRegionBranch?region=SOUTH&province=กระบี่
-                // example response
-                // {
-                //     "branches": [{
-                //             "branchId": 74,
-                //             "branchName": "Mrs. Concepcion Cremin DVM",
-                //             "branchProvince": "กระบี่",
-                //             "branchSaleChange": 88.00888230940048,
-                //             "saleAdded": true
-                //         },
-                //         {
-                //             "branchId": 8,
-                //             "branchName": "Angus VonRueden",
-                //             "branchProvince": "กระบี่",
-                //             "branchSaleChange": -65.5929781923279,
-                //             "saleAdded": true
-                //         },
-                //         {
-                //             "branchId": 187,
-                //             "branchName": "Ivy Russel",
-                //             "branchProvince": "กระบี่",
-                //             "branchSaleChange": -38.20272520633531,
-                //             "saleAdded": true
-                //         }
-                //     ],
-                //     "branch_count": 3
-                // }
-
+            
                 const date = document.getElementById('timePeriod') ?
                     document.getElementById('timePeriod').value :
                     new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
