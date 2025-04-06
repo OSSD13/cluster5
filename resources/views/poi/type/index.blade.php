@@ -188,10 +188,10 @@
     // ฟังก์ชันกรองข้อมูลตามคำค้นหา
     document.getElementById("searchInput").addEventListener("input", function() {
         const searchValue = this.value.toLowerCase();
-        const filteredPoit = poit.filter(poit => 
-        poit.name.toLowerCase().includes(searchValue) ||
-        poit.type.toLowerCase().includes(searchValue) ||
-        poit.province.toLowerCase().includes(searchValue)
+        const filteredPoit = poits.filter(poits => 
+        poits.name.toLowerCase().includes(searchValue) ||
+        poits.type.toLowerCase().includes(searchValue) ||
+        poits.province.toLowerCase().includes(searchValue)
         );
         renderTable(filteredPoit);
     });
@@ -199,14 +199,14 @@
     // ฟังก์ชันกรองตามประเภท
     document.getElementById("typeSelect").addEventListener("change", function() {
         const selectedType = this.value;
-        const filteredPoit = poit.filter(poit => poit.type.includes(selectedType));
+        const filteredPoit = poits.filter(poits => poits.type.includes(selectedType));
         renderTable(filteredPoit);
     });
 
     // ฟังก์ชันกรองตามจังหวัด
     document.getElementById("provinceSelect").addEventListener("change", function() {
         const selectedProvince = this.value;
-        const filteredPoit = poit.filter(poit => poit.province.includes(selectedProvince));
+        const filteredPoit = poits.filter(poits => poits.province.includes(selectedProvince));
         renderTable(filteredPoit);
     });
 
