@@ -57,7 +57,8 @@
 
     <!-- ปุ่ม color picker -->
     <button type="button" id="colorButton"
-        class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer rounded-r-lg"
+        class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer
+         rounded-r-lg"
         name="color" style="background-color: {{ old('color', '#9e9e9e') }};">🎨</button>
 </div>
 
@@ -132,6 +133,8 @@
                 });
             });
         </script>
+
+
 
 <!-- Color picker -->
 <script>

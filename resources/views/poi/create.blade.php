@@ -73,6 +73,7 @@
                 <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
             @enderror
 
+
             <label class="block text-sm text-gray-600">ชื่อ</label>
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('name') error-input-style
             @enderror" placeholder="ชื่อ" name="name" value="{{ old('name') }}">
