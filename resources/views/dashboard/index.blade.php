@@ -290,13 +290,13 @@
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-4xl text-trinary"
-                        id='thisMonthTotalPackageIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalPackageNumber'></span>ชิ้น
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-black text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
+                    <span class="font-black text-[24px]">ชิ้น</span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
-                    <span id='thisMonthTotalPackagePercent'></span>%
+                    <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
@@ -305,36 +305,39 @@
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-4xl text-trinary" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalMoneyNumber'></span>บาท
+                    <span class="icon-[tabler--coin-filled] text-trinary" style="font-size: 75px;" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-black text-trinary" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="font-black text-[24px]">บาท</span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
-                    <span id='thisMonthTotalMoneyPercent'></span>%
+                    <span id='thisMonthTotalMoneyPercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
 
-
+<!--  -->
         <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
             <canvas id="branchVSprofit"></canvas>
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
-                    <div class="">Min</div>
+                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
+                    <div class="font-bold" style="font-size: 13px; color: black;"  >Min</div>
                     <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="minValue" class="text-2xl text-bold">0</span>บาท
+                        <span id="minValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
+                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
                     <div id="minChange" class="text-sm text-end">
                         <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="minPercent">0</span>%
                     </div>
                 </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success">
-                    <div class="">Max</div>
+                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
+                    <div class="font-bold" style="font-size: 13px; color: black;">Max</div>
                     <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="maxValue" class="text-2xl text-bold">0</span>บาท
+                        <span id="maxValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
+                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
                     <div id="maxChange" class="text-sm text-end">
                         <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
@@ -343,29 +346,31 @@
                 </div>
             </div>
             <div class="flex flex-row gap-4">
-                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
-                    <div class="">Standard Deviation</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="stdValue" class="text-2xl text-bold">0</span>บาท
+                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark " style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 13px; color:black;" >Standard Deviation</div>
+                    <div class="flex justify-center items-center text-bold gap-2" style ="color: #DA25BF;">
+                        <span id="stdValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
+                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="stdChange" class="text-sm text-end">
-                        <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
+                    <div id="stdChange" class="text-sm text-end "style ="color: #DA25BF;"> 
+                        <span id="stdArrow" class="icon-[line-md--arrow-down]" ></span>
                         <span id="stdPercent">0</span>%
                     </div>
                 </div>
-                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
-                    <div class="">Average</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="avgValue" class="text-2xl text-bold">0</span>บาท
+                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 13px; color: black;" >Average</div>
+                    <div class="flex justify-center items-center text-bold gap-2"style ="color: #DA25BF;">
+                        <span id="avgValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
+                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="avgChange" class="text-sm text-end">
+                    <div id="avgChange" class="text-sm text-end" style ="color: #DA25BF;">
                         <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="avgPercent">0</span>%
                     </div>
                 </div>
             </div>
         </div>
-
+<!--  -->
         <script>
             function updateCardData(data) {
                 const {
@@ -390,14 +395,16 @@
                 updateCardStyle('maxCard', 'maxArrow', maxChange);
 
                 // Update Std Card
-                document.getElementById('stdValue').textContent = std.toLocaleString();
+                document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('stdPercent').textContent = stdChange.toFixed(2);
-                updateCardStyle('stdCard', 'stdArrow', stdChange);
+            updateCardStyle('stdCard', 'stdArrow', stdChange);
+
 
                 // Update Avg Card
-                document.getElementById('avgValue').textContent = avg.toLocaleString();
+                document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('avgPercent').textContent = avgChange.toFixed(2);
                 updateCardStyle('avgCard', 'avgArrow', avgChange);
+
             }
 
             function updateCardStyle(cardId, arrowId, change) {
@@ -422,13 +429,14 @@
                 <button id="regionTableBack" class="cursor-pointer px-4 py-2 bg-primary-dark text-white rounded"
                     onclick="">ย้อนกลับ</button>
             </div>
-            <div class="text-primary-dark text-4xl text-bold col-span-1">
-                ภูมิภาค
+            <div class="flex justify-center text-primary-dark text-4xl font-bold col-span-1 whitespace-nowrap">
+                 ภูมิภาค
             </div>
         </div>
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+        <div style="resize: both; overflow: auto; max-width: 100%;">
+        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" style="background-color: #B6D2FF" id="regionTable">
             <thead class="bg-lightblue">
                 <tr>
                     <th scope="col"
@@ -443,6 +451,8 @@
             <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
             </tbody>
         </table>
+</div>
+
 
         <script>
             let region = null;
@@ -518,8 +528,8 @@
                             let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
                                 <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
-                                <td class="px-3 py-2 whitespace-nowrap text-right">${region.branch_count}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">></td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
                             </tr>`;
                             regionTableBody.innerHTML += row;
                         });
@@ -604,8 +614,8 @@
                             let row = `<tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
                                 <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
                                 <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-right">${province.branch_count}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">></td>
+                                <td class="px-6 py-2 whitespace-nowrap text-center">${province.branch_count}</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
                             </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
