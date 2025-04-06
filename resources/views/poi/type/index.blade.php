@@ -172,8 +172,60 @@
         }
 
         function editPoit(id) {
-            alert(`แก้ไขข้อมูล ID: ${id}`);
+    const poit = poits.find(p => p.id === id);
+
+    Swal.fire({
+        title: `
+            <div class="flex flex-col items-center mb-1">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
+            </div>
+            <b class="text-gray-800">แก้ไขข้อมูล POI</b>
+        `,
+        html: `
+            <div class="flex flex-col space-y-1 text-left">
+                <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
+                <input type="text" id="poiName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${poit.name}">
+
+                <label class="font-semibold text-gray-800">ประเภท</label>
+                <input type="text" id="poiType" class="w-full p-2 border border-gray-300 rounded mb-3" value="${poit.type}">
+
+                <label class="font-semibold text-gray-800">คำอธิบาย</label>
+                <textarea id="poiDescription" class="w-full p-2 border border-gray-300 rounded mb-3">${poit.description}</textarea>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        focusCancel: true,
+        preConfirm: () => {
+            const name = document.getElementById("poiName").value;
+            const type = document.getElementById("poiType").value;
+            const description = document.getElementById("poiDescription").value;
+
+            if (!name || !type || !description) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            // อัปเดตข้อมูล POI
+            poit.name = name;
+            poit.type = type;
+            poit.description = description;
+
+            renderTable();
+
+            Swal.fire({
+                title: "สำเร็จ!",
+                text: "แก้ไขข้อมูล POI เรียบร้อยแล้ว",
+                icon: "success",
+                confirmButtonColor: "#2D8C42",
+                confirmButtonText: "ตกลง"
+            });
         }
+    });
+}
+
 
         function deletePoit(id) {
             Swal.fire({
