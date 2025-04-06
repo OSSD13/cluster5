@@ -5,8 +5,8 @@
 @section('content')
     <div class="flex flex-col gap-4">
         {{-- report card --}}
-        <div class="mt-8 bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
-            <h3 class="text-lg font-bold text-center">รายงาน</h3>
+        <div class="mt-2 bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
+            <h3 class="text-2xl font-bold text-center text-gray-800">รายงาน</h3>
             <div class="flex items-center gap-4">
                 <label for="timePeriod" class=" text-base font-bold text-black">ช่วงเวลา</label>
                 <input type="month" id="timePeriod" name="timePeriod"
@@ -289,11 +289,11 @@
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-bold text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
-                    <span class="font-medium text-[24px] flex justify-end">ชิ้น</span>
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-bold text-trinary flex-grow text-right" style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
+                    <span class="font-medium text-xl flex-grow-0 text-right p-4">ชิ้น</span>
                 </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
+                <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
                     <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
@@ -301,14 +301,14 @@
         </div>
 
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
+            <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-2">
                 <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-trinary" style="font-size: 75px;" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="font-bold text-trinary" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
-                    <span class="font-medium text-[24px]">บาท</span>
+                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow" style="font-size: 75px; flex-grow :3" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-bold text-green-600 flex-grow" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="font-black text-xl flex-grow-0 text-right p-4 text-green-600">บาท</span>
                 </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
+                <div class="text-success text-base font-medium text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
                     <span id='thisMonthTotalMoneyPercent'></span>% จากก่อนหน้านี้
                 </div>
@@ -443,7 +443,7 @@
                     <th scope="col"
                         class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
+                        class="px-7 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider hitespace-nowrap" style="color: black">จำนวนสาขา</th>
                     <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
                 </tr>
             </thead>
@@ -768,6 +768,7 @@
 
 
     </div>
+    
 @endsection
 
 @section('script')
