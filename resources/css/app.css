@@ -34,7 +34,6 @@
     --color-red-dark: #A72828;
 }
 
-
 @layer utilities {
     /* Custom Scrollbar for Firefox and others */
     .custom-scrollbar {
@@ -69,4 +68,7 @@
     .custom-scrollbar.scrolling::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, 1); /* Visible thumb when scrolling */
     }
+    /* .bg-lightblue{
+      background-color: var(#B6D2FF);
+    } */
   }

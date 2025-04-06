@@ -137,7 +137,6 @@
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
 
-
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {
                                 window.branchChart.destroy();
@@ -322,8 +321,8 @@
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
-                    <div class="font-bold" style="font-size: 13px; color: black;"  >Min</div>
+                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
+                    <div class="">Min</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="minValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
@@ -333,8 +332,8 @@
                         <span id="minPercent">0</span>%
                     </div>
                 </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
-                    <div class="font-bold" style="font-size: 13px; color: black;">Max</div>
+                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success">
+                    <div class="">Max</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="maxValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
@@ -435,8 +434,7 @@
         </div>
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <div style="resize: both; overflow: auto; max-width: 100%;">
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" style="background-color: #B6D2FF" id="regionTable">
+        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
             <thead class="bg-lightblue">
                 <tr>
                     <th scope="col"
