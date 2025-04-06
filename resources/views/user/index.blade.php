@@ -181,7 +181,7 @@
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
                 แก้ไข
             </button>
-            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+            <button class="block w-full px-4 py-2 text-white bg-red-600 border border-gray-400 rounded-lg hover:bg-red-700" style="background-color: #CF3434"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
                 ลบ
             </button>
@@ -374,17 +374,6 @@ function addMember() {
                     return false;
                 }
             }
-
-            // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
-   /*         
-            let newMember = {
-                id: members.length + 1,
-                name: name,
-                email: email,
-                role: role,
-                supervisorId: supervisorId // เก็บ Sales Supervisor ไว้ใน supervisorId
-            };
-   */ 
             let newMember = {
                 id: members.length + 1,
                 name: name,
@@ -448,29 +437,41 @@ function editMember(id) {
         `<div class="flex flex-col items-center">
                 <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
             </div>
-            <b class=text-gray-800 text-xl mb-1>สร้างสมาชิก </b>
-            <div class="flex flex-col space-y-1 text-left">
-                <label class="font-semibold text-gray-800">Email</label>
-                <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.email}" >
+            <b class=text-gray-800 text-xl mb-1>แก้ไขสมาชิก </b>
 
-                <label class="font-semibold text-gray-800">Password</label>
-                <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
+            <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
+                <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">Email</label>
+                <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" >
+                </div>
 
-                <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
-                <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.name}">
+                <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">Password</label>
+                <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                </div>
 
-                <label class="font-semibold text-gray-800">บทบาท</label>
-                <select id="memberRole" onchange="toggleSupervisor()" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">ชื่อผู้ใช้</label>
+                <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}">
+                </div>
+
+                <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
+                <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                     <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
                     <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
                     <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
                 </select>
+                </div>
 
+                <div class="w-full">
                 <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
-                    <label class="font-semibold text-gray-800">Sales Supervisor</label>
-                    <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                    <label class="block text-gray-800 text-sm mb-1">Sales Supervisor</label>
+                    <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                         <!-- options จะเติมโดย toggleSupervisor() -->
                     </select>
+                </div>
+                </div>
                 </div>
             </div>
         `,

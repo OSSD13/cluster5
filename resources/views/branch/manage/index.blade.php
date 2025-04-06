@@ -210,33 +210,29 @@
 
             Swal.fire({
                 html: `
-                    <div class="flex flex-col items-center space-y-4">
-                    <!-- ไอคอนแก้ไข -->
-                    <div class="w-16 h-16 bg-black flex items-center rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M16.713 2.299a2.5 2.5 0 1 1 3.535 3.535L6.5 19.583l-3.914.438a.5.5 0 0 1-.548-.548l.438-3.914L16.713 2.299zM15 5l4 4m-1 12H4a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1z"/>
-                        </svg>
-                    </div>
-
-                    <!-- หัวข้อ -->
-                    <h2 class="text-xl font-bold text-gray-900">แก้ไขยอด</h2>
-
+                <div class="flex flex-col items-center">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
+            </div>
+            <b class=text-gray-800 text-xl mb-1>แก้ไขสมาชิก </b>
+                <b class=text-gray-800 text-xl mb-1>แก้ไขยอดขาย</b>
                     <!-- ฟอร์ม -->
-                    <div class="w-full text-left">
-                        <label class="block text-sm font-medium text-gray-700">เดือน</label>
-                        <select class="w-full m-1 h-12 text-sm px-4 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500">
+                    <div class="fflex flex-col items-center mt-4 space-y-4 text-left w-full max-w-md mx-auto">
+                    <div class="w-full">
+                        <label class="block text-gray-800 text-sm mb-1">เดือน</label>
+                        <select class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <option>กุมภาพันธ์ - 2568</option>
                         </select>
                     </div>
                     
-                    <div class="w-full text-left">
-                        <label class="block text-sm font-medium text-gray-700">จำนวน</label>
-                        <input type="number" class="w-full m-1 h-12 text-sm px-4 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" value="482">
+                    <div class="w-full">
+                        <label class="block text-gray-800 text-sm mb-1">จำนวน</label>
+                        <input type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="482">
                     </div>
 
-                    <div class="w-full text-left">
-                        <label class="block text-sm font-medium text-gray-700">ยอดเงิน</label>
-                        <input type="text" class="w-full h-12 m-1 text-sm px-4 text-gray-800 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500" value="234,454">
+                    <div class="w-full">
+                        <label class="block text-gray-800 text-sm mb-1">ยอดเงิน</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="234,454">
+                    </div>
                     </div>
         
                     </div>
