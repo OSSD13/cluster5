@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- <form method="POST" action="{{ route('logout') }}">
-                            @csrf -->
+                                @csrf -->
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
@@ -111,152 +111,147 @@
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
                     <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" style="background-color: #3062B8" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer " style="background-color: #3062B8"
-                        onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
-                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" style="background-color: #CF3434" onclick="deleteBranch(${branch.id})">ลบ</button>
+                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
+                        onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
                     </div>
                 </td>
             `;
-                tableBody.appendChild(row);
-            });
+                            <td class="py-3 px-4 w-16">${branch.id}</td>
+                            <td class="py-3 px-4 truncate">${branch.name}</td>
+                            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+                            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+                            <td class="py-3 px-1 w-10 text-center relative">
+                                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
+                                    onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                                </div>
+                            </td>
+                `;
+                    tableBody.appendChild(row);
+                });
 
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = ""; // Clear previous pagination
-
-            const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-            // Previous button
-            const prevBtn = document.createElement("button");
-            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.onclick = () => goToPage(currentPage - 1);
-            pagination.appendChild(prevBtn);
-
-            // Display first page button if needed
-            if (currentPage > 3) {
-                const firstBtn = document.createElement("button");
-                firstBtn.innerText = "1";
-                firstBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
-                firstBtn.onclick = () => goToPage(1);
-                pagination.appendChild(firstBtn);
-                pagination.appendChild(document.createTextNode("..."));
+                renderPagination();
             }
 
-            // Display middle page numbers
-            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
-                const btn = document.createElement("button");
-                btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-                btn.onclick = () => goToPage(i);
-                pagination.appendChild(btn);
-            }
+            function renderPagination() {
+                const pagination = document.getElementById("pagination");
+                pagination.innerHTML = ""; // Clear previous pagination
 
-            // Display last page button if needed
-            if (currentPage < totalPages - 2) {
-                pagination.appendChild(document.createTextNode("..."));
-                const lastBtn = document.createElement("button");
-                lastBtn.innerText = totalPages;
-                lastBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
-                lastBtn.onclick = () => goToPage(totalPages);
-                pagination.appendChild(lastBtn);
-            }
+                const totalPages = Math.ceil(branches.length / rowsPerPage);
 
-            // Next button
-            const nextBtn = document.createElement("button");
-            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.onclick = () => goToPage(currentPage + 1);
-            pagination.appendChild(nextBtn);
-        }
+                // Previous button
+                const prevBtn = document.createElement("button");
+                prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+                prevBtn.className = `px - 3 py - 1 ${ currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer" } text - 5xl`;
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => goToPage(currentPage - 1);
+                pagination.appendChild(prevBtn);
 
-        function goToPage(pageNumber) {
-            currentPage = pageNumber;
-            renderTable();
-        }
-
-        function toggleMenu(event, id) {
-            event.stopPropagation();
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-            document.getElementById(`menu-${id}`).classList.toggle("hidden");
-        }
-        document.addEventListener("click", () => {
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-        });
-
-        function viewDetail(id) {
-            const branch = branches.find(item => item.id === id);
-
-            Swal.fire({
-                title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
-                html: `
-                <div class="flex flex-col space-y-2 text-left">
-                    <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
-                    <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="${branch.name}" readonly>
-
-                    <label class="font-semibold text-gray-800">ประเภท</label>
-                    <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="${branch.type}" readonly>
-
-                    <label class="font-semibold text-gray-800">จังหวัด</label>
-                    <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="${branch.province}" readonly>
-
-                    <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                    <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="17 ก.ย. 2568" readonly>
-
-                    <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                    <input type="text" class="font-medium w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-lg" value="jeng@gmail.com" readonly>
-                </div>
-            `,
-                customClass: {
-                    popup: 'custom-popup'
-                },
-                confirmButtonText: "ยืนยัน",
-                confirmButtonColor: "#2D8C42",
-            });
-        }
-
-        function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
-        function deleteBranch(id) {
-            Swal.fire({
-                title: "ลบสถานที่ที่สนใจ",
-                text: "คุณต้องการลบสถานที่ที่สนใจ ใช่หรือไม่",
-                icon: "warning",
-                iconColor: "#d33",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // ลบรายการออกจากอาร์เรย์
-                    branches = branches.filter(branch => branch.id !== id);
-
-                    // อัปเดตตาราง
-                    renderTable();
-
-                    // แจ้งเตือนว่าลบสำเร็จ
-                    Swal.fire({
-                        title: "ลบแล้ว!",
-                        text: "สถานที่ที่สนใจถูกลบเรียบร้อย",
-                        icon: "success"
-                    });
+                // Page number buttons
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.innerText = i;
+                    btn.className = `px - 4 py - 2 mx - 1 rounded - lg text - base font - semibold
+                                         ${ i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer" } `;
+                    btn.onclick = () => goToPage(i);
+                    pagination.appendChild(btn);
                 }
+
+                // Next button
+                const nextBtn = document.createElement("button");
+                nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+                nextBtn.className = `px - 3 py - 1 ${ currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer" } text - 5xl`;
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => goToPage(currentPage + 1);
+                pagination.appendChild(nextBtn);
+            }
+
+
+            function goToPage(pageNumber) {
+                currentPage = pageNumber;
+                renderTable();
+            }
+
+            function toggleMenu(event, id) {
+                event.stopPropagation();
+                document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+                document.getElementById(`menu - ${ id } `).classList.toggle("hidden");
+            }
+            document.addEventListener("click", () => {
+                document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
             });
-        }
 
 
-        renderTable();
+            function viewDetail(id) {
+                const branch = branches.find(item => item.id === id);
 
-        
-    </script>
+                Swal.fire({
+                    title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
+                    html: `
+                    < div class="flex flex-col space-y-2 text-left" >
+                                <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
+                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.name}" readonly>
+
+                                <label class="font-medium text-gray-700 text-sm">ประเภท</label>
+                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.type}" readonly>
+
+                                <label class="font-medium text-gray-700 text-sm">จังหวัด</label>
+                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.province}" readonly>
+
+                                <label class="font-medium text-gray-700 text-sm">วันที่เพิ่ม</label>
+                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
+
+                                <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
+                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
+                            </>
+                            `,
+                    customClass: {
+                        popup: 'custom-popup'
+                    },
+                    confirmButtonText: "ยืนยัน",
+                    confirmButtonColor: "#2D8C42",
+                });
+            }
+
+            function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
+            function deleteBranch(id) {
+                Swal.fire({
+                    title: "ลบสถานที่ที่สนใจ",
+                    text: "คุณต้องการลบสถานที่ที่สนใจ ใช่หรือไม่",
+                    icon: "warning",
+                    iconColor: "#d33",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#6c757d",
+                    confirmButtonText: "ยืนยัน",
+                    cancelButtonText: "ยกเลิก"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // ลบรายการออกจากอาร์เรย์
+                        branches = branches.filter(branch => branch.id !== id);
+
+                        // อัปเดตตาราง
+                        renderTable();
+
+                        // แจ้งเตือนว่าลบสำเร็จ
+                        Swal.fire({
+                            title: "ลบแล้ว!",
+                            text: "สถานที่ที่สนใจถูกลบเรียบร้อย",
+                            icon: "success"
+                        });
+                    }
+                });
+            }
+
+
+            renderTable();
+            
+    
 
 
 
