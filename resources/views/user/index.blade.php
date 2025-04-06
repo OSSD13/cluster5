@@ -18,25 +18,30 @@
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสมาชิก" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท" class="w-full p-2 border border-gray-300 rounded mb-3">
 
-        <!-- Dropdowns -->
+        <!-- Dropdown: Sale Supervisor -->
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">Sale Supervisor</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>แสดงสมาชิก</option>
+            <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded">
+                
             </select>
         </div>
 
+        <!-- Dropdown: Role -->
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">บทบาท</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>ค้นหาด้วยตำแหน่ง</option>
+            <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
+                <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
+                <option value="Sale">Sale</option>
+                <option value="Sale Sup.">Sale Supervisor</option>
+                <option value="CEO">CEO</option>
             </select>
         </div>
 
+
         <!-- Result Count -->
-        <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
+        <p class="text-gray-700" id="resultCount">ผลลัพธ์ 0 รายการ</p>
     </div>
 
 
@@ -64,7 +69,7 @@
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 <!-- contextMenu Controls-->
-<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2" ></div>
+<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
     let members = [
@@ -85,12 +90,19 @@
     const rowsPerPage = 10;
     let currentSort = { column: null, ascending: true };
 
-    function renderTable() {
+    
+    function renderTable(filteredData = null) {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
+        const dataToRender = filteredData || members;
+
         const start = (currentPage - 1) * rowsPerPage;
-        const paginatedData = members.slice(start, start + rowsPerPage);
+        const paginatedData = dataToRender.slice(start, start + rowsPerPage);
+
+        // แสดงจำนวนผลลัพธ์
+        const resultCount = document.querySelector("#resultCount");
+        resultCount.textContent = `ผลลัพธ์ ${dataToRender.length} รายการ`;
 
         paginatedData.forEach((member) => {
     const row = document.createElement("tr");
@@ -108,55 +120,138 @@
     `;
     
 
-    tableBody.appendChild(row);
-});
-
-
-
-        renderPagination();
-    }
-
-    function renderPagination() {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = ""; // Clear previous pagination
-
-    const totalPages = Math.ceil(members.length / rowsPerPage);
-
-    // Previous button
-    const prevBtn = document.createElement("button");
-            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer" } text-5xl`;
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.onclick = () => goToPage(currentPage - 1);
-            pagination.appendChild(prevBtn);
-
-            // Page number buttons
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                     ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-                btn.onclick = () => goToPage(i);
-                pagination.appendChild(btn);
-            }
-
-            // Next button
-            const nextBtn = document.createElement("button");
-            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.onclick = () => goToPage(currentPage + 1);
-            pagination.appendChild(nextBtn);
+        renderPagination(dataToRender);
 }
 
+    // ฟังก์ชันสำหรับแสดงปุ่มเปลี่ยนหน้า
+    function renderPagination(dataToRender) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = ""; //ล้างข้อมูลเก่า
+
+        const totalPages = Math.ceil(dataToRender.length / rowsPerPage);
+
+        // Show pagination even if there's only one page
+        if (totalPages === 1) {
+            const prevBtn = document.createElement("button");
+            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+            prevBtn.className = `px-3 py-1 text-gray-400 cursor-not-allowed text-5xl`;
+            prevBtn.disabled = true;
+            pagination.appendChild(prevBtn);
+
+            const pageBtn = document.createElement("button");
+            pageBtn.innerText = `1`;
+            pageBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-blue-600 text-white`;
+            pagination.appendChild(pageBtn);
+
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+            nextBtn.className = `px-3 py-1 text-gray-400 cursor-not-allowed text-5xl`;
+            nextBtn.disabled = true;
+            pagination.appendChild(nextBtn);
+
+            return;
+        }
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+        prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => goToPage(currentPage - 1);
+        pagination.appendChild(prevBtn);
+
+        // Page number buttons
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.innerText = i;
+            btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+            btn.onclick = () => goToPage(i);
+            pagination.appendChild(btn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => goToPage(currentPage + 1);
+        pagination.appendChild(nextBtn);
+}
+
+    // ฟังก์ชันสำหรับเปลี่ยนหน้า
     function goToPage(pageNumber) {
         currentPage = pageNumber;
         renderTable();
     }
+    
+    // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
+    function sortTable(column) {
+        if (currentSort.column === column) {
+            currentSort.ascending = !currentSort.ascending;
+        } else {
+            currentSort.column = column;
+            currentSort.ascending = true;
+        }
+        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
+        renderTable();
+    }
+
+    // ฟังก์ชันสำหรับค้นหาข้อมูล
+    function filterAll() {
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const supervisorId = document.getElementById("supervisorSelect").value;
+    const roleVal = document.getElementById("roleSelect").value;
+
+    let filtered = members.filter(m => {
+        const matchesSearch =
+            m.id.toString().includes(searchVal) ||
+            m.name.toLowerCase().includes(searchVal) ||
+            m.email.toLowerCase().includes(searchVal) ||
+            m.role.toLowerCase().includes(searchVal);
+
+        const matchesSupervisor = !supervisorId || (
+            m.role === "Sale" && m.supervisorId?.toString() === supervisorId
+        );
+
+        const matchesRole = !roleVal || m.role === roleVal;
+
+        return matchesSearch && matchesSupervisor && matchesRole;
+    });
+
+    currentPage = 1;
+    renderTable(filtered);
+}
+
+    // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
+    function populateSupervisorDropdown() {
+        const supervisorSelect = document.getElementById("supervisorSelect");
+        supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>
+`; // reset first
+
+        const supervisors = members.filter(m => m.role === "Sale Sup.");
+        supervisors.forEach(sup => {
+            const option = document.createElement("option");
+            option.value = sup.id;
+            option.textContent = `${sup.name} - ${sup.email}`;
+            supervisorSelect.appendChild(option);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        populateSupervisorDropdown();
+        renderTable();
+
+        document.getElementById("searchInput").addEventListener("input", filterAll);
+        document.getElementById("supervisorSelect").addEventListener("change", filterAll);
+        document.getElementById("roleSelect").addEventListener("change", filterAll);
+    });
 
 
+
+
+    // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
     let activeMenuId = null;
-
     function toggleMenu(event, id) {
         event.stopPropagation();
 
@@ -204,7 +299,7 @@
 
 
         // ตั้งตำแหน่งเมนูใหม่
-        const top = parentCell.offsetTop + parentCell.offsetHeight - 20; // ลดลงมานิด (4px)
+        const top = parentCell.offsetTop + parentCell.offsetHeight - 60; // ลดลงมานิด (4px)
         const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
 
         menu.style.position = "absolute";
@@ -215,20 +310,8 @@
         menu.style.zIndex = "5"; // ให้เมนูอยู่ข้างหลังแถบด้านล่าง
 
     }
-    
 
-
-    function sortTable(column) {
-        if (currentSort.column === column) {
-            currentSort.ascending = !currentSort.ascending;
-        } else {
-            currentSort.column = column;
-            currentSort.ascending = true;
-        }
-        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-        renderTable();
-    }
-//ดูรายละเอียดสมาชิก
+    // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
     function viewDetail(id) {
         const member = members.find(item => item.id === id);
 
@@ -296,258 +379,272 @@
 
     }
 
-//เพิ่มสมาชิก
-function addMember() {
-    Swal.fire({
-
-        html: 
-            `<div class="flex flex-col text-3xl  mb-6 mt-4">
-                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
-            </div>
-            <b class=text-gray-800 text-xl mb-1>สร้างสมาชิก </b>
-
-            <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">Email</label>
-                <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+    // ฟังก์ชันสำหรับเพิ่มสมาชิกใหม่
+    function addMember() {
+        Swal.fire({
+            title: 
+                `<div class="flex flex-col items-center mb-1">
+                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
                 </div>
+                <b class=text-gray-800>สร้างสมาชิก </b>`,
+            html: 
+                `<div class="flex flex-col space-y-1 text-left">
+                    <label class="font-semibold text-gray-800">Email</label>
+                    <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" >
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">Password</label>
-                <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
-                </div>
+                    <label class="font-semibold text-gray-800">Password</label>
+                    <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">ชื่อผู้ใช้</label>
-                <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                </div>
+                    <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
+                    <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3">
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
-                <select id="memberRole" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="toggleSupervisor()">
-                    <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
-                    <option value="Sale">Sale</option>
-                    <option value="CEO">CEO</option>
-                    <option value="Sale Sup.">Sale Supervisor</option>
-                </select>
-                </div>
-
-                <div class="w-full">
-                <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
-                <div id="supervisorSection" style="display: none;" class="mt-4">
-                    <label class="block text-gray-800 text-sm mb-1">Sales supervisor</label>
-                    <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                        <option value="" selected disabled>เลือก Sales Supervisor</option>
-                        ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
-                            `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
-                        ).join('')}
+                    <label class="font-semibold text-gray-800">บทบาท</label>
+                    <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded" onchange="toggleSupervisor()">
+                        <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
+                        <option value="Sale">Sale</option>
+                        <option value="CEO">CEO</option>
+                        <option value="Sale Sup.">Sale Supervisor</option>
                     </select>
-                </div>
-                </div>
-            </div>`,
-        showCancelButton: true,
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#2D8C42",
-        focusCancel: true,
-        customClass: {
-        actions: "flex justify-between w-full px-4",
-        cancelButton: "ml-0",
-        confirmButton: "mr-0",
-        },
-        preConfirm: () => {
-            const email = document.getElementById("memberEmail").value;
-            const password = document.getElementById("memberPassword").value;
-            const name = document.getElementById("memberName").value;
-            const role = document.getElementById("memberRole").value;
 
-            if (!email || !password || !name || !role) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
+                    <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
+                    <div id="supervisorSection" style="display: none;" class="mt-4">
+                        <label class="font-semibold text-gray-800">Sales supervisor</label>
+                        <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                            <option value="" selected disabled>เลือก Sales Supervisor</option>
+                            ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
+                                `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2D8C42",
+            focusCancel: true,
+            customClass: {
+                actions: "flex justify-between w-full px-4",
+                cancelButton: "ml-0",
+                confirmButton: "mr-0",
+            },
+            preConfirm: () => {
+                const email = document.getElementById("memberEmail").value;
+                const password = document.getElementById("memberPassword").value;
+                const name = document.getElementById("memberName").value;
+                const role = document.getElementById("memberRole").value;
 
-            // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
-            let supervisorId = null;
-            if (role === "Sale") {
-                supervisorId = document.getElementById("supervisorDropdown").value;
-                if (!supervisorId) {
-                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                if (!email || !password || !name || !role) {
+                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
                     return false;
                 }
+
+                // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
+                let supervisorId = null;
+                if (role === "Sale") {
+                    supervisorId = document.getElementById("supervisorDropdown").value;
+                    if (!supervisorId) {
+                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                        return false;
+                    }
+                }
+
+                let newMember = {
+                    id: members.length + 1,
+                    name: name,
+                    email: email,
+                    role: role
+                };
+
+                if (role === "Sale") {
+                    supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
+                    newMember.supervisorId = supervisorId;
+                }
+
+                members.push(newMember);
+                renderTable();
+
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42",
+                    confirmButtonText: "ตกลง"
+                });
             }
-            let newMember = {
-                id: members.length + 1,
-                name: name,
-                email: email,
-                role: role
-            };
-
-            if (role === "Sale") {
-                supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
-                newMember.supervisorId = supervisorId;
-            }
-
-            members.push(newMember);
-            renderTable();
-
-            // แจ้งเตือนว่าบันทึกสำเร็จ
-            Swal.fire({
-                title: "สำเร็จ!",
-                text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
-                icon: "success",
-                confirmButtonColor: "#2D8C42",
-                confirmButtonText: "ตกลง"
-            });
-        }
-    });
-}
-
-
-// ฟังก์ชันนี้จะทำงานเมื่อเลือกบทบาทเป็น Sale
-function toggleSupervisor() {
-    const role = document.getElementById("memberRole").value;
-    const section = document.getElementById("supervisorSection");
-    const dropdown = document.getElementById("supervisorDropdown");
-
-    if (role === "Sale") {
-        section.style.display = "block";
-        dropdown.innerHTML = "";
-
-        const supervisors = members.filter(member => member.role === "Sale Sup.");
-
-        if (supervisors.length === 0) {
-            dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
-        } else {
-            dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
-            supervisors.forEach(sup => {
-                dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
-            });
-        }
-    } else {
-        section.style.display = "none";
-        dropdown.innerHTML = "";
+        });
     }
-}
 
 
-function editMember(id) {
-    const member = members.find(item => item.id === id);
+    // ฟังก์ชันนี้สำหรับแสดงหรือซ่อน Sales Supervisor dropdown
+    function toggleSupervisor() {
+        const role = document.getElementById("memberRole").value;
+        const section = document.getElementById("supervisorSection");
+        const dropdown = document.getElementById("supervisorDropdown");
 
-    Swal.fire({
-        html: 
-            `<div class="flex flex-col items-center mt-4">
-                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
-            </div>
-            <div class="flex flex-col text-3xl  mb-6 mt-4">
-                <b class=text-gray-800 >แก้ไขสมาชิก</b>
-            </div>
+        if (role === "Sale") {
+            section.style.display = "block";
+            dropdown.innerHTML = "";
 
-            <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">Email</label>
-                <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" >
+            const supervisors = members.filter(member => member.role === "Sale Sup.");
+
+            if (supervisors.length === 0) {
+                dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
+            } else {
+                dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
+                supervisors.forEach(sup => {
+                    dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
+                });
+            }
+        } else {
+            section.style.display = "none";
+            dropdown.innerHTML = "";
+        }
+    }
+
+    // ฟังก์ชันสำหรับแก้ไขสมาชิก
+    function editMember(id) {
+        const member = members.find(item => item.id === id);
+
+        Swal.fire({
+            title: `
+                <div class="flex flex-col items-center mb-1 ">
+                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
                 </div>
+                <b class=text-gray-800>แก้ไขสมาชิก </b>
+            `,
+            html: `
+                <div class="flex flex-col space-y-1 text-left">
+                    <label class="font-semibold text-gray-800">Email</label>
+                    <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.email}" >
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">Password</label>
-                <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
-                </div>
+                    <label class="font-semibold text-gray-800">Password</label>
+                    <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">ชื่อผู้ใช้</label>
-                <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}">
-                </div>
+                    <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
+                    <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.name}">
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
-                <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                    <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
-                    <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
-                    <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
-                </select>
-                </div>
-
-                <div class="w-full">
-                <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
-                    <label class="block text-gray-800 text-sm mb-1">Sales Supervisor</label>
-                    <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                        <!-- options จะเติมโดย toggleSupervisor() -->
+                    <label class="font-semibold text-gray-800">บทบาท</label>
+                    <select id="memberRole" onchange="toggleSupervisor()" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                        <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
+                        <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
+                        <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
                     </select>
-                </div>
-                </div>
-                </div>
-            </div>
-        `,
-        didOpen: () => {
-            toggleSupervisor();
-            if (member.role === "Sale" && member.supervisorId) {
-                const dropdown = document.getElementById("supervisorDropdown");
-                setTimeout(() => {
-                    dropdown.value = member.supervisorId;
-                }, 0); // รอให้ toggleSupervisor เติม option ก่อน
-            }
-        },
-        showCancelButton: true,
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#2D8C42",
-        focusCancel: true,
-        customClass: {
-            actions: "flex justify-between w-full px-4",
-            cancelButton: "ml-0",
-            confirmButton: "mr-0",
-        },
-        preConfirm: () => {
-            const email = document.getElementById("memberEmail").value;
-            const name = document.getElementById("memberName").value;
-            const role = document.getElementById("memberRole").value;
 
-            if (!email || !name || !role) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
+                    <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
+                        <label class="font-semibold text-gray-800">Sales Supervisor</label>
+                        <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                            <!-- options จะเติมโดย toggleSupervisor() -->
+                        </select>
+                    </div>
+                </div>
+            `,
+            didOpen: () => {
+                toggleSupervisor();
+                if (member.role === "Sale" && member.supervisorId) {
+                    const dropdown = document.getElementById("supervisorDropdown");
+                    setTimeout(() => {
+                        dropdown.value = member.supervisorId;
+                    }, 0); // รอให้ toggleSupervisor เติม option ก่อน
+                }
+            },
+            showCancelButton: true,
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2D8C42",
+            focusCancel: true,
+            customClass: {
+                actions: "flex justify-between w-full px-4",
+                cancelButton: "ml-0",
+                confirmButton: "mr-0",
+            },
+            preConfirm: () => {
+                const email = document.getElementById("memberEmail").value;
+                const name = document.getElementById("memberName").value;
+                const role = document.getElementById("memberRole").value;
 
-            let supervisorId = null;
-            if (role === "Sale") {
-                supervisorId = document.getElementById("supervisorDropdown").value;
-                if (!supervisorId) {
-                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                if (!email || !name || !role) {
+                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
                     return false;
                 }
+
+                let supervisorId = null;
+                if (role === "Sale") {
+                    supervisorId = document.getElementById("supervisorDropdown").value;
+                    if (!supervisorId) {
+                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                        return false;
+                    }
+                }
+
+                // อัปเดตข้อมูล
+                member.email = email;
+                member.name = name;
+                member.role = role;
+                if (role === "Sale") {
+                    member.supervisorId = parseInt(supervisorId);
+                } else {
+                    delete member.supervisorId;
+                }
+
+                renderTable();
+
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42",
+                    confirmButtonText: "ตกลง"
+                });
             }
+        });
+    }
 
-            // อัปเดตข้อมูล
-            member.email = email;
-            member.name = name;
-            member.role = role;
-            if (role === "Sale") {
-                member.supervisorId = parseInt(supervisorId);
-            } else {
-                delete member.supervisorId;
+    // ฟังก์ชันสำหรับลบสมาชิก
+    function deleteMember(id) {
+        Swal.fire({
+            title: "ลบสมาชิก",
+            text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
+            icon: "warning",
+            iconColor: "#d33",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // ลบรายการออกจากอาร์เรย์
+                members = members.filter(member => member.id !== id);
+                
+                // คำนวณจำนวนหน้าหลังจากลบข้อมูล
+                const totalPages = Math.ceil(members.length / rowsPerPage);
+
+                // ถ้าหน้าเกินจำนวนหน้าใหม่ เช่น ถ้าปัจจุบันอยู่ที่หน้า 3 แต่เหลือแค่ 2 หน้า
+                if (currentPage > totalPages) {
+                    currentPage = totalPages; // ไปที่หน้าสุดท้ายที่ยังมีข้อมูล
+                }
+
+                // ถ้าหน้าเกินจำนวนหน้าใหม่ (ตัวอย่างเช่น ลบจนหน้า 3 ว่าง) ให้ไปที่หน้าก่อนหน้า
+                if (currentPage > 1 && members.length > 0) {
+                    currentPage--; // ย้ายไปหน้าก่อนหน้า
+                }
+
+                // รีเฟรชตารางา
+                renderTable();
+                
+
+                // แจ้งเตือนว่าลบสำเร็จ
+                Swal.fire({
+                    title: "ลบแล้ว!",
+                    text: "สมาชิกถูกลบเรียบร้อย",
+                    icon: "success"
+                });
             }
-
-            renderTable();
-
-            Swal.fire({
-                title: "สำเร็จ!",
-                text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
-                icon: "success",
-                confirmButtonColor: "#2D8C42",
-                confirmButtonText: "ตกลง"
-            });
-        }
-    });
-}
-
+        });
+        
+    }
 
     renderTable();
    
 </script>
-
-
-
-
-    <!-- **************************************************************************** -->
-
-    <!-- </form> -->
 @endsection
