@@ -25,10 +25,10 @@
         <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
             <thead class="bg-blue-500 text-white text-sm" style="background-color: #B5CFF5">
                 <tr>
-                    <th class="py-2 px-4 text-left w-4/12 whitespace-nowrap">ชื่อ / ประเภท</th>
-                    <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap">Icon</th>
-                    <th class="py-2 px-4 text-center w-5/12 whitespace-nowrap">คำอธิบาย</th>
-                    <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap"></th>
+                    <th class="py-2 px-3 text-left w-3 whitespace-nowrap">ชื่อ / ประเภท</th>
+                    <th class="py-2 px-2 text-center w-1 whitespace-nowrap">Icon</th>
+                    <th class="py-2 px-4 text-left w-3 whitespace-nowrap">คำอธิบาย</th>
+                    <th class="py-2 px-1 w1 text-left w-1 whitespace-nowrap"></th>
                 </tr>
             </thead>
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
@@ -91,10 +91,10 @@
                 const row = document.createElement("tr");
                 row.innerHTML = `
                 <td class="py-3 px-4 text-left">
-                    <div class="font-bold">${poit.name}</div>
-                    <div class="text-sm text-gray-500">${poit.type}</div>
+                    <div class="font-bold text-md">${poit.name}</div>
+                    <div class="text-sm text-gray-400">${poit.type}</div>
                 </td>
-                <td class="py-3 px-4 text-center">${getIconByType(poit.type)}</td>
+                <td class="py-3 px-4 text-center text-md">${getIconByType(poit.type)}</td>
                 <td class="py-3 px-4 text-left truncate">${poit.description}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poit.id})">&#8230;</button>
