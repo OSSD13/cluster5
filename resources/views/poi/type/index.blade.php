@@ -43,16 +43,16 @@
 @section('script')
     <script>
         let poits = [
-            { name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี", description: "ร้านอาหารริมทะเลที่มีอาหารทะเลสดใหม่และบรรยากาศดี" },
-            { name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี", description: "ร้านกาแฟบรรยากาศสบาย ๆ พร้อมกาแฟคุณภาพดี" },
-            { name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี", description: "ร้านขนมหวานที่มีเมนูหลากหลายและรสชาติอร่อย" },
-            { name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี", description: "ผับบาร์ที่มีดนตรีสดและเครื่องดื่มหลากหลาย" },
-            { name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหลากหลายและสิ่งอำนวยความสะดวกครบครัน" },
-            { name: "เชียงใหม่", type: "ร้านอาหาร", province: "เชียงใหม่", description: "ร้านอาหารที่มีวิวภูเขาและอาหารพื้นเมือง" },
-            { name: "ขอนแก่น", type: "ร้านกาแฟ", province: "ขอนแก่น", description: "ร้านกาแฟที่มีเมล็ดกาแฟคุณภาพจากทั่วโลก" },
-            { name: "หาดใหญ่", type: "ร้านขนม", province: "สงขลา", description: "ร้านขนมที่มีเมนูขนมไทยและขนมสากล" },
-            { name: "ภูเก็ต", type: "ผับบาร์", province: "ภูเก็ต", description: "ผับบาร์ที่มีวิวทะเลและดนตรีสด" },
-            { name: "กรุงเทพ", type: "ศูนย์การค้า", province: "กรุงเทพ", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหรูหราและร้านอาหารหลากหลาย" },
+            { name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี", description: "ร้านอาหารริมทะเลที่มีอาหารทะเลสดใหม่และบรรยากาศดี", id: 1 },
+            { name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี", description: "ร้านกาแฟบรรยากาศสบาย ๆ พร้อมกาแฟคุณภาพดี", id: 2  },
+            { name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี", description: "ร้านขนมหวานที่มีเมนูหลากหลายและรสชาติอร่อย", id: 3 },
+            { name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี", description: "ผับบาร์ที่มีดนตรีสดและเครื่องดื่มหลากหลาย", id: 4 },
+            { name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหลากหลายและสิ่งอำนวยความสะดวกครบครัน", id: 5 },
+            { name: "เชียงใหม่", type: "ร้านอาหาร", province: "เชียงใหม่", description: "ร้านอาหารที่มีวิวภูเขาและอาหารพื้นเมือง", id: 6 },
+            { name: "ขอนแก่น", type: "ร้านกาแฟ", province: "ขอนแก่น", description: "ร้านกาแฟที่มีเมล็ดกาแฟคุณภาพจากทั่วโลก", id: 7 },
+            { name: "หาดใหญ่", type: "ร้านขนม", province: "สงขลา", description: "ร้านขนมที่มีเมนูขนมไทยและขนมสากล", id: 8 },
+            { name: "ภูเก็ต", type: "ผับบาร์", province: "ภูเก็ต", description: "ผับบาร์ที่มีวิวทะเลและดนตรีสด", id: 9 },
+            { name: "กรุงเทพ", type: "ศูนย์การค้า", province: "กรุงเทพ", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหรูหราและร้านอาหารหลากหลาย" , id: 10},
         ]
 
         for (let i = 12; i <= 50; i++) {
@@ -154,12 +154,16 @@
                 title: "<b class='text-gray-800'>รายละเอียดข้อมูล POI</b>",
                 html: `
                         <div class="flex flex-col items-start space-y-4 text-left">
-                            <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
+                            <label class="font-semibold text-gray-800">ชื่อ</label>
                             <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.name}" readonly>
-                            <div><b>ประเภท:</b> ${poit.type}</div>
-                            <div><b>จังหวัด:</b> ${poit.province}</div>
-                            <div><b>วันที่เพิ่ม:</b> 17 ก.ย. 2568</div>
-                            <div><b>เพิ่มโดย:</b> jeng@gmail.com</div>
+                            <label class="font-semibold text-gray-800">ประเภท</label>
+                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.type}" readonly>
+                            <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
+                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.provice}" readonly>
+                            <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
+                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
+                            <label class="font-semibold text-gray-800">เพิ่มโดย</label>
+                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
                         </div>
                     `,
                 confirmButtonText: "ยืนยัน",
@@ -174,22 +178,31 @@
         function deletePoit(id) {
             Swal.fire({
                 title: "ลบสถานที่ที่สนใจ",
-                text: "คุณแน่ใจหรือไม่ว่าต้องการลบ?",
+                text: "คุณต้องการลบสถานที่ที่สนใจ ใช่หรือไม่",
                 icon: "warning",
+                iconColor: "#d33",
                 showCancelButton: true,
                 confirmButtonColor: "#d33",
                 cancelButtonColor: "#6c757d",
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก"
-            }).then(result => {
+            }).then((result) => {
                 if (result.isConfirmed) {
-                    poits = poits.filter(p => p.id !== id);
+                    // ลบรายการออกจากอาร์เรย์
+                    poits = poits.filter(poits => poits.id !== id);
+
+                    // อัปเดตตาราง
                     renderTable();
-                    Swal.fire("ลบแล้ว!", "ข้อมูลถูกลบเรียบร้อย", "success");
+
+                    // แจ้งเตือนว่าลบสำเร็จ
+                    Swal.fire({
+                        title: "ลบแล้ว!",
+                        text: "สถานที่ที่สนใจถูกลบเรียบร้อย",
+                        icon: "success"
+                    });
                 }
             });
         }
-
         document.addEventListener("DOMContentLoaded", () => {
             renderTable();
 
