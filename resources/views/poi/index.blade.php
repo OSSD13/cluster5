@@ -8,10 +8,10 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-700">POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-700" >POI จัดการสถานที่ที่สนใจ</h2>
 
             <a href="{{ route('poi.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                     สร้าง POI
                 </button>
             </a>
@@ -37,7 +37,7 @@
 
         <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
         <a href="{{ route('poi.type.index') }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                 ไปหน้า POI type
             </button>
         </a>
@@ -48,18 +48,20 @@
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white">
-                <tr>
-                    <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-1 w-7 text-center"></th>
-                </tr>
-            </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
-        </table>
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+     <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
+    <tr>
+        <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ID</th>
+        <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
+        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">ประเภท</th>
+        <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">จังหวัด</th>
+        <th class="py-2 px-2 text-center w-1/12 whitespace-nowrap"></th>
+    </tr>
+    </thead>
+    <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
+        <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
+    </tbody>
+    </table>
     </div>
 
     <!-- Pagination Controls -->
@@ -79,9 +81,17 @@
             { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
             { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
             { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
-        ]; // Your existing data
+        ];
+        for (let i = 12; i <= 50; i++) {
+            branches.push({
+                id: i,
+                name: `${i}`,
+                type: `${i % 5 === 0 ? 'ร้านกาแฟ' : i % 5 === 1 ? 'ร้านอาหาร' : i % 5 === 2 ? 'ร้านขนม' : i % 5 === 3 ? 'ผับบาร์' : 'ศูนย์การค้า'}`,
+                province: `${i % 5 === 0 ? 'อุดรธานี' : i % 5 === 1 ? 'ชลบุรี' : i % 5 === 2 ? 'กรุงเทพฯ' : i % 5 === 3 ? 'ขอนแก่น' : 'เชียงใหม่'}`,
+            });
+        } // Your existing data
         let currentPage = 1;
-        const rowsPerPage = 25;
+        const rowsPerPage = 10;
         let currentSort = { column: null, ascending: true };
 
         function renderTable() {
@@ -91,66 +101,41 @@
             const start = (currentPage - 1) * rowsPerPage;
             const paginatedData = branches.slice(start, start + rowsPerPage);
 
-
-            paginatedData.forEach(($pois) => {
+            paginatedData.forEach((branch) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-            <td class="py-3 px-4 w-16">${branch.id}</td>
-            <td class="py-3 px-4 truncate">${branch.name}</td>
-            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-            <td class="py-3 px-1 w-10 text-center relative">
-                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
-                    onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
-                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                </div>
-            </td>
-        `;
-                        <td class="py-3 px-4 w-16">${branch.id}</td>
-                        <td class="py-3 px-4 truncate">${branch.name}</td>
-                        <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-                        <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-                        <td class="py-3 px-1 w-10 text-center relative">
-                            <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                            <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
-                                onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
-                                <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                            </div>
-                        </td>
-                    `;
-                tableBody.appendChild(row);
-            });
+                <td class="py-3 px-4 w-16">${branch.id}</td>
+                <td class="py-3 px-4 truncate">${branch.name}</td>
+                <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+                <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+                <td class="py-3 px-1 w-10 text-center relative">
+                    <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                    <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
+                        onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                    </div>
+                </td>
+            `;
+                            <td class="py-3 px-4 w-16">${branch.id}</td>
+                            <td class="py-3 px-4 truncate">${branch.name}</td>
+                            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+                            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+                            <td class="py-3 px-1 w-10 text-center relative">
+                                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
+                                    onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                                </div>
+                            </td>
+                `;
+                    tableBody.appendChild(row);
+                });
 
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = ""; // Clear previous pagination
-
-            const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-            // Previous button
-            const prevBtn = document.createElement("button");
-            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.onclick = () => goToPage(currentPage - 1);
-            pagination.appendChild(prevBtn);
-
-            // Page number buttons
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold
-                                     ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-                btn.onclick = () => goToPage(i);
-                pagination.appendChild(btn);
+                renderPagination();
             }
 
             function renderPagination() {
