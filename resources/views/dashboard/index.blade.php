@@ -439,11 +439,11 @@
             <thead class="bg-lightblue">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">จำนวนสาขา</th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
                     <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
                 </tr>
             </thead>
@@ -460,7 +460,44 @@
             let currentPage = 1;
 
             function buildRegionTable() {
-               
+                // fetch /api/getRegionBranch
+                // example response
+                // {
+                //     "distinct_regions": [
+                //         "SOUTH",
+                //         "CENTRAL",
+                //         "WEST",
+                //         "NORTHEAST",
+                //         "EAST",
+                //         "NORTH"
+                //     ],
+                //     "branch_count_by_region": [{
+                //             "region": "NORTHEAST",
+                //             "branch_count": 79
+                //         },
+                //         {
+                //             "region": "CENTRAL",
+                //             "branch_count": 64
+                //         },
+                //         {
+                //             "region": "EAST",
+                //             "branch_count": 8
+                //         },
+                //         {
+                //             "region": "NORTH",
+                //             "branch_count": 17
+                //         },
+                //         {
+                //             "region": "SOUTH",
+                //             "branch_count": 25
+                //         },
+                //         {
+                //             "region": "WEST",
+                //             "branch_count": 8
+                //         }
+                //     ]
+                // }
+
                 const regions = {
                     'NORTH': 'ภาคเหนือ',
                     'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
@@ -506,7 +543,55 @@
             }
 
             function buildProvinceTable(region) {
-            
+                // fetch /api/getRegionBranch?region=SOUTH
+                // example response
+                // {
+                //     "distinct_provinces": [
+                //         "กระบี่",
+                //         "ชุมพร",
+                //         "ตรัง",
+                //         "นครศรีธรรมราช",
+                //         "นราธิวาส",
+                //         "ปัตตานี",
+                //         "พังงา",
+                //         "พัทลุง",
+                //         "ภูเก็ต",
+                //         "ยะลา",
+                //         "ระนอง",
+                //         "สงขลา",
+                //         "สตูล",
+                //         "สุราษฎร์ธานี"
+                //     ],
+                //     "branch_count_by_province": [{
+                //             "province": "กระบี่",
+                //             "branch_count": 3
+                //         },
+                //         {
+                //             "province": "ชุมพร",
+                //             "branch_count": 2
+                //         },
+                //         {
+                //             "province": "ตรัง",
+                //             "branch_count": 1
+                //         },
+                //         {
+                //             "province": "นครศรีธรรมราช",
+                //             "branch_count": 2
+                //         },
+                //         {
+                //             "province": "ปัตตานี",
+                //             "branch_count": 5
+                //         },
+                //         {
+                //             "province": "ภูเก็ต",
+                //             "branch_count": 1
+                //         },
+                //         {
+                //             "province": "สุราษฎร์ธานี",
+                //             "branch_count": 11
+                //         }
+                //     ]
+                // }
                 const date = document.getElementById('timePeriod') ?
                     document.getElementById('timePeriod').value :
                     new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -546,7 +631,34 @@
             }
 
             function buildBranchesTable(region, province) {
-            
+                // fetch /api/getRegionBranch?region=SOUTH&province=กระบี่
+                // example response
+                // {
+                //     "branches": [{
+                //             "branchId": 74,
+                //             "branchName": "Mrs. Concepcion Cremin DVM",
+                //             "branchProvince": "กระบี่",
+                //             "branchSaleChange": 88.00888230940048,
+                //             "saleAdded": true
+                //         },
+                //         {
+                //             "branchId": 8,
+                //             "branchName": "Angus VonRueden",
+                //             "branchProvince": "กระบี่",
+                //             "branchSaleChange": -65.5929781923279,
+                //             "saleAdded": true
+                //         },
+                //         {
+                //             "branchId": 187,
+                //             "branchName": "Ivy Russel",
+                //             "branchProvince": "กระบี่",
+                //             "branchSaleChange": -38.20272520633531,
+                //             "saleAdded": true
+                //         }
+                //     ],
+                //     "branch_count": 3
+                // }
+
                 const date = document.getElementById('timePeriod') ?
                     document.getElementById('timePeriod').value :
                     new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -627,16 +739,16 @@
             });
         </script>
 
-        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
-            <thead class="bg-blue-500 text-white">
+        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable" >
+            <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                 <tr>
-                    <th class="py-3 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left">ชื่อสาขา</th>
-                    <th class="py-3 px-4 text-left">จังหวัด</th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')">
+                    <th class="py-3 px-4 text-left" style="color: black">ID</th>
+                    <th class="py-3 px-4 text-left" style="color: black">ชื่อสาขา</th>
+                    <th class="py-3 px-4 text-left" style="color: black">จังหวัด</th>
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')" style="color: black">
                         ยอดขาย ⬍
                     </th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')">
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')" style="color: black">
                         เพิ่มยอด ⬍
                     </th>
                 </tr>
