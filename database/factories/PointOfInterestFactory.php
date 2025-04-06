@@ -44,6 +44,7 @@ class PointofinterestFactory extends Factory
             //
         ];
     }
+<<<<<<< HEAD
     // $table->string('poi_name');
     // $table->string('type');
     // $table->double('gps_lat');
@@ -53,4 +54,6 @@ class PointofinterestFactory extends Factory
     // $table->foreign('location_id')->references('location_id')->on('locations');
     // $table->timestamps();
 
+=======
+>>>>>>> origin/mos
 }
