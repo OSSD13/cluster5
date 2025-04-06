@@ -11,7 +11,15 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
+<<<<<<< HEAD
         "laravel/socialite": "^5.19",
+=======
+<<<<<<< HEAD
+        "laravel/socialite": "^5.18",
+=======
+        "laravel/socialite": "*",
+>>>>>>> origin/develop
+>>>>>>> origin/66160357
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
