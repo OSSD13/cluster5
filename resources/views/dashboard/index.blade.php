@@ -290,8 +290,8 @@
                 <div class="">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
                     <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-black text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
-                    <span class="font-black text-[24px]">ชิ้น</span>
+                    <span class="font-bold text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
+                    <span class="font-medium text-[24px] flex justify-end">ชิ้น</span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
@@ -305,8 +305,8 @@
                 <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
                     <span class="icon-[tabler--coin-filled] text-trinary" style="font-size: 75px;" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="font-black text-trinary" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
-                    <span class="font-black text-[24px]">บาท</span>
+                    <span class="font-bold text-trinary" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="font-medium text-[24px]">บาท</span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
@@ -321,8 +321,8 @@
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
-                    <div class="">Min</div>
+                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
+                    <div class="font-bold" style="font-size: 13px; color: black;"  >Min</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="minValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
@@ -332,8 +332,8 @@
                         <span id="minPercent">0</span>%
                     </div>
                 </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success">
-                    <div class="">Max</div>
+                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
+                    <div class="font-bold" style="font-size: 13px; color: black;">Max</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="maxValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
@@ -423,7 +423,7 @@
             }
         </script>
 
-        <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 ">
+        <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 " style="background-color: #B8E0F8">
             <div class='col-span-1'>
                 <button id="regionTableBack" class="cursor-pointer px-4 py-2 bg-primary-dark text-white rounded"
                     onclick="">ย้อนกลับ</button>
@@ -434,16 +434,17 @@
         </div>
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
-            <thead class="bg-lightblue">
+        <div style="resize: both; overflow: auto; max-width: 100%;">
+        <table class="table-auto divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+            <thead class="bg-lightblue" style="background-color: #B6D2FF">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">จำนวนสาขา</th>
-                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
+                    <th scope="col" class="py-3" id="regionBranchCount"></th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
@@ -738,16 +739,16 @@
             });
         </script>
 
-        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
-            <thead class="bg-blue-500 text-white">
+        <table class="table-auto w-full border-collapse rounded-lg overflow-hidden" id="branchTable" >
+            <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                 <tr>
-                    <th class="py-3 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left">ชื่อสาขา</th>
-                    <th class="py-3 px-4 text-left">จังหวัด</th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')">
+                    <th class="py-3 px-4 text-left" style="color: black">ID</th>
+                    <th class="py-3 px-4 text-left" style="color: black">ชื่อสาขา</th>
+                    <th class="py-3 px-4 text-left" style="color: black">จังหวัด</th>
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')" style="color: black">
                         ยอดขาย ⬍
                     </th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')">
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')" style="color: black">
                         เพิ่มยอด ⬍
                     </th>
                 </tr>
