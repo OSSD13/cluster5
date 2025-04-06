@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 class BranchController extends Controller
 {
     //
-    public function index(){
+    public function index()
+    {
         return view('branch.index');
     }
-    public function queryBranch(Request $request){
+    public function queryBranch(Request $request)
+    {
         $limit = $request->input('limit', 10);
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $limit;
@@ -100,9 +102,9 @@ class BranchController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-            'status' => 'error',
-            'message' => 'Validation failed',
-            'errors' => $validator->errors()
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
             ], 422);
         }
 
@@ -152,14 +154,109 @@ class BranchController extends Controller
             'data' => $branch
         ]);
     }
-    public function create(){
+
+    public function create()
+    {
         return view('branch.create');
     }
-    public function edit(){
+    public function edit()
+    {
         return view('branch.edit');
     }
-    public function manage(){
+    public function editBranch(Request $request)
+    {
+        // validate the request
+        $validator = \Validator::make($request->all(), [
+            'branch_id' => 'required|integer|exists:branch_stores,id',
+            'name' => 'string|max:255',
+            'address' => 'string|max:255',
+            'detail' => 'nullable|string',
+            'bs_manager' => 'nullable|integer|exists:users,user_id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // find the branch
+        $branch = Branch_store::find($request->input('branch_id'));
+
+        if (!$branch) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Branch not found'
+            ], 404);
+        }
+
+        // update fields if provided
+        if ($request->has('name')) {
+            $branch->bs_name = $request->input('name');
+        }
+        if ($request->has('address')) {
+            $branch->bs_address = $request->input('address');
+        }
+        if ($request->has('detail')) {
+            $branch->bs_detail = $request->input('detail');
+        }
+        if ($request->has('bs_manager')) {
+            $branch->bs_manager = $request->input('bs_manager');
+        }
+
+        $branch->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Branch updated successfully',
+            'data' => $branch
+        ]);
+    }
+
+    public function manage()
+    {
         return view('branch.manage.index');
+    }
+    public function deleteBranch(Request $request)
+    {
+        // Validate branch_id
+        $validator = \Validator::make($request->all(), [
+            'branch_id' => 'required|integer|exists:branch_stores,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $branch = Branch_store::find($request->input('branch_id'));
+
+        if (!$branch) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Branch not found'
+            ], 404);
+        }
+
+        // Optional: delete related POI if needed
+        $poiId = $branch->bs_poi_id;
+
+        $branch->delete();
+
+        // Optionally delete the associated POI
+        if ($poiId) {
+            PointOfInterest::where('poi_id', $poiId)->delete();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Branch (and related POI) deleted successfully'
+        ]);
     }
 
 
