@@ -413,10 +413,6 @@ function toggleSupervisor() {
     }
 }
 
-functiob deleteMember(id){
-    const member 
-}
-
 function editMember(id) {
     const member = members.find(item => item.id === id);
 
@@ -509,6 +505,36 @@ function editMember(id) {
                 icon: "success",
                 confirmButtonColor: "#2D8C42",
                 confirmButtonText: "ตกลง"
+            });
+        }
+    });
+}
+
+
+function deleteMember(id) {
+    Swal.fire({
+        title: "ลบสมาชิก",
+        text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
+        icon: "warning",
+        iconColor: "#d33",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // ลบรายการออกจากอาร์เรย์
+            members = members.filter(member => member.id !== id);
+            
+            // อัปเดตตาราง
+            renderTable();
+
+            // แจ้งเตือนว่าลบสำเร็จ
+            Swal.fire({
+                title: "ลบแล้ว!",
+                text: "สมาชิกถูกลบเรียบร้อย",
+                icon: "success"
             });
         }
     });
