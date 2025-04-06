@@ -60,6 +60,9 @@
     </thead>
     <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
         <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
+        <tr>
+        <td class="py-3 px-4" colspan="5">&nbsp;</td> <!-- แถวเปล่า -->
+    </tr>
     </tbody>
     </table>
     </div>
