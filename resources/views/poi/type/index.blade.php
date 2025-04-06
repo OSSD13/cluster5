@@ -44,7 +44,7 @@
     <!-- Pagination Controls -->
     <div class="overflow-x-auto">
         <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white text-sm">
+            <thead class="text-black text-sm"style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-2 px-4 text-left w-4/12 whitespace-nowrap">ชื่อ / ประเภท</th>
                     <th class="py-2 px-4 text-center w-1/12 whitespace-nowrap">Icon</th>
@@ -202,7 +202,7 @@
         });
 
         function viewDetail(id) {
-            const branch = branches.find(item => item.id === id);
+            const branch = branches[id]; // Use the index to find the branch
 
             Swal.fire({
                 title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
