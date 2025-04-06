@@ -181,8 +181,8 @@
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
                 แก้ไข
             </button>
-            <button class="block w-full px-4 py-2  border border-gray-400 text-white rounded-lg hover:bg-red-700" style="background-color: #CF3434"
-                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteBranch(${id})">
+            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
                 ลบ
             </button>
         `;
@@ -376,6 +376,7 @@ function addMember() {
             }
 
             // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
+   /*         
             let newMember = {
                 id: members.length + 1,
                 name: name,
@@ -383,6 +384,19 @@ function addMember() {
                 role: role,
                 supervisorId: supervisorId // เก็บ Sales Supervisor ไว้ใน supervisorId
             };
+   */ 
+            let newMember = {
+                id: members.length + 1,
+                name: name,
+                email: email,
+                role: role
+            };
+
+            if (role === "Sale") {
+                supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
+                newMember.supervisorId = supervisorId;
+            }
+
             members.push(newMember);
             renderTable();
 
@@ -426,11 +440,6 @@ function toggleSupervisor() {
 }
 
 
-
-
-
-
-
 function editMember(id) {
     const member = members.find(item => item.id === id);
 
@@ -451,13 +460,29 @@ function editMember(id) {
                 <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.name}">
 
                 <label class="font-semibold text-gray-800">บทบาท</label>
-                <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
-                    <option value="Sale" ${member.province === 'Sale' ? 'selected' : ''}>Sale</option>
-                    <option value="CEO" ${member.province === 'CEO' ? 'selected' : ''}>CEO</option>
-                    <option value="Sale Supervisor" ${member.province === 'Sale Supervisor' ? 'selected' : ''}>Sale Supervisor</option>
+                <select id="memberRole" onchange="toggleSupervisor()" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                    <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
+                    <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
+                    <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
                 </select>
+
+                <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
+                    <label class="font-semibold text-gray-800">Sales Supervisor</label>
+                    <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                        <!-- options จะเติมโดย toggleSupervisor() -->
+                    </select>
+                </div>
             </div>
         `,
+        didOpen: () => {
+            toggleSupervisor();
+            if (member.role === "Sale" && member.supervisorId) {
+                const dropdown = document.getElementById("supervisorDropdown");
+                setTimeout(() => {
+                    dropdown.value = member.supervisorId;
+                }, 0); // รอให้ toggleSupervisor เติม option ก่อน
+            }
+        },
         showCancelButton: true,
         confirmButtonText: "ยืนยัน",
         cancelButtonText: "ยกเลิก",
@@ -478,10 +503,24 @@ function editMember(id) {
                 return false;
             }
 
-            // อัปเดตข้อมูลใน array
+            let supervisorId = null;
+            if (role === "Sale") {
+                supervisorId = document.getElementById("supervisorDropdown").value;
+                if (!supervisorId) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                    return false;
+                }
+            }
+
+            // อัปเดตข้อมูล
             member.email = email;
             member.name = name;
-            member.province = role;
+            member.role = role;
+            if (role === "Sale") {
+                member.supervisorId = parseInt(supervisorId);
+            } else {
+                delete member.supervisorId;
+            }
 
             renderTable();
 
@@ -495,6 +534,7 @@ function editMember(id) {
         }
     });
 }
+
 
     renderTable();
    
