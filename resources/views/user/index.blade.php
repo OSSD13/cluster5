@@ -413,6 +413,9 @@ function toggleSupervisor() {
     }
 }
 
+functiob deleteMember(id){
+    const member 
+}
 
 function editMember(id) {
     const member = members.find(item => item.id === id);
