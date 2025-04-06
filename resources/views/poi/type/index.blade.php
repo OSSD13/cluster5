@@ -179,17 +179,27 @@
             Swal.fire({
                 title: "<b class='text-gray-800'>รายละเอียดข้อมูล POI</b>",
                 html: `
-                        <div class="flex flex-col items-start space-y-4 text-left">
-                            <label class="font-semibold text-gray-800">ชื่อ</label>
-                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.name}" readonly>
-                            <label class="font-semibold text-gray-800">ประเภท</label>
-                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.type}" readonly>
-                            <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
-                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.provice}" readonly>
-                            <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
-                            <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
+                        <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
+                            <div class="w-full">
+                                <label class="block text-gray-800 text-sm mb-1">ชื่อ</label>
+                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.name}" readonly>
+                            </div>
+                            <div class="w-full">
+                            <label class="block text-gray-800 text-sm mb-1">ประเภท</label>
+                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.type}" readonly>
+                            </div>
+                            <div class="w-full">
+                            <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
+                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.provice}" readonly>
+                            </div>
+                            <div class="w-full">
+                            <label class="block text-gray-800 text-sm mb-1">วันที่เพิ่ม</label>
+                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
+                            </div>
+                            <div class="w-full">
+                            <label class="block text-gray-800 text-sm mb-1">เพิ่มโดย</label>
+                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
+                            </div>
                         </div>
                     `,
                 confirmButtonText: "ยืนยัน",
