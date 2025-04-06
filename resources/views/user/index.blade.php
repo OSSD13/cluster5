@@ -255,8 +255,9 @@
 
         Swal.fire({
             html: `
-    
-                <b class=text-gray-800 text-xl >รายละเอียดข้อมูลสมาชิก</b>
+                <div class="flex flex-col text-3xl  mb-6 mt-4">
+                <b class=text-gray-800 >รายละเอียดข้อมูลสมาชิก</b>
+                </div>
                 <div class="flex flex-col mt-4 items-center space-y-4 text-left w-full max-w-md mx-auto">
                     <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
@@ -300,7 +301,7 @@ function addMember() {
     Swal.fire({
 
         html: 
-            `<div class="flex flex-col items-center">
+            `<div class="flex flex-col text-3xl  mb-6 mt-4">
                 <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
             </div>
             <b class=text-gray-800 text-xl mb-1>สร้างสมาชิก </b>
@@ -434,10 +435,12 @@ function editMember(id) {
 
     Swal.fire({
         html: 
-        `<div class="flex flex-col items-center">
-                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
+            `<div class="flex flex-col items-center mt-4">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
             </div>
-            <b class=text-gray-800 text-xl mb-1>แก้ไขสมาชิก </b>
+            <div class="flex flex-col text-3xl  mb-6 mt-4">
+                <b class=text-gray-800 >แก้ไขสมาชิก</b>
+            </div>
 
             <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
                 <div class="w-full">
