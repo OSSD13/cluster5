@@ -75,6 +75,12 @@ Route::middleware([CheckLogin::class])->group(function () {
 
     Route::get('/api/locations', [LocationController::class, 'getLocations'])->name('api.locations');
 
+    Route::get('/api/branch/query', [BranchController::class, 'queryBranch'])->name('api.branch.query');
+    Route::post('/api/branch/create', [BranchController::class, 'createBranch'])->name('api.branch.create');
+    Route::post('/api/branch/edit', [BranchController::class, 'editBranch'])->name('api.branch.edit');
+    Route::post('/api/branch/delete', [BranchController::class, 'deleteBranch'])->name('api.branch.delete');
+    Route::get('/api/branch', [BranchController::class, 'getBranch'])->name('api.branch.get');
+
 
 
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
