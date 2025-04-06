@@ -263,6 +263,97 @@
 }
 
 
+function editPoit(id) {
+    const poit = poits.find(p => p.id === id);
+
+    Swal.fire({
+        title: `<b class="text-gray-800">แก้ไขข้อมูล POI</b>`,
+        html: `
+            <div class="flex flex-col space-y-1 text-left">
+                <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
+                <input type="text" id="poiName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${poit.name}">
+
+                <label class="font-semibold text-gray-800">ประเภท</label>
+                <select id="poiType" class="w-full p-2 border border-gray-300 rounded mb-3" onchange="updateIconPreview()">
+                    <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}>ร้านอาหาร</option>
+                    <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}>ร้านกาแฟ</option>
+                    <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}>ร้านขนม</option>
+                    <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}>ผับบาร์</option>
+                    <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}>ศูนย์การค้า</option>
+                </select>
+
+                <label class="font-semibold text-gray-800">Icon</label>
+                <div id="iconPreview" class="text-2xl mb-3">${getIconByType(poit.type)}</div>
+
+                <label class="font-semibold text-gray-800">คำอธิบาย</label>
+                <textarea id="poiDescription" class="w-full p-2 border border-gray-300 rounded mb-3">${poit.description}</textarea>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        focusCancel: true,
+        preConfirm: () => {
+            const name = document.getElementById("poiName").value;
+            const type = document.getElementById("poiType").value;
+            const description = document.getElementById("poiDescription").value;
+
+            if (!name || !type || !description) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            // อัปเดตข้อมูล POI
+            poit.name = name;
+            poit.type = type;
+            poit.description = description;
+
+            renderTable();
+
+            Swal.fire({
+                title: "สำเร็จ!",
+                text: "แก้ไขข้อมูล POI เรียบร้อยแล้ว",
+                icon: "success",
+                confirmButtonColor: "#2D8C42",
+                confirmButtonText: "ตกลง"
+            });
+        }
+    });
+}
+
+// ฟังก์ชันสำหรับอัปเดต Icon ตามประเภทที่เลือก
+function updateIconPreview() {
+    const type = document.getElementById("poiType").value;
+    const iconPreview = document.getElementById("iconPreview");
+    iconPreview.innerHTML = getIconByType(type);
+}
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTable();
+
+            const filterAll = () => {
+                const searchVal = document.getElementById("searchInput").value.toLowerCase();
+                const typeVal = document.getElementById("typeSelect").value;
+                const provVal = document.getElementById("provinceSelect").value;
+
+                const filtered = poits.filter(p =>
+                    (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
+                    (!typeVal || p.type === typeVal) &&
+                    (!provVal || p.province === provVal)
+                );
+
+                currentPage = 1;
+                renderTable(filtered);
+            };
+
+            document.getElementById("searchInput").addEventListener("input", filterAll);
+            document.getElementById("typeSelect").addEventListener("change", filterAll);
+            document.getElementById("provinceSelect").addEventListener("change", filterAll);
+        });
+
+        document.addEventListener("click", () => {
+            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+        });
         function deletePoit(id) {
             Swal.fire({
                 title: "ลบสถานที่ที่สนใจ",
@@ -291,32 +382,6 @@
                 }
             });
         }
-        document.addEventListener("DOMContentLoaded", () => {
-            renderTable();
-
-            const filterAll = () => {
-                const searchVal = document.getElementById("searchInput").value.toLowerCase();
-                const typeVal = document.getElementById("typeSelect").value;
-                const provVal = document.getElementById("provinceSelect").value;
-
-                const filtered = poits.filter(p =>
-                    (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
-                    (!typeVal || p.type === typeVal) &&
-                    (!provVal || p.province === provVal)
-                );
-
-                currentPage = 1;
-                renderTable(filtered);
-            };
-
-            document.getElementById("searchInput").addEventListener("input", filterAll);
-            document.getElementById("typeSelect").addEventListener("change", filterAll);
-            document.getElementById("provinceSelect").addEventListener("change", filterAll);
-        });
-
-        document.addEventListener("click", () => {
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-        });
     </script>
 
 @endsection
