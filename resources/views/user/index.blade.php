@@ -46,7 +46,7 @@
 <div class="overflow-x-auto">
     <table class="w-full mt-5 rounded-lg overflow-hidden table-fixed">
         
-        <thead class="text-gray-800" style="background-color: #B5CFF5">
+        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
@@ -97,10 +97,10 @@
     row.innerHTML = `
         <td class="py-3 px-4 w-16">${member.id}</td>
         <td class="py-3 px-4 truncate">
-            <div class="font-semibold">${member.name}</div>
-            <div class="text-sm text-gray-500">${member.email}</div>
+            <div class="font-md text-md">${member.name}</div>
+            <div class="text-sm text-gray-400">${member.email}</div>
         </td>
-        <td class="py-3 px-4 w-32 truncate">${member.role}</td>
+        <td class="py-3 px-4 w-32 truncate text-md">${member.role}</td>
         <td class="py-3 px-1 w-10 text-center relative">
             <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
            
