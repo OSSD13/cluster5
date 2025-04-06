@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\PointOfInterestController;
 use App\Http\Controllers\PointOfInterestTypeController;
 use Illuminate\Support\Facades\Route;
@@ -80,6 +81,10 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/branch/edit', [BranchController::class, 'editBranch'])->name('api.branch.edit');
     Route::post('/api/branch/delete', [BranchController::class, 'deleteBranch'])->name('api.branch.delete');
     Route::get('/api/branch', [BranchController::class, 'getBranch'])->name('api.branch.get');
+
+
+    // Test routes
+    Route::get('/api/map', [MapController::class, 'getNearbyPOIsGroupedByType'])->name('api.map.get');
 
 
 
