@@ -111,35 +111,61 @@
         }
 
         function renderPagination(data) {
-            const totalPages = Math.ceil(data.length / rowsPerPage);
             const pagination = document.getElementById("pagination");
-            pagination.innerHTML = "";
+            pagination.innerHTML = ""; // Clear previous pagination
 
-            const createBtn = (text, page) => {
+            const totalPages = Math.ceil(poits.length / rowsPerPage);
+
+            // Previous button
+            const prevBtn = document.createElement("button");
+            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-800 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
+
+            // Display first page button if needed
+            if (currentPage > 3) {
+                const firstBtn = document.createElement("button");
+                firstBtn.innerText = "1";
+                firstBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                firstBtn.onclick = () => goToPage(1);
+                pagination.appendChild(firstBtn);
+                pagination.appendChild(document.createTextNode("..."));
+            }
+
+            // Display middle page numbers
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
                 const btn = document.createElement("button");
-                btn.innerText = text;
-                btn.className = `px-4 py-2 mx-1 rounded-lg ${page === currentPage ? 'bg-blue-600 text-white' : 'bg-white border text-black'}`;
-                btn.onclick = () => { currentPage = page; renderTable(data); };
-                return btn;
-            };
-
-            if (currentPage > 1) {
-                pagination.appendChild(createBtn("«", currentPage - 1));
+                btn.innerText = i;
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                btn.onclick = () => goToPage(i);
+                pagination.appendChild(btn);
             }
 
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
-                    pagination.appendChild(createBtn(i, i));
-                } else if (i === currentPage - 3 || i === currentPage + 3) {
-                    const dots = document.createElement("span");
-                    dots.innerText = "...";
-                    pagination.appendChild(dots);
-                }
+            // Display last page button if needed
+            if (currentPage < totalPages - 2) {
+                pagination.appendChild(document.createTextNode("..."));
+                const lastBtn = document.createElement("button");
+                lastBtn.innerText = totalPages;
+                lastBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pagination.appendChild(lastBtn);
             }
 
-            if (currentPage < totalPages) {
-                pagination.appendChild(createBtn("»", currentPage + 1));
-            }
+            // Next button
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-800 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
+
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            renderTable();
         }
 
         function toggleMenu(event, id) {
