@@ -5,7 +5,7 @@ use App\Http\Controllers\PointOfInterestController;
 use App\Http\Controllers\PointOfInterestTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
-use App\Http\Controllers\AnotherController;
+use App\Http\Controllers\GoogleMapController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
@@ -88,8 +88,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
 
     // Google Maps URL conversion routes
-    Route::get('/convert-link', [AnotherController::class, 'showForm']);
-    Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
+    Route::get('/convert-link', [GoogleMapController::class, 'showForm']);
+    Route::post('/convert-url', [GoogleMapController::class, 'convertShareToLatLng'])->name('handleConversion');
 
 
 });
