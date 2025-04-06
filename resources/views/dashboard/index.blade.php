@@ -439,7 +439,7 @@
             <thead class="bg-lightblue" style="background-color: #B6D2FF">
                 <tr>
                     <th scope="col"
-                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
+                        class="py-3 flex justify-center font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
                     <th scope="col"
                         class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
@@ -682,7 +682,7 @@
                                 <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">${branch.branchProvince}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">
                                     <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                         ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
