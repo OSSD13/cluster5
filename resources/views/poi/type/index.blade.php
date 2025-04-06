@@ -17,29 +17,6 @@
         <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3"
             id="searchInput">
 
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">ประเภท</label>
-            <select class="w-full p-2 border border-gray-300 rounded" id="typeSelect">
-                <option value="">ประเภทสถานที่</option>
-                <option value="ร้านอาหาร">ร้านอาหาร</option>
-                <option value="ร้านกาแฟ">ร้านกาแฟ</option>
-                <option value="ร้านขนม">ร้านขนม</option>
-                <option value="ผับบาร์">ผับบาร์</option>
-                <option value="ศูนย์การค้า">ศูนย์การค้า</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">จังหวัด</label>
-            <select class="w-full p-2 border border-gray-300 rounded" id="provinceSelect">
-                <option value="">จังหวัด</option>
-                <option value="ชลบุรี">ชลบุรี</option>
-                <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
-                <option value="ขอนแก่น">ขอนแก่น</option>
-                <option value="เชียงใหม่">เชียงใหม่</option>
-                <option value="ปราจีนบุรี">ปราจีนบุรี</option>
-            </select>
-        </div>
 
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
     </div>
@@ -122,9 +99,9 @@
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poit.id})">&#8230;</button>
                     <div id="menu-${poit.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="viewDetail(${poit.id})">ดูรายละเอียด</button>
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" onclick="editPoit(${poit.id})">แก้ไข</button>
-                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" onclick="deletePoit(${poit.id})">ลบ</button>
+                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" onclick="viewDetail(${poit.id})">ดูรายละเอียด</button>
+                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" onclick="editPoit(${poit.id})">แก้ไข</button>
+                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" onclick="deletePoit(${poit.id})">ลบ</button>
                     </div>
                 </td>`;
                 tableBody.appendChild(row);
@@ -177,7 +154,8 @@
                 title: "<b class='text-gray-800'>รายละเอียดข้อมูล POI</b>",
                 html: `
                         <div class="flex flex-col items-start space-y-4 text-left">
-                            <div><b>ชื่อสถานที่:</b> ${poit.name}</div>
+                            <label class="font-semibold text-gray-800">ชื่อสมาชิก</label>
+                            <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${poit.name}" readonly>
                             <div><b>ประเภท:</b> ${poit.type}</div>
                             <div><b>จังหวัด:</b> ${poit.province}</div>
                             <div><b>วันที่เพิ่ม:</b> 17 ก.ย. 2568</div>

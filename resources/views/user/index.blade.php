@@ -185,11 +185,11 @@
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
                 ดูรายละเอียด
             </button>
-            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
                 แก้ไข
             </button>
-            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
                 ลบ
             </button>
