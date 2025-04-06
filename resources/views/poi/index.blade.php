@@ -185,6 +185,7 @@
             document.addEventListener("click", () => {
                 document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
             });
+                        
 
 
             function viewDetail(id) {
