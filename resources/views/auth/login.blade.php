@@ -78,6 +78,7 @@
         </form>
     </div>
 <<<<<<< HEAD
+
 =======
     <link rel="stylesheet" href="styles.css"> 
 </head>
@@ -230,3 +231,6 @@
 
 </html>
 >>>>>>> origin/develop
+=======
+@endsection
+>>>>>>> origin/EarthBranch
