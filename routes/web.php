@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PointOfInterestController;
 use App\Http\Controllers\PointOfInterestTypeController;
 use Illuminate\Support\Facades\Route;
@@ -71,6 +72,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/poit/create', [PointOfInterestTypeController::class, 'createPoit'])->name('api.poit.create');
     Route::post('/api/poit/delete', [PointOfInterestTypeController::class, 'deletePoit'])->name('api.poit.delete');
     Route::post('/api/poit/edit', [PointOfInterestTypeController::class, 'editPoit'])->name('api.poit.edit');
+
+    Route::get('/api/locations', [LocationController::class, 'getLocations'])->name('api.locations');
 
 
 
