@@ -109,7 +109,6 @@
 
                             let chartLabels = [];
                             let chartData = {};
-
                             // Initialize bins to 0
                             for (let i = 0; i <= maxRange; i += step) {
                                 if (i === 0) {
@@ -119,7 +118,6 @@
                                 }
                                 chartData[i] = 0;
                             }
-
                             // Fill in the sales data only for the selected month
                             branches.forEach(b => {
                                 console.log(1, b)
@@ -136,7 +134,6 @@
 
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
-
 
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {

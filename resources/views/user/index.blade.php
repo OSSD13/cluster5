@@ -64,7 +64,7 @@
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 <!-- contextMenu Controls-->
-<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
+<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2" ></div>
 
 <script>
     let members = [
@@ -125,7 +125,7 @@
     // Previous button
     const prevBtn = document.createElement("button");
             prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer" } text-5xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
