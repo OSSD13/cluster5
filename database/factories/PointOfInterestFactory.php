@@ -6,15 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
 /**
-<<<<<<<< HEAD:database/factories/Point_of_interestsFactory.php
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Point_of_interests>
- */
-class Point_of_interestsFactory extends Factory
-========
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PointOfInterest>
  */
 class PointofinterestFactory extends Factory
->>>>>>>> origin/develop:database/factories/PointOfInterestFactory.php
 {
     /**
      * Define the model's default state.
