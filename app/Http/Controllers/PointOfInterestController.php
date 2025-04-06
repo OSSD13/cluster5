@@ -36,6 +36,7 @@ class PointOfInterestController extends Controller
             'sub_district' => 'required|string|max:255',
             'address'=> 'required|string|max:255',
             'name' => 'required|string|max:255',
+            'type' => 'required',
         ],
         [
             'latitude.required' => 'กรุณากรอกข้อมูล ละติจูด',
@@ -67,6 +68,8 @@ class PointOfInterestController extends Controller
             'name.string' => 'กรุณากรอกข้อมูล ชื่อสถานที่ เป็นตัวอักษร',
             'name.max' => 'กรุณากรอกข้อมูล ชื่อสถานที่ ไม่เกิน 255 ตัวอักษร',
             'name.required' => 'กรุณากรอกข้อมูล ชื่อสถานที่',
+
+            'type.required' => 'กรุณาเลือกข้อมูล ประเภทสถานที่',
         ]);
         return redirect()->route('poi.create')->with('success', 'เพิ่มสถานที่สำเร็จ');
     }
