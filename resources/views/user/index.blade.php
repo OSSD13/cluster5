@@ -41,14 +41,8 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-<<<<<<< HEAD
-    <table class="w-full mt-5 rounded-lg overflow-hidden table-fixed">
-        
-        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
-=======
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
         <thead class="bg-blue-500 text-white">
->>>>>>> origin/jeng-branch
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ</th>
