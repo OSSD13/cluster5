@@ -182,7 +182,7 @@
                 แก้ไข
             </button>
             <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
-                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteBranch(${id})">
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
                 ลบ
             </button>
         `;
@@ -350,6 +350,7 @@ function addMember() {
             }
 
             // เพิ่มสมาชิกใหม่เข้าไปในอาร์เรย์
+   /*         
             let newMember = {
                 id: members.length + 1,
                 name: name,
@@ -357,6 +358,19 @@ function addMember() {
                 role: role,
                 supervisorId: supervisorId // เก็บ Sales Supervisor ไว้ใน supervisorId
             };
+   */ 
+            let newMember = {
+                id: members.length + 1,
+                name: name,
+                email: email,
+                role: role
+            };
+
+            if (role === "Sale") {
+                supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
+                newMember.supervisorId = supervisorId;
+            }
+
             members.push(newMember);
             renderTable();
 
@@ -428,9 +442,9 @@ function editMember(id) {
 
                 <label class="font-semibold text-gray-800">บทบาท</label>
                 <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
-                    <option value="Sale" ${member.province === 'Sale' ? 'selected' : ''}>Sale</option>
-                    <option value="CEO" ${member.province === 'CEO' ? 'selected' : ''}>CEO</option>
-                    <option value="Sale Supervisor" ${member.province === 'Sale Supervisor' ? 'selected' : ''}>Sale Supervisor</option>
+                    <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
+                    <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
+                    <option value="Sale Supervisor" ${member.role === 'Sale Supervisor' ? 'selected' : ''}>Sale Supervisor</option>
                 </select>
             </div>
         `,
@@ -457,7 +471,7 @@ function editMember(id) {
             // อัปเดตข้อมูลใน array
             member.email = email;
             member.name = name;
-            member.province = role;
+            member.role = role;
 
             renderTable();
 
