@@ -12,32 +12,36 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-bold">จัดการสมาชิก</h2>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" style="background-color: #3062B8" onclick="addMember()" >
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="addMember()" >
                 สร้างสมาชิก
             </button>
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสมาชิก" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท" class="w-full p-2 border border-gray-300 rounded mb-3">
 
-        <!-- Dropdowns -->
+        <!-- Dropdown: Sale Supervisor -->
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">Sale Supervisor</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>แสดงสมาชิก</option>
+            <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded">
                 
             </select>
         </div>
 
+        <!-- Dropdown: Role -->
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">บทบาท</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>ค้นหาด้วยตำแหน่ง</option>
+            <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
+                <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
+                <option value="Sale">Sale</option>
+                <option value="Sale Sup.">Sale Supervisor</option>
+                <option value="CEO">CEO</option>
             </select>
         </div>
 
+
         <!-- Result Count -->
-        <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
+        <p class="text-gray-700" id="resultCount">ผลลัพธ์ 0 รายการ</p>
     </div>
 
 
@@ -45,9 +49,9 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed" >
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
         
-        <thead class="bg-blue-500 text-black" style="background-color: #B5CFF5">
+        <thead class="bg-blue-500 text-white">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
@@ -65,7 +69,7 @@
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 <!-- contextMenu Controls-->
-<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2" ></div>
+<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
     let members = [
@@ -87,65 +91,94 @@
     let currentSort = { column: null, ascending: true };
 
     
-    function renderTable() {
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
+    function renderTable(filteredData = null) {
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
 
-    const start = (currentPage - 1) * rowsPerPage;
-    const paginatedData = members.slice(start, start + rowsPerPage);
+        const dataToRender = filteredData || members;
 
-    paginatedData.forEach((member) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td class="py-3 px-4 w-16">${member.id}</td>
-            <td class="py-3 px-4 max-w-[200px]">
-                <div class="font-semibold truncate" title="${member.name}">${member.name}</div>
-                <div class="text-sm text-gray-500 truncate" title="${member.email}">${member.email}</div>
-            </td>
-            <td class="py-3 px-4 w-32 truncate" title="${member.role}">${member.role}</td>
-            <td class="py-3 px-1 w-10 text-center relative">
-                <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
+        const start = (currentPage - 1) * rowsPerPage;
+        const paginatedData = dataToRender.slice(start, start + rowsPerPage);
 
-    renderPagination();
+        // แสดงจำนวนผลลัพธ์
+        const resultCount = document.querySelector("#resultCount");
+        resultCount.textContent = `ผลลัพธ์ ${dataToRender.length} รายการ`;
+
+        paginatedData.forEach((member) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="py-3 px-4 w-16">${member.id}</td>
+                <td class="py-3 px-4 max-w-[200px]">
+                    <div class="font-semibold truncate" title="${member.name}">${member.name}</div>
+                    <div class="text-sm text-gray-500 truncate" title="${member.email}">${member.email}</div>
+                </td>
+                <td class="py-3 px-4 w-32 truncate" title="${member.role}">${member.role}</td>
+                <td class="py-3 px-1 w-10 text-center relative">
+                    <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        renderPagination(dataToRender);
 }
 
     // ฟังก์ชันสำหรับแสดงปุ่มเปลี่ยนหน้า
-    function renderPagination() {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = ""; // Clear previous pagination
+    function renderPagination(dataToRender) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = ""; //ล้างข้อมูลเก่า
 
-    const totalPages = Math.ceil(members.length / rowsPerPage);
+        const totalPages = Math.ceil(dataToRender.length / rowsPerPage);
 
-    // Previous button
-    const prevBtn = document.createElement("button");
+        // Show pagination even if there's only one page
+        if (totalPages === 1) {
+            const prevBtn = document.createElement("button");
             prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer" } text-5xl`;
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.onclick = () => goToPage(currentPage - 1);
+            prevBtn.className = `px-3 py-1 text-gray-400 cursor-not-allowed text-5xl`;
+            prevBtn.disabled = true;
             pagination.appendChild(prevBtn);
 
-            // Page number buttons
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                     ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-                btn.onclick = () => goToPage(i);
-                pagination.appendChild(btn);
-            }
+            const pageBtn = document.createElement("button");
+            pageBtn.innerText = `1`;
+            pageBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-blue-600 text-white`;
+            pagination.appendChild(pageBtn);
 
-            // Next button
             const nextBtn = document.createElement("button");
             nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.onclick = () => goToPage(currentPage + 1);
+            nextBtn.className = `px-3 py-1 text-gray-400 cursor-not-allowed text-5xl`;
+            nextBtn.disabled = true;
             pagination.appendChild(nextBtn);
+
+            return;
+        }
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+        prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => goToPage(currentPage - 1);
+        pagination.appendChild(prevBtn);
+
+        // Page number buttons
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.innerText = i;
+            btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+            btn.onclick = () => goToPage(i);
+            pagination.appendChild(btn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => goToPage(currentPage + 1);
+        pagination.appendChild(nextBtn);
 }
+
     // ฟังก์ชันสำหรับเปลี่ยนหน้า
     function goToPage(pageNumber) {
         currentPage = pageNumber;
@@ -163,6 +196,59 @@
         members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
         renderTable();
     }
+
+    // ฟังก์ชันสำหรับค้นหาข้อมูล
+    function filterAll() {
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const supervisorId = document.getElementById("supervisorSelect").value;
+    const roleVal = document.getElementById("roleSelect").value;
+
+    let filtered = members.filter(m => {
+        const matchesSearch =
+            m.id.toString().includes(searchVal) ||
+            m.name.toLowerCase().includes(searchVal) ||
+            m.email.toLowerCase().includes(searchVal) ||
+            m.role.toLowerCase().includes(searchVal);
+
+        const matchesSupervisor = !supervisorId || (
+            m.role === "Sale" && m.supervisorId?.toString() === supervisorId
+        );
+
+        const matchesRole = !roleVal || m.role === roleVal;
+
+        return matchesSearch && matchesSupervisor && matchesRole;
+    });
+
+    currentPage = 1;
+    renderTable(filtered);
+}
+
+    // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
+    function populateSupervisorDropdown() {
+        const supervisorSelect = document.getElementById("supervisorSelect");
+        supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>
+`; // reset first
+
+        const supervisors = members.filter(m => m.role === "Sale Sup.");
+        supervisors.forEach(sup => {
+            const option = document.createElement("option");
+            option.value = sup.id;
+            option.textContent = `${sup.name} - ${sup.email}`;
+            supervisorSelect.appendChild(option);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        populateSupervisorDropdown();
+        renderTable();
+
+        document.getElementById("searchInput").addEventListener("input", filterAll);
+        document.getElementById("supervisorSelect").addEventListener("change", filterAll);
+        document.getElementById("roleSelect").addEventListener("change", filterAll);
+    });
+
+
+
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
     let activeMenuId = null;
@@ -182,7 +268,7 @@
         activeMenuId = id;
 
         menu.innerHTML = `
-            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8"
+            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap"
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
                 ดูรายละเอียด
             </button>
@@ -213,7 +299,7 @@
 
 
         // ตั้งตำแหน่งเมนูใหม่
-        const top = parentCell.offsetTop + parentCell.offsetHeight - 20; // ลดลงมานิด (4px)
+        const top = parentCell.offsetTop + parentCell.offsetHeight - 60; // ลดลงมานิด (4px)
         const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
 
         menu.style.position = "absolute";
@@ -514,8 +600,22 @@
                 // ลบรายการออกจากอาร์เรย์
                 members = members.filter(member => member.id !== id);
                 
-                // อัปเดตตาราง
+                // คำนวณจำนวนหน้าหลังจากลบข้อมูล
+                const totalPages = Math.ceil(members.length / rowsPerPage);
+
+                // ถ้าหน้าเกินจำนวนหน้าใหม่ เช่น ถ้าปัจจุบันอยู่ที่หน้า 3 แต่เหลือแค่ 2 หน้า
+                if (currentPage > totalPages) {
+                    currentPage = totalPages; // ไปที่หน้าสุดท้ายที่ยังมีข้อมูล
+                }
+
+                // ถ้าหน้าเกินจำนวนหน้าใหม่ (ตัวอย่างเช่น ลบจนหน้า 3 ว่าง) ให้ไปที่หน้าก่อนหน้า
+                if (currentPage > 1 && members.length > 0) {
+                    currentPage--; // ย้ายไปหน้าก่อนหน้า
+                }
+
+                // รีเฟรชตารางา
                 renderTable();
+                
 
                 // แจ้งเตือนว่าลบสำเร็จ
                 Swal.fire({
@@ -525,8 +625,8 @@
                 });
             }
         });
+        
     }
-
 
     renderTable();
    
