@@ -54,14 +54,15 @@ Route::middleware([CheckLogin::class])->group(function () {
 
 
     // APIs
-    Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
-    Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
+    Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate'])->name('api.report.getSubordinate');
+    Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport'])->name('api.report.getBranchReport');
+        // /api/getRegionBranch
+        Route::get('/api/getRegionBranch', [BranchReportController::class, 'getRegionBranch'])->name('api.report.getRegionBranch');
 
-    Route::get('/api/poi', [PointOfInterestController::class, 'show'])->name('poi.show');
-    Route::post('/api/poi', [PointOfInterestController::class, 'edit'])->name('poi.edit');
+    Route::get('/api/poi', [PointOfInterestController::class, 'show'])->name('api.poi.show');
+    Route::post('/api/poi', [PointOfInterestController::class, 'edit'])->name('api.poi.edit');
 
-    // /api/getRegionBranch
-    Route::get('/api/getRegionBranch', [BranchReportController::class, 'getRegionBranch']);
+
 
 
 
