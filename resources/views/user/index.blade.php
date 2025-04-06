@@ -25,6 +25,7 @@
             <label class="block text-gray-600 mb-1">Sale Supervisor</label>
             <select class="w-full p-2 border border-gray-300 rounded">
                 <option>แสดงสมาชิก</option>
+                
             </select>
         </div>
 
