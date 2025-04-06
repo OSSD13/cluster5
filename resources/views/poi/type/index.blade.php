@@ -177,11 +177,11 @@
         function viewDetail(id) {
             const poit = poits.find(p => p.id === id);
             Swal.fire({
-                title: "<b class='text-gray-800'>รายละเอียดข้อมูล POI</b>",
+                title: "<b class='text-gray-800'>รายละเอียดข้อมูล POIT</b>",
                 html: `
                         <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
                             <div class="w-full">
-                                <label class="block text-gray-800 text-sm mb-1">ชื่อ</label>
+                                <label class="block text-gray-800 text-sm mb-1">ชื่อสถานที่</label>
                                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.name}" readonly>
                             </div>
                             <div class="w-full">
@@ -189,8 +189,8 @@
                             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.type}" readonly>
                             </div>
                             <div class="w-full">
-                            <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
-                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.provice}" readonly>
+                            <label class="block text-gray-800 text-sm mb-1">รายละเอียด</label>
+                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.description}" readonly>
                             </div>
                             <div class="w-full">
                             <label class="block text-gray-800 text-sm mb-1">วันที่เพิ่ม</label>
@@ -207,88 +207,71 @@
             });
         }
 
-        function editPoit(id) {
-    const poit = poits.find(p => p.id === id);
-
-    Swal.fire({
-        title: `
-            <div class="flex flex-col items-center mb-1">
-                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
-            </div>
-            <b class="text-gray-800">แก้ไขข้อมูล POI</b>
-        `,
-        html: `
-            <div class="flex flex-col space-y-1 text-left">
-                <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
-                <input type="text" id="poiName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${poit.name}">
-
-                <label class="font-semibold text-gray-800">ประเภท</label>
-                <input type="text" id="poiType" class="w-full p-2 border border-gray-300 rounded mb-3" value="${poit.type}">
-
-                <label class="font-semibold text-gray-800">คำอธิบาย</label>
-                <textarea id="poiDescription" class="w-full p-2 border border-gray-300 rounded mb-3">${poit.description}</textarea>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#2D8C42",
-        focusCancel: true,
-        preConfirm: () => {
-            const name = document.getElementById("poiName").value;
-            const type = document.getElementById("poiType").value;
-            const description = document.getElementById("poiDescription").value;
-
-            if (!name || !type || !description) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
-
-            // อัปเดตข้อมูล POI
-            poit.name = name;
-            poit.type = type;
-            poit.description = description;
-
-            renderTable();
-
-            Swal.fire({
-                title: "สำเร็จ!",
-                text: "แก้ไขข้อมูล POI เรียบร้อยแล้ว",
-                icon: "success",
-                confirmButtonColor: "#2D8C42",
-                confirmButtonText: "ตกลง"
-            });
-        }
-    });
-}
-
-
 function editPoit(id) {
     const poit = poits.find(p => p.id === id);
 
     Swal.fire({
         title: `<b class="text-gray-800">แก้ไขข้อมูล POI</b>`,
         html: `
-            <div class="flex flex-col space-y-1 text-left">
-                <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
-                <input type="text" id="poiName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${poit.name}">
-
-                <label class="font-semibold text-gray-800">ประเภท</label>
-                <select id="poiType" class="w-full p-2 border border-gray-300 rounded mb-3" onchange="updateIconPreview()">
-                    <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}>ร้านอาหาร</option>
-                    <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}>ร้านกาแฟ</option>
-                    <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}>ร้านขนม</option>
-                    <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}>ผับบาร์</option>
-                    <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}>ศูนย์การค้า</option>
+            <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
+                <div class="w-full">
+                    <label class="block text-gray-800 text-sm mb-1">ชื่อสถานที่</label>
+                    <input type="text" id="poiName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.name}">
+                </div>
+                <div class="w-full">
+                <label class="block text-gray-800 text-sm mb-1">ประเภท</label>
+                <select id="poiType" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="updateIconPreview()">
+                    <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}> ร้านอาหาร</option>
+                        <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}> ร้านกาแฟ</option>
+                        <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}> ร้านขนม</option>
+                        <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}> ผับบาร์</option>
+                        <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}> ศูนย์การค้า</option>
                 </select>
-
-                <label class="font-semibold text-gray-800">Icon</label>
-                <div id="iconPreview" class="text-2xl mb-3">${getIconByType(poit.type)}</div>
-
-                <label class="font-semibold text-gray-800">คำอธิบาย</label>
-                <textarea id="poiDescription" class="w-full p-2 border border-gray-300 rounded mb-3">${poit.description}</textarea>
+                
             </div>
-        `,
+             <!-- Icon -->
+             <div class="w-full">
+            <label class="block text-gray-800 text-sm mb-1">Icon</label>
+            <div class="relative mb-3">
+                <input type="text" readonly id="iconInput" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('icon') error-input-style
+                @enderror" placeholder="เลือกอีโมจิ" name="icon" value="{{ old('icon') }}">
+                <button type="button" id="emojiButton"
+                    class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer bg-primary-dark hover:bg-primary-light text-white rounded-r-lg">😀</button>
+            </div>
+            </div>
+            @error('icon')
+                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+            @enderror
+            <div id="emojiPickerContainer" class="hidden">
+                <emoji-picker class="w-full light"></emoji-picker>
+            </div>
+
+            <!-- สี -->
+            <div class="w-full">
+            <label class="block text-gray-800 text-sm mb-1">สี</label>
+            <div class="relative mb-3 flex items-center">
+                <!-- input สี (hex) -->
+                <input type="text" id="colorInput"
+                    class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('color') error-input-style @enderror"
+                    placeholder="สี" name="color" value="{{ old('color') }}">
+
+                <!-- ปุ่ม color picker -->
+                <button type="button" id="colorButton" class="h-full px-4 py-2 cursor-pointer text-white rounded-r-lg"
+                    style="background-color: {{ old('color', '#888') }};">🎨</button>
+            </div>
+            </div>
+
+            <!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
+            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
+
+            @error('color')
+                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+            @enderror
+                <div class="w-full">
+                    <label class="block text-gray-800 text-sm mb-1">คำอธิบาย</label>
+                    <textarea id="poiDescription" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">${poit.description}</textarea>
+                </div>
+                    `,
         showCancelButton: true,
         confirmButtonText: "ยืนยัน",
         cancelButtonText: "ยกเลิก",
@@ -383,5 +366,30 @@ function updateIconPreview() {
             });
         }
     </script>
+
+     <!-- Color picker -->
+     <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const colorInput = document.getElementById("colorInput");
+                const colorButton = document.getElementById("colorButton");
+                const colorPicker = document.getElementById("colorPicker");
+
+                // เมื่อเลือกสีจาก Color Picker
+                colorPicker.addEventListener("input", function () {
+                    colorInput.value = colorPicker.value;
+                    colorButton.style.backgroundColor = colorPicker.value;
+                });
+
+                // เมื่อพิมพ์รหัสสี
+                colorInput.addEventListener("input", function () {
+                    colorButton.style.backgroundColor = colorInput.value;
+                });
+
+                // คลิกปุ่มเพื่อเปิด Color Picker
+                colorButton.addEventListener("click", function () {
+                    colorPicker.click();
+                });
+            });
+        </script>
 
 @endsection
