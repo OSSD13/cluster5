@@ -85,6 +85,12 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/api/branch', [BranchController::class, 'getBranch'])->name('api.branch.get');
 
     Route::get('/api/user/query', [UserController::class, 'queryUser'])->name('api.user.query');
+    Route::get('/api/user/query/all', [UserController::class, 'queryAllUser'])->name('api.user.query.all');
+    Route::get('/api/user', [UserController::class, 'getUser'])->name('api.user.get');
+    Route::post('/api/user/create', [UserController::class, 'createUser'])->name('api.user.create');
+    Route::post('/api/user/edit', [UserController::class, 'editUser'])->name('api.user.edit');
+    Route::post('/api/user/delete', [UserController::class, 'deleteUser'])->name('api.user.delete');
+
 
 
     // Test routes
