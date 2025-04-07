@@ -14,9 +14,8 @@ class PointOfInterestController extends Controller
         return view('poi.index');
     }
 
-    public function show(Request $request)
+    public function queryPoi(Request $request)
     {
-
         $limit = $request->input('limit', 10);
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $limit;
@@ -74,14 +73,81 @@ class PointOfInterestController extends Controller
         ]);
     }
 
-    public function create()
+    public function createPage()
     {
         return view('poi.create');
     }
-    public function edit(Request $request)
+    public function createPoi(Request $request)
+    {
+        // lat lng zipcode province amphoe district address name type
+        // validate request
+        $validator = \Validator::make($request->all(), [
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+            'zipcode' => 'required|numeric',
+            'province' => 'required|string|max:255',
+            'amphoe' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // find type
+        $type = \DB::table('point_of_interest_type')->where('poit_type', $request->input(key: 'type'))->first();
+        if (!$type) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Type not found'
+            ], 404);
+        }
+
+
+        // find location id
+        $location = \DB::table('locations')->where('zipcode', $request->input('zipcode'))
+            ->where('province', $request->input('province'))
+            ->where('amphoe', $request->input('amphoe'))
+            ->where('district', $request->input('district'))
+            ->first();
+        if (!$location) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Location not found'
+            ], 404);
+        }
+        // create point of interest
+        $poi = new PointOfInterest();
+        $poi->poi_name = $request->input('name');
+        $poi->poi_type = $type->poit_type;
+        $poi->poi_gps_lat = $request->input('lat');
+        $poi->poi_gps_lng = $request->input('lng');
+        $poi->poi_address = $request->input('address');
+        $poi->poi_location_id = $location->location_id;
+        $poi->save();
+
+        // return response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Point of interest created successfully',
+            'data' => $poi
+        ]);
+    }
+    public function editPage(Request $request)
     {
         // $pointOfInterest = PointOfInterest::find($id);
         return view('poi.edit');
+    }
+    public function editPoi(Request $request)
+    {
+        return view('poi.create');
     }
 }
 

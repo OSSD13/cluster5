@@ -68,7 +68,4 @@
     .custom-scrollbar.scrolling::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, 1); /* Visible thumb when scrolling */
     }
-    /* .bg-lightblue{
-      background-color: var(#B6D2FF);
-    } */
   }
