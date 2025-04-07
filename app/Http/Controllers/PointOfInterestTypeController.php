@@ -12,6 +12,7 @@ class PointOfInterestTypeController extends Controller
         return view('poi.type.index');
     }
 
+    
     public function queryPoit(Request $request)
     {
         $limit = $request->input('limit', 10);
@@ -68,7 +69,127 @@ class PointOfInterestTypeController extends Controller
     public function create(){
         return view('poi.type.create');
     }
-    public function edit(){
+    public function createPoit(Request $request){
+        // validate the request
+        $validator = \Validator::make($request->all(), [
+            'poit_type' => 'required|string|max:255',
+            'poit_name' => 'required|string|max:255',
+            'poit_icon' => 'required|string|max:4',
+            'poit_color' => 'required|string|max:8',
+            'poit_description' => 'string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // check if the point of interest type already exists
+        $poit = PointOfInterestType::where('poit_type', $request->input('poit_type'))->first();
+        if ($poit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Point of interest type already exists'
+            ], 409);
+        }
+
+        // create the point of interest type
+        $poit = new PointOfInterestType();
+        $poit->poit_type = $request->input('poit_type');
+        $poit->poit_name = $request->input('poit_name');
+        $poit->poit_icon = $request->input('poit_icon');
+        $poit->poit_color = $request->input('poit_color');
+        $poit->poit_description = $request->input('poit_description');
+        $poit->save();
+        // return the response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Point of interest type created successfully',
+            'data' => $poit
+        ]);
+    }
+    public function editPoit(Request $request){
+        // validate the request
+        $validator = \Validator::make($request->all(), [
+            'poit_type' => 'required|string|max:255',
+            'poit_name' => 'string|max:255',
+            'poit_icon' => 'string|max:4',
+            'poit_color' => 'string|max:8',
+            'poit_description' => 'string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // find the point of interest type
+        $poit = PointOfInterestType::where('poit_type', $request->input('poit_type'))->first();
+        if (!$poit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Point of interest type not found'
+            ], 404);
+        }
+        // update the point of interest type if specified in the request
+        if ($request->input('poit_name')) {
+            $poit->poit_name = $request->input('poit_name');
+        }
+        if ($request->input('poit_icon')) {
+            $poit->poit_icon = $request->input('poit_icon');
+        }
+        if ($request->input('poit_color')) {
+            $poit->poit_color = $request->input('poit_color');
+        }
+        if ($request->input('poit_description')) {
+            $poit->poit_description = $request->input('poit_description');
+        }
+        $poit->save();
+        // return the response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Point of interest type updated successfully',
+            'data' => $poit
+        ]);
+    }
+    public function deletePoit(Request $request){
+        // validate the request
+        $validator = \Validator::make($request->all(), [
+            'poit_type' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // find the point of interest type
+        $poit = PointOfInterestType::where('poit_type', $request->input('poit_type'))->first();
+        if (!$poit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Point of interest type not found'
+            ], 404);
+        }
+        // delete the point of interest type
+        $poit->delete();
+        // return the response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Point of interest type deleted successfully'
+        ]);
+
+    }
+    public function editPage(){
         // $poits = PointOfInterest::find($id);
         return view('poi.type.edit');
     }
