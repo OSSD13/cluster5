@@ -34,7 +34,6 @@
     --color-red-dark: #A72828;
 }
 
-
 @layer utilities {
     /* Custom Scrollbar for Firefox and others */
     .custom-scrollbar {
