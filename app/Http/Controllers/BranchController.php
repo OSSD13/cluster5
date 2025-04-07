@@ -9,48 +9,44 @@ use Illuminate\Http\Request;
 
 class BranchController extends Controller
 {
-    //
     public function index()
     {
         return view('branch.index');
     }
+
     public function queryBranch(Request $request)
     {
         $limit = $request->input('limit', 10);
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $limit;
-
-        // magic search with one search field and AND conditions for type and province
         $search = $request->input('search', '');
+        $target = $request->input('target', '');
 
         $branchQuery = Branch_store::query();
+        if ($target) {
+            $reqUserId = session()->get('user')->user_id;
+            $reqUser = User::where('user_id', $reqUserId)->first();
+            $reqSub = array_merge([$reqUserId], $reqUser->getSubordinateIds());
 
-        $target = $request->input('target', '');
-        $reqUserId = session()->get('user')->user_id;
-        // check if target is user's subordinate
-        $reqUser = User::where('user_id', $reqUserId)->first();
-        $reqSub = $reqUser->getSubordinateIds();
-        if (!in_array($target, $reqSub)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You are not allowed to view this user branch'
-            ], 403);
+            if (!in_array($target, $reqSub)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'คุณไม่มีสิทธิ์ดูข้อมูลสาขานี้'
+                ], 403);
+            }
         }
-        // check if target is valid user id
+
+
         $user = User::where('user_id', $target)->first();
         if ($user) {
             $subordinate = $user->getSubordinateIds();
             $targetUserIds = array_merge([$target], $subordinate);
         }
 
-
-        // join bs_poi_id then poi_type and poi_location_id then join bs_manager
-
         $branchQuery->join('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
             ->join('point_of_interest_type', 'point_of_interests.poi_type', '=', 'point_of_interest_type.poit_type')
-            ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id'); // as bs_manager
+            ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id');
 
-        // select columns
         $branchQuery->select(
             'branch_stores.*',
             'point_of_interest_type.poit_type',
@@ -84,7 +80,6 @@ class BranchController extends Controller
             });
         }
 
-
         $total = $branchQuery->count();
         $branch = $branchQuery->offset($offset)->limit($limit)->get();
         return response()->json([
@@ -93,8 +88,11 @@ class BranchController extends Controller
             'page' => $page,
             'limit' => $limit
         ]);
+    }
 
-
+    public function create()
+    {
+        return view('branch.create');
     }
 
     public function createBranch(Request $request)
@@ -108,17 +106,25 @@ class BranchController extends Controller
             'district' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255'
+        ], [
+            'lat.required' => 'กรุณาระบุละติจูด',
+            'lng.required' => 'กรุณาระบุลองจิจูด',
+            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'province.required' => 'กรุณาระบุจังหวัด',
+            'amphoe.required' => 'กรุณาระบุอำเภอ',
+            'district.required' => 'กรุณาระบุตำบล',
+            'address.required' => 'กรุณาระบุที่อยู่',
+            'name.required' => 'กรุณาระบุชื่อสาขา',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation failed',
+                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
                 'errors' => $validator->errors()
             ], 422);
         }
 
-        // check if location is valid
         $location = \DB::table('locations')
             ->where('zipcode', $request->input('zipcode'))
             ->where('province', $request->input('province'))
@@ -129,11 +135,10 @@ class BranchController extends Controller
         if (!$location) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Location not found'
+                'message' => 'ไม่พบข้อมูลสถานที่ตั้งที่ระบุ'
             ], 404);
         }
 
-        // create new poi
         $poi = new PointOfInterest();
         $poi->poi_name = $request->input('name');
         $poi->poi_type = 'branch';
@@ -143,84 +148,73 @@ class BranchController extends Controller
         $poi->poi_location_id = $location->location_id;
         $poi->save();
 
-        $poiId = $poi->id; // Use the newly created POI ID
-
-        // get current user id
         $userId = session()->get('user')->user_id;
 
-        // create new branch
         $branch = new Branch_store();
         $branch->bs_name = $request->input('name');
         $branch->bs_address = $request->input('address');
-        $branch->bs_poi_id = $poiId; // Use the POI ID from the previous step
-        $branch->bs_manager = $userId; // Assuming you have a manager_id in the request
-        $branch->bs_detail = $request->input('detail', null); // Optional field
+        $branch->bs_poi_id = $poi->id;
+        $branch->bs_manager = $userId;
+        $branch->bs_detail = $request->input('detail', null);
         $branch->save();
-
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Branch created successfully',
+            'message' => 'สร้างสาขาเรียบร้อยแล้ว',
             'data' => $branch
         ]);
     }
 
-    public function create()
-    {
-        return view('branch.create');
-    }
     public function edit()
     {
         return view('branch.edit');
     }
+
     public function editBranch(Request $request)
     {
-        // validate the request
         $validator = \Validator::make($request->all(), [
             'branch_id' => 'required|integer|exists:branch_stores,id',
             'name' => 'string|max:255',
             'address' => 'string|max:255',
             'detail' => 'nullable|string',
             'bs_manager' => 'nullable|integer|exists:users,user_id',
+        ], [
+            'branch_id.required' => 'กรุณาระบุรหัสสาขา',
+            'branch_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
+            'branch_id.exists' => 'ไม่พบสาขาที่ระบุ',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation failed',
+                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
                 'errors' => $validator->errors()
             ], 422);
         }
 
-        // find the branch
         $branch = Branch_store::find($request->input('branch_id'));
 
         if (!$branch) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Branch not found'
+                'message' => 'ไม่พบข้อมูลสาขา'
             ], 404);
         }
 
-        // update fields if provided
-        if ($request->has('name')) {
+        if ($request->has('name'))
             $branch->bs_name = $request->input('name');
-        }
-        if ($request->has('address')) {
+        if ($request->has('address'))
             $branch->bs_address = $request->input('address');
-        }
-        if ($request->has('detail')) {
+        if ($request->has('detail'))
             $branch->bs_detail = $request->input('detail');
-        }
-        if ($request->has('bs_manager')) {
+        if ($request->has('bs_manager'))
             $branch->bs_manager = $request->input('bs_manager');
-        }
 
         $branch->save();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Branch updated successfully',
+            'message' => 'แก้ไขข้อมูลสาขาเรียบร้อยแล้ว',
             'data' => $branch
         ]);
     }
@@ -229,17 +223,21 @@ class BranchController extends Controller
     {
         return view('branch.manage.index');
     }
+
     public function deleteBranch(Request $request)
     {
-        // Validate branch_id
         $validator = \Validator::make($request->all(), [
             'branch_id' => 'required|integer|exists:branch_stores,id',
+        ], [
+            'branch_id.required' => 'กรุณาระบุรหัสสาขา',
+            'branch_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
+            'branch_id.exists' => 'ไม่พบสาขาที่ระบุ',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation failed',
+                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -249,25 +247,20 @@ class BranchController extends Controller
         if (!$branch) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Branch not found'
+                'message' => 'ไม่พบข้อมูลสาขา'
             ], 404);
         }
 
-        // Optional: delete related POI if needed
         $poiId = $branch->bs_poi_id;
-
         $branch->delete();
 
-        // Optionally delete the associated POI
         if ($poiId) {
             PointOfInterest::where('poi_id', $poiId)->delete();
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Branch (and related POI) deleted successfully'
+            'message' => 'ลบข้อมูลสาขาเรียบร้อยแล้ว'
         ]);
     }
-
-
 }
