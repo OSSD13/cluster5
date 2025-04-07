@@ -23,16 +23,16 @@
         </div>
         <div class='flex flex-row gap-4 justify-center items-center'>
             <button onclick="window.functions.analyze()"
-                class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer flex-grow">Analyze</button>
+                class="bg-primary-light text-white px-4 py-2 rounded cursor-pointer flex-grow font-bold border border-gray-400">วิเคราะห์</button>
             <select id="distance" class="p-2 bg-gray-100 rounded-lg cursor-pointer">
-                <option value="500" selected>0.5 km</option>
-                <option value="1000">1.0 km</option>
+                <option value="500">0.5 km</option>
+                <option value="1000" selected>1.0 km</option>
                 <option value="1500">1.5 km</option>
                 <option value="2000">2.0 km</option>
             </select>
         </div>
 
-        <div id="map" class="w-full h-96 rounded-xl"></div>
+        <div id="map" class="w-full h-96 rounded-xl shadow-md"></div>
         <div id="infowindow-content">
             <span id="place-name" class="title"></span><br />
             <strong>Place ID:</strong> <span id="place-id"></span><br />
@@ -40,13 +40,13 @@
         </div>
 
         <div class=" bg-white shadow-md rounded-lg p-6 hidden flex-col gap-3" id='result'>
-            <h3>Nearby Places</h3>
+            <h3 class="text-2xl font-bold text-primary-dark">ผลวิเคราะห์</h3>
             <div id="resultAmount"></div>
             <div id="loading" class="hidden justify-center items-center w-full">
                 <span class="icon-[mdi--loading] text-4xl animate-spin"></span>
             </div>
 
-            <div id="results" class="grid grid-cols-1 divide-y-2 divide-primary-dark">
+            <div id="results" class="grid grid-cols-1 divide-y divide-gray-200">
             </div>
 
         </div>
@@ -238,7 +238,7 @@
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(17);
+                    map.setZoom(16);
                 }
 
                 // Set the position of the marker using the place ID and location.
@@ -249,6 +249,7 @@
                 // });
                 // marker.setPosition(place.geometry.location);
                 MapMarker.position = place.geometry.location
+                circle.circle.setCenter(place.geometry.location);
                 // marker.setVisible(true);
                 infowindowContent.children.namedItem("place-name").textContent = place.name;
                 infowindowContent.children.namedItem("place-id").textContent =
@@ -456,6 +457,7 @@
                         "poi_gps_lat": place.geometry.location.lat(),
                         "poi_gps_lng": place.geometry.location.lng(),
                         "poi_type": 'Google Map: ' + place.types.join(", "),
+                        "poit_name": place.types[0],
                         "poi_distance": spherical.computeDistanceBetween(pos, place.geometry
                             .location),
                         "poit_icon": gMapEmoji,
@@ -481,7 +483,7 @@
                 Places = Places.filter((place) => {
                     return place.poi_distance <= radius;
                 });
-                document.getElementById("resultAmount").innerText = `Found ${Places.length} results`;
+                document.getElementById("resultAmount").innerText = `ผลลัพธ์ ${Places.length}`;
                 document.getElementById("results").innerHTML = "";
                 Places.forEach((place, index) => {
                     let div = document.createElement("div");
@@ -494,10 +496,10 @@
                             <div>${index + 1}.</div>
                         </div>
                         <div class="flex-1 flex flex-col">
-                            <div id="place-name" class="text-primary-light font-bold">${place.poi_name}</div>
-                            <div class="">${place.poi_type}</div>
-                            <div class="">${place.poi_distance.toFixed(2)} M</div>
-                            <div class="">${place.poi_gps_lat}, ${place.poi_gps_lng}</div>
+                            <div id="place-name" class="text-primary-light font-bold text-sm">${place.poi_name}</div>
+                            <div class="text-xs text-gray-400">${place.poit_name}</div>
+                            <div class="text-xs text-gray-400">${place.poi_distance.toFixed(2)} M</div>
+                            <div class="text-xs text-gray-400">${place.poi_gps_lat}, ${place.poi_gps_lng}</div>
                         </div>
                     `;
                     document.getElementById("results").appendChild(div);
