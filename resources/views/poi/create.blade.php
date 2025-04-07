@@ -11,7 +11,7 @@
     </style>
     <form method="POST" action="{{ route('poi.insert') }}" name="poiForm">
 
-    
+
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
