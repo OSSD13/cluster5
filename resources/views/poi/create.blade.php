@@ -105,7 +105,7 @@
                 // ดึงค่าของฟิลด์ latitude
                 var latitude = document.forms['poiForm'].elements['latitude'].value;
 
-                // ตรวจสอบว่าฟิลด์ latitude ไม่ว่างเปล่า
+                // ตรวจสอบว่าฟิลด์ latitude ไม่ว่าง
                 if (latitude.trim() !== "") {
                     // เปิดใช้งานปุ่ม
                     document.getElementById("saveButton").disabled = false;
