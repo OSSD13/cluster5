@@ -99,13 +99,13 @@
 
         const totalPages = Math.ceil(totalItems / rowsPerPage);
 
+        // Previous button
         const prevBtn = document.createElement("button");
-        prevBtn.innerHTML = '&larr;';
-        prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-xl`;
+        prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+        prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
         prevBtn.disabled = currentPage === 1;
         prevBtn.onclick = () => goToPage(currentPage - 1);
         pagination.appendChild(prevBtn);
-
         for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
             const btn = document.createElement("button");
             btn.innerText = i;
@@ -115,12 +115,14 @@
             pagination.appendChild(btn);
         }
 
-        const nextBtn = document.createElement("button");
-        nextBtn.innerHTML = '&rarr;';
-        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-xl`;
+                // Next button
+                const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
         nextBtn.disabled = currentPage === totalPages;
         nextBtn.onclick = () => goToPage(currentPage + 1);
         pagination.appendChild(nextBtn);
+
     }
 
     function goToPage(pageNumber) {

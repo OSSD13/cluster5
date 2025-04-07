@@ -1,4 +1,4 @@
-Index.สมาชิก
+
 @extends('layouts.main')
 
 @section('title', 'Point of Interest')
@@ -50,12 +50,12 @@ Index.สมาชิก
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden">
         
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
+                <th class="py-2 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left min-w-[200px]">ชื่อ / อีเมล</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">บทบาท</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
              </tr>
