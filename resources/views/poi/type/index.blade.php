@@ -221,14 +221,52 @@ function editPoit(id) {
                 <div class="w-full">
                 <label class="block text-gray-800 text-sm mb-1">ประเภท</label>
                 <select id="poiType" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="updateIconPreview()">
-                    <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}>🍴 ร้านอาหาร</option>
-                        <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}>☕ ร้านกาแฟ</option>
-                        <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}>🍰 ร้านขนม</option>
-                        <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}>🍺 ผับบาร์</option>
-                        <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}>🏬 ศูนย์การค้า</option>
+                    <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}> ร้านอาหาร</option>
+                        <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}> ร้านกาแฟ</option>
+                        <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}> ร้านขนม</option>
+                        <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}> ผับบาร์</option>
+                        <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}> ศูนย์การค้า</option>
                 </select>
                 
             </div>
+             <!-- Icon -->
+             <div class="w-full">
+            <label class="block text-gray-800 text-sm mb-1">Icon</label>
+            <div class="relative mb-3">
+                <input type="text" readonly id="iconInput" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('icon') error-input-style
+                @enderror" placeholder="เลือกอีโมจิ" name="icon" value="{{ old('icon') }}">
+                <button type="button" id="emojiButton"
+                    class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer bg-primary-dark hover:bg-primary-light text-white rounded-r-lg">😀</button>
+            </div>
+            </div>
+            @error('icon')
+                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+            @enderror
+            <div id="emojiPickerContainer" class="hidden">
+                <emoji-picker class="w-full light"></emoji-picker>
+            </div>
+
+            <!-- สี -->
+            <div class="w-full">
+            <label class="block text-gray-800 text-sm mb-1">สี</label>
+            <div class="relative mb-3 flex items-center">
+                <!-- input สี (hex) -->
+                <input type="text" id="colorInput"
+                    class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('color') error-input-style @enderror"
+                    placeholder="สี" name="color" value="{{ old('color') }}">
+
+                <!-- ปุ่ม color picker -->
+                <button type="button" id="colorButton" class="h-full px-4 py-2 cursor-pointer text-white rounded-r-lg"
+                    style="background-color: {{ old('color', '#888') }};">🎨</button>
+            </div>
+            </div>
+
+            <!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
+            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
+
+            @error('color')
+                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+            @enderror
                 <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">คำอธิบาย</label>
                     <textarea id="poiDescription" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">${poit.description}</textarea>
@@ -328,5 +366,30 @@ function updateIconPreview() {
             });
         }
     </script>
+
+     <!-- Color picker -->
+     <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const colorInput = document.getElementById("colorInput");
+                const colorButton = document.getElementById("colorButton");
+                const colorPicker = document.getElementById("colorPicker");
+
+                // เมื่อเลือกสีจาก Color Picker
+                colorPicker.addEventListener("input", function () {
+                    colorInput.value = colorPicker.value;
+                    colorButton.style.backgroundColor = colorPicker.value;
+                });
+
+                // เมื่อพิมพ์รหัสสี
+                colorInput.addEventListener("input", function () {
+                    colorButton.style.backgroundColor = colorInput.value;
+                });
+
+                // คลิกปุ่มเพื่อเปิด Color Picker
+                colorButton.addEventListener("click", function () {
+                    colorPicker.click();
+                });
+            });
+        </script>
 
 @endsection
