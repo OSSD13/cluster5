@@ -16,7 +16,7 @@
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสาขา" class="w-full p-2 border border-gray-300 rounded-md mb-3 shadow-lg">
+        <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท" class="w-full p-2 border border-gray-300 rounded mb-3">
 
         <!-- Dropdowns -->
         <div class="mb-3">
