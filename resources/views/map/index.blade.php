@@ -15,11 +15,11 @@
     <div class="flex flex-col gap-4 h-full">
         {{-- report card --}}
         <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
-            <h3>test google map</h3>
+            <h3></h3>
             <p>my location: <span id="latlng"> </span></p>
-            <p>distance from marker: <span id="distanceFromMarker"> </span></p>
+            <p><span id="distanceFromMarker"> </span></p>
 
-            <button onclick="window.functions.analyze()" class="bg-blue-500 text-white px-4 py-2 rounded">Analyze</button>
+            <button onclick="window.functions.analyze()" class="bg-blue-500 text-white px-4 py-2 rounded">วิเคราะห์</button>
             <input id="keyword" type="text" placeholder="Enter a keyword" value="ส่งของ" />
             <input id="distance" type="number" placeholder="Enter a search distance" value="500" />
             <p>Marker Locations: <span id="poslist"></span></p>

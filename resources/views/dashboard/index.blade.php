@@ -287,11 +287,10 @@
         {{-- stat cards --}}
         <div class="flex flex-row gap-4">
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="font-bold">ยอดพัสดุทั้งหมด</div>
+                <div class="font-bold">ยอดพัสดุทั้งหมด (ชิ้น)</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-bold text-trinary flex-grow text-right" style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
-                    <span class="font-medium text-xl flex-grow-0 text-right p-4">ชิ้น</span>
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow: 3 font-medium" style="font-size: 55px; flex-grow :1" id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-bold text-trinary flex-grow " style="font-size: 32px; margin-left: 40px; " id="thisMonthTotalPackageNumber"></span>
                 </div>
                 <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
@@ -301,12 +300,11 @@
         </div>
 
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-2">
-                <div class="font-bold">ยอดรายได้ทั้งหมด</div>
+            <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
+                <div class="font-bold">ยอดรายได้ทั้งหมด (บาท) </div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow" style="font-size: 75px; flex-grow :3" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="font-bold text-green-600 flex-grow" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
-                    <span class="font-black text-xl flex-grow-0 text-right p-4 text-green-600">บาท</span>
+                    <span class="icon-[tabler--coin-filled] flex-grow font-medium" style="font-size: 75px; flex-grow :1.5" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-bold text-green-600 flex-grow " style="font-size: 32px;" id='thisMonthTotalMoneyNumber'></span>
                 </div>
                 <div class="text-success text-base font-medium text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
@@ -322,10 +320,9 @@
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
                 <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
-                    <div class="font-bold" style="font-size: 14px; color: black;"  >Min</div>
+                    <div class="font-bold" style="font-size: 14px; color: black;"  >Min (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
-                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
                     <div id="minChange" class="text-sm text-end font-medium">
                         <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
@@ -333,10 +330,10 @@
                     </div>
                 </div>
                 <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
-                    <div class="font-bold" style="font-size: 14px; color: black;">Max</div>
+                    <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
-                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
+                    
                     </div>
                     <div id="maxChange" class="text-sm text-end text-bold">
                         <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
@@ -346,23 +343,23 @@
             </div>
             <div class="flex flex-row gap-4">
                 <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark " style="background-color: #FAEAFF;">
-                    <div class="font-bold" style="font-size: 14px; color:black;" >Standard Deviation</div>
+                    <div class="font-bold" style="font-size: 14px; color:black;" >Standard Deviation (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2" style ="color: #DA25BF;">
                         <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
-                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
+                    
                     </div>
-                    <div id="stdChange" class="text-sm text-end text-bold "style ="color: #DA25BF;"> 
+                    <div id="stdChange" class="text-base text-end text-bold "style ="color: #DA25BF;"> 
                         <span id="stdArrow" class="icon-[line-md--arrow-down]" ></span>
                         <span id="stdPercent">0</span>%
                     </div>
                 </div>
                 <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
-                    <div class="font-bold" style="font-size: 14px; color: black;" >Average</div>
-                    <div class="flex justify-center items-center text-bold gap-2"style ="color: #DA25BF;">
+                    <div class="font-bold" style="font-size: 14px; color: black;" >Average (บาท)</div>
+                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-4"style ="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="avgChange" class="text-sm text-end text-bold" style ="color: #DA25BF;">
+                    <div id="avgChange" class="text-base text-end text-bold" style ="color: #DA25BF;">
                         <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="avgPercent">0</span>%
                     </div>
