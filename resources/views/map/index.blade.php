@@ -19,7 +19,8 @@
             <p>my location: <span id="latlng"> </span></p>
             <p>distance from marker: <span id="distanceFromMarker"> </span></p>
 
-            <button onclick="window.functions.analyze()" class="bg-blue-500 text-white px-4 py-2 rounded">Analyze</button>
+            <button onclick="window.functions.analyze()"
+                class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Analyze</button>
             <input id="keyword" type="text" placeholder="Enter a keyword" value="ส่งของ" />
             <input id="distance" type="number" placeholder="Enter a search distance" value="500" />
             <p>Marker Locations: <span id="poslist"></span></p>
@@ -34,16 +35,16 @@
                 <span id="place-address"></span>
             </div>
         </div>
-        <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3">
+        <div class=" bg-white shadow-md rounded-lg p-6 hidden flex-col gap-3" id='result'>
             <h3>Nearby Places</h3>
             <div id="resultAmount"></div>
             <div id="loading" class="hidden justify-center items-center w-full">
                 <span class="icon-[mdi--loading] text-4xl animate-spin"></span>
             </div>
 
-            <div id="results" class="flex flex-col gap-2">
-
+            <div id="results" class="grid grid-cols-1 divide-y-2 divide-primary-dark">
             </div>
+
         </div>
     </div>
 @endsection
@@ -80,12 +81,25 @@
         let map;
         let Markers = [];
         let MapMarker = null;
+        let Circles = [];
 
         function removeAllMarkers() {
             Markers.forEach(marker => {
                 marker.removeMarker();
             });
             Markers = [];
+        }
+
+        function removeAllCircles() {
+            Circles.forEach(circle => {
+                circle.removeCircle();
+            });
+            Circles = [];
+        }
+
+        function removeAll() {
+            removeAllMarkers();
+            removeAllCircles();
         }
         const infowindow = new google.maps.InfoWindow();
         const infowindowContent = document.getElementById("infowindow-content");
@@ -121,7 +135,7 @@
             };
             document.getElementById("latlng").innerText = `${position.lat}, ${position.lng}`;
             map = new Map(document.getElementById("map"), {
-                zoom: 17,
+                zoom: 15,
                 center: position,
                 mapId: "DEMO_MAP_ID",
             });
@@ -143,26 +157,33 @@
                 content: pinBackground.element,
                 gmpDraggable: true,
             });
-
-            MapMarker.addListener("dragend", async (event) => {
-                const position = MapMarker.position;
-                let nearbyPlaces = await functions.getNearbyPlaces(
-                    position,
-                    document.getElementById("keyword").value,
-                    document.getElementById("distance").value
-                );
-                removeAllMarkers();
-                nearbyPlaces.forEach(async (place, index) => {
-                    functions.placeMarker({
-                        position: place.geometry.location,
-                        map: map,
-                        title: `${index + 1}`,
-                        scale: 1,
-                        color: "red",
-                        draggable: false
-                    });
-                });
+            let circle = functions.drawCircle({
+                position: MapMarker.position,
+                map: map,
+                radius: parseFloat(document.getElementById("distance").value),
+                color: "red",
+                opacity: 0.35,
+                fillOpacity: 0.35,
+                weight: 2
             });
+            // Update circle's center while dragging the marker
+            MapMarker.addListener("drag", (event) => {
+                const newPosition = MapMarker.position;
+                circle.circle.setCenter(newPosition);
+            });
+
+            // Optional: Perform actions after dragging ends
+            MapMarker.addListener("dragend", (event) => {
+                const finalPosition = MapMarker.position;
+                // Additional actions can be performed here
+            });
+
+            document.getElementById("distance").addEventListener("change", (e) => {
+                let dist = parseFloat(e.target.value);
+                circle.circle.setRadius(dist);
+            });
+
+
 
             map.addListener("click", (e) => {
                 log("click", e);
@@ -243,7 +264,6 @@
             });
         }
 
-        functions.initMap();
 
         functions.getPlaces = async function(latlng) {
             return new Promise((resolve, reject) => {
@@ -273,8 +293,8 @@
                     log('nearbySearch', results, status);
                     log('config', latlng, keyword, distance);
                     if (status !== "OK") {
-                        window.alert("PlacesService failed due to: " + status);
-                        return;
+                        // window.alert("PlacesService failed due to: " + status);
+                        return resolve([]);
                     }
                     return resolve(results);
                 });
@@ -349,7 +369,43 @@
             return markerObject;
         };
 
+        functions.drawCircle = function({
+            position,
+            map,
+            radius,
+            color,
+            opacity = 0.35,
+            fillOpacity = 0.35,
+            weight = 2
+        }) {
+            let circle = new google.maps.Circle({
+                strokeColor: color,
+                strokeOpacity: opacity,
+                strokeWeight: weight,
+                fillColor: color,
+                fillOpacity: fillOpacity,
+                map: map,
+                center: position,
+                radius: radius
+            });
 
+            let circleObject = {
+                circle,
+                position: circle.getCenter(),
+                hideCircle: () => {
+                    circle.setMap(null);
+                },
+                showCircle: () => {
+                    circle.setMap(map);
+                },
+                removeCircle: () => {
+                    circle.setMap(null);
+                    circle = null;
+                }
+            };
+            Circles.push(circleObject);
+            return circleObject;
+        }
 
         functions.panToRandomMarker = function() {
             let pos = Markers[Math.floor(Math.random() * Markers.length)].position;
@@ -369,23 +425,35 @@
             document.getElementById("loading").classList.remove("hidden");
             document.getElementById("loading").classList.add("flex");
 
+            // show result 
+            document.getElementById("result").classList.remove("hidden");
+            document.getElementById("result").classList.add("flex");
+
+            // scroll to result 
+            document.getElementById("result").scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            const radius = parseFloat(document.getElementById("distance").value);
 
             try {
                 let nearbyPlaces = await functions.getNearbyPlaces(
                     pos,
                     document.getElementById("keyword").value,
-                    document.getElementById("distance").value
+                    radius
                 );
+                log("nearbyPlaces", nearbyPlaces);
                 removeAllMarkers();
                 nearbyPlaces.forEach(async (place, index) => {
-                    log("nearbyPlaces", place);
                     let gMapEmoji = '🗺️';
                     let formatted = {
                         "poi_name": place.name,
                         "poi_gps_lat": place.geometry.location.lat(),
                         "poi_gps_lng": place.geometry.location.lng(),
                         "poi_type": 'Google Map: ' + place.types.join(", "),
-                        "poi_distance": spherical.computeDistanceBetween(pos, place.geometry.location),
+                        "poi_distance": spherical.computeDistanceBetween(pos, place.geometry
+                            .location),
                         "poit_icon": gMapEmoji,
                     }
                     Places.push(formatted);
@@ -405,11 +473,15 @@
                 Places.sort((a, b) => {
                     return a.poi_distance - b.poi_distance;
                 });
+                // filter out places outside of the radius
+                Places = Places.filter((place) => {
+                    return place.poi_distance <= radius;
+                });
                 document.getElementById("resultAmount").innerText = `Found ${Places.length} results`;
                 document.getElementById("results").innerHTML = "";
                 Places.forEach((place, index) => {
                     let div = document.createElement("div");
-                    div.className = "flex flex-row gap-2";
+                    div.className = "flex flex-row gap-2 py-4";
                     div.innerHTML = `
                         <div class="h-full flex flex-col items-center justify-center">
                             <div class="text-6xl">
@@ -426,8 +498,6 @@
                     `;
                     document.getElementById("results").appendChild(div);
                 });
-                document.getElementById("poslist").innerText = Places.map(p =>
-                    `${p.poi_name} (${p.poi_gps_lat}, ${p.poi_gps_lng})`).join(", ");
                 log("Places", Places);
                 Places.forEach((place, index) => {
                     functions.placeMarker({
@@ -452,6 +522,7 @@
         }
 
 
+        functions.initMap();
         window.functions = functions;
     </script>
     <!-- prettier-ignore -->
