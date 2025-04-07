@@ -318,7 +318,7 @@
 
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">บทบาท</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role_name}" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role}" readonly>
                     </div>
 
                     ${supervisorInfo} <!-- แสดง Sales Supervisor ถ้ามี -->
@@ -332,7 +332,7 @@
         });
 
     }
-    // แปลงวันที่เป็นวันภาษาไทย
+    // แปลงวันที่เป็นภาษาไทย
     function formatThaiDate(dateStr) {
             if (!dateStr) return '-';
             const date = new Date(dateStr);
