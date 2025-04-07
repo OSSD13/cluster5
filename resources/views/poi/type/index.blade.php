@@ -25,7 +25,7 @@
         <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed " >
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
-                    <th class="py-2 px-3 text-left w-3 whitespace-nowrap">ชื่อ / ประเภท</th>
+                    <th class="py-2 px-3 text-left w-3 whitespace-nowrap">ชื่อ/ประเภท</th>
                     <th class="py-2 px-2 text-center w-1 whitespace-nowrap">Icon</th>
                     <th class="py-2 px-4 text-left w-3 whitespace-nowrap">คำอธิบาย</th>
                     <th class="py-2 px-1 w1 text-left w-1 whitespace-nowrap"></th>
@@ -304,6 +304,7 @@ function editPoit(id) {
         }
     });
 }
+
 
 // ฟังก์ชันสำหรับอัปเดต Icon ตามประเภทที่เลือก
 function updateIconPreview() {
