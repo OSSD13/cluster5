@@ -137,6 +137,38 @@
             window.location.href = `/poi/type/${id}/edit`;
         }
 
+// ฟังก์ชันสำหรับอัปเดต Icon ตามประเภทที่เลือก
+function updateIconPreview() {
+    const type = document.getElementById("poiType").value;
+    const iconPreview = document.getElementById("iconPreview");
+    iconPreview.innerHTML = getIconByType(type);
+}
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTable();
+
+            const filterAll = () => {
+                const searchVal = document.getElementById("searchInput").value.toLowerCase();
+                const typeVal = document.getElementById("typeSelect").value;
+                const provVal = document.getElementById("provinceSelect").value;
+
+                const filtered = poits.filter(p =>
+                    (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
+                    (!typeVal || p.type === typeVal) &&
+                    (!provVal || p.province === provVal)
+                );
+
+                currentPage = 1;
+                renderTable(filtered);
+            };
+
+            document.getElementById("searchInput").addEventListener("input", filterAll);
+            document.getElementById("typeSelect").addEventListener("change", filterAll);
+            document.getElementById("provinceSelect").addEventListener("change", filterAll);
+        });
+
+        document.addEventListener("click", () => {
+            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+        });
         function deletePoit(id) {
             if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบ?")) {
                 fetch(`/api/poit/delete`, {
