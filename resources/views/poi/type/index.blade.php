@@ -71,14 +71,14 @@
                     <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
                     <td class="py-3 px-4 text-left">${poit.poit_description || '-'}</td>
                     <td class="py-3 px-4 text-center relative">
-                        <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, ${poit.id})">&#8230;</button>
-                        <div id="menu-${poit.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                        <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
+                        <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
                             <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-                                onclick="viewDetail(${poit.id})">ดูรายละเอียด</button>
+                                onclick="viewDetail(${poit.poit_type})">ดูรายละเอียด</button>
                             <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-                                onclick="editPoit(${poit.id})">แก้ไข</button>
+                                onclick="editPoit(${poit.poit_type})">แก้ไข</button>
                             <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
-                                onclick="deletePoit(${poit.id})">ลบ</button>
+                                onclick="deletePoit(${poit.poit_type})">ลบ</button>
                         </div>
                     </td>`;
                 tableBody.appendChild(row);

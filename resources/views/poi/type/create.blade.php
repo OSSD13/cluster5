@@ -3,7 +3,7 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-    <form method="POST" action="{{ route('poi.type.insert') }}">
+    <form id="poiForm">
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
             <h2 class="text-2xl font-bold text-gray-700 mb-4">POIT เพิ่มประเภทสถานที่</h2>
@@ -11,60 +11,44 @@
             <!-- ประเภทสถานที่ -->
             <label class="block text-sm text-gray-600">ประเภทสถานที่ที่สนใจ</label>
             <input type="text" name="poiType" id="poiType"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('poiType') error-input-style @enderror"
-                value="{{ old('poiType') }}" placeholder="ประเภทสถานที่">
-            @error('poiType')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
+                class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+                placeholder="ประเภทสถานที่">
 
             <!-- ชื่อสถานที่ -->
             <label class="block text-sm text-gray-600">ชื่อสถานที่ที่สนใจ</label>
             <input type="text" name="poiName" id="poiName"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('poiName') error-input-style @enderror"
-                value="{{ old('poiName') }}" placeholder="ชื่อสถานที่">
-            @error('poiName')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
+                class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+                placeholder="ชื่อสถานที่">
 
             <!-- Icon -->
             <label class="block text-sm text-gray-600">Icon</label>
             <div class="relative mb-3">
                 <input type="text" name="icon" id="iconInput" readonly
-                    class="w-full p-2 border border-gray-300 rounded-lg @error('icon') error-input-style @enderror"
-                    value="{{ old('icon') }}" placeholder="เลือกอีโมจิ">
+                    class="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="เลือกอีโมจิ">
                 <button type="button" id="emojiButton"
                     class="absolute inset-y-0 right-0 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg">😀</button>
             </div>
             <div id="emojiPickerContainer" class="hidden">
                 <emoji-picker class="w-full light"></emoji-picker>
             </div>
-            @error('icon')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
 
             <!-- สี -->
             <label class="block text-sm text-gray-600">สี</label>
             <div class="relative mb-3 flex items-center">
                 <input type="text" name="color" id="colorInput"
-                    class="flex-grow p-2 border border-gray-300 rounded-l-lg @error('color') error-input-style @enderror"
-                    value="{{ old('color') }}" placeholder="สี (Hex)">
-                    <input type="color" id="colorPicker" class="w-0 h-0" value="{{ old('color', '#ffffff') }}">
+                    class="flex-grow p-2 border border-gray-300 rounded-l-lg"
+                    placeholder="สี (Hex)">
+                <input type="color" id="colorPicker" class="w-0 h-0" value="#ffffff">
                 <button type="button" id="colorButton" class="h-full px-4 py-2 text-white rounded-r-lg"
-                    style="background-color: {{ old('color', '#888') }}">🎨</button>
+                    style="background-color: #888">🎨</button>
             </div>
-            
-            @error('color')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
 
             <!-- รายละเอียด -->
             <label class="block text-sm text-gray-600">รายละเอียดสถานที่ที่สนใจ</label>
             <input type="text" name="poiDetails" id="poiDetails"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('poiDetails') error-input-style @enderror"
-                value="{{ old('poiDetails') }}" placeholder="รายละเอียด">
-            @error('poiDetails')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
+                class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+                placeholder="รายละเอียด">
 
             <!-- ปุ่มบันทึกและยกเลิก -->
             <div class="flex justify-between">
@@ -73,28 +57,11 @@
             </div>
         </div>
     </form>
-
-    @if (session('success'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: "{{ session('success') }}",
-                    icon: "success",
-                    showConfirmButton: true,
-                    confirmButtonColor: "#1c7d32",
-                    confirmButtonText: "ยืนยัน"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "{{ route('poi.type.index') }}";
-                    }
-                });
-            });
-        </script>
-    @endif
 @endsection
 
 @section('script')
     <script>
+        // Emoji Picker
         document.addEventListener('DOMContentLoaded', () => {
             const emojiButton = document.getElementById('emojiButton');
             const emojiPickerContainer = document.getElementById('emojiPickerContainer');
@@ -114,26 +81,105 @@
                     emojiPickerContainer.classList.add('hidden');
                 }
             });
-        });
 
-        // Color Picker
-        document.addEventListener("DOMContentLoaded", function() {
+            // Color Picker
             const colorInput = document.getElementById("colorInput");
             const colorButton = document.getElementById("colorButton");
             const colorPicker = document.getElementById("colorPicker");
 
-            colorPicker.addEventListener("input", function() {
+            colorPicker.addEventListener("input", function () {
                 colorInput.value = colorPicker.value;
                 colorButton.style.backgroundColor = colorPicker.value;
             });
 
-            colorInput.addEventListener("input", function() {
+            colorInput.addEventListener("input", function () {
                 colorButton.style.backgroundColor = colorInput.value;
             });
 
-            colorButton.addEventListener("click", function() {
+            colorButton.addEventListener("click", function () {
                 colorPicker.click();
             });
+
+            // API Submit & Validation
+            const form = document.getElementById('poiForm');
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Clear previous errors
+                form.querySelectorAll('.text-red-500').forEach(el => el.remove());
+
+                const formData = {
+                    poit_type: form.poiType.value,
+                    poit_name: form.poiName.value,
+                    poit_icon: form.icon.value,
+                    poit_color: form.color.value,
+                    poit_detail: form.poiDetails.value,
+                };
+
+                submitButton.disabled = true;
+                submitButton.innerText = 'กำลังบันทึก...';
+
+                try {
+                    const response = await fetch(`{{ route('api.poit.create') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.status === 'success') {
+                        Swal.fire({
+                            title: 'สำเร็จ!',
+                            text: data.message || 'บันทึกข้อมูลสำเร็จ',
+                            icon: 'success',
+                            confirmButtonText: 'ตกลง',
+                            confirmButtonColor: '#1c7d32',
+                        }).then(() => {
+                            window.location.href = "{{ route('poi.type.index') }}";
+                        });
+                    } else if (data.errors) {
+                        displayValidationErrors(data.errors);
+                    } else {
+                        Swal.fire("เกิดข้อผิดพลาด", data.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
+                    }
+                } catch (err) {
+                    Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", "error");
+                }
+
+                submitButton.disabled = false;
+                submitButton.innerText = 'บันทึก';
+            });
+
+            function displayValidationErrors(errors) {
+                for (const field in errors) {
+                    const messages = errors[field];
+                    const input = document.querySelector(`[name="${convertApiFieldToInputName(field)}"]`);
+                    if (input) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'text-red-500 text-sm mb-2';
+                        errorDiv.textContent = messages[0];
+                        input.insertAdjacentElement('afterend', errorDiv);
+                    }
+                }
+            }
+
+            function convertApiFieldToInputName(field) {
+                const map = {
+                    poit_type: 'poiType',
+                    poit_name: 'poiName',
+                    poit_icon: 'icon',
+                    poit_color: 'color',
+                    poit_detail: 'poiDetails',
+                };
+                return map[field] || field;
+            }
         });
     </script>
 @endsection

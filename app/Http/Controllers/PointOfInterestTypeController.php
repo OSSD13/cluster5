@@ -77,6 +77,23 @@ class PointOfInterestTypeController extends Controller
             'poit_icon' => 'required|string|max:4',
             'poit_color' => 'required|string|max:8',
             'poit_description' => 'string|max:255',
+        ], [
+            'poit_type.required' => 'กรุณากรอกข้อมูล ประเภทสถานที่',
+            'poit_type.string' => 'กรุณากรอกข้อมูล ประเภทสถานที่ เป็นตัวอักษร',
+            'poit_type.max' => 'กรุณากรอกข้อมูล ประเภทสถานที่ ไม่เกิน 255 ตัวอักษร',
+
+            'poit_name.required' => 'กรุณากรอกข้อมูล ชื่อสถานที่',
+            'poit_name.string' => 'กรุณากรอกข้อมูล ชื่อสถานที่ เป็นตัวอักษร',
+            'poit_name.max' => 'กรุณากรอกข้อมูล ชื่อสถานที่ ไม่เกิน 255 ตัวอักษร',
+
+            'poit_icon.required' => 'กรุณาเลือกข้อมูล ไอคอน',
+
+            'poit_color.required' => 'กรุณากรอกข้อมูลรหัส สี',
+            'poit_color.string' => 'กรุณากรอกข้อมูลรหัส สี เป็นตัวอักษร',
+            'poit_color.max' => 'กรุณากรอกข้อมูลรหัส สี ไม่เกิน 255 ตัวอักษร',
+
+            'poit_description.string' => 'กรุณากรอกข้อมูล รายละเอียดสถานที่ เป็นตัวอักษร',
+            'poit_description.max' => 'กรุณากรอกข้อมูล รายละเอียดสถานที่ ไม่เกิน 255 ตัวอักษร',
         ]);
 
         if ($validator->fails()) {
