@@ -48,11 +48,11 @@
                 <input type="text" name="color" id="colorInput"
                     class="flex-grow p-2 border border-gray-300 rounded-l-lg @error('color') error-input-style @enderror"
                     value="{{ old('color') }}" placeholder="สี (Hex)">
-                <button type="button" id="colorButton"
-                    class="h-full px-4 py-2 text-white rounded-r-lg"
+                    <input type="color" id="colorPicker" class="w-0 h-0" value="{{ old('color', '#ffffff') }}">
+                <button type="button" id="colorButton" class="h-full px-4 py-2 text-white rounded-r-lg"
                     style="background-color: {{ old('color', '#888') }}">🎨</button>
             </div>
-            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
+            
             @error('color')
                 <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
             @enderror
@@ -76,7 +76,7 @@
 
     @if (session('success'))
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire({
                     title: "{{ session('success') }}",
                     icon: "success",
@@ -117,21 +117,21 @@
         });
 
         // Color Picker
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const colorInput = document.getElementById("colorInput");
             const colorButton = document.getElementById("colorButton");
             const colorPicker = document.getElementById("colorPicker");
 
-            colorPicker.addEventListener("input", function () {
+            colorPicker.addEventListener("input", function() {
                 colorInput.value = colorPicker.value;
                 colorButton.style.backgroundColor = colorPicker.value;
             });
 
-            colorInput.addEventListener("input", function () {
+            colorInput.addEventListener("input", function() {
                 colorButton.style.backgroundColor = colorInput.value;
             });
 
-            colorButton.addEventListener("click", function () {
+            colorButton.addEventListener("click", function() {
                 colorPicker.click();
             });
         });
