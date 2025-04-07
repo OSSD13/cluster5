@@ -184,7 +184,7 @@
         currentPage = pageNumber;
         renderTable();
     }
-
+    
     // ฟังก์ชันสำหรับค้นหาข้อมูล
     function filterAll() {
     const searchVal = document.getElementById("searchInput").value.toLowerCase();
@@ -261,7 +261,7 @@
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
                 ดูรายละเอียด
             </button>
-            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8"
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" 
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
                 แก้ไข
             </button>
@@ -299,7 +299,7 @@
         menu.style.zIndex = "5"; // ให้เมนูอยู่ข้างหลังแถบด้านล่าง
 
     }
-    
+
 
 
     function sortTable(column) {
@@ -344,27 +344,27 @@
                 <div class="flex flex-col mt-4 items-center space-y-4 text-left w-full max-w-md mx-auto">
                     <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}" readonly>
                     </div>
 
                     <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">อีเมล</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
                     </div>
 
                     <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">วันที่เพิ่ม</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
                     </div>
 
                     <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role}" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role}" readonly>
                     </div>
 
                     <div class="w-full">
                     <label class="block text-gray-800 text-sm mb-1">เพิ่มโดย</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
                     </div>
 
                     ${supervisorInfo} <!-- แสดง Sales Supervisor ถ้ามี -->
@@ -380,10 +380,10 @@
     }
 
 //เพิ่มสมาชิก
-function addMember() {
-    Swal.fire({
+    function addMember() {
+        Swal.fire({
 
-        html: 
+            html: 
             `<div class="flex flex-col items-center">
                 <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
             </div>
@@ -398,7 +398,7 @@ function addMember() {
                 <div class="w-full">
                 <label class="block text-gray-800 text-sm mb-1">Password</label>
                 <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
-                </div>
+                 </div>
 
                 <div class="w-full">
                 <label class="block text-gray-800 text-sm mb-1">ชื่อผู้ใช้</label>
@@ -408,115 +408,115 @@ function addMember() {
                 <div class="w-full">
                 <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
                 <select id="memberRole" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="toggleSupervisor()">
-                    <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
-                    <option value="Sale">Sale</option>
-                    <option value="CEO">CEO</option>
-                    <option value="Sale Sup.">Sale Supervisor</option>
-                </select>
+                        <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
+                        <option value="Sale">Sale</option>
+                        <option value="CEO">CEO</option>
+                        <option value="Sale Sup.">Sale Supervisor</option>
+                    </select>
                 </div>
 
                 <div class="w-full">
-                <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
-                <div id="supervisorSection" style="display: none;" class="mt-4">
+                    <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
+                    <div id="supervisorSection" style="display: none;" class="mt-4">
                     <label class="block text-gray-800 text-sm mb-1">Sales supervisor</label>
                     <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                        <option value="" selected disabled>เลือก Sales Supervisor</option>
-                        ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
-                            `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
-                        ).join('')}
-                    </select>
+                            <option value="" selected disabled>เลือก Sales Supervisor</option>
+                            ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
+                                `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
                 </div>
-                </div>
-            </div>`,
-        showCancelButton: true,
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#2D8C42",
-        focusCancel: true,
-        customClass: {
-        actions: "flex justify-between w-full px-4",
-        cancelButton: "ml-0",
-        confirmButton: "mr-0",
-        },
-        preConfirm: () => {
-            const email = document.getElementById("memberEmail").value;
-            const password = document.getElementById("memberPassword").value;
-            const name = document.getElementById("memberName").value;
-            const role = document.getElementById("memberRole").value;
+                </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2D8C42",
+            focusCancel: true,
+            customClass: {
+                actions: "flex justify-between w-full px-4",
+                cancelButton: "ml-0",
+                confirmButton: "mr-0",
+            },
+            preConfirm: () => {
+                const email = document.getElementById("memberEmail").value;
+                const password = document.getElementById("memberPassword").value;
+                const name = document.getElementById("memberName").value;
+                const role = document.getElementById("memberRole").value;
 
-            if (!email || !password || !name || !role) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
-
-            // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
-            let supervisorId = null;
-            if (role === "Sale") {
-                supervisorId = document.getElementById("supervisorDropdown").value;
-                if (!supervisorId) {
-                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                if (!email || !password || !name || !role) {
+                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
                     return false;
                 }
-            }
-            let newMember = {
-                id: members.length + 1,
-                name: name,
-                email: email,
-                role: role
-            };
 
-            if (role === "Sale") {
-                supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
-                newMember.supervisorId = supervisorId;
-            }
+                // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
+                let supervisorId = null;
+                if (role === "Sale") {
+                    supervisorId = document.getElementById("supervisorDropdown").value;
+                    if (!supervisorId) {
+                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                        return false;
+                    }
+                }
+                let newMember = {
+                    id: members.length + 1,
+                    name: name,
+                    email: email,
+                    role: role
+                };
 
-            members.push(newMember);
-            renderTable();
+                if (role === "Sale") {
+                    supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
+                    newMember.supervisorId = supervisorId;
+                }
+
+                members.push(newMember);
+                renderTable();
 
             // แจ้งเตือนว่าบันทึกสำเร็จ
-            Swal.fire({
-                title: "สำเร็จ!",
-                text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
-                icon: "success",
-                confirmButtonColor: "#2D8C42",
-                confirmButtonText: "ตกลง"
-            });
-        }
-    });
-}
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42",
+                    confirmButtonText: "ตกลง"
+                });
+            }
+        });
+    }
 
 
 // ฟังก์ชันนี้จะทำงานเมื่อเลือกบทบาทเป็น Sale
-function toggleSupervisor() {
-    const role = document.getElementById("memberRole").value;
-    const section = document.getElementById("supervisorSection");
-    const dropdown = document.getElementById("supervisorDropdown");
+    function toggleSupervisor() {
+        const role = document.getElementById("memberRole").value;
+        const section = document.getElementById("supervisorSection");
+        const dropdown = document.getElementById("supervisorDropdown");
 
-    if (role === "Sale") {
-        section.style.display = "block";
-        dropdown.innerHTML = "";
+        if (role === "Sale") {
+            section.style.display = "block";
+            dropdown.innerHTML = "";
 
-        const supervisors = members.filter(member => member.role === "Sale Sup.");
+            const supervisors = members.filter(member => member.role === "Sale Sup.");
 
-        if (supervisors.length === 0) {
-            dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
+            if (supervisors.length === 0) {
+                dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
+            } else {
+                dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
+                supervisors.forEach(sup => {
+                    dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
+                });
+            }
         } else {
-            dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
-            supervisors.forEach(sup => {
-                dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
-            });
+            section.style.display = "none";
+            dropdown.innerHTML = "";
         }
-    } else {
-        section.style.display = "none";
-        dropdown.innerHTML = "";
     }
-}
 
 
-function editMember(id) {
-    const member = members.find(item => item.id === id);
+    function editMember(id) {
+        const member = members.find(item => item.id === id);
 
-    Swal.fire({
+        Swal.fire({
         html: 
         `<div class="flex flex-col items-center">
                 <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
@@ -528,74 +528,95 @@ function editMember(id) {
                 <label class="block text-gray-800 text-sm mb-1">Email</label>
                 <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" >
                 </div>
+                <b class=text-gray-800>แก้ไขสมาชิก </b>
+            `,
+            html: `
+            
+                <div class="flex flex-col space-y-1 text-left">
+                    <label class="font-semibold text-gray-800">Email</label>
+                    <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.email}" >
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">Password</label>
-                <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
-                </div>
+                    <label class="font-semibold text-gray-800">Password</label>
+                    <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">ชื่อผู้ใช้</label>
-                <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}">
-                </div>
+                    <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
+                    <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.name}">
 
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
-                <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                    <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
-                    <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
-                    <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
-                </select>
-                </div>
-
-                <div class="w-full">
-                <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
-                    <label class="block text-gray-800 text-sm mb-1">Sales Supervisor</label>
-                    <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                        <!-- options จะเติมโดย toggleSupervisor() -->
+                    <label class="font-semibold text-gray-800">บทบาท</label>
+                    <select id="memberRole" onchange="toggleSupervisor()" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                        <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
+                        <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
+                        <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
                     </select>
-                </div>
-                </div>
-                </div>
-            </div>
-        `,
-        didOpen: () => {
-            toggleSupervisor();
-            if (member.role === "Sale" && member.supervisorId) {
-                const dropdown = document.getElementById("supervisorDropdown");
-                setTimeout(() => {
-                    dropdown.value = member.supervisorId;
-                }, 0); // รอให้ toggleSupervisor เติม option ก่อน
-            }
-        },
-        showCancelButton: true,
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#2D8C42",
-        focusCancel: true,
-        customClass: {
-            actions: "flex justify-between w-full px-4",
-            cancelButton: "ml-0",
-            confirmButton: "mr-0",
-        },
-        preConfirm: () => {
-            const email = document.getElementById("memberEmail").value;
-            const name = document.getElementById("memberName").value;
-            const role = document.getElementById("memberRole").value;
 
-            if (!email || !name || !role) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
+                    <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
+                        <label class="font-semibold text-gray-800">Sales Supervisor</label>
+                        <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                            <!-- options จะเติมโดย toggleSupervisor() -->
+                        </select>
+                    </div>
+                </div>
+            `,
+            didOpen: () => {
+                toggleSupervisor();
+                if (member.role === "Sale" && member.supervisorId) {
+                    const dropdown = document.getElementById("supervisorDropdown");
+                    setTimeout(() => {
+                        dropdown.value = member.supervisorId;
+                    }, 0); // รอให้ toggleSupervisor เติม option ก่อน
+                }
+            },
+            showCancelButton: true,
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2D8C42",
+            focusCancel: true,
+            customClass: {
+                actions: "flex justify-between w-full px-4",
+                cancelButton: "ml-0",
+                confirmButton: "mr-0",
+            },
+            preConfirm: () => {
+                const email = document.getElementById("memberEmail").value;
+                const name = document.getElementById("memberName").value;
+                const role = document.getElementById("memberRole").value;
 
-            let supervisorId = null;
-            if (role === "Sale") {
-                supervisorId = document.getElementById("supervisorDropdown").value;
-                if (!supervisorId) {
-                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                if (!email || !name || !role) {
+                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
                     return false;
                 }
+
+                let supervisorId = null;
+                if (role === "Sale") {
+                    supervisorId = document.getElementById("supervisorDropdown").value;
+                    if (!supervisorId) {
+                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                        return false;
+                    }
+                }
+
+                // อัปเดตข้อมูล
+                member.email = email;
+                member.name = name;
+                member.role = role;
+                if (role === "Sale") {
+                    member.supervisorId = parseInt(supervisorId);
+                } else {
+                    delete member.supervisorId;
+                }
+
+                renderTable();
+
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42",
+                    confirmButtonText: "ตกลง"
+                });
             }
+        });
+    }
 
     // ฟังก์ชันสำหรับลบสมาชิก
     function deleteMember(id) {
@@ -642,7 +663,6 @@ function editMember(id) {
         
     }
 
-}
     renderTable();
    
 </script>

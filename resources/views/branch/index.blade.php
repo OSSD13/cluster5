@@ -29,11 +29,8 @@
         </div>
 
         <!-- Result Count -->
-        <p class="text-gray-800">ผลลัพธ์ 302 รายการ</p>
+        <p class="text-gray-800">ผลลัพธ์ 0 รายการ</p>
     </div>
-
-
-
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
@@ -86,12 +83,18 @@
         const rowsPerPage = 10;
         let currentSort = { column: null, ascending: true };
 
-        function renderTable() {
+        function renderTable(filteredData = null) {
             const tableBody = document.getElementById("tableBody");
             tableBody.innerHTML = "";
 
+            const dataToRender = filteredData || branches;
+
             const start = (currentPage - 1) * rowsPerPage;
             const paginatedData = branches.slice(start, start + rowsPerPage);
+
+            // แสดงจำนวนผลลัพธ์
+            const resultCount = document.querySelector("#resultCount");
+            resultCount.textContent = `ผลลัพธ์ ${dataToRender.length} รายการ`;
 
             paginatedData.forEach((branch) => {
                 const row = document.createElement("tr");
@@ -114,10 +117,10 @@
                 tableBody.appendChild(row);
             });
 
-            renderPagination();
+            renderPagination(dataToRender);
         }
 
-        function renderPagination() {
+        function renderPagination(dataToRender) {
             const pagination = document.getElementById("pagination");
             pagination.innerHTML = ""; // Clear previous pagination
 
@@ -215,7 +218,7 @@
                 }
             });
         }
-
+        
 
         renderTable();
 
