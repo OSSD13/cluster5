@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
 class PointOfInterest extends Model
 {
     /** @use HasFactory<\Database\Factories\PointOfInterestFactory> */
@@ -25,6 +24,7 @@ class PointOfInterest extends Model
         'address',
         'location_id',
     ];
+    protected $table = 'point_of_interests';
 
     public function getPOIId(): int
     {
