@@ -18,7 +18,7 @@ Route::get('/login', function () {
     return view('auth.login');
 }); // แก้ชื่อ method ให้ตรง (Login → login)
 
-Route::post('/login',[LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login']);
 
 
 
@@ -30,16 +30,17 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/map', function () {
         return view('map.index');
     });
-    Route::get('/branch', function () {return view('branch.index');});
+    Route::get('/branch', function () {
+        return view('branch.index'); });
     Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
     Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
     Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () {return view('poi.index');});
-    Route::get('/poi/create', [PointOfInterestController::class, 'create'])->name('poi.create');
-    Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
-    Route::get('/poi/edit', [PointOfInterestController::class, 'edit'])->name('poi.edit');
+    Route::get('/poi', function () {
+        return view('poi.index'); });
+    Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
+    Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
     Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
@@ -56,11 +57,16 @@ Route::middleware([CheckLogin::class])->group(function () {
 
 
     // APIs
-    Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate']);
-    Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport']);
-
+    Route::get('/api/getSubordinate', [BranchReportController::class, 'getSubordinate'])->name('api.report.getSubordinate');
+    Route::get('/api/getBranchReport', [BranchReportController::class, 'getBranchReport'])->name('api.report.getBranchReport');
     // /api/getRegionBranch
-    Route::get('/api/getRegionBranch', [BranchReportController::class, 'getRegionBranch']);
+    Route::get('/api/getRegionBranch', [BranchReportController::class, 'getRegionBranch'])->name('api.report.getRegionBranch');
+
+    Route::get('/api/poi', [PointOfInterestController::class, 'queryPoi'])->name('api.poi.show');
+    Route::post('/api/poi/edit', [PointOfInterestController::class, 'editPoi'])->name('api.poi.edit');
+    Route::post('/api/poi/create', [PointOfInterestController::class, 'createPoi'])->name('api.poi.create');
+
+
 
 
 
