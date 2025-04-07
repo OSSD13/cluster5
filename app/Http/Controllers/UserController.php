@@ -85,16 +85,6 @@ class UserController extends Controller
             'data' => $users
         ]);
     }
-    
-    public function queryAllUser(Request $request)
-    {
-        // ดึงข้อมูลทั้งหมด โดยไม่ต้องกรองบทบาท
-        $users = User::all();
-        return response()->json([
-            'data' => $users
-        ]);
-    }
-
 
     public function createUser(Request $request)
     {
