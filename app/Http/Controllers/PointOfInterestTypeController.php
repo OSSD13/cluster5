@@ -213,7 +213,7 @@ class PointOfInterestTypeController extends Controller
             ], 404);
         }
 
-        \DB::table('point_of_interest')->where('poi_type', '=', $request->input('poit_type'))->delete();
+        \DB::table('point_of_interests')->where('poi_type', '=', $request->input('poit_type'))->delete();
         return response()->json([
             'status' => 'success',
             'message' => 'ลบประเภทสถานที่เรียบร้อยแล้ว'
