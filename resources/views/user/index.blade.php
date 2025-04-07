@@ -41,8 +41,9 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-        <thead class="bg-blue-500 text-white">
+    <table class="w-full mt-5 rounded-lg overflow-hidden table-fixed">
+        
+        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ</th>
@@ -86,10 +87,12 @@
         paginatedData.forEach((branch) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-        <td class="py-3 px-4 w-16">${branch.id}</td>
-        <td class="py-3 px-4 truncate">${branch.name}</td>
-        <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-        <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+        <td class="py-3 px-4 w-16">${member.id}</td>
+        <td class="py-3 px-4 truncate">
+            <div class="font-md text-md">${member.name}</div>
+            <div class="text-sm text-gray-400">${member.email}</div>
+        </td>
+        <td class="py-3 px-4 w-32 truncate text-md">${member.role}</td>
         <td class="py-3 px-1 w-10 text-center relative">
             <button onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
             <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
