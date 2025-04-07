@@ -23,7 +23,7 @@
 
     {{-- Emoji --}}
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
-    
+
     {{-- jquery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -64,7 +64,7 @@
 
 </head>
 
-<body class="font-lunasima antialiased bg-gray-300">
+<body class="font-lunasima antialiased bg-gray-200">
     @yield('body')
 </body>
 
