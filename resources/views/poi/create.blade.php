@@ -90,86 +90,75 @@
         </div>
 
         <script>
-            function isValidCoordinate(value, type = "lat") {
-                const floatVal = parseFloat(value);
-                if (isNaN(floatVal)) return false;
-                return (type === "lat") ? floatVal >= -90 && floatVal <= 90 : floatVal >= -180 && floatVal <= 180;
-            }
-
-            function isValidPostalCode(value) {
-                return /^\d{5}$/.test(value);
-            }
-
-            function isValidText(value) {
-                // ตรวจสอบว่ามีเฉพาะตัวอักษรไทย อังกฤษ และเว้นวรรค (ถ้าอยากละเอียดกว่านี้ก็แจ้งได้)
-                return /^[\u0E00-\u0E7Fa-zA-Z\s]+$/.test(value);
-            }
+            document.addEventListener("DOMContentLoaded", function () {
+                checkForm(); // เรียกฟังก์ชันตรวจสอบเมื่อหน้าโหลด
+            });
 
             function checkForm() {
+                // ดึงฟอร์มทั้งหมด
                 var form = document.forms['poiForm'];
 
-                var latitude = form.elements['latitude'].value.trim();
-                var longitude = form.elements['longitude'].value.trim();
-                var postal_code = form.elements['postal_code'].value.trim();
-                var province = form.elements['province'].value.trim();
-                var district = form.elements['district'].value.trim();
-                var sub_district = form.elements['sub_district'].value.trim();
-                var address = form.elements['address'].value.trim();
-                var name = form.elements['name'].value.trim();
-                var type = form.elements['type'].value.trim();
+                // ดึงค่าของฟิลด์ทั้งหมด
+                var latitude = form.elements['latitude'];
+                var longitude = form.elements['longitude'];
+                var postal_code = form.elements['postal_code'];
+                var province = form.elements['province'];
+                var district = form.elements['district'];
+                var sub_district = form.elements['sub_district'];
+                var address = form.elements['address'];
+                var name = form.elements['name'];
+                var type = form.elements['type'];
 
-                // ตรวจค่าที่ต้องมีรูปแบบ
-                var isLatValid = isValidCoordinate(latitude, "lat");
-                var isLonValid = isValidCoordinate(longitude, "lon");
-                var isPostalValid = isValidPostalCode(postal_code);
-                var isProvinceValid = isValidText(province);
-                var isDistrictValid = isValidText(district);
-                var isSubDistrictValid = isValidText(sub_district);
-                var isAddressValid = address !== "";
-                var isNameValid = isValidText(name);
+                // ดึงข้อความ caution
+                var cautionMessage = document.querySelector("label[name='caution']");
 
-                // Error message + red border toggle
-                toggleError("latitude", isLatValid);
-                toggleError("longitude", isLonValid);
-                toggleError("postal_code", isPostalValid, "postal-error");
-                toggleError("province", isProvinceValid, "province-error");
-                toggleError("district", isDistrictValid, "district-error");
-                toggleError("sub_district", isSubDistrictValid, "sub-district-error");
-                toggleError("address", isAddressValid, "address-error");
-                toggleError("name", isNameValid, "name-error");
+                // ฟังก์ชันตรวจสอบและเพิ่ม/ลบคลาส error
+                function validateField(field) {
+                    if (field.value.trim() === "") {
+                        field.classList.add("error-input-style");
+                    } else {
+                        field.classList.remove("error-input-style");
+                    }
+                }
 
-                // ตรวจสอบทั้งหมดก่อนเปิดปุ่ม
+                // ตรวจสอบฟิลด์ทั้งหมด
+                validateField(latitude);
+                validateField(longitude);
+                validateField(postal_code);
+                validateField(province);
+                validateField(district);
+                validateField(sub_district);
+                validateField(address);
+                validateField(name);
+                validateField(type);
+
+                // ตรวจสอบว่าฟิลด์ทั้งหมดไม่ว่าง
                 if (
-                    isLatValid &&
-                    isLonValid &&
-                    isPostalValid &&
-                    isProvinceValid &&
-                    isDistrictValid &&
-                    isSubDistrictValid &&
-                    isAddressValid &&
-                    isNameValid &&
-                    type !== ""
+                    latitude.value.trim() !== "" &&
+                    longitude.value.trim() !== "" &&
+                    postal_code.value.trim() !== "" &&
+                    province.value.trim() !== "" &&
+                    district.value.trim() !== "" &&
+                    sub_district.value.trim() !== "" &&
+                    address.value.trim() !== "" &&
+                    name.value.trim() !== "" &&
+                    type.value.trim() !== ""
                 ) {
+                    // เปิดใช้งานปุ่ม
                     document.getElementById("saveButton").disabled = false;
                     document.getElementById("saveButton").classList.remove("cursor-not-allowed", "bg-gray-500");
                     document.getElementById("saveButton").classList.add("bg-green-700", "cursor-pointer");
+
+                    // ซ่อนข้อความ caution
+                    cautionMessage.classList.add("hidden");
                 } else {
+                    // ปิดใช้งานปุ่ม
                     document.getElementById("saveButton").disabled = true;
                     document.getElementById("saveButton").classList.remove("bg-green-700", "cursor-pointer");
                     document.getElementById("saveButton").classList.add("cursor-not-allowed", "bg-gray-500");
-                }
-            }
 
-            function toggleError(fieldId, isValid, errorId = null) {
-                const input = document.getElementById(fieldId);
-                const errorSpan = document.getElementById(errorId || `${fieldId}-error`);
-
-                if (!isValid) {
-                    input.classList.add("error-input-style");
-                    errorSpan.classList.remove("hidden");
-                } else {
-                    input.classList.remove("error-input-style");
-                    errorSpan.classList.add("hidden");
+                    // แสดงข้อความ caution
+                    cautionMessage.classList.remove("hidden");
                 }
             }
         </script>
