@@ -287,15 +287,15 @@
         </div>
         {{-- stat cards --}}
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="">ยอดพัสดุทั้งหมด</div>
+            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-2">
+                <div class="text-lg font-sm">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;"
+                    <span class="icon-[streamline--upload-box-1-solid] text-6xl text-trinary"
                         id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-bold text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
-                    <span class="font-medium text-[24px] flex justify-end">ชิ้น</span>
+                    <span class="text-4xl font-bold text-trinary" id='thisMonthTotalPackageNumber'></span>
+                    <span class="text-2xl font-bold text-black">ชิ้น</span>
                 </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
+                <div class="text-success text-sm flex items-center gap-1" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
                     <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
@@ -451,24 +451,22 @@
 
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <div style="resize: both; overflow: auto; max-width: 100%;">
-            <table class="table-auto divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
-                <thead class="bg-lightblue" style="background-color: #B6D2FF">
-                    <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
-                            style="color: black;">#</th>
-                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
-                            style="color: black">ภูมิภาค</th>
-                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
-                            style="color: black">จำนวนสาขา</th>
-                        <th scope="col" class="py-3" id="regionBranchCount"></th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
-                </tbody>
-            </table>
-        </div>
+        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+            <thead class="bg-lightblue">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
+                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
+            </tbody>
+        </table>
+</div>
 
 
         <script>
@@ -784,39 +782,30 @@
             });
         </script>
 
-        <div class="overflow-x-auto w-full">
-            <table class="table-auto min-w-full border-collapse rounded-lg text-sm" id="branchTable">
-                <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
-                    <tr>
-                        <th class="px-2 py-2 text-center text-xs" style="min-width: 40px;">ID</th>
-                        <th class="px-2 py-2 text-left text-xs" style="min-width: 120px;">ชื่อสาขา</th>
-                        <th class="px-2 py-2 text-right text-xs cursor-pointer" onclick="sortTable('sales')"
-                            style="min-width: 90px;">
-                            ยอดขาย ⬍
-                        </th>
-                        <th class="px-2 py-2 text-center text-xs cursor-pointer" onclick="sortTable('status')"
-                            style="min-width: 100px;">
-                            เพิ่มยอด ⬍
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-                    <tr>
-                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">1</td>
-                        <td class="py-2 px-2 text-xs whitespace-nowrap overflow-hidden truncate max-w-[140px]"
-                            title="สาขา A ยาวมากจนเกินพอดี">
-                            สาขา A ยาวมากจนเกินพอดี
-                        </td>
-                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">100,000 บาท</td>
-                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                            <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs">เพิ่มแล้ว</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-
+        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable" >
+            <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
+                <tr>
+                    <th class="py-3 px-4 text-left" style="color: black">ID</th>
+                    <th class="py-3 px-4 text-left" style="color: black">ชื่อสาขา</th>
+                    <th class="py-3 px-4 text-left" style="color: black">จังหวัด</th>
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')" style="color: black">
+                        ยอดขาย ⬍
+                    </th>
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')" style="color: black">
+                        เพิ่มยอด ⬍
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                <tr>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">1</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">สาขา A</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">กรุงเทพมหานคร</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">100,000 บาท</td>
+                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">เพิ่มแล้ว</td>
+                </tr>
+            </tbody>
+        </table>
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
@@ -826,5 +815,5 @@
 @endsection
 
 @section('script')
-<script></script>
+    <script></script>
 @endsection
