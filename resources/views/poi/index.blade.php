@@ -104,38 +104,62 @@
             paginatedData.forEach((branch) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                <td class="py-3 px-4 w-16">${branch.id}</td>
-                <td class="py-3 px-4 truncate">${branch.name}</td>
-                <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-                <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-                <td class="py-3 px-1 w-10 text-center relative">
-                    <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                    <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                        <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
-                        onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
-                        <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                    </div>
-                </td>
-            `;
-                            <td class="py-3 px-4 w-16">${branch.id}</td>
-                            <td class="py-3 px-4 truncate">${branch.name}</td>
-                            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-                            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-                            <td class="py-3 px-1 w-10 text-center relative">
-                                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
-                                    onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
-                                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                                </div>
-                            </td>
-                `;
-                    tableBody.appendChild(row);
-                });
+            <td class="py-3 px-4 w-16">${branch.id}</td>
+            <td class="py-3 px-4 truncate">${branch.name}</td>
+            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+            <td class="py-3 px-1 w-10 text-center relative">
+                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
+                    onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                </div>
+            </td>
+        `;
+                        <td class="py-3 px-4 w-16">${branch.id}</td>
+                        <td class="py-3 px-4 truncate">${branch.name}</td>
+                        <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
+                        <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
+                        <td class="py-3 px-1 w-10 text-center relative">
+                            <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
+                            <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
+                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer"
+                                onclick="window.location.href='{{ route('poi.edit') }}'">แก้ไข</button>
+                                <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
+                            </div>
+                        </td>
+                    `;
+                tableBody.appendChild(row);
+            });
 
-                renderPagination();
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = ""; // Clear previous pagination
+
+            const totalPages = Math.ceil(branches.length / rowsPerPage);
+
+            // Previous button
+            const prevBtn = document.createElement("button");
+            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
+
+            // Page number buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.innerText = i;
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold
+                                     ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                btn.onclick = () => goToPage(i);
+                pagination.appendChild(btn);
             }
 
             function renderPagination() {

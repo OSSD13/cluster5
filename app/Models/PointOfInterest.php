@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+
 class PointOfInterest extends Model
 {
     /** @use HasFactory<\Database\Factories\PointOfInterestFactory> */
@@ -18,7 +19,7 @@ class PointOfInterest extends Model
     protected $fillable = [
         'poi_id',
         'poi_name',
-        'type',
+        'poi_type',
         'gps_lat',
         'gps_lng',
         'address',
