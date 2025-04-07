@@ -8,10 +8,10 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-700" >POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-800" >POI จัดการสถานที่ที่สนใจ</h2>
 
             <a href="{{ route('poi.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
+                <button class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                     สร้าง POI
                 </button>
             </a>
@@ -37,7 +37,7 @@
 
         <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
         <a href="{{ route('poi.type.index') }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
+            <button class="hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                 ไปหน้า POI type
             </button>
         </a>
@@ -49,7 +49,7 @@
     <!-- Pagination Controls -->
     <div class="overflow-visible">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-     <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
+    <thead class="bg-blue-500 text-black text-md" style="background-color: #B5CFF5">
     <tr>
         <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ID</th>
         <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
@@ -185,7 +185,7 @@
             document.addEventListener("click", () => {
                 document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
             });
-                        
+            
 
 
             function viewDetail(id) {
