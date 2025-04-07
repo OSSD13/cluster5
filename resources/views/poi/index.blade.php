@@ -49,7 +49,7 @@
     <!-- Pagination Controls -->
     <div class="overflow-visible">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-    <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
+     <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
     <tr>
         <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ID</th>
         <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th> <!-- เพิ่ม px-4 และ w-3/12 -->
@@ -185,6 +185,7 @@
             document.addEventListener("click", () => {
                 document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
             });
+                        
 
 
             function viewDetail(id) {

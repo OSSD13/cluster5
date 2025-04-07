@@ -47,11 +47,24 @@
 
             <!-- สี -->
             <label class="block text-sm text-gray-600">สี</label>
-            <input type="text" id="colorInput" class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('color') error-input-style
-            @enderror" placeholder="สี" name="color" value="{{ old('color') }}">
+            <div class="relative mb-3 flex items-center">
+                <!-- input สี (hex) -->
+                <input type="text" id="colorInput"
+                    class="flex-grow p-2 border border-gray-300 rounded-l-lg @error('color') error-input-style @enderror"
+                    placeholder="สี" name="color" value="{{ old('color') }}">
+
+                <!-- ปุ่ม color picker -->
+                <button type="button" id="colorButton" class="h-full px-4 py-2 cursor-pointer text-white rounded-r-lg"
+                    style="background-color: {{ old('color', '#888') }};">🎨</button>
+            </div>
+
+            <!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
+            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
+
             @error('color')
                 <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
             @enderror
+
 
             <!-- รายละเอียดสถานที่ที่สนใจ -->
             <label class="block text-sm text-gray-600">รายละเอียดสถานที่ที่สนใจ</label>
@@ -116,4 +129,30 @@
                 });
             });
         </script>
-    @endsection
+
+        <!-- Color picker -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const colorInput = document.getElementById("colorInput");
+                const colorButton = document.getElementById("colorButton");
+                const colorPicker = document.getElementById("colorPicker");
+
+                // เมื่อเลือกสีจาก Color Picker
+                colorPicker.addEventListener("input", function () {
+                    colorInput.value = colorPicker.value;
+                    colorButton.style.backgroundColor = colorPicker.value;
+                });
+
+                // เมื่อพิมพ์รหัสสี
+                colorInput.addEventListener("input", function () {
+                    colorButton.style.backgroundColor = colorInput.value;
+                });
+
+                // คลิกปุ่มเพื่อเปิด Color Picker
+                colorButton.addEventListener("click", function () {
+                    colorPicker.click();
+                });
+            });
+        </script>
+
+    @endsection   
