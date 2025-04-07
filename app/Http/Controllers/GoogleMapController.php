@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\MapService;
 use Illuminate\Http\Request;
 
-class AnotherController extends Controller
+class GoogleMapController extends Controller
 {
     protected $mapService;
 
@@ -15,22 +15,12 @@ class AnotherController extends Controller
     }
 
     /**
-     * Show the conversion form.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function showForm()
-    {
-        return view('maps'); // Make sure convert.blade.php exists in resources/views
-    }
-
-    /**
      * Handle the URL conversion request.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function handleConversion(Request $request)
+    public function convertShareToLatLng(Request $request)
     {
         $url = $request->input('url');
         if (!$url) {

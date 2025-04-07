@@ -17,45 +17,21 @@
         <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3"
             id="searchInput">
 
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">ประเภท</label>
-            <select class="w-full p-2 border border-gray-300 rounded" id="typeSelect">
-                <option value="">ประเภทสถานที่</option>
-                <option value="ร้านอาหาร">ร้านอาหาร</option>
-                <option value="ร้านกาแฟ">ร้านกาแฟ</option>
-                <option value="ร้านขนม">ร้านขนม</option>
-                <option value="ผับบาร์">ผับบาร์</option>
-                <option value="ศูนย์การค้า">ศูนย์การค้า</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">จังหวัด</label>
-            <select class="w-full p-2 border border-gray-300 rounded" id="provinceSelect">
-                <option value="">จังหวัด</option>
-                <option value="ชลบุรี">ชลบุรี</option>
-                <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
-                <option value="ขอนแก่น">ขอนแก่น</option>
-                <option value="เชียงใหม่">เชียงใหม่</option>
-                <option value="ปราจีนบุรี">ปราจีนบุรี</option>
-            </select>
-        </div>
-
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed " >
-            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
+        <table class="min-w-full mt-5 table-auto border-collapse rounded-lg bg-gray-100">
+            <thead class="bg-blue-500 text-white text-sm">
                 <tr>
-                    <th class="py-2 px-3 text-left w-3 whitespace-nowrap">ชื่อ / ประเภท</th>
-                    <th class="py-2 px-2 text-center w-1 whitespace-nowrap">Icon</th>
-                    <th class="py-2 px-4 text-left w-3 whitespace-nowrap">คำอธิบาย</th>
-                    <th class="py-2 px-1 w1 text-left w-1 whitespace-nowrap"></th>
+                    <th class="py-3 px-4 text-left">ชื่อ / ประเภท</th>
+                    <th class="py-3 px-4 text-center">Icon</th>
+                    <th class="py-3 px-4 text-left">คำอธิบาย</th>
+                    <th class="py-3 px-4 text-center">การจัดการ</th>
                 </tr>
             </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm">
-                <!-- เนื้อหาของตารางจะถูกเติมโดย JavaScript -->
+            <tbody id="tableBody" class="text-sm text-gray-700">
+                <!-- Filled by JS -->
             </tbody>
         </table>
     </div>
@@ -65,41 +41,18 @@
 
 @section('script')
     <script>
-        let poits = [
-            { name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี", description: "ร้านอาหารริมทะเลที่มีอาหารทะเลสดใหม่และบรรยากาศดี" },
-            { name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี", description: "ร้านกาแฟบรรยากาศสบาย ๆ พร้อมกาแฟคุณภาพดี" },
-            { name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี", description: "ร้านขนมหวานที่มีเมนูหลากหลายและรสชาติอร่อย" },
-            { name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี", description: "ผับบาร์ที่มีดนตรีสดและเครื่องดื่มหลากหลาย" },
-            { name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหลากหลายและสิ่งอำนวยความสะดวกครบครัน" },
-            { name: "เชียงใหม่", type: "ร้านอาหาร", province: "เชียงใหม่", description: "ร้านอาหารที่มีวิวภูเขาและอาหารพื้นเมือง" },
-            { name: "ขอนแก่น", type: "ร้านกาแฟ", province: "ขอนแก่น", description: "ร้านกาแฟที่มีเมล็ดกาแฟคุณภาพจากทั่วโลก" },
-            { name: "หาดใหญ่", type: "ร้านขนม", province: "สงขลา", description: "ร้านขนมที่มีเมนูขนมไทยและขนมสากล" },
-            { name: "ภูเก็ต", type: "ผับบาร์", province: "ภูเก็ต", description: "ผับบาร์ที่มีวิวทะเลและดนตรีสด" },
-            { name: "กรุงเทพ", type: "ศูนย์การค้า", province: "กรุงเทพ", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหรูหราและร้านอาหารหลากหลาย" },
-        ]
-
-        for (let i = 12; i <= 50; i++) {
-            poits.push({
-                id: i,
-                name: `สถานที่ ${i}`,
-                type: ['ร้านกาแฟ', 'ร้านอาหาร', 'ร้านขนม', 'ผับบาร์', 'ศูนย์การค้า'][i % 5],
-                province: ['อุดรธานี', 'ชลบุรี', 'กรุงเทพฯ', 'ขอนแก่น', 'เชียงใหม่'][i % 5],
-            });
-        }
-
+        let poits = [];
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        function getIconByType(type) {
-            switch (type) {
-                case "ร้านอาหาร": return "🍴";
-                case "ร้านกาแฟ": return "☕";
-                case "ร้านขนม": return "🍰";
-                case "ผับบาร์": return "🍺";
-                case "ศูนย์การค้า": return "🏬";
-                case "ตลาด": return "🛒";
-                case "ที่เที่ยว": return "🏖️";
-                default: return "🏢";
+        async function fetchPoits() {
+            try {
+                const response = await fetch('{{ route('api.poit.query.all') }}');
+                const result = await response.json();
+                poits = result.data || [];
+                renderTable();
+            } catch (error) {
+                console.error('Error:', error);
             }
         }
 
@@ -112,21 +65,22 @@
 
             paginated.forEach(poit => {
                 const row = document.createElement("tr");
+                row.classList.add("border-b", "border-gray-200", "hover:bg-blue-50"); // เพิ่ม border และ hover effect
                 row.innerHTML = `
-                <td class="py-3 px-4 text-left">
-                    <div class="font-bold text-md">${poit.name}</div>
-                    <div class="text-sm text-gray-400">${poit.type}</div>
-                </td>
-                <td class="py-3 px-4 text-center text-md">${getIconByType(poit.type)}</td>
-                <td class="py-3 px-4 text-left truncate">${poit.description}</td>
-                <td class="py-3 px-1 w-10 text-center relative">
-                    <button class="cursor-pointer" onclick="toggleMenu(event, ${poit.id})">&#8230;</button>
-                    <div id="menu-${poit.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2" >
-                        <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" onclick="viewDetail(${poit.id})">ดูรายละเอียด</button>
-                        <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" onclick="editPoit(${poit.id})">แก้ไข</button>
-                        <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-lg hover:bg-red-700" style="background-color: #CF3434" onclick="deletePoit(${poit.id})">ลบ</button>
-                    </div>
-                </td>`;
+                    <td class="py-3 px-4 text-left font-semibold">${poit.poit_name}</td>
+                    <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
+                    <td class="py-3 px-4 text-left">${poit.poit_description || '-'}</td>
+                    <td class="py-3 px-4 text-center relative">
+                        <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, ${poit.id})">&#8230;</button>
+                        <div id="menu-${poit.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                                onclick="viewDetail(${poit.id})">ดูรายละเอียด</button>
+                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                                onclick="editPoit(${poit.id})">แก้ไข</button>
+                            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+                                onclick="deletePoit(${poit.id})">ลบ</button>
+                        </div>
+                    </td>`;
                 tableBody.appendChild(row);
             });
 
@@ -134,35 +88,37 @@
         }
 
         function renderPagination(data) {
-            const totalPages = Math.ceil(data.length / rowsPerPage);
             const pagination = document.getElementById("pagination");
             pagination.innerHTML = "";
+            const totalPages = Math.ceil(data.length / rowsPerPage);
 
-            const createBtn = (text, page) => {
-                const btn = document.createElement("button");
-                btn.innerText = text;
-                btn.className = `px-4 py-2 mx-1 rounded-lg ${page === currentPage ? 'bg-blue-600 text-white' : 'bg-white border text-black'}`;
-                btn.onclick = () => { currentPage = page; renderTable(data); };
-                return btn;
-            };
-
-            if (currentPage > 1) {
-                pagination.appendChild(createBtn("«", currentPage - 1));
-            }
+            const prevBtn = document.createElement("button");
+            prevBtn.innerText = "<";
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
 
             for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
-                    pagination.appendChild(createBtn(i, i));
-                } else if (i === currentPage - 3 || i === currentPage + 3) {
-                    const dots = document.createElement("span");
-                    dots.innerText = "...";
-                    pagination.appendChild(dots);
-                }
+                const btn = document.createElement("button");
+                btn.innerText = i;
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                btn.onclick = () => goToPage(i);
+                pagination.appendChild(btn);
             }
 
-            if (currentPage < totalPages) {
-                pagination.appendChild(createBtn("»", currentPage + 1));
-            }
+            const nextBtn = document.createElement("button");
+            nextBtn.innerText = ">";
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
+
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            renderTable();
         }
 
         function toggleMenu(event, id) {
@@ -171,73 +127,55 @@
             document.getElementById(`menu-${id}`).classList.toggle("hidden");
         }
 
+        // ✅ ฟังก์ชันปุ่ม
         function viewDetail(id) {
-            const poit = poits.find(p => p.id === id);
-            Swal.fire({
-                title: "<b class='text-gray-800'>รายละเอียดข้อมูล POI</b>",
-                html: `
-                        <div class="flex flex-col items-start space-y-4 text-left">
-                            <div><b>ชื่อสถานที่:</b> ${poit.name}</div>
-                            <div><b>ประเภท:</b> ${poit.type}</div>
-                            <div><b>จังหวัด:</b> ${poit.province}</div>
-                            <div><b>วันที่เพิ่ม:</b> 17 ก.ย. 2568</div>
-                            <div><b>เพิ่มโดย:</b> jeng@gmail.com</div>
-                        </div>
-                    `,
-                confirmButtonText: "ยืนยัน",
-                confirmButtonColor: "#2D8C42",
-            });
+            alert("ดูรายละเอียด ID: " + id);
+            // หรือเปลี่ยนหน้า location.href = `/poi/type/${id}`
         }
 
         function editPoit(id) {
-            alert(`แก้ไขข้อมูล ID: ${id}`);
+            window.location.href = `/poi/type/${id}/edit`;
         }
 
         function deletePoit(id) {
-            Swal.fire({
-                title: "ลบสถานที่ที่สนใจ",
-                text: "คุณแน่ใจหรือไม่ว่าต้องการลบ?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then(result => {
-                if (result.isConfirmed) {
-                    poits = poits.filter(p => p.id !== id);
-                    renderTable();
-                    Swal.fire("ลบแล้ว!", "ข้อมูลถูกลบเรียบร้อย", "success");
-                }
-            });
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบ?")) {
+                fetch(`/api/poit/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ poit_type: getPoitTypeById(id) }) // คุณต้องดึง poit_type จาก id นี้
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    fetchPoits();
+                })
+                .catch(error => console.error("Delete error:", error));
+            }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            renderTable();
+        function getPoitTypeById(id) {
+            const item = poits.find(p => p.id === id);
+            return item ? item.poit_type : '';
+        }
 
-            const filterAll = () => {
-                const searchVal = document.getElementById("searchInput").value.toLowerCase();
-                const typeVal = document.getElementById("typeSelect").value;
-                const provVal = document.getElementById("provinceSelect").value;
-
-                const filtered = poits.filter(p =>
-                    (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
-                    (!typeVal || p.type === typeVal) &&
-                    (!provVal || p.province === provVal)
-                );
-
-                currentPage = 1;
-                renderTable(filtered);
-            };
-
-            document.getElementById("searchInput").addEventListener("input", filterAll);
-            document.getElementById("typeSelect").addEventListener("change", filterAll);
-            document.getElementById("provinceSelect").addEventListener("change", filterAll);
+        // ค้นหา
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const keyword = this.value.toLowerCase();
+            const filtered = poits.filter(p => 
+                p.poit_name.toLowerCase().includes(keyword) ||
+                p.poit_type.toLowerCase().includes(keyword) ||
+                (p.poit_description && p.poit_description.toLowerCase().includes(keyword))
+            );
+            currentPage = 1;
+            renderTable(filtered);
         });
 
+        document.addEventListener("DOMContentLoaded", fetchPoits);
         document.addEventListener("click", () => {
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+            document.querySelectorAll("[id^=menu-]").forEach(el => el.classList.add("hidden"));
         });
     </script>
-
 @endsection
