@@ -294,22 +294,24 @@
             const branch = branches.find(item => item.id === id);
 
             Swal.fire({
-                title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
                 html: `
-                            <div class="flex flex-col space-y-2 text-left">
-                                <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
+                        <div class="flex flex-col text-3xl mb-6 mt-4">
+                        <b class=text-gray-800 >รายละเอียดข้อมูล POI</b>
+                        </div>
+                            <div class="flex flex-col space-y-2 text-left ">
+                                <label class="font-medium text-gray-800 text-sm">ชื่อสถานที่</label>
                                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.name}" readonly>
 
-                                <label class="font-medium text-gray-700 text-sm">ประเภท</label>
+                                <label class="font-medium text-gray-800 text-sm">ประเภท</label>
                                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.type}" readonly>
 
-                                <label class="font-medium text-gray-700 text-sm">จังหวัด</label>
+                                <label class="font-medium text-gray-800 text-sm">จังหวัด</label>
                                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${branch.province}" readonly>
 
-                                <label class="font-medium text-gray-700 text-sm">วันที่เพิ่ม</label>
+                                <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
                                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
 
-                                <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
+                                <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
                                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
                             </div>
                             `,
@@ -325,11 +327,9 @@
 
             Swal.fire({
                 html: `
-                <div class="flex flex-col items-center">
-                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="64" data-height="64"></span>
-            </div>
-            <b class=text-gray-800 text-xl mb-1>แก้ไขสมาชิก </b>
-                <b class=text-gray-800 text-xl mb-1>แก้ไขยอดขาย</b>
+                    <div class="flex flex-col text-3xl  mb-6 mt-4">
+                        <b class=text-gray-800 >แก้ไขยอดขาย</b>
+                        </div>
                     <!-- ฟอร์ม -->
                     <div class="fflex flex-col items-center mt-4 space-y-4 text-left w-full max-w-md mx-auto">
                     <div class="w-full">

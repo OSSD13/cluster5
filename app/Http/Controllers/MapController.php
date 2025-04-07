@@ -20,7 +20,7 @@ class MapController extends Controller
         $cacheKey = "nearby_pois:lat:$latitude:lng:$longitude:radius:$radiusInMeters:limit:$limitPerType";
 
         // Cache for 5 minutes (adjust as needed)
-        $results = Cache::remember($cacheKey, 60 * 5, function () use (
+        $results = Cache::tags(['mapAnalyzeResult'])->remember($cacheKey, 60 * 5, function () use (
             $latitude, $longitude, $radiusInMeters, $limitPerType, $earthRadius
         ) {
             $subquery = DB::table('point_of_interests')
