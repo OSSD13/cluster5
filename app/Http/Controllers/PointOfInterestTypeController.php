@@ -13,34 +13,30 @@ class PointOfInterestTypeController extends Controller
     }
 
 
-    public function insert(Request $request){
-        $request->validate([
-            'poiType' => 'required|string|max:255',
-            'poiName' => 'required|string|max:255',
-            'icon' => 'required',
-            'color' => 'required|string|max:255',
-            'poiDetails' => 'required|string|max:255',
-        ],
-        [
-            'poiType.required' => 'กรุณากรอกข้อมูล ประเภทสถานที่',
-            'poiType.string' => 'กรุณากรอกข้อมูล ประเภทสถานที่ เป็นตัวอักษร',
-            'poiType.max' => 'กรุณากรอกข้อมูล ประเภทสถานที่ ไม่เกิน 255 ตัวอักษร',
+    public function insert(Request $request)
+{
+    // Validate form input
+    $request->validate([
+        'poiType' => 'required|string|max:255',
+        'poiName' => 'required|string|max:255',
+        'icon' => 'required|string|max:10',
+        'color' => 'required|string|max:7', // ค่าสี hex เช่น #ffffff
+        'poiDetails' => 'nullable|string|max:1000',
+    ]);
 
-            'poiName.required' => 'กรุณากรอกข้อมูล ชื่อสถานที่',
-            'poiName.string' => 'กรุณากรอกข้อมูล ชื่อสถานที่ เป็นตัวอักษร',
-            'poiName.max' => 'กรุณากรอกข้อมูล ชื่อสถานที่ ไม่เกิน 255 ตัวอักษร',
+    // Save data to database
+    $poiType = new PointOfInterestType();
+    $poiType->poit_type = $request->poiType;
+    $poiType->poit_name = $request->poiName;
+    $poiType->poit_icon = $request->icon;
+    $poiType->poit_color = $request->color;
+    $poiType->poit_description = $request->poiDetails;
+    $poiType->save();
 
-            'icon.required' => 'กรุณาเลือกข้อมูล ไอคอน',
+    // Redirect back with success message
+    return redirect()->back()->with('success', 'เพิ่มข้อมูลสำเร็จ');
+}
 
-            'color.required' => 'กรุณากรอกข้อมูลรหัส สี',
-            'color.string' => 'กรุณากรอกข้อมูลรหัส สี เป็นตัวอักษร',
-            'color.max' => 'กรุณากรอกข้อมูลรหัส สี ไม่เกิน 255 ตัวอักษร',
-
-            'poiDetails.required' => 'กรุณากรอกข้อมูล รายละเอียดสถานที่',
-            'poiDetails.string' => 'กรุณากรอกข้อมูล รายละเอียดสถานที่ เป็นตัวอักษร',
-            'poiDetails.max' => 'กรุณากรอกข้อมูล รายละเอียดสถานที่ ไม่เกิน 255 ตัวอักษร',
-        ]);
-    }
     
     public function queryPoit(Request $request)
     {

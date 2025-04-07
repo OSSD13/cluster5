@@ -147,6 +147,7 @@
     display: block; /* ทำให้ margin auto มีผล */
 }
 
+
 </style>
 <body class="flex items-center justify-center min-h-screen" >
     <div><img src="/assets/img/LogoMyx.png" class="iconLogo" alt="">
