@@ -5,8 +5,8 @@
 @section('content')
     <div class="flex flex-col gap-4">
         {{-- report card --}}
-        <div class="mt-2 bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
-            <h3 class="text-2xl font-bold text-center text-gray-800">รายงาน</h3>
+        <div class="mt-8 bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
+            <h3 class="text-lg font-bold text-center">รายงาน</h3>
             <div class="flex items-center gap-4">
                 <label for="timePeriod" class=" text-base font-bold text-black">ช่วงเวลา</label>
                 <input type="month" id="timePeriod" name="timePeriod"
@@ -70,7 +70,7 @@
                 function getBranchReport() {
                     const userId = document.getElementById('subordinateSelect') ?
                         document.getElementById('subordinateSelect').value :
-                                            {{ session()->get('user')->user_id }};
+                                                {{ session()->get('user')->user_id }};
                     const date = document.getElementById('timePeriod') ?
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -149,7 +149,7 @@
                                     datasets: [{
                                         label: 'จำนวนสาขา', // "Number of Branches"
                                         data: chartValues,
-                                        backgroundColor: '#3366CC',
+                                        backgroundColor: '#F846E1',
                                         borderWidth: 1
                                     }]
                                 },
@@ -288,13 +288,14 @@
         {{-- stat cards --}}
         <div class="flex flex-row gap-4">
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="font-bold">ยอดพัสดุทั้งหมด</div>
+                <div class="">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-bold text-trinary flex-grow text-right" style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
-                    <span class="font-medium text-xl flex-grow-0 text-right p-4">ชิ้น</span>
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary" style="font-size: 55px;"
+                        id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-bold text-trinary" style="font-size: 28px;" id="thisMonthTotalPackageNumber"></span>
+                    <span class="font-medium text-[24px] flex justify-end">ชิ้น</span>
                 </div>
-                <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
+                <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
                     <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
@@ -302,68 +303,73 @@
         </div>
 
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-2">
-                <div class="font-bold">ยอดรายได้ทั้งหมด</div>
+            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
+                <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow" style="font-size: 75px; flex-grow :3" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="font-bold text-green-600 flex-grow" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
-                    <span class="font-black text-xl flex-grow-0 text-right p-4 text-green-600">บาท</span>
+                    <span class="icon-[tabler--coin-filled] text-trinary" style="font-size: 75px;"
+                        id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-bold text-trinary" style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="font-medium text-[24px]">บาท</span>
                 </div>
-                <div class="text-success text-base font-medium text-end" id='thisMonthTotalMoneyPercentParent'>
+                <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
                     <span id='thisMonthTotalMoneyPercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
 
-<!--  -->
-        <div class=" shadow-md rounded-lg p-6 flex flex-col"style="background-color:rgb(229, 238, 255);">
+        <!--  -->
+        <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
             <canvas id="branchVSprofit"></canvas>
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
-                    <div class="font-bold" style="font-size: 14px; color: black;"  >Min</div>
+                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark"
+                    style="background-color: #F2DDD4;">
+                    <div class="font-bold" style="font-size: 13px; color: black;">Min</div>
                     <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                        <span id="minValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="minChange" class="text-sm text-end font-medium">
+                    <div id="minChange" class="text-sm text-end">
                         <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="minPercent">0</span>%
                     </div>
                 </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
-                    <div class="font-bold" style="font-size: 14px; color: black;">Max</div>
+                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success "
+                    style="background-color: #D6F2D4;">
+                    <div class="font-bold" style="font-size: 13px; color: black;">Max</div>
                     <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                        <span id="maxValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="maxChange" class="text-sm text-end text-bold">
+                    <div id="maxChange" class="text-sm text-end">
                         <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
                         <span id="maxPercent">0</span>%
                     </div>
                 </div>
             </div>
             <div class="flex flex-row gap-4">
-                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark " style="background-color: #FAEAFF;">
-                    <div class="font-bold" style="font-size: 14px; color:black;" >Standard Deviation</div>
-                    <div class="flex justify-center items-center text-bold gap-2" style ="color: #DA25BF;">
-                        <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark "
+                    style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 13px; color:black;">Standard Deviation</div>
+                    <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
+                        <span id="stdValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="stdChange" class="text-sm text-end text-bold "style ="color: #DA25BF;"> 
-                        <span id="stdArrow" class="icon-[line-md--arrow-down]" ></span>
+                    <div id="stdChange" class="text-sm text-end " style="color: #DA25BF;">
+                        <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="stdPercent">0</span>%
                     </div>
                 </div>
-                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
-                    <div class="font-bold" style="font-size: 14px; color: black;" >Average</div>
-                    <div class="flex justify-center items-center text-bold gap-2"style ="color: #DA25BF;">
-                        <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+                    style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 13px; color: black;">Average</div>
+                    <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
+                        <span id="avgValue" class="text-2xl font-bold" style="font-size: 18px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="avgChange" class="text-sm text-end text-bold" style ="color: #DA25BF;">
+                    <div id="avgChange" class="text-sm text-end" style="color: #DA25BF;">
                         <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="avgPercent">0</span>%
                     </div>
@@ -424,13 +430,11 @@
             }
         </script>
 
-        <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 " style="background-color: #B8E0F8">
-            <div class='col-span-1'>
-                <button id="regionTableBack" class="cursor-pointer px-4 py-2 bg-primary-dark text-white rounded"
-                    onclick="">ย้อนกลับ</button>
-            </div>
-            <div class="flex justify-center text-primary-dark text-3xl font-bold col-span-1 whitespace-nowrap">
-                 ภูมิภาค
+        <!-- กรอบหัวเรื่องภูมิภาค -->
+        <div class="w-full bg-lightblue shadow-md rounded-lg p-4 flex justify-center items-center"
+            style="background-color: #B8E0F8">
+            <div id="regionTitle" class="text-primary-dark font-bold text-4xl break-words whitespace-normal text-center">
+                ภูมิภาค
             </div>
         </div>
 
@@ -447,23 +451,40 @@
 
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <div style="resize: both; overflow: auto; max-width: 100%;">
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
-            <thead class="bg-lightblue" style="background-color: #B6D2FF">
-                <tr>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
-                    <th scope="col"
-                        class="px-6 py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
-                    <th scope="col"
-                        class="px-3 py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider hitespace-nowrap" style="color: black">จำนวนสาขา</th>
-                    <th scope="col" class="px-3 py-3" id="regionBranchCount"></th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
-            </tbody>
-        </table>
-</div>
+        <div class="overflow-x-auto w-full">
+            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden"
+                id="regionTable">
+                <thead class="bg-lightblue" style="background-color: #B6D2FF">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
+                            style="color: black;">#</th>
+                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                            style="color: black">จังหวัด</th>
+                        <th scope="col" class="py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider"
+                            style="color: black">จำนวนสาขา</th>
+                        <th scope="col" class="py-3" id="regionBranchCount"></th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
+                </tbody>
+            </table>
+        </div>
+<style>
+    th, td {
+        text-align: left; /* จัดข้อความให้อยู่ตรงกลาง */
+        padding: 0.75rem; /* เพิ่มระยะห่างในเซลล์ */
+        vertical-align: middle; /* จัดข้อความให้อยู่ตรงกลางแนวตั้ง */
+        white-space: nowrap; /* ป้องกันการตัดบรรทัด */
+        
+    }
+
+    th {
+        font-weight: bold; /* ทำให้หัวตารางตัวหนา */
+        background-color: #B6D2FF; /* สีพื้นหลังของหัวตาราง */
+        color: black; /* สีข้อความในหัวตาราง */
+    }
+</style>
 
 
         <script>
@@ -538,11 +559,11 @@
                             regionTableBody.innerHTML = ''; // Clear existing data
                             data.branch_count_by_region.forEach((region, index) => {
                                 let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
-                                                    <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
-                                                    <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
-                                                    <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
-                                                    <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
-                                                </tr>`;
+                                                        <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
+                                                    </tr>`;
                                 regionTableBody.innerHTML += row;
                             });
                             let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
@@ -589,7 +610,7 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
+                        {{ session()->get('user')->user_id }};
 
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
                     region,
@@ -607,14 +628,14 @@
 
                         data.branch_count_by_province.forEach((province, index) => {
                             let row = `
-                                <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                                    <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
-                                    <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                    <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
-                                    <td class="px-3 py-2 text-center whitespace-nowrap">
-                                        <span class="icon-[material-symbols--chevron-right-rounded]"></span>
-                                    </td>
-                                </tr>`;
+                                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                                        </td>
+                                    </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
 
@@ -641,13 +662,6 @@
                 const regionTitle = document.getElementById('regionTitle');
                 regionTitle.textContent = regions[region] || regions['DEFAULT'];
 
-                if (region === 'NORTHEAST') {
-                    regionTitle.classList.add('text-2xl');     // ลดขนาดฟอนต์
-                    regionTitle.classList.remove('text-4xl');  // เอาฟอนต์ใหญ่เดิมออก
-                } else {
-                    regionTitle.classList.add('text-4xl');     // คืนฟอนต์ใหญ่
-                    regionTitle.classList.remove('text-2xl');  // ลบฟอนต์เล็ก
-                }
             }
 
 
@@ -686,7 +700,7 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
+                        {{ session()->get('user')->user_id }};
 
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
                     region,
@@ -705,15 +719,15 @@
 
                         data.branches.forEach((branch, index) => {
                             let row = `<tr class="hover:bg-gray-100">
-                                <td class="py-6 px-4 whitespace-nowrap">${branch.branchId}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">
-                                    <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                        ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                    </span>
-                                </td>
-                            </tr>`;
+                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                            </span>
+                                        </td>
+                                    </tr>`;
                             tableBody.innerHTML += row;
                         });
 
@@ -779,39 +793,48 @@
             });
         </script>
 
-        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable" >
-            <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
-                <tr>
-                    <th class="py-3 px-4 text-left" style="color: black">ID</th>
-                    <th class="py-3 px-4 text-left" style="color: black">ชื่อสาขา</th>
-                    
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')" style="color: black">
-                        ยอดขาย ⬍
-                    </th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')" style="color: black">
-                        เพิ่มยอด ⬍
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">1</td>
-                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">สาขา A</td>
-                    
-                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">100,000 บาท</td>
-                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">เพิ่มแล้ว</td>
-                </tr>
-            </tbody>
-        </table>
+                <div class="overflow-x-auto w-full">
+            <table class="table-auto w-full border-collapse rounded-lg text-sm" id="branchTable" style="table-layout: fixed;">
+                <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
+                    <tr>
+                        <th class="px-2 py-2 text-center text-xs" style="min-width: 40px; width: 10%;">ID</th>
+                        <th class="px-2 py-2 text-left text-xs" style="min-width: 150px; width: 40%;">ชื่อสาขา</th>
+                        <th class="px-2 py-2 text-right text-xs" style="min-width: 80px; width: 25%;">ยอดขาย</th>
+                        <th class="px-2 py-2 text-center text-xs" style="min-width: 100px; width: 25%;">เพิ่มยอด</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">1</td>
+                        <td class="py-2 px-2 text-xs whitespace-nowrap truncate-cell" title="Prof. Sabryna Tromp Sr.">
+                            Prof. Sabryna Tromp Sr.
+                        </td>
+                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">-39.06</td>
+                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                            <span class="bg-green-500 text-white px-4 py-1 rounded-full">เพิ่มแล้ว</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 
     </div>
-    
+        <style>
+        #regionTitle {
+            max-width: 100%; /* กำหนดให้ข้อความไม่เกินขอบ */
+            word-wrap: break-word; /* ตัดคำเมื่อข้อความยาวเกิน */
+            overflow-wrap: break-word; /* รองรับการตัดคำ */
+            text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+            font-size: 2rem; /* กำหนดขนาดฟอนต์ให้เท่ากัน */
+            line-height: 1.2; /* เพิ่มระยะห่างระหว่างบรรทัด */
+        }
+    </style>
 @endsection
 
 @section('script')
-<script></script>
+    <script></script>
 @endsection
