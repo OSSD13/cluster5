@@ -3,7 +3,7 @@
 @section('screen')
     <div class="min-h-screen h-full w-full flex flex-col">
         <!-- Top Navbar -->
-        <nav class="sticky top-0 w-[100%] h-19.5 bg-white flex items-center p-2 px-6 rounded-b-lg z-10">
+        <nav class="sticky top-0 w-[100%] h-19.5 bg-white flex items-center p-1 px-4 rounded-b-lg z-10">
             <!-- Logo Section -->
             <div class="flex items-center flex-grow">
                 <img src="/assets/img/logo_myLocation.png" alt="Logo" class="h-16 border-r-1 border-gray-800 pr-4">
@@ -20,7 +20,7 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 px-7">
+        <main class="flex-1 p-4 px-4">
             @yield('content')
         </main>
 
