@@ -12,31 +12,6 @@ class PointOfInterestTypeController extends Controller
         return view('poi.type.index');
     }
 
-
-    public function insert(Request $request)
-{
-    // Validate form input
-    $request->validate([
-        'poiType' => 'required|string|max:255',
-        'poiName' => 'required|string|max:255',
-        'icon' => 'required|string|max:10',
-        'color' => 'required|string|max:7', // ค่าสี hex เช่น #ffffff
-        'poiDetails' => 'nullable|string|max:1000',
-    ]);
-
-    // Save data to database
-    $poiType = new PointOfInterestType();
-    $poiType->poit_type = $request->poiType;
-    $poiType->poit_name = $request->poiName;
-    $poiType->poit_icon = $request->icon;
-    $poiType->poit_color = $request->color;
-    $poiType->poit_description = $request->poiDetails;
-    $poiType->save();
-
-    // Redirect back with success message
-    return redirect()->back()->with('success', 'เพิ่มข้อมูลสำเร็จ');
-}
-
     
     public function queryPoit(Request $request)
     {
