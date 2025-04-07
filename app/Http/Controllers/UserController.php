@@ -31,7 +31,7 @@ class UserController extends Controller
 
         $role = $request->input('role', '');
         if ($role) {
-            $query->where('role_name', '=',$role);
+            $query->where('role_name', '=', $role);
         }
 
 
@@ -83,16 +83,16 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
-public function queryAllUser(Request $request)
-{
-    // ดึงข้อมูลทั้งหมด โดยไม่ต้องกรองบทบาท
-    $users = User::all();
-    return response()->json([
-        'data' => $users
-    ]);
-}
+    public function queryAllUser(Request $request)
+    {
+        $role = $request->input('role', '');
+        $users = $role ? User::where('role_name', '=', $role)->get() : User::all();
+        return response()->json([
+            'data' => $users
+        ]);
+    }
 
-    
+
 
     public function createUser(Request $request)
     {
@@ -179,7 +179,7 @@ public function queryAllUser(Request $request)
         if ($request->input('manager')) {
             $user->manager = $request->input('manager');
         }
-        
+
         // save user
         $user->save();
 
