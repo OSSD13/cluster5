@@ -3,6 +3,9 @@
 @section('title', 'Point of Interest')
 
 @section('content')
+
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
     <!-- <form method="POST" action="{{ route('logout') }}">
             @csrf -->
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
@@ -51,12 +54,13 @@
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('type')">อีเมล</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap cursor-pointer" onclick="sortTable('province')">บทบาท</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
+                <th class="py-3 px-4 text-left whitespace-nowrap">บทบาท</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-            </tr>
+             </tr>
         </thead>
+
+
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
     </table>
 </div>
@@ -85,7 +89,7 @@
 
 
     let currentPage = 1;
-    const rowsPerPage = 5;
+    const rowsPerPage = 10;
     let currentSort = { column: null, ascending: true };
 
     
@@ -180,6 +184,18 @@
     // ฟังก์ชันสำหรับเปลี่ยนหน้า
     function goToPage(pageNumber) {
         currentPage = pageNumber;
+        renderTable();
+    }
+    
+    // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
+    function sortTable(column) {
+        if (currentSort.column === column) {
+            currentSort.ascending = !currentSort.ascending;
+        } else {
+            currentSort.column = column;
+            currentSort.ascending = true;
+        }
+        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
         renderTable();
     }
 
@@ -299,7 +315,7 @@
 
     // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
     function viewDetail(id) {
-    const branch = branches.find(item => item.id === id);
+        const member = members.find(item => item.id === id);
 
         // เช็คถ้าสมาชิกเป็น "Sale" และมี Sales Supervisor
         let supervisorInfo = "";
@@ -656,7 +672,7 @@
     }
 
     renderTable();
-    
+   
 </script>
 
 
