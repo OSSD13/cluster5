@@ -321,20 +321,16 @@
             const supervisor = members.find(item => item.id === member.supervisorId);
             if (supervisor) {
                 supervisorInfo = `
-                <div class="flex flex-col space-y-2 text-left">
                 <div class="w-full">
-                    <label class="font-md text-gray-800 text-sm">Sales Supervisor</label>
+                    <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
                     <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"" value="${supervisor.name} - ${supervisor.email}" readonly>
-                </div>
                 </div>
                 `;
             } else {
                 supervisorInfo = `
-                <div class="flex flex-col space-y-2 text-left">
                 <div class="w-full">
-                    <label class="text-gray-800 text-sm">Sales Supervisor</label>
+                    <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
                     <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"" value="ไม่พบ Supervisor" readonly>
-                </div>
                 </div>
                 `;
             }
@@ -391,13 +387,16 @@
     // ฟังก์ชันสำหรับเพิ่มสมาชิกใหม่
     function addMember() {
         Swal.fire({
-            title: 
-                `<div class="flex flex-col items-center mb-1">
-                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
-                </div>
-                <b class=text-gray-800>สร้างสมาชิก </b>`,
+
             html: 
-                `<div class="flex flex-col space-y-1 text-left">
+                `
+                <div class="flex flex-col items-center mb-1">
+                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+                </div>
+                <div class="flex flex-col text-3xl mb-6 mt-4">
+                     <b class=text-gray-800 >สร้างสมาชิก</b>
+                 </div>
+                <div class="flex flex-col space-y-1 text-left">
                     <label class="font-semibold text-gray-800">Email</label>
                     <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" >
 
