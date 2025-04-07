@@ -12,14 +12,14 @@
             display: inline;
         }
     </style>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 h-full">
         {{-- report card --}}
         <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
             <h3>test google map</h3>
             <p>my location: <span id="latlng"> </span></p>
             <p>distance from marker: <span id="distanceFromMarker"> </span></p>
-            <button id="addMarker" onclick="window.functions.addMarker()">Add Markers</button>
-            <button id="randomMarker" onclick="window.functions.panToRandomMarker()">panToRandomMarker</button>
+
+            <button onclick="window.functions.analyze()" class="bg-blue-500 text-white px-4 py-2 rounded">Analyze</button>
             <input id="keyword" type="text" placeholder="Enter a keyword" value="ส่งของ" />
             <input id="distance" type="number" placeholder="Enter a search distance" value="500" />
             <p>Marker Locations: <span id="poslist"></span></p>
@@ -32,6 +32,17 @@
                 <span id="place-name" class="title"></span><br />
                 <strong>Place ID:</strong> <span id="place-id"></span><br />
                 <span id="place-address"></span>
+            </div>
+        </div>
+        <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3">
+            <h3>Nearby Places</h3>
+            <div id="resultAmount"></div>
+            <div id="loading" class="hidden justify-center items-center w-full">
+                <span class="icon-[mdi--loading] text-4xl animate-spin"></span>
+            </div>
+
+            <div id="results" class="flex flex-col gap-2">
+
             </div>
         </div>
     </div>
@@ -343,6 +354,101 @@
         functions.panToRandomMarker = function() {
             let pos = Markers[Math.floor(Math.random() * Markers.length)].position;
             map.panTo(pos);
+        }
+
+        functions.analyze = async function() {
+            let Places = [];
+            let pos = MapMarker.position;
+
+            // clear previous results
+            document.getElementById("resultAmount").innerText = "";
+            document.getElementById("results").innerHTML = "";
+            removeAllMarkers();
+
+            // Show loading spinner
+            document.getElementById("loading").classList.remove("hidden");
+            document.getElementById("loading").classList.add("flex");
+
+
+            try {
+                let nearbyPlaces = await functions.getNearbyPlaces(
+                    pos,
+                    document.getElementById("keyword").value,
+                    document.getElementById("distance").value
+                );
+                removeAllMarkers();
+                nearbyPlaces.forEach(async (place, index) => {
+                    log("nearbyPlaces", place);
+                    let gMapEmoji = '🗺️';
+                    let formatted = {
+                        "poi_name": place.name,
+                        "poi_gps_lat": place.geometry.location.lat(),
+                        "poi_gps_lng": place.geometry.location.lng(),
+                        "poi_type": 'Google Map: ' + place.types.join(", "),
+                        "poi_distance": spherical.computeDistanceBetween(pos, place.geometry.location),
+                        "poit_icon": gMapEmoji,
+                    }
+                    Places.push(formatted);
+                });
+
+                // Fetch additional data and update the UI
+                let response = await fetch('{{ route('api.map.get') }}?' + new URLSearchParams({
+                    lat: pos.lat,
+                    lng: pos.lng,
+                    radius: document.getElementById("distance").value,
+                    limit: 5
+                }).toString());
+                let data = await response.json();
+
+                Places = [...Places, ...data.data];
+                // sort by distance
+                Places.sort((a, b) => {
+                    return a.poi_distance - b.poi_distance;
+                });
+                document.getElementById("resultAmount").innerText = `Found ${Places.length} results`;
+                document.getElementById("results").innerHTML = "";
+                Places.forEach((place, index) => {
+                    let div = document.createElement("div");
+                    div.className = "flex flex-row gap-2";
+                    div.innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center">
+                            <div class="text-6xl">
+                                ${place.poit_icon}
+                            </div>
+                            <div>${index + 1}.</div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div id="place-name" class="text-primary-light font-bold">${place.poi_name}</div>
+                            <div class="">${place.poi_type}</div>
+                            <div class="">${place.poi_distance.toFixed(2)} M</div>
+                            <div class="">${place.poi_gps_lat}, ${place.poi_gps_lng}</div>
+                        </div>
+                    `;
+                    document.getElementById("results").appendChild(div);
+                });
+                document.getElementById("poslist").innerText = Places.map(p =>
+                    `${p.poi_name} (${p.poi_gps_lat}, ${p.poi_gps_lng})`).join(", ");
+                log("Places", Places);
+                Places.forEach((place, index) => {
+                    functions.placeMarker({
+                        position: {
+                            lat: place.poi_gps_lat,
+                            lng: place.poi_gps_lng
+                        },
+                        map: map,
+                        title: `${index + 1}`,
+                        scale: 1,
+                        color: place.poit_color ? place.poit_color : "red",
+                        draggable: false
+                    });
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                // Hide loading spinner once data is loaded
+                document.getElementById("loading").classList.remove("flex");
+                document.getElementById("loading").classList.add("hidden");
+            }
         }
 
 
