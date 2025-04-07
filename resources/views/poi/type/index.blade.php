@@ -42,42 +42,17 @@
 
 @section('script')
     <script>
-        let poits = [
-            { name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี", description: "ร้านอาหารริมทะเลที่มีอาหารทะเลสดใหม่และบรรยากาศดี", id: 1 },
-            { name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี", description: "ร้านกาแฟบรรยากาศสบาย ๆ พร้อมกาแฟคุณภาพดี", id: 2  },
-            { name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี", description: "ร้านขนมหวานที่มีเมนูหลากหลายและรสชาติอร่อย", id: 3 },
-            { name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี", description: "ผับบาร์ที่มีดนตรีสดและเครื่องดื่มหลากหลาย", id: 4 },
-            { name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหลากหลายและสิ่งอำนวยความสะดวกครบครัน", id: 5 },
-            { name: "เชียงใหม่", type: "ร้านอาหาร", province: "เชียงใหม่", description: "ร้านอาหารที่มีวิวภูเขาและอาหารพื้นเมือง", id: 6 },
-            { name: "ขอนแก่น", type: "ร้านกาแฟ", province: "ขอนแก่น", description: "ร้านกาแฟที่มีเมล็ดกาแฟคุณภาพจากทั่วโลก", id: 7 },
-            { name: "หาดใหญ่", type: "ร้านขนม", province: "สงขลา", description: "ร้านขนมที่มีเมนูขนมไทยและขนมสากล", id: 8 },
-            { name: "ภูเก็ต", type: "ผับบาร์", province: "ภูเก็ต", description: "ผับบาร์ที่มีวิวทะเลและดนตรีสด", id: 9 },
-            { name: "กรุงเทพ", type: "ศูนย์การค้า", province: "กรุงเทพ", description: "ศูนย์การค้าขนาดใหญ่ที่มีร้านค้าหรูหราและร้านอาหารหลากหลาย" , id: 10},
-        ]
-
-        for (let i = 12; i <= 50; i++) {
-            poits.push({
-                id: i,
-                name: `สถานที่ ${i}`,
-                type: ['ร้านกาแฟ', 'ร้านอาหาร', 'ร้านขนม', 'ผับบาร์', 'ศูนย์การค้า'][i % 5],
-                province: ['อุดรธานี', 'ชลบุรี', 'กรุงเทพฯ', 'ขอนแก่น', 'เชียงใหม่'][i % 5],
-            });
-        }
-
+        let poits = [];
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        function getIconByType(type) {
-            switch (type) {
-                case "ร้านอาหาร": return "🍴";
-                case "ร้านกาแฟ": return "☕";
-                case "ร้านขนม": return "🍰";
-                case "ผับบาร์": return "🍺";
-                case "ศูนย์การค้า": return "🏬";
-                case "ตลาด": return "🛒";
-                case "ที่เที่ยว": return "🏖️";
-                default: return "🏢";
-            }
+        async function fetchPois(search = '') {
+            const res = await fetch("{{ route('api.poit.query') }}" + `?limit=${rowsPerPage}}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+            const result = await res.json();
+            pois = result.data;
+            document.getElementById("resultCount").innerText = result.total;
+            renderTable();
+            renderPagination(result.total);
         }
 
         function renderTable(data = poits) {
@@ -207,189 +182,190 @@
             });
         }
 
-function editPoit(id) {
-    const poit = poits.find(p => p.id === id);
-
-    Swal.fire({
-        title: `<b class="text-gray-800">แก้ไขข้อมูล POI</b>`,
-        html: `
-            <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
-                <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">ชื่อสถานที่</label>
-                    <input type="text" id="poiName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.name}">
-                </div>
-                <div class="w-full">
-                <label class="block text-gray-800 text-sm mb-1">ประเภท</label>
-                <select id="poiType" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="updateIconPreview()">
-                    <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}> ร้านอาหาร</option>
-                        <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}> ร้านกาแฟ</option>
-                        <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}> ร้านขนม</option>
-                        <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}> ผับบาร์</option>
-                        <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}> ศูนย์การค้า</option>
-                </select>
-                
-            </div>
-             <!-- Icon -->
-             <div class="w-full">
-            <label class="block text-gray-800 text-sm mb-1">Icon</label>
-            <div class="relative mb-3">
-                <input type="text" readonly id="iconInput" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('icon') error-input-style
-                @enderror" placeholder="เลือกอีโมจิ" name="icon" value="{{ old('icon') }}">
-                <button type="button" id="emojiButton"
-                    class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer bg-primary-dark hover:bg-primary-light text-white rounded-r-lg">😀</button>
-            </div>
-            </div>
-            @error('icon')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
-            <div id="emojiPickerContainer" class="hidden">
-                <emoji-picker class="w-full light"></emoji-picker>
-            </div>
-
-            <!-- สี -->
-            <div class="w-full">
-            <label class="block text-gray-800 text-sm mb-1">สี</label>
-            <div class="relative mb-3 flex items-center">
-                <!-- input สี (hex) -->
-                <input type="text" id="colorInput"
-                    class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('color') error-input-style @enderror"
-                    placeholder="สี" name="color" value="{{ old('color') }}">
-
-                <!-- ปุ่ม color picker -->
-                <button type="button" id="colorButton" class="h-full px-4 py-2 cursor-pointer text-white rounded-r-lg"
-                    style="background-color: {{ old('color', '#888') }};">🎨</button>
-            </div>
-            </div>
-
-            <!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
-            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
-
-            @error('color')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
-                <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">คำอธิบาย</label>
-                    <textarea id="poiDescription" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">${poit.description}</textarea>
-                </div>
-                    `,
-        showCancelButton: true,
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก",
-        confirmButtonColor: "#2D8C42",
-        focusCancel: true,
-        preConfirm: () => {
-            const name = document.getElementById("poiName").value;
-            const type = document.getElementById("poiType").value;
-            const description = document.getElementById("poiDescription").value;
-
-            if (!name || !type || !description) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
-
-            // อัปเดตข้อมูล POI
-            poit.name = name;
-            poit.type = type;
-            poit.description = description;
-
-            renderTable();
+        function editPoit(id) {
+            const poit = poits.find(p => p.id === id);
 
             Swal.fire({
-                title: "สำเร็จ!",
-                text: "แก้ไขข้อมูล POI เรียบร้อยแล้ว",
-                icon: "success",
-                confirmButtonColor: "#2D8C42",
-                confirmButtonText: "ตกลง"
-            });
-        }
-    });
-}
+                title: `<b class="text-gray-800">แก้ไขข้อมูล POI</b>`,
+                html: `
+                    <div class="flex flex-col items-center space-y-4 text-left w-full max-w-md mx-auto">
+                        <div class="w-full">
+                            <label class="block text-gray-800 text-sm mb-1">ชื่อสถานที่</label>
+                            <input type="text" id="poiName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.name}">
+                        </div>
+                        <div class="w-full">
+                        <label class="block text-gray-800 text-sm mb-1">ประเภท</label>
+                        <select id="poiType" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="updateIconPreview()">
+                            <option value="ร้านอาหาร" ${poit.type === "ร้านอาหาร" ? "selected" : ""}> ร้านอาหาร</option>
+                                <option value="ร้านกาแฟ" ${poit.type === "ร้านกาแฟ" ? "selected" : ""}> ร้านกาแฟ</option>
+                                <option value="ร้านขนม" ${poit.type === "ร้านขนม" ? "selected" : ""}> ร้านขนม</option>
+                                <option value="ผับบาร์" ${poit.type === "ผับบาร์" ? "selected" : ""}> ผับบาร์</option>
+                                <option value="ศูนย์การค้า" ${poit.type === "ศูนย์การค้า" ? "selected" : ""}> ศูนย์การค้า</option>
+                        </select>
+                        
+                    </div>
+                    <!-- Icon -->
+                    <div class="w-full">
+                    <label class="block text-gray-800 text-sm mb-1">Icon</label>
+                    <div class="relative mb-3">
+                        <input type="text" readonly id="iconInput" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('icon') error-input-style
+                        @enderror" placeholder="เลือกอีโมจิ" name="icon" value="{{ old('icon') }}">
+                        <button type="button" id="emojiButton"
+                            class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer bg-primary-dark hover:bg-primary-light text-white rounded-r-lg">😀</button>
+                    </div>
+                    </div>
+                    @error('icon')
+                        <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+                    @enderror
+                    <div id="emojiPickerContainer" class="hidden">
+                        <emoji-picker class="w-full light"></emoji-picker>
+                    </div>
 
-// ฟังก์ชันสำหรับอัปเดต Icon ตามประเภทที่เลือก
-function updateIconPreview() {
-    const type = document.getElementById("poiType").value;
-    const iconPreview = document.getElementById("iconPreview");
-    iconPreview.innerHTML = getIconByType(type);
-}
-        document.addEventListener("DOMContentLoaded", () => {
-            renderTable();
+                    <!-- สี -->
+                    <div class="w-full">
+                    <label class="block text-gray-800 text-sm mb-1">สี</label>
+                    <div class="relative mb-3 flex items-center">
+                        <!-- input สี (hex) -->
+                        <input type="text" id="colorInput"
+                            class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm @error('color') error-input-style @enderror"
+                            placeholder="สี" name="color" value="{{ old('color') }}">
 
-            const filterAll = () => {
-                const searchVal = document.getElementById("searchInput").value.toLowerCase();
-                const typeVal = document.getElementById("typeSelect").value;
-                const provVal = document.getElementById("provinceSelect").value;
+                        <!-- ปุ่ม color picker -->
+                        <button type="button" id="colorButton" class="h-full px-4 py-2 cursor-pointer text-white rounded-r-lg"
+                            style="background-color: {{ old('color', '#888') }};">🎨</button>
+                    </div>
+                    </div>
 
-                const filtered = poits.filter(p =>
-                    (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
-                    (!typeVal || p.type === typeVal) &&
-                    (!provVal || p.province === provVal)
-                );
+                    <!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
+                    <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
 
-                currentPage = 1;
-                renderTable(filtered);
-            };
-
-            document.getElementById("searchInput").addEventListener("input", filterAll);
-            document.getElementById("typeSelect").addEventListener("change", filterAll);
-            document.getElementById("provinceSelect").addEventListener("change", filterAll);
-        });
-
-        document.addEventListener("click", () => {
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-        });
-        function deletePoit(id) {
-            Swal.fire({
-                title: "ลบสถานที่ที่สนใจ",
-                text: "คุณต้องการลบสถานที่ที่สนใจ ใช่หรือไม่",
-                icon: "warning",
-                iconColor: "#d33",
+                    @error('color')
+                        <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+                    @enderror
+                        <div class="w-full">
+                            <label class="block text-gray-800 text-sm mb-1">คำอธิบาย</label>
+                            <textarea id="poiDescription" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">${poit.description}</textarea>
+                        </div>
+                            `,
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d",
                 confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // ลบรายการออกจากอาร์เรย์
-                    poits = poits.filter(poits => poits.id !== id);
+                cancelButtonText: "ยกเลิก",
+                confirmButtonColor: "#2D8C42",
+                focusCancel: true,
+                preConfirm: () => {
+                    const name = document.getElementById("poiName").value;
+                    const type = document.getElementById("poiType").value;
+                    const description = document.getElementById("poiDescription").value;
 
-                    // อัปเดตตาราง
+                    if (!name || !type || !description) {
+                        Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                        return false;
+                    }
+
+                    // อัปเดตข้อมูล POI
+                    poit.name = name;
+                    poit.type = type;
+                    poit.description = description;
+
                     renderTable();
 
-                    // แจ้งเตือนว่าลบสำเร็จ
                     Swal.fire({
-                        title: "ลบแล้ว!",
-                        text: "สถานที่ที่สนใจถูกลบเรียบร้อย",
-                        icon: "success"
+                        title: "สำเร็จ!",
+                        text: "แก้ไขข้อมูล POI เรียบร้อยแล้ว",
+                        icon: "success",
+                        confirmButtonColor: "#2D8C42",
+                        confirmButtonText: "ตกลง"
                     });
                 }
             });
         }
-    </script>
 
-     <!-- Color picker -->
-     <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const colorInput = document.getElementById("colorInput");
-                const colorButton = document.getElementById("colorButton");
-                const colorPicker = document.getElementById("colorPicker");
+        // ฟังก์ชันสำหรับอัปเดต Icon ตามประเภทที่เลือก
+        function updateIconPreview() {
+            const type = document.getElementById("poiType").value;
+            const iconPreview = document.getElementById("iconPreview");
+            iconPreview.innerHTML = getIconByType(type);
+        }
+                document.addEventListener("DOMContentLoaded", () => {
+                    // renderTable();
+                    fetchPois();
 
-                // เมื่อเลือกสีจาก Color Picker
-                colorPicker.addEventListener("input", function () {
-                    colorInput.value = colorPicker.value;
-                    colorButton.style.backgroundColor = colorPicker.value;
+                    const filterAll = () => {
+                        const searchVal = document.getElementById("searchInput").value.toLowerCase();
+                        // const typeVal = document.getElementById("typeSelect").value;
+                        // const provVal = document.getElementById("provinceSelect").value;
+
+                        const filtered = poits.filter(p =>
+                            (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
+                            (!typeVal || p.type === typeVal) &&
+                            (!provVal || p.province === provVal)
+                        );
+
+                        currentPage = 1;
+                        renderTable(filtered);
+                    };
+
+                    document.getElementById("searchInput").addEventListener("input", filterAll);
+                    // document.getElementById("typeSelect").addEventListener("change", filterAll);
+                    // document.getElementById("provinceSelect").addEventListener("change", filterAll);
                 });
 
-                // เมื่อพิมพ์รหัสสี
-                colorInput.addEventListener("input", function () {
-                    colorButton.style.backgroundColor = colorInput.value;
+                document.addEventListener("click", () => {
+                    document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
                 });
+                function deletePoit(id) {
+                    Swal.fire({
+                        title: "ลบสถานที่ที่สนใจ",
+                        text: "คุณต้องการลบสถานที่ที่สนใจ ใช่หรือไม่",
+                        icon: "warning",
+                        iconColor: "#d33",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#6c757d",
+                        confirmButtonText: "ยืนยัน",
+                        cancelButtonText: "ยกเลิก"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // ลบรายการออกจากอาร์เรย์
+                            poits = poits.filter(poits => poits.id !== id);
 
-                // คลิกปุ่มเพื่อเปิด Color Picker
-                colorButton.addEventListener("click", function () {
-                    colorPicker.click();
-                });
-            });
-        </script>
+                            // อัปเดตตาราง
+                            renderTable();
+
+                            // แจ้งเตือนว่าลบสำเร็จ
+                            Swal.fire({
+                                title: "ลบแล้ว!",
+                                text: "สถานที่ที่สนใจถูกลบเรียบร้อย",
+                                icon: "success"
+                            });
+                        }
+                    });
+                }
+            </script>
+
+            <!-- Color picker
+            <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const colorInput = document.getElementById("colorInput");
+                        const colorButton = document.getElementById("colorButton");
+                        const colorPicker = document.getElementById("colorPicker");
+
+                        // เมื่อเลือกสีจาก Color Picker
+                        colorPicker.addEventListener("input", function () {
+                            colorInput.value = colorPicker.value;
+                            colorButton.style.backgroundColor = colorPicker.value;
+                        });
+
+                        // เมื่อพิมพ์รหัสสี
+                        colorInput.addEventListener("input", function () {
+                            colorButton.style.backgroundColor = colorInput.value;
+                        });
+
+                        // คลิกปุ่มเพื่อเปิด Color Picker
+                        colorButton.addEventListener("click", function () {
+                            colorPicker.click();
+                        });
+                    });
+                </script> -->
 
 @endsection
