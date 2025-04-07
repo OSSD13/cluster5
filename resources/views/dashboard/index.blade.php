@@ -290,7 +290,7 @@
                 <div class="font-bold">ยอดพัสดุทั้งหมด (ชิ้น)</div>
                 <div class="flex justify-around items-center">
                     <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow: 3 font-medium" style="font-size: 55px; flex-grow :1" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-bold text-trinary flex-grow " style="font-size: 32px; margin-left: 40px; " id="thisMonthTotalPackageNumber"></span>
+                    <span class="font-bold text-trinary flex-grow " style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
                 </div>
                 <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
@@ -303,8 +303,8 @@
             <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="font-bold">ยอดรายได้ทั้งหมด (บาท) </div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] flex-grow font-medium" style="font-size: 75px; flex-grow :1.5" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="font-bold text-green-600 flex-grow " style="font-size: 32px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow font-medium" style="font-size: 75px; flex-grow :1.5" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-bold text-green-600 flex-grow " style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
                 </div>
                 <div class="text-success text-base font-medium text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
@@ -355,7 +355,7 @@
                 </div>
                 <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
                     <div class="font-bold" style="font-size: 14px; color: black;" >Average (บาท)</div>
-                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-4"style ="color: #DA25BF;">
+                    <div class="flex justify-center items-center text-bold  text-base gap-2"style ="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
