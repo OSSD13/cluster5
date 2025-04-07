@@ -298,7 +298,6 @@
                     <span class="text-2xl font-bold text-black">ชิ้น</span>
                 </div>
                 <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
-                <div class="text-success text-sm flex items-center gap-1" id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
                     <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
