@@ -70,7 +70,7 @@
                 function getBranchReport() {
                     const userId = document.getElementById('subordinateSelect') ?
                         document.getElementById('subordinateSelect').value :
-                                            {{ session()->get('user')->user_id }};
+                                                {{ session()->get('user')->user_id }};
                     const date = document.getElementById('timePeriod') ?
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -451,15 +451,16 @@
 
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
-        <div style="resize: both; overflow: auto; max-width: 100%;">
-            <table class="table-auto divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+        <div class="overflow-x-auto w-full">
+            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden"
+                id="regionTable">
                 <thead class="bg-lightblue" style="background-color: #B6D2FF">
                     <tr>
                         <th scope="col"
                             class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
                             style="color: black;">#</th>
                         <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
-                            style="color: black">ภูมิภาค</th>
+                            style="color: black">จังหวัด</th>
                         <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black">จำนวนสาขา</th>
                         <th scope="col" class="py-3" id="regionBranchCount"></th>
@@ -469,6 +470,7 @@
                 </tbody>
             </table>
         </div>
+
 
 
         <script>
@@ -543,11 +545,11 @@
                             regionTableBody.innerHTML = ''; // Clear existing data
                             data.branch_count_by_region.forEach((region, index) => {
                                 let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
-                                                    <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
-                                                    <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
-                                                    <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
-                                                    <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
-                                                </tr>`;
+                                                        <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
+                                                    </tr>`;
                                 regionTableBody.innerHTML += row;
                             });
                             let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
@@ -594,7 +596,7 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
+                        {{ session()->get('user')->user_id }};
 
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
                     region,
@@ -612,14 +614,14 @@
 
                         data.branch_count_by_province.forEach((province, index) => {
                             let row = `
-                                <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                                    <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
-                                    <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                    <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
-                                    <td class="px-3 py-2 text-center whitespace-nowrap">
-                                        <span class="icon-[material-symbols--chevron-right-rounded]"></span>
-                                    </td>
-                                </tr>`;
+                                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                                        </td>
+                                    </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
 
@@ -691,7 +693,7 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
+                        {{ session()->get('user')->user_id }};
 
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
                     region,
@@ -710,15 +712,15 @@
 
                         data.branches.forEach((branch, index) => {
                             let row = `<tr class="hover:bg-gray-100">
-                                    <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
-                                    <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
-                                    <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
-                                    <td class="py-3 px-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                            ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                        </span>
-                                    </td>
-                                </tr>`;
+                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
+                                        <td class="py-3 px-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                            </span>
+                                        </td>
+                                    </tr>`;
                             tableBody.innerHTML += row;
                         });
 
@@ -784,47 +786,46 @@
             });
         </script>
 
-        <div class="overflow-x-auto w-full">
-            <table class="table-auto min-w-full border-collapse rounded-lg text-sm" id="branchTable">
+                <div class="overflow-x-auto w-full">
+            <table class="table-auto w-full border-collapse rounded-lg text-sm" id="branchTable" style="table-layout: fixed;">
                 <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                     <tr>
-                        <th class="px-2 py-2 text-center text-xs" style="min-width: 40px;">ID</th>
-                        <th class="px-2 py-2 text-left text-xs" style="min-width: 120px;">ชื่อสาขา</th>
-                        <th class="px-2 py-2 text-right text-xs cursor-pointer" onclick="sortTable('sales')"
-                            style="min-width: 90px;">
-                            ยอดขาย ⬍
-                        </th>
-                        <th class="px-2 py-2 text-center text-xs cursor-pointer" onclick="sortTable('status')"
-                            style="min-width: 100px;">
-                            เพิ่มยอด ⬍
-                        </th>
+                        <th class="px-2 py-2 text-center text-xs" style="min-width: 40px; width: 10%;">ID</th>
+                        <th class="px-2 py-2 text-left text-xs" style="min-width: 150px; width: 40%;">ชื่อสาขา</th>
+                        <th class="px-2 py-2 text-right text-xs" style="min-width: 80px; width: 25%;">ยอดขาย</th>
+                        <th class="px-2 py-2 text-center text-xs" style="min-width: 100px; width: 25%;">เพิ่มยอด</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
                     <tr>
                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">1</td>
-                        <td class="py-2 px-2 text-xs whitespace-nowrap overflow-hidden truncate max-w-[140px]"
-                            title="สาขา A ยาวมากจนเกินพอดี">
-                            สาขา A ยาวมากจนเกินพอดี
+                        <td class="py-2 px-2 text-xs whitespace-nowrap truncate-cell" title="Prof. Sabryna Tromp Sr.">
+                            Prof. Sabryna Tromp Sr.
                         </td>
-                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">100,000 บาท</td>
+                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">-39.06</td>
                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                            <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs">เพิ่มแล้ว</span>
+                            <span class="bg-green-500 text-white px-4 py-1 rounded-full">เพิ่มแล้ว</span>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-
-
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 
     </div>
+    <style>
+    .truncate-cell {
+        max-width: 150px; /* กำหนดความกว้างสูงสุดของเซลล์ */
+        overflow: hidden; /* ซ่อนข้อความที่เกิน */
+        text-overflow: ellipsis; /* เพิ่ม ... เมื่อข้อความยาวเกิน */
+        white-space: nowrap; /* ป้องกันการตัดบรรทัด */
+    }
+</style>
 @endsection
 
 @section('script')
-<script></script>
+    <script></script>
 @endsection
