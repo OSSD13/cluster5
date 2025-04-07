@@ -14,27 +14,31 @@
     </style>
     <div class="flex flex-col gap-4 h-full">
         {{-- report card --}}
-        <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
-            <h3>test google map</h3>
-            <p>my location: <span id="latlng"> </span></p>
-            <p>distance from marker: <span id="distanceFromMarker"> </span></p>
-
-            <button onclick="window.functions.analyze()"
-                class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">Analyze</button>
-            <input id="keyword" type="text" placeholder="Enter a keyword" value="ส่งของ" />
-            <input id="distance" type="number" placeholder="Enter a search distance" value="500" />
-            <p>Marker Locations: <span id="poslist"></span></p>
-
-            <!--The div element for the map -->
-            <input id="pac-input" class="bg-white border-2 shadow w-full focus:border-amber-500" type="text"
-                placeholder="Enter a location" />
-            <div id="map" class="w-full h-96 rounded-xl"></div>
-            <div id="infowindow-content">
-                <span id="place-name" class="title"></span><br />
-                <strong>Place ID:</strong> <span id="place-id"></span><br />
-                <span id="place-address"></span>
-            </div>
+        {{-- <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 "> --}}
+        <!--The div element for the map -->
+        <div class="flex flex-row gap-4 justify-center items-center bg-gray-100 rounded-lg p-2 cursor-pointer"
+            onclick="document.getElementById('pac-input').focus()">
+            <input id="pac-input" class="flex-grow p-4 py-2" type="text" placeholder="ค้นหา" />
+            <span class="icon-[material-symbols--search] text-4xl"></span>
         </div>
+        <div class='flex flex-row gap-4 justify-center items-center'>
+            <button onclick="window.functions.analyze()"
+                class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer flex-grow">Analyze</button>
+            <select id="distance" class="p-2 bg-gray-100 rounded-lg cursor-pointer">
+                <option value="500" selected>0.5 km</option>
+                <option value="1000">1.0 km</option>
+                <option value="1500">1.5 km</option>
+                <option value="2000">2.0 km</option>
+            </select>
+        </div>
+
+        <div id="map" class="w-full h-96 rounded-xl"></div>
+        <div id="infowindow-content">
+            <span id="place-name" class="title"></span><br />
+            <strong>Place ID:</strong> <span id="place-id"></span><br />
+            <span id="place-address"></span>
+        </div>
+
         <div class=" bg-white shadow-md rounded-lg p-6 hidden flex-col gap-3" id='result'>
             <h3>Nearby Places</h3>
             <div id="resultAmount"></div>
@@ -47,6 +51,8 @@
 
         </div>
     </div>
+
+    {{-- </div> --}}
 @endsection
 
 
@@ -133,7 +139,6 @@
                 lat: 13.2855079,
                 lng: 100.9246009
             };
-            document.getElementById("latlng").innerText = `${position.lat}, ${position.lng}`;
             map = new Map(document.getElementById("map"), {
                 zoom: 15,
                 center: position,
@@ -161,7 +166,8 @@
                 position: MapMarker.position,
                 map: map,
                 radius: parseFloat(document.getElementById("distance").value),
-                color: "red",
+                strokeColor: "#000E87",
+                fillColor: "#7BBBE9",
                 opacity: 0.35,
                 fillOpacity: 0.35,
                 weight: 2
@@ -189,9 +195,7 @@
                 log("click", e);
 
                 let pos = e.latLng;
-                document.getElementById("latlng").innerText = `${pos.lat()}, ${pos.lng()}`;
                 let dist = spherical.computeDistanceBetween(MapMarker.position, pos);
-                document.getElementById("distanceFromMarker").innerText = `${dist} m`;
 
                 return
                 if (e.placeId) {
@@ -259,7 +263,6 @@
 
             map.addListener("center_changed", () => {
                 let pos = map.getCenter();
-                document.getElementById("latlng").innerText = `${pos.lat()}, ${pos.lng()}`;
                 // marker.position = pos;
             });
         }
@@ -373,16 +376,17 @@
             position,
             map,
             radius,
-            color,
+            strokeColor,
+            fillColor,
             opacity = 0.35,
             fillOpacity = 0.35,
             weight = 2
         }) {
             let circle = new google.maps.Circle({
-                strokeColor: color,
+                strokeColor: strokeColor,
                 strokeOpacity: opacity,
                 strokeWeight: weight,
-                fillColor: color,
+                fillColor: fillColor,
                 fillOpacity: fillOpacity,
                 map: map,
                 center: position,
@@ -440,7 +444,7 @@
             try {
                 let nearbyPlaces = await functions.getNearbyPlaces(
                     pos,
-                    document.getElementById("keyword").value,
+                    'ส่งของ',
                     radius
                 );
                 log("nearbyPlaces", nearbyPlaces);
