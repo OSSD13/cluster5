@@ -72,27 +72,26 @@
 <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
-    let members = [
-        { id: 1, name: "พีระพัท", email: "per@gmail.com", role: "Sale", supervisorId: 5 },
-        { id: 2, name: "กานต์", email: "knn@gmail.com", role: "CEO" },
-        { id: 3, name: "อิทธิ์", email: "itt@gmail.com", role: "Sale", supervisorId: 7 },
-        { id: 4, name: "เจษฎา", email: "jess@gmail.com", role: "Sale", supervisorId: 5 },
-        { id: 5, name: "บุญมี", email: "bun@gmail.com", role: "Sale Sup." },
-        { id: 6, name: "เอกรินทร์", email: "egn@gmail.com", role: "CEO" },
-        { id: 7, name: "อิศรา", email: "isra@gmail.com", role: "Sale Sup." },
-        { id: 8, name: "มีนา", email: "me@gmail.com", role: "Sale", supervisorId: 7 },
-        { id: 9, name: "น้ำทิพย์", email: "nam@gmail.com", role: "Sale", supervisorId: 5 },
-        { id: 10, name: "โอภาส", email: "oop@gmail.com", role: "CEO" },
-        { id: 11, name: "ดลภพ", email: "dol@gmail.com", role: "CEO" }
-    ];
-    
-
-
+    let members = [];
     let currentPage = 1;
     const rowsPerPage = 10;
-    let currentSort = { column: null, ascending: true };
+    let currentSort = { column: 'id', ascending: true };
 
-    
+    // ฟังก์ชันสำหรับดึงข้อมูลสมาชิกจาก API
+    async function fetchMembers() {
+        try {
+            const response = await fetch('{{ route('api.user.query.all') }}'); // ดึงข้อมูลจาก API
+            const result = await response.json();
+            members = result.data || []; // เก็บข้อมูลสมาชิกที่ดึงมา
+            console.log(members);
+            renderTable(); // เรียกฟังก์ชัน renderTable เพื่อแสดงข้อมูล
+            populateSupervisorDropdown(); // ป populate ตัวเลือก Supervisor
+        } catch (error) {
+            console.error('Error fetching members:', error);
+        }
+    }
+
+    // ฟังก์ชันสำหรับการแสดงข้อมูลในตาราง
     function renderTable(filteredData = null) {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
@@ -102,19 +101,18 @@
         const start = (currentPage - 1) * rowsPerPage;
         const paginatedData = dataToRender.slice(start, start + rowsPerPage);
 
-        // แสดงจำนวนผลลัพธ์
         const resultCount = document.querySelector("#resultCount");
         resultCount.textContent = `ผลลัพธ์ ${dataToRender.length} รายการ`;
 
         paginatedData.forEach((member) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td class="py-3 px-4 w-16 text-md">${member.id}</td>
+                <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
                 <td class="py-3 px-4 max-w-[200px]">
                     <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
                     <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
                 </td>
-                <td class="py-3 px-4 w-32 truncate text-md" title="${member.role}">${member.role}</td>
+                <td class="py-3 px-4 w-32 truncate text-md" title="${member.role_name}">${member.role_name}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
                 </td>
@@ -123,113 +121,75 @@
         });
 
         renderPagination(dataToRender);
-}
+    }
 
-    // ฟังก์ชันสำหรับแสดงปุ่มเปลี่ยนหน้า
+    // ฟังก์ชันที่ใช้ในการ render pagination
     function renderPagination(dataToRender) {
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = ""; //ล้างข้อมูลเก่า
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = "";
 
         const totalPages = Math.ceil(dataToRender.length / rowsPerPage);
 
-        // Show pagination even if there's only one page
-        if (totalPages === 1) {
-            const prevBtn = document.createElement("button");
-            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 text-gray-400 cursor-not-allowed text-5xl`;
-            prevBtn.disabled = true;
-            pagination.appendChild(prevBtn);
-
-            const pageBtn = document.createElement("button");
-            pageBtn.innerText = `1`;
-            pageBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-blue-600 text-white`;
-            pagination.appendChild(pageBtn);
-
-            const nextBtn = document.createElement("button");
-            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 text-gray-400 cursor-not-allowed text-5xl`;
-            nextBtn.disabled = true;
-            pagination.appendChild(nextBtn);
-
-            return;
-        }
-
-        // Previous button
         const prevBtn = document.createElement("button");
         prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
         prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
         prevBtn.disabled = currentPage === 1;
         prevBtn.onclick = () => goToPage(currentPage - 1);
-        pagination.appendChild(prevBtn);
+        paginationContainer.appendChild(prevBtn);
 
-        // Page number buttons
         for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement("button");
-            btn.innerText = i;
-            btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-            btn.onclick = () => goToPage(i);
-            pagination.appendChild(btn);
+            const pageBtn = document.createElement("button");
+            pageBtn.innerText = i;
+            pageBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+            pageBtn.onclick = () => goToPage(i);
+            paginationContainer.appendChild(pageBtn);
         }
 
-        // Next button
         const nextBtn = document.createElement("button");
         nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
         nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
         nextBtn.disabled = currentPage === totalPages;
         nextBtn.onclick = () => goToPage(currentPage + 1);
-        pagination.appendChild(nextBtn);
-}
+        paginationContainer.appendChild(nextBtn);
+    }
 
     // ฟังก์ชันสำหรับเปลี่ยนหน้า
     function goToPage(pageNumber) {
         currentPage = pageNumber;
         renderTable();
     }
-    
-    // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
-    function sortTable(column) {
-        if (currentSort.column === column) {
-            currentSort.ascending = !currentSort.ascending;
-        } else {
-            currentSort.column = column;
-            currentSort.ascending = true;
-        }
-        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-        renderTable();
-    }
 
-    // ฟังก์ชันสำหรับค้นหาข้อมูล
+    // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
     function filterAll() {
-    const searchVal = document.getElementById("searchInput").value.toLowerCase();
-    const supervisorId = document.getElementById("supervisorSelect").value;
-    const roleVal = document.getElementById("roleSelect").value;
+        const searchVal = document.getElementById("searchInput").value.toLowerCase();
+        const supervisorId = document.getElementById("supervisorSelect").value;
+        const roleVal = document.getElementById("roleSelect").value;
 
-    let filtered = members.filter(m => {
-        const matchesSearch =
-            m.id.toString().includes(searchVal) ||
-            m.name.toLowerCase().includes(searchVal) ||
-            m.email.toLowerCase().includes(searchVal) ||
-            m.role.toLowerCase().includes(searchVal);
+        let filtered = members.filter(m => {
+            const matchesSearch =
+                m.id.toString().includes(searchVal) ||
+                m.name.toLowerCase().includes(searchVal) ||
+                m.email.toLowerCase().includes(searchVal) ||
+                m.role.toLowerCase().includes(searchVal);
 
-        const matchesSupervisor = !supervisorId || (
-            m.role === "Sale" && m.supervisorId?.toString() === supervisorId
-        );
+            const matchesSupervisor = !supervisorId || (
+                m.role === "Sale" && m.supervisorId?.toString() === supervisorId
+            );
 
-        const matchesRole = !roleVal || m.role === roleVal;
+            const matchesRole = !roleVal || m.role === roleVal;
 
-        return matchesSearch && matchesSupervisor && matchesRole;
-    });
+            return matchesSearch && matchesSupervisor && matchesRole;
+        });
 
-    currentPage = 1;
-    renderTable(filtered);
-}
+        currentPage = 1; // รีเซ็ตหน้าเป็นหน้าแรกเมื่อมีการกรองข้อมูล
+        renderTable(filtered); // เรียก renderTable โดยส่งข้อมูลที่กรองแล้ว
+    }
 
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
     function populateSupervisorDropdown() {
         const supervisorSelect = document.getElementById("supervisorSelect");
-        supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>
-`; // reset first
+        supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>`;
 
         const supervisors = members.filter(m => m.role === "Sale Sup.");
         supervisors.forEach(sup => {
@@ -240,16 +200,13 @@
         });
     }
 
+    // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
     document.addEventListener("DOMContentLoaded", () => {
-        populateSupervisorDropdown();
-        renderTable();
-
+        fetchMembers(); // เรียกดึงข้อมูลจาก API
         document.getElementById("searchInput").addEventListener("input", filterAll);
         document.getElementById("supervisorSelect").addEventListener("change", filterAll);
         document.getElementById("roleSelect").addEventListener("change", filterAll);
     });
-
-
 
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
@@ -350,28 +307,18 @@
                     </div>
 
                     <div class="w-full">
-                        <label class="font-medium text-gray-800 text-sm">รหัสสมาชิก</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.id}" readonly>
-                    </div>
-
-                    <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">อีเมล</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
                     </div>
 
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(member.created_at)}" readonly>
                     </div>
 
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">บทบาท</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role}" readonly>
-                    </div>
-
-                    <div class="w-full">
-                        <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role_name}" readonly>
                     </div>
 
                     ${supervisorInfo} <!-- แสดง Sales Supervisor ถ้ามี -->
@@ -385,6 +332,16 @@
         });
 
     }
+    // แปลงวันที่เป็นวันภาษาไทย
+    function formatThaiDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString("th-TH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        }
 
     // ฟังก์ชันสำหรับเพิ่มสมาชิกใหม่
     function addMember() {
