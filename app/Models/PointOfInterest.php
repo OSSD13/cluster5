@@ -18,12 +18,13 @@ class PointOfInterest extends Model
     protected $fillable = [
         'poi_id',
         'poi_name',
-        'type',
+        'poi_type',
         'gps_lat',
         'gps_lng',
         'address',
         'location_id',
     ];
+    protected $table = 'point_of_interests';
 
     public function getPOIId(): int
     {

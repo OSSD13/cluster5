@@ -5,8 +5,8 @@
 @section('content')
     <div class="flex flex-col gap-4">
         {{-- report card --}}
-        <div class="mt-8 bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
-            <h3 class="text-lg font-bold text-center">รายงาน</h3>
+        <div class="mt-2 bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 ">
+            <h3 class="text-2xl font-bold text-center text-gray-800">รายงาน</h3>
             <div class="flex items-center gap-4">
                 <label for="timePeriod" class=" text-base font-bold text-black">ช่วงเวลา</label>
                 <input type="month" id="timePeriod" name="timePeriod"
@@ -46,7 +46,7 @@
 
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
-                        fetch('/api/getSubordinate')
+                        fetch('{{ route('api.report.getSubordinate') }}')
                             .then(response => response.json())
                             .then(data => {
                                 const select = document.getElementById('subordinateSelect');
@@ -74,7 +74,7 @@
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
 
-                    fetch(`/api/getBranchReport?user_id=${userId}&date=${date}`)
+                    fetch(`{{ route('api.report.getBranchReport') }}?user_id=${userId}&date=${date}`)
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
@@ -109,7 +109,6 @@
 
                             let chartLabels = [];
                             let chartData = {};
-
                             // Initialize bins to 0
                             for (let i = 0; i <= maxRange; i += step) {
                                 if (i === 0) {
@@ -119,7 +118,6 @@
                                 }
                                 chartData[i] = 0;
                             }
-
                             // Fill in the sales data only for the selected month
                             branches.forEach(b => {
                                 console.log(1, b)
@@ -137,7 +135,6 @@
                             console.log("Chart Labels:", chartLabels);
                             console.log("Chart Data:", chartValues);
 
-
                             const ctx = document.getElementById('branchVSprofit').getContext('2d');
                             if (window.branchChart) {
                                 window.branchChart.destroy();
@@ -149,7 +146,7 @@
                                     datasets: [{
                                         label: 'จำนวนสาขา', // "Number of Branches"
                                         data: chartValues,
-                                        backgroundColor: '#F846E1',
+                                        backgroundColor: '#3366CC',
                                         borderWidth: 1
                                     }]
                                 },
@@ -288,84 +285,86 @@
         {{-- stat cards --}}
         <div class="flex flex-row gap-4">
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="">ยอดพัสดุทั้งหมด</div>
+                <div class="font-bold">ยอดพัสดุทั้งหมด (ชิ้น)</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-4xl text-trinary"
-                        id='thisMonthTotalPackageIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalPackageNumber'></span>ชิ้น
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow: 3 font-medium" style="font-size: 55px; flex-grow :1" id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-bold text-trinary flex-grow " style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
                 </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalPackagePercentParent'>
+                <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
-                    <span id='thisMonthTotalPackagePercent'></span>%
+                    <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
 
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="">ยอดรายได้ทั้งหมด</div>
+            <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
+                <div class="font-bold">ยอดรายได้ทั้งหมด (บาท) </div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-4xl text-trinary" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalMoneyNumber'></span>บาท
+                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow font-medium" style="font-size: 75px; flex-grow :1.5" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-bold text-green-600 flex-grow " style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
                 </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
+                <div class="text-success text-base font-medium text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
-                    <span id='thisMonthTotalMoneyPercent'></span>%
+                    <span id='thisMonthTotalMoneyPercent'></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
 
-
-        <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
+<!--  -->
+        <div class=" shadow-md rounded-lg p-6 flex flex-col"style="background-color:rgb(229, 238, 255);">
             <canvas id="branchVSprofit"></canvas>
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
-                    <div class="">Min</div>
+                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
+                    <div class="font-bold" style="font-size: 14px; color: black;"  >Min (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="minValue" class="text-2xl text-bold">0</span>บาท
+                        <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                     </div>
-                    <div id="minChange" class="text-sm text-end">
+                    <div id="minChange" class="text-sm text-end font-medium">
                         <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="minPercent">0</span>%
                     </div>
                 </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success">
-                    <div class="">Max</div>
+                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
+                    <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="maxValue" class="text-2xl text-bold">0</span>บาท
+                        <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                    
                     </div>
-                    <div id="maxChange" class="text-sm text-end">
+                    <div id="maxChange" class="text-sm text-end text-bold">
                         <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
                         <span id="maxPercent">0</span>%
                     </div>
                 </div>
             </div>
             <div class="flex flex-row gap-4">
-                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
-                    <div class="">Standard Deviation</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="stdValue" class="text-2xl text-bold">0</span>บาท
+                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark " style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 14px; color:black;" >Standard Deviation (บาท)</div>
+                    <div class="flex justify-center items-center text-bold gap-2" style ="color: #DA25BF;">
+                        <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                    
                     </div>
-                    <div id="stdChange" class="text-sm text-end">
-                        <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
+                    <div id="stdChange" class="text-base text-end text-bold "style ="color: #DA25BF;"> 
+                        <span id="stdArrow" class="icon-[line-md--arrow-down]" ></span>
                         <span id="stdPercent">0</span>%
                     </div>
                 </div>
-                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
-                    <div class="">Average</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="avgValue" class="text-2xl text-bold">0</span>บาท
+                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 14px; color: black;" >Average (บาท)</div>
+                    <div class="flex justify-center items-center text-bold  text-base gap-2"style ="color: #DA25BF;">
+                        <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                        <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="avgChange" class="text-sm text-end">
+                    <div id="avgChange" class="text-base text-end text-bold" style ="color: #DA25BF;">
                         <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="avgPercent">0</span>%
                     </div>
                 </div>
             </div>
         </div>
-
+<!--  -->
         <script>
             function updateCardData(data) {
                 const {
@@ -390,14 +389,16 @@
                 updateCardStyle('maxCard', 'maxArrow', maxChange);
 
                 // Update Std Card
-                document.getElementById('stdValue').textContent = std.toLocaleString();
+                document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('stdPercent').textContent = stdChange.toFixed(2);
-                updateCardStyle('stdCard', 'stdArrow', stdChange);
+            updateCardStyle('stdCard', 'stdArrow', stdChange);
+
 
                 // Update Avg Card
-                document.getElementById('avgValue').textContent = avg.toLocaleString();
+                document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('avgPercent').textContent = avgChange.toFixed(2);
                 updateCardStyle('avgCard', 'avgArrow', avgChange);
+
             }
 
             function updateCardStyle(cardId, arrowId, change) {
@@ -417,32 +418,35 @@
             }
         </script>
 
-        <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 ">
+        <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 " style="background-color: #B8E0F8">
             <div class='col-span-1'>
                 <button id="regionTableBack" class="cursor-pointer px-4 py-2 bg-primary-dark text-white rounded"
                     onclick="">ย้อนกลับ</button>
             </div>
-            <div class="text-primary-dark text-4xl text-bold col-span-1">
-                ภูมิภาค
+            <div class="flex justify-center text-primary-dark text-3xl font-bold col-span-1 whitespace-nowrap">
+                 ภูมิภาค
             </div>
         </div>
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
+        <div style="resize: both; overflow: auto; max-width: 100%;">
         <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
-            <thead class="bg-lightblue">
+            <thead class="bg-lightblue" style="background-color: #B6D2FF">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">ภูมิภาค</th>
+                        class="px-6 py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider">จำนวนสาขา</th>
-                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
+                        class="px-3 py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider hitespace-nowrap" style="color: black">จำนวนสาขา</th>
+                    <th scope="col" class="px-3 py-3" id="regionBranchCount"></th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
             </tbody>
         </table>
+</div>
+
 
         <script>
             let region = null;
@@ -451,44 +455,7 @@
             let currentPage = 1;
 
             function buildRegionTable() {
-                // fetch /api/getRegionBranch
-                // example response
-                // {
-                //     "distinct_regions": [
-                //         "SOUTH",
-                //         "CENTRAL",
-                //         "WEST",
-                //         "NORTHEAST",
-                //         "EAST",
-                //         "NORTH"
-                //     ],
-                //     "branch_count_by_region": [{
-                //             "region": "NORTHEAST",
-                //             "branch_count": 79
-                //         },
-                //         {
-                //             "region": "CENTRAL",
-                //             "branch_count": 64
-                //         },
-                //         {
-                //             "region": "EAST",
-                //             "branch_count": 8
-                //         },
-                //         {
-                //             "region": "NORTH",
-                //             "branch_count": 17
-                //         },
-                //         {
-                //             "region": "SOUTH",
-                //             "branch_count": 25
-                //         },
-                //         {
-                //             "region": "WEST",
-                //             "branch_count": 8
-                //         }
-                //     ]
-                // }
-
+               
                 const regions = {
                     'NORTH': 'ภาคเหนือ',
                     'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
@@ -504,7 +471,7 @@
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         date,
                         user_id
                     }).toString())
@@ -518,8 +485,8 @@
                             let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
                                 <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
-                                <td class="px-3 py-2 whitespace-nowrap text-right">${region.branch_count}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">></td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
                             </tr>`;
                             regionTableBody.innerHTML += row;
                         });
@@ -534,62 +501,14 @@
             }
 
             function buildProvinceTable(region) {
-                // fetch /api/getRegionBranch?region=SOUTH
-                // example response
-                // {
-                //     "distinct_provinces": [
-                //         "กระบี่",
-                //         "ชุมพร",
-                //         "ตรัง",
-                //         "นครศรีธรรมราช",
-                //         "นราธิวาส",
-                //         "ปัตตานี",
-                //         "พังงา",
-                //         "พัทลุง",
-                //         "ภูเก็ต",
-                //         "ยะลา",
-                //         "ระนอง",
-                //         "สงขลา",
-                //         "สตูล",
-                //         "สุราษฎร์ธานี"
-                //     ],
-                //     "branch_count_by_province": [{
-                //             "province": "กระบี่",
-                //             "branch_count": 3
-                //         },
-                //         {
-                //             "province": "ชุมพร",
-                //             "branch_count": 2
-                //         },
-                //         {
-                //             "province": "ตรัง",
-                //             "branch_count": 1
-                //         },
-                //         {
-                //             "province": "นครศรีธรรมราช",
-                //             "branch_count": 2
-                //         },
-                //         {
-                //             "province": "ปัตตานี",
-                //             "branch_count": 5
-                //         },
-                //         {
-                //             "province": "ภูเก็ต",
-                //             "branch_count": 1
-                //         },
-                //         {
-                //             "province": "สุราษฎร์ธานี",
-                //             "branch_count": 11
-                //         }
-                //     ]
-                // }
+            
                 const date = document.getElementById('timePeriod') ?
                     document.getElementById('timePeriod').value :
                     new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }}
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                    {{ session()->get(key: 'user')->user_id }}
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         region,
                         date,
                         user_id
@@ -604,8 +523,8 @@
                             let row = `<tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
                                 <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
                                 <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-right">${province.branch_count}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-right text-indigo-600 hover:text-indigo-900">></td>
+                                <td class="px-6 py-2 whitespace-nowrap text-center">${province.branch_count}</td>
+                                <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
                             </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
@@ -622,41 +541,14 @@
             }
 
             function buildBranchesTable(region, province) {
-                // fetch /api/getRegionBranch?region=SOUTH&province=กระบี่
-                // example response
-                // {
-                //     "branches": [{
-                //             "branchId": 74,
-                //             "branchName": "Mrs. Concepcion Cremin DVM",
-                //             "branchProvince": "กระบี่",
-                //             "branchSaleChange": 88.00888230940048,
-                //             "saleAdded": true
-                //         },
-                //         {
-                //             "branchId": 8,
-                //             "branchName": "Angus VonRueden",
-                //             "branchProvince": "กระบี่",
-                //             "branchSaleChange": -65.5929781923279,
-                //             "saleAdded": true
-                //         },
-                //         {
-                //             "branchId": 187,
-                //             "branchName": "Ivy Russel",
-                //             "branchProvince": "กระบี่",
-                //             "branchSaleChange": -38.20272520633531,
-                //             "saleAdded": true
-                //         }
-                //     ],
-                //     "branch_count": 3
-                // }
-
+            
                 const date = document.getElementById('timePeriod') ?
                     document.getElementById('timePeriod').value :
                     new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         region,
                         province,
                         date,
@@ -670,10 +562,9 @@
                         tableBody.innerHTML = ''; // Clear existing data
                         data.branches.forEach((branch, index) => {
                             let row = `<tr class="hover:bg-gray-100">
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
+                                <td class="py-6 px-4 whitespace-nowrap">${branch.branchId}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchProvince}</td>
-                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange}</td>
+                                <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
                                 <td class="py-3 px-4 whitespace-nowrap">
                                     <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                         ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
@@ -730,16 +621,16 @@
             });
         </script>
 
-        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable">
-            <thead class="bg-blue-500 text-white">
+        <table class="w-full border-collapse rounded-lg overflow-hidden" id="branchTable" >
+            <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                 <tr>
-                    <th class="py-3 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left">ชื่อสาขา</th>
-                    <th class="py-3 px-4 text-left">จังหวัด</th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')">
+                    <th class="py-3 px-4 text-left" style="color: black">ID</th>
+                    <th class="py-3 px-4 text-left" style="color: black">ชื่อสาขา</th>
+                    
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('sales')" style="color: black">
                         ยอดขาย ⬍
                     </th>
-                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')">
+                    <th class="py-3 px-4 text-left cursor-pointer" onclick="sortTable('status')" style="color: black">
                         เพิ่มยอด ⬍
                     </th>
                 </tr>
@@ -748,7 +639,7 @@
                 <tr>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">1</td>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">สาขา A</td>
-                    <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">กรุงเทพมหานคร</td>
+                    
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">100,000 บาท</td>
                     <td class="py-3 px-4 whitespace-nowrap overflow-hidden text-ellipsis">เพิ่มแล้ว</td>
                 </tr>
@@ -760,6 +651,7 @@
 
 
     </div>
+    
 @endsection
 
 @section('script')

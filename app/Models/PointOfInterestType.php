@@ -22,7 +22,7 @@ class PointOfInterestType extends Model
         'poit_color',
         'poit_description'
     ];
-
+    protected $table = 'point_of_interest_type';
     // public function getPOIId(): int
     // {
     //     return $this->poi_id;

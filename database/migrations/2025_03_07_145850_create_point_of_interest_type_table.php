@@ -81,8 +81,17 @@ return new class extends Migration {
             $poiType = preg_replace('/^\d+-\d+-(.*?)(-v\d+)?$/', '$1', $poiType);
             $defaults = $defaultValues[$poiType] ?? ['poit_name' => $poiType, 'poit_icon' => null, 'poit_color' => null, 'poit_description' => null, 'created_at' => now(), 'updated_at' => now()];
             Log::info('Inserting POI Type: ' . $poiType);
-            DB::table('point_of_interest_type')->updateOrInsert(['poit_type' => $poiType], $defaults);
+            DB::table('point_of_interest_type')->updateOrInsert(['poit_type' => $poiType], values: $defaults);
         }
+
+        // create default dependency types
+        $defaultDependencyTypes = [
+            "branch" => ["poit_name" => "สาขา", "poit_icon" => "🏢", "poit_color" => "#0000FF", "poit_description" => "สาขา", 'created_at' => now(), 'updated_at' => now()],
+        ];
+        foreach ($defaultDependencyTypes as $type => $defaults) {
+            DB::table('point_of_interest_type')->updateOrInsert(['poit_type' => $type], $defaults);
+        }
+
     }
 
     /**
