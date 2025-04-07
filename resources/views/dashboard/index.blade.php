@@ -70,7 +70,7 @@
                 function getBranchReport() {
                     const userId = document.getElementById('subordinateSelect') ?
                         document.getElementById('subordinateSelect').value :
-                                                {{ session()->get('user')->user_id }};
+                                                                        {{ session()->get('user')->user_id }};
                     const date = document.getElementById('timePeriod') ?
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -460,9 +460,11 @@
                             class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
                             style="color: black;">#</th>
                         <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
-                            style="color: black">จังหวัด</th>
-                        <th scope="col" class="py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider"
-                            style="color: black">จำนวนสาขา</th>
+                            style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
+                             จังหวัด</th>
+                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                        style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
+                                จำนวนสาขา</th>
                         <th scope="col" class="py-3" id="regionBranchCount"></th>
                     </tr>
                 </thead>
@@ -470,21 +472,7 @@
                 </tbody>
             </table>
         </div>
-<style>
-    th, td {
-        text-align: left; /* จัดข้อความให้อยู่ตรงกลาง */
-        padding: 0.75rem; /* เพิ่มระยะห่างในเซลล์ */
-        vertical-align: middle; /* จัดข้อความให้อยู่ตรงกลางแนวตั้ง */
-        white-space: nowrap; /* ป้องกันการตัดบรรทัด */
-        
-    }
 
-    th {
-        font-weight: bold; /* ทำให้หัวตารางตัวหนา */
-        background-color: #B6D2FF; /* สีพื้นหลังของหัวตาราง */
-        color: black; /* สีข้อความในหัวตาราง */
-    }
-</style>
 
 
         <script>
@@ -559,11 +547,11 @@
                             regionTableBody.innerHTML = ''; // Clear existing data
                             data.branch_count_by_region.forEach((region, index) => {
                                 let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
-                                                        <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
-                                                        <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
-                                                    </tr>`;
+                                        <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
+                                        <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
+                                     </tr>`;
                                 regionTableBody.innerHTML += row;
                             });
                             let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
@@ -577,79 +565,76 @@
             }
 
             function buildProvinceTable(region) {
-                const regions = {
-                    'NORTH': 'ภาคเหนือ',
-                    'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
-                    'WEST': 'ภาคตะวันตก',
-                    'CENTRAL': 'ภาคกลาง',
-                    'EAST': 'ภาคตะวันออก',
-                    'SOUTH': 'ภาคใต้',
-                };
+    const regions = {
+        'NORTH': 'ภาคเหนือ',
+        'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
+        'WEST': 'ภาคตะวันตก',
+        'CENTRAL': 'ภาคกลาง',
+        'EAST': 'ภาคตะวันออก',
+        'SOUTH': 'ภาคใต้',
+    };
 
-                // เปลี่ยนชื่อหัวเรื่อง (ใหญ่) เป็นชื่อภาค
-                const regionTitle = document.getElementById('regionTitle');
-                regionTitle.textContent = regions[region];
+    // เปลี่ยนชื่อหัวเรื่อง (ใหญ่) เป็นชื่อภาค
+    const regionTitle = document.getElementById('regionTitle');
+    regionTitle.textContent = regions[region];
 
-                // ปรับขนาดฟอนต์หากชื่อภาคยาว
-                regionTitle.classList.remove('text-2xl', 'text-4xl');
-                if (regions[region].length > 10) {
-                    regionTitle.classList.add('text-2xl');
-                } else {
-                    regionTitle.classList.add('text-4xl');
-                }
+    // ✅ ใช้ฟอนต์ขนาดใหญ่เสมอ
+    regionTitle.classList.remove('text-2xl');
+    regionTitle.classList.add('text-4xl');
 
-                // ✅ เปลี่ยนชื่อหัวตารางจาก "ภูมิภาค" เป็น "จังหวัด"
-                const regionHeader = document.querySelector('#regionTable thead th:nth-child(2)');
-                if (regionHeader) {
-                    regionHeader.textContent = 'จังหวัด';
-                }
+    // ✅ เปลี่ยนชื่อหัวตารางจาก "ภูมิภาค" เป็น "จังหวัด"
+    const regionHeader = document.querySelector('#regionTable thead th:nth-child(2)');
+    if (regionHeader) {
+        regionHeader.textContent = 'จังหวัด';
+    }
 
-                const date = document.getElementById('timePeriod') ?
-                    document.getElementById('timePeriod').value :
-                    new Date().toISOString().slice(0, 7);
+    const date = document.getElementById('timePeriod') ?
+        document.getElementById('timePeriod').value :
+        new Date().toISOString().slice(0, 7);
 
-                const user_id = document.getElementById('subordinateSelect') ?
-                    document.getElementById('subordinateSelect').value :
-                        {{ session()->get('user')->user_id }};
+    const user_id = document.getElementById('subordinateSelect') ?
+        document.getElementById('subordinateSelect').value :
+        {{ session()->get('user')->user_id }};
 
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
-                    region,
-                    date,
-                    user_id
-                }).toString())
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Province Branch Data:', data);
+    fetch('/api/getRegionBranch?' + new URLSearchParams({
+        region,
+        date,
+        user_id
+    }).toString())
+        .then(response => response.json())
+        .then(data => {
+            console.log('Province Branch Data:', data);
 
-                        clearTableBody();
+            clearTableBody();
 
-                        const provinceTableBody = document.getElementById('regionTableBody');
-                        provinceTableBody.innerHTML = ''; // Clear existing data
+            const provinceTableBody = document.getElementById('regionTableBody');
+            provinceTableBody.innerHTML = ''; // Clear existing data
 
-                        data.branch_count_by_province.forEach((province, index) => {
-                            let row = `
-                                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
-                                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
-                                        <td class="px-3 py-2 text-center whitespace-nowrap">
-                                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
-                                        </td>
-                                    </tr>`;
-                            provinceTableBody.innerHTML += row;
-                        });
+            data.branch_count_by_province.forEach((province, index) => {
+                let row = `
+                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                        </td>
+                    </tr>`;
+                provinceTableBody.innerHTML += row;
+            });
 
-                        let branchCount = data.branch_count_by_province.reduce((acc, p) => acc + p.branch_count, 0);
-                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+            let branchCount = data.branch_count_by_province.reduce((acc, p) => acc + p.branch_count, 0);
+            document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
 
-                        showBackButton();
-                        showRegionTable();
-                        setBackButtonOnClick(() => {
-                            buildRegionTable();
-                        });
-                    })
-                    .catch(error => console.error('Error fetching province branch data:', error));
-            }
+            showBackButton();
+            showRegionTable();
+            setBackButtonOnClick(() => {
+                buildRegionTable();
+            });
+        })
+        .catch(error => console.error('Error fetching province branch data:', error));
+}
+
 
 
             function updateRegionTitle(region) {
@@ -662,6 +647,13 @@
                 const regionTitle = document.getElementById('regionTitle');
                 regionTitle.textContent = regions[region] || regions['DEFAULT'];
 
+                if (region === 'NORTHEAST') {
+                    regionTitle.classList.add('text-2xl');     // ลดขนาดฟอนต์
+                    regionTitle.classList.remove('text-4xl');  // เอาฟอนต์ใหญ่เดิมออก
+                } else {
+                    regionTitle.classList.add('text-4xl');     // คืนฟอนต์ใหญ่
+                    regionTitle.classList.remove('text-2xl');  // ลบฟอนต์เล็ก
+                }
             }
 
 
@@ -700,7 +692,7 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                        {{ session()->get('user')->user_id }};
+                                                {{ session()->get('user')->user_id }};
 
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
                     region,
@@ -718,16 +710,21 @@
                         tableBody.innerHTML = ''; // Clear existing data
 
                         data.branches.forEach((branch, index) => {
-                            let row = `<tr class="hover:bg-gray-100">
-                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchId}</td>
-                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchName}</td>
-                                        <td class="py-3 px-4 whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
-                                        <td class="py-3 px-4 whitespace-nowrap">
-                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                            </span>
-                                        </td>
-                                    </tr>`;
+                            let row = `
+                        <tr class="hover:bg-gray-100">
+                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                            <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                ${branch.branchName}
+                            </td>
+                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
+                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                    ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                </span>
+                            </td>
+                        </tr>
+                        `;
+
                             tableBody.innerHTML += row;
                         });
 
@@ -793,8 +790,9 @@
             });
         </script>
 
-                <div class="overflow-x-auto w-full">
-            <table class="table-auto w-full border-collapse rounded-lg text-sm" id="branchTable" style="table-layout: fixed;">
+        <div class="overflow-x-auto w-full">
+            <table class="table-auto w-full border-collapse rounded-lg text-sm" id="branchTable"
+                style="table-layout: fixed;">
                 <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                     <tr>
                         <th class="px-2 py-2 text-center text-xs" style="min-width: 40px; width: 10%;">ID</th>
@@ -806,7 +804,8 @@
                 <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
                     <tr>
                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">1</td>
-                        <td class="py-2 px-2 text-xs whitespace-nowrap truncate-cell" title="Prof. Sabryna Tromp Sr.">
+                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]"
+                            title="Prof. Sabryna Tromp Sr.">
                             Prof. Sabryna Tromp Sr.
                         </td>
                         <td class="py-2 px-2 text-right text-xs whitespace-nowrap">-39.06</td>
@@ -818,19 +817,22 @@
             </table>
         </div>
 
+
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 
     </div>
-        <style>
-        #regionTitle {
-            max-width: 100%; /* กำหนดให้ข้อความไม่เกินขอบ */
-            word-wrap: break-word; /* ตัดคำเมื่อข้อความยาวเกิน */
-            overflow-wrap: break-word; /* รองรับการตัดคำ */
-            text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
-            font-size: 2rem; /* กำหนดขนาดฟอนต์ให้เท่ากัน */
-            line-height: 1.2; /* เพิ่มระยะห่างระหว่างบรรทัด */
+    <style>
+        .truncate-cell {
+            max-width: 150px;
+            /* กำหนดความกว้างสูงสุดของเซลล์ */
+            overflow: hidden;
+            /* ซ่อนข้อความที่เกิน */
+            text-overflow: ellipsis;
+            /* เพิ่ม ... เมื่อข้อความยาวเกิน */
+            white-space: nowrap;
+            /* ป้องกันการตัดบรรทัด */
         }
     </style>
 @endsection
