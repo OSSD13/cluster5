@@ -50,19 +50,17 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden">
-        
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">บทบาท</th>
+                <th scope="col" class="py-2 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left min-w-[200px]">ชื่อ / อีเมล</th>
+                <th class="py-3 px-4 text-center max-w-[150px]">บทบาท</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-             </tr>
+              </tr>
         </thead>
 
-
-        <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
     </table>
 </div>
 
@@ -108,12 +106,12 @@
         paginatedData.forEach((member) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
-                <td class="py-3 px-4 max-w-[200px]">
+                <td class="py-3 px-4 w-16">${member.user_id}</td>
+                <td class="py-3 px-4">
                     <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
                     <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
                 </td>
-                <td class="py-3 px-4 w-32 truncate text-md" title="${member.role_name}">${member.role_name}</td>
+                <td class="py-3 px-4 text-center" title="${member.role_name}">${member.role_name}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
                 </td>
