@@ -19,9 +19,9 @@ Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoog
 
 Route::get('/login', function () {
     return view('auth.login');
-})->name('login'); // แก้ชื่อ method ให้ตรง (Login → login)
+})->name('loginGet'); // แก้ชื่อ method ให้ตรง (Login → login)
 
-Route::post('/login', [LoginController::class, 'login'])->name('login'); // เปลี่ยนเป็น POST และเพิ่ม name
+Route::post('/login', [LoginController::class, 'login'])->name('loginPost'); // เปลี่ยนเป็น POST และเพิ่ม name
 
 
 
