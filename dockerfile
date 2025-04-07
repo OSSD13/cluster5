@@ -8,7 +8,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 # Install base dependencies
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y git zip unzip nodejs npm libzip-dev libpng-dev libonig-dev libxml2-dev curl
+    apt-get install -y git zip unzip nodejs npm libzip-dev libpng-dev libonig-dev libxml2-dev curl redis-server
 
 # Enable Apache rewrite
 RUN a2enmod rewrite
