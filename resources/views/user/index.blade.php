@@ -12,7 +12,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-lg font-bold">จัดการสมาชิก</h2>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="addMember()" >
+            <button class="bg-blue-500 hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded" style="background-color: #3062B8" onclick="addMember()" >
                 สร้างสมาชิก
             </button>
         </div>
@@ -51,7 +51,7 @@
 <div class="overflow-x-auto">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
         
-        <thead class="bg-blue-500 text-white">
+        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 w-13 text-left">ID</th>
                 <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
@@ -107,12 +107,12 @@
         paginatedData.forEach((member) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td class="py-3 px-4 w-16">${member.id}</td>
+                <td class="py-3 px-4 w-16 text-md">${member.id}</td>
                 <td class="py-3 px-4 max-w-[200px]">
-                    <div class="font-semibold truncate" title="${member.name}">${member.name}</div>
-                    <div class="text-sm text-gray-500 truncate" title="${member.email}">${member.email}</div>
+                    <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
+                    <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
                 </td>
-                <td class="py-3 px-4 w-32 truncate" title="${member.role}">${member.role}</td>
+                <td class="py-3 px-4 w-32 truncate text-md" title="${member.role}">${member.role}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
                 </td>
@@ -185,6 +185,18 @@
         renderTable();
     }
     
+    // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
+    function sortTable(column) {
+        if (currentSort.column === column) {
+            currentSort.ascending = !currentSort.ascending;
+        } else {
+            currentSort.column = column;
+            currentSort.ascending = true;
+        }
+        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
+        renderTable();
+    }
+
     // ฟังก์ชันสำหรับค้นหาข้อมูล
     function filterAll() {
     const searchVal = document.getElementById("searchInput").value.toLowerCase();
@@ -240,7 +252,6 @@
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
     let activeMenuId = null;
-
     function toggleMenu(event, id) {
         event.stopPropagation();
 
@@ -257,7 +268,7 @@
         activeMenuId = id;
 
         menu.innerHTML = `
-            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap"
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8" 
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
                 ดูรายละเอียด
             </button>
@@ -265,7 +276,7 @@
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
                 แก้ไข
             </button>
-            <button class="block w-full px-4 py-2 text-white bg-red-600 border border-gray-400 rounded-lg hover:bg-red-700" style="background-color: #CF3434"
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" 
                 onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
                 ลบ
             </button>
@@ -300,19 +311,7 @@
 
     }
 
-
-
-    function sortTable(column) {
-        if (currentSort.column === column) {
-            currentSort.ascending = !currentSort.ascending;
-        } else {
-            currentSort.column = column;
-            currentSort.ascending = true;
-        }
-        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-        renderTable();
-    }
-//ดูรายละเอียดสมาชิก
+    // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
     function viewDetail(id) {
         const member = members.find(item => item.id === id);
 
@@ -339,31 +338,37 @@
 
         Swal.fire({
             html: `
-    
-                <b class=text-gray-800 text-xl >รายละเอียดข้อมูลสมาชิก</b>
-                <div class="flex flex-col mt-4 items-center space-y-4 text-left w-full max-w-md mx-auto">
+                <div class="flex flex-col text-3xl mb-6 mt-4">
+                     <b class=text-gray-800 >รายละเอียดข้อมูลสมาชิก</b>
+                 </div>
+                <div class="flex flex-col space-y-2 text-left">
                     <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">ชื่อสมาชิก</label>
+                        <label class="font-medium text-gray-800 text-sm">ชื่อสมาชิก</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}" readonly>
                     </div>
 
                     <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">อีเมล</label>
+                        <label class="font-medium text-gray-800 text-sm">รหัสสมาชิก</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.id}" readonly>
+                    </div>
+
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">อีเมล</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
                     </div>
 
                     <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">วันที่เพิ่ม</label>
+                        <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="17 ก.ย. 2568" readonly>
                     </div>
 
                     <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">บทบาท</label>
+                        <label class="font-medium text-gray-800 text-sm">บทบาท</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role}" readonly>
                     </div>
 
                     <div class="w-full">
-                    <label class="block text-gray-800 text-sm mb-1">เพิ่มโดย</label>
+                        <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="jeng@gmail.com" readonly>
                     </div>
 
@@ -379,7 +384,7 @@
 
     }
 
-//เพิ่มสมาชิก
+    // ฟังก์ชันสำหรับเพิ่มสมาชิกใหม่
     function addMember() {
         Swal.fire({
 
@@ -457,6 +462,7 @@
                         return false;
                     }
                 }
+
                 let newMember = {
                     id: members.length + 1,
                     name: name,
@@ -472,7 +478,6 @@
                 members.push(newMember);
                 renderTable();
 
-            // แจ้งเตือนว่าบันทึกสำเร็จ
                 Swal.fire({
                     title: "สำเร็จ!",
                     text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
@@ -485,7 +490,7 @@
     }
 
 
-// ฟังก์ชันนี้จะทำงานเมื่อเลือกบทบาทเป็น Sale
+    // ฟังก์ชันนี้สำหรับแสดงหรือซ่อน Sales Supervisor dropdown
     function toggleSupervisor() {
         const role = document.getElementById("memberRole").value;
         const section = document.getElementById("supervisorSection");
@@ -511,7 +516,7 @@
         }
     }
 
-
+    // ฟังก์ชันสำหรับแก้ไขสมาชิก
     function editMember(id) {
         const member = members.find(item => item.id === id);
 
