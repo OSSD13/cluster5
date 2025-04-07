@@ -4,21 +4,25 @@
 
 @section('content')
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
         }
 
         #map-container {
-    height: calc(100vh - 330px); /* adjust this based on header & controls */
-    width: 100%;
-}
+            height: calc(100vh - 330px);
+            /* adjust this based on header & controls */
+            width: 100%;
+            max-height: 800px;
+        }
 
-#map {
-    width: 100%;
-    height: 100%;
-    border-radius: 0.75rem;
-}
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 0.75rem;
+        }
+
         #infowindow-content {
             display: none;
         }
@@ -26,22 +30,23 @@
         #map #infowindow-content {
             display: inline;
         }
-        #result {
-    z-index: 1;
-    background-color: white;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 1rem;
-    max-height: 40vh;
-    overflow-y: auto;
-    padding: 1.5rem;
-    display: none;
-}
 
-#result.show {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
+        #result {
+            z-index: 1;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            max-height: 18vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: none;
+        }
+
+        #result.show {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
     </style>
 
     <div class="flex flex-col gap-4 h-full">
