@@ -25,11 +25,11 @@ class GoogleAuthController extends Controller
 
             if (!$user) {
                 $req->session()->put('error', 'ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง');
-                return redirect('/login');
+                return redirect()->route('loginGet');
             } else {
                 $req->session()->forget('error');
                 $req->session()->put(key: 'user', value: $user);
-                return redirect('/');
+                return redirect()->route('dashboard');
             }
         // } catch (\Exception $e) {
         //     return redirect('/error');
