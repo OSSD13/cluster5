@@ -17,7 +17,7 @@
 
             <!-- ฟอร์ม -->
              
-            <form class="mt-2" action="/login" method="POST">
+            <form class="mt-2" action="{{ route('login') }}" method="POST">
                 @csrf
                 <label class="block text-gray-700 font-medium">Email</label>
                 <input type="email" name='email' placeholder="name@example.com" class="w-full p-3 mt-1 rounded-lg border border-gray-300 shadow-md bg-white 
