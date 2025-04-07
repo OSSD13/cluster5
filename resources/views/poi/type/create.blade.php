@@ -9,6 +9,7 @@
             border: 2px solid #F02801;
         }
     </style>
+    
     <form method="POST" action="{{ route('poi.type.insert') }}">
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
@@ -46,20 +47,23 @@
             </div>
 
             <!-- สี -->
-            <label class="block text-sm text-gray-600">สี</label>
-            <div class="relative mb-3 flex items-center">
-                <!-- input สี (hex) -->
-                <input type="text" id="colorInput"
-                    class="flex-grow p-2 border border-gray-300 rounded-l-lg @error('color') error-input-style @enderror"
-                    placeholder="สี" name="color" value="{{ old('color') }}">
+<!-- สี -->
+<label class="block text-sm text-gray-600">สี</label>
+<div class="relative mb-3 flex items-center">
+    <!-- input สี (hex) -->
+    <input type="text" id="colorInput"
+    class="w-full p-2 border border-gray-300 rounded-lg @error('color') error-input-style @enderror"
+    placeholder="สี" name="color" value="{{ old('color') }}" >
 
-                <!-- ปุ่ม color picker -->
-                <button type="button" id="colorButton" class="h-full px-4 py-2 cursor-pointer text-white rounded-r-lg"
-                    style="background-color: {{ old('color', '#888') }};">🎨</button>
-            </div>
+    <!-- ปุ่ม color picker -->
+    <button type="button" id="colorButton"
+        class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer
+         rounded-r-lg"
+        name="color" style="background-color: {{ old('color', '#9e9e9e') }};">🎨</button>
+</div>
 
-            <!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
-            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
+<!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
+<input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#9e9e9e') }}">
 
             @error('color')
                 <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
@@ -130,18 +134,22 @@
             });
         </script>
 
-        <!-- Color picker -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const colorInput = document.getElementById("colorInput");
-                const colorButton = document.getElementById("colorButton");
-                const colorPicker = document.getElementById("colorPicker");
 
-                // เมื่อเลือกสีจาก Color Picker
-                colorPicker.addEventListener("input", function () {
-                    colorInput.value = colorPicker.value;
-                    colorButton.style.backgroundColor = colorPicker.value;
-                });
+
+<!-- Color picker -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const colorInput = document.getElementById("colorInput");
+        const colorButton = document.getElementById("colorButton");
+        const colorPicker = document.getElementById("colorPicker");
+
+        colorButton.style.backgroundColor = colorInput.value || "#9e9e9e";
+
+        // เมื่อเลือกสีจาก Color Picker
+        colorPicker.addEventListener("input", function () {
+            colorInput.value = colorPicker.value;
+            colorButton.style.backgroundColor = colorPicker.value;
+        });
 
                 // เมื่อพิมพ์รหัสสี
                 colorInput.addEventListener("input", function () {

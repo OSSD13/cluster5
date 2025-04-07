@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\PointOfInterestController;
 use App\Http\Controllers\PointOfInterestTypeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
-use App\Http\Controllers\AnotherController;
+use App\Http\Controllers\GoogleMapController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
@@ -44,7 +46,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
-    Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'editPage'])->name('poi.type.edit');
+    Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
+    Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
     Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
     Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');
 
@@ -83,6 +86,18 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/branch/delete', [BranchController::class, 'deleteBranch'])->name('api.branch.delete');
     Route::get('/api/branch', [BranchController::class, 'getBranch'])->name('api.branch.get');
 
+    Route::get('/api/user/query', [UserController::class, 'queryUser'])->name('api.user.query');
+    Route::get('/api/user/query/all', [UserController::class, 'queryAllUser'])->name('api.user.query.all');
+    Route::get('/api/user', [UserController::class, 'getUser'])->name('api.user.get');
+    Route::post('/api/user/create', [UserController::class, 'createUser'])->name('api.user.create');
+    Route::post('/api/user/edit', [UserController::class, 'editUser'])->name('api.user.edit');
+    Route::post('/api/user/delete', [UserController::class, 'deleteUser'])->name('api.user.delete');
+
+
+
+    // Test routes
+    Route::get('/api/map', [MapController::class, 'getNearbyPOIsGroupedByType'])->name('api.map.get');
+
 
 
     Route::get('/displayLogin', [DatabaseTestController::class, 'displayLogin']);
@@ -90,8 +105,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/displayBs', [DatabaseTestController::class, 'displayBs']);
 
     // Google Maps URL conversion routes
-    Route::get('/convert-link', [AnotherController::class, 'showForm']);
-    Route::post('/convert-url', [AnotherController::class, 'handleConversion'])->name('handleConversion');
+    Route::get('/convert-link', [GoogleMapController::class, 'showForm']);
+    Route::post('/convert-url', [GoogleMapController::class, 'convertShareToLatLng'])->name('handleConversion');
 
 
 });

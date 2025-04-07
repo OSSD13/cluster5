@@ -18,7 +18,7 @@ class PointOfInterest extends Model
     protected $fillable = [
         'poi_id',
         'poi_name',
-        'type',
+        'poi_type',
         'gps_lat',
         'gps_lng',
         'address',

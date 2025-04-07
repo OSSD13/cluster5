@@ -9,7 +9,7 @@
             border: 2px solid #F02801;
         }
     </style>
-    <form method="POST" action="{{ route('poi.insert') }}">
+    <form method="POST" action="{{ route('poi.insert') }}" name="poiForm">
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
@@ -18,12 +18,9 @@
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3 " placeholder="Link Google">
 
             <label class="block text-sm text-gray-600">ละติจูด</label>
-            <input type="text"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('latitude') error-input-style @enderror"
-                placeholder="ละติจูด" name="latitude" value="{{ old('latitude') }}">
-            @error('latitude')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
+            <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด"
+                name="latitude" value="{{ old('latitude') }}" onkeyup="checkForm()">
+
 
             <label class="block text-sm text-gray-600">ลองจิจูด</label>
             <input type="text"
@@ -73,6 +70,7 @@
                 <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
             @enderror
 
+
             <label class="block text-sm text-gray-600">ชื่อ</label>
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('name') error-input-style
             @enderror" placeholder="ชื่อ" name="name" value="{{ old('name') }}">
@@ -81,25 +79,46 @@
             @enderror
 
             <label class="block text-sm text-gray-600">ประเภท</label>
-                <select class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('type') error-input-style @enderror"
-                    name="type">
-                    <option class = "hidden "value="" disabled {{ old('type') == '' ? 'selected' : '' }}>เลือกประเภทสถานที่</option>
-                    <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>1</option>
-                </select>
-                @error('type')
-                    <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-                @enderror
+            <select class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('type') error-input-style @enderror"
+                name="type">
+                <option class="hidden " value="" disabled {{ old('type') == '' ? 'selected' : '' }}>เลือกประเภทสถานที่
+                </option>
+                <option value="1" {{ old('type') == '1' ? 'selected' : '' }}>1</option>
+            </select>
+            @error('type')
+                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+            @enderror
 
 
-                <div class="flex justify-between">
-                    <a href="{{ route('poi.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-center">
-                        ยกเลิก
-                    </a>
+            <div class="flex justify-between">
+                <a href="{{ route('poi.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-center">
+                    ยกเลิก
+                </a>
 
-                    <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer"
-                        id="saveButton">บันทึก</button>
-                </div>
+                <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-not-allowed" disabled="disabled"
+                    id="saveButton">บันทึก</button>
+            </div>
         </div>
+
+        <script>
+            function checkForm() {
+                // ดึงค่าของฟิลด์ latitude
+                var latitude = document.forms['poiForm'].elements['latitude'].value;
+
+                // ตรวจสอบว่าฟิลด์ latitude ไม่ว่างเปล่า
+                if (latitude.trim() !== "") {
+                    // เปิดใช้งานปุ่ม
+                    document.getElementById("saveButton").disabled = false;
+                    document.getElementById("saveButton").classList.remove("cursor-not-allowed", "bg-gray-500");
+                    document.getElementById("saveButton").classList.add("bg-green-700", "cursor-pointer");
+                } else {
+                    // ปิดใช้งานปุ่ม
+                    document.getElementById("saveButton").disabled = true;
+                    document.getElementById("saveButton").classList.remove("bg-green-700", "cursor-pointer");
+                    document.getElementById("saveButton").classList.add("cursor-not-allowed", "bg-gray-500");
+                }
+            }
+        </script>
 
         @if (session('success'))
             <script>
