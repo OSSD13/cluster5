@@ -11,14 +11,16 @@
             <!-- ประเภทสถานที่ -->
             <label class="block text-sm text-gray-600">ประเภทสถานที่ที่สนใจ</label>
             <input type="text" name="poiType" id="poiType"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+                class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="ประเภทสถานที่">
+            <div class="text-red-500 text-sm mb-3 px-2" id="error-poiType"></div>
 
             <!-- ชื่อสถานที่ -->
             <label class="block text-sm text-gray-600">ชื่อสถานที่ที่สนใจ</label>
             <input type="text" name="poiName" id="poiName"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+                class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="ชื่อสถานที่">
+            <div class="text-red-500 text-sm mb-3 px-2" id="error-poiName"></div>
 
             <!-- Icon -->
             <label class="block text-sm text-gray-600">Icon</label>
@@ -32,6 +34,7 @@
             <div id="emojiPickerContainer" class="hidden">
                 <emoji-picker class="w-full light"></emoji-picker>
             </div>
+            <div class="text-red-500 text-sm mb-3 px-2" id="error-icon"></div>
 
             <!-- สี -->
             <label class="block text-sm text-gray-600">สี</label>
@@ -43,12 +46,14 @@
                 <button type="button" id="colorButton" class="h-full px-4 py-2 text-white rounded-r-lg"
                     style="background-color: #888">🎨</button>
             </div>
+            <div class="text-red-500 text-sm mb-3 px-2" id="error-color"></div>
 
             <!-- รายละเอียด -->
             <label class="block text-sm text-gray-600">รายละเอียดสถานที่ที่สนใจ</label>
             <input type="text" name="poiDetails" id="poiDetails"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-3"
                 placeholder="รายละเอียด">
+            <div class="text-red-500 text-sm mb-3 px-2" id="error-poiDetails"></div>
 
             <!-- ปุ่มบันทึกและยกเลิก -->
             <div class="flex justify-between">
@@ -61,8 +66,8 @@
 
 @section('script')
     <script>
-        // Emoji Picker
         document.addEventListener('DOMContentLoaded', () => {
+            // Emoji Picker
             const emojiButton = document.getElementById('emojiButton');
             const emojiPickerContainer = document.getElementById('emojiPickerContainer');
             const iconInput = document.getElementById('iconInput');
@@ -108,13 +113,15 @@
                 e.preventDefault();
 
                 // Clear previous errors
-                form.querySelectorAll('.text-red-500').forEach(el => el.remove());
+                form.querySelectorAll('[id^="error-"]').forEach(el => {
+                    el.textContent = '';
+                });
 
                 const formData = {
                     poit_type: form.poiType.value,
                     poit_name: form.poiName.value,
-                    poit_icon: form.icon.value,
-                    poit_color: form.color.value,
+                    poit_icon: form.iconInput.value,
+                    poit_color: form.colorInput.value,
                     poit_detail: form.poiDetails.value,
                 };
 
@@ -159,13 +166,10 @@
 
             function displayValidationErrors(errors) {
                 for (const field in errors) {
-                    const messages = errors[field];
-                    const input = document.querySelector(`[name="${convertApiFieldToInputName(field)}"]`);
-                    if (input) {
-                        const errorDiv = document.createElement('div');
-                        errorDiv.className = 'text-red-500 text-sm mb-2';
-                        errorDiv.textContent = messages[0];
-                        input.insertAdjacentElement('afterend', errorDiv);
+                    const inputName = convertApiFieldToInputName(field);
+                    const errorDiv = document.getElementById(`error-${inputName}`);
+                    if (errorDiv) {
+                        errorDiv.textContent = errors[field][0];
                     }
                 }
             }
