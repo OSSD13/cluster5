@@ -66,6 +66,11 @@
         renderPagination(result.total);
     }
 
+    function displayValue(value) {
+    return value === null || value === undefined || value === "" ? "-" : value;
+    }
+
+
     function renderTable() {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
@@ -78,7 +83,7 @@
                     <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
                     <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
                 </td>
-                <td class="py-3 px-4 text-center ">${poi.province}</td>
+                <td class="py-3 px-4 text-center ">${displayValue(poi.province)}</td>
 
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
@@ -156,8 +161,58 @@
         }
     }
 
+    function formatThaiDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+
     function viewDetail(id) {
-        alert("ดูรายละเอียด POI ID: " + id);
+    const poi = pois.find(item => item.poi_id === id);
+
+    if (!poi) {
+        Swal.fire("ไม่พบข้อมูล POI", "", "error");
+        return;
     }
+
+    Swal.fire({
+        html: `
+            <div class="flex flex-col text-3xl mb-6 mt-4">
+                <b class="text-gray-800">รายละเอียดสถานที่</b>
+            </div>
+            <div class="flex flex-col space-y-2 text-left text-sm">
+                <div class="w-full">
+                    <label class="font-medium text-gray-800">ชื่อสถานที่</label>
+                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(poi.poi_name)}" readonly>
+                </div>
+
+                <div class="w-full">
+                    <label class="font-medium text-gray-800">ประเภท</label>
+                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(poi.poit_name)}" readonly>
+                </div>
+
+                <div class="w-full">
+                    <label class="font-medium text-gray-800">จังหวัด</label>
+                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(poi.province)}" readonly>
+                </div>
+
+                <div class="w-full">
+                    <label class="font-medium text-gray-800">วันที่เพิ่ม</label>
+                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(formatThaiDate(poi.created_at))}" readonly>
+                </div>
+            </div>
+        `,
+        customClass: {
+            popup: 'custom-popup'
+        },
+        confirmButtonText: "ยืนยัน",
+        confirmButtonColor: "#2D8C42",
+    });
+}
+
 </script>
 @endsection
