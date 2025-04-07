@@ -7,8 +7,8 @@
         .error-input-style {
             border: 2px solid #F02801;
         }
-    </style> -->
-
+    </style>
+    
     <form method="POST" action="{{ route('poi.type.insert') }}">
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
@@ -49,21 +49,30 @@
             @enderror
 
             <!-- สี -->
-            <label class="block text-sm text-gray-600">สี</label>
-            <div class="relative mb-3 flex items-center">
-                <input type="text" name="color" id="colorInput"
-                    class="flex-grow p-2 border border-gray-300 rounded-l-lg @error('color') error-input-style @enderror"
-                    value="{{ old('color') }}" placeholder="สี (Hex)">
-                <button type="button" id="colorButton"
-                    class="h-full px-4 py-2 text-white rounded-r-lg"
-                    style="background-color: {{ old('color', '#888') }}">🎨</button>
-            </div>
-            <input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#ffffff') }}">
-            @error('color')
-                <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
-            @enderror
+<!-- สี -->
+<label class="block text-sm text-gray-600">สี</label>
+<div class="relative mb-3 flex items-center">
+    <!-- input สี (hex) -->
+    <input type="text" id="colorInput"
+    class="w-full p-2 border border-gray-300 rounded-lg @error('color') error-input-style @enderror"
+    placeholder="สี" name="color" value="{{ old('color') }}" >
 
-            <!-- รายละเอียด -->
+    <!-- ปุ่ม color picker -->
+    <button type="button" id="colorButton"
+        class="absolute inset-y-0 right-0 px-4 py-2 cursor-pointer
+         rounded-r-lg"
+        name="color" style="background-color: {{ old('color', '#9e9e9e') }};">🎨</button>
+</div>
+
+<!-- ซ่อนตัวเลือกสีไว้ใต้ form -->
+<input type="color" id="colorPicker" class="hidden" value="{{ old('color', '#9e9e9e') }}">
+
+@error('color')
+    <div class="text-red-500 text-sm mb-2">{{ $message }}</div>
+@enderror
+
+
+            <!-- รายละเอียดสถานที่ที่สนใจ -->
             <label class="block text-sm text-gray-600">รายละเอียดสถานที่ที่สนใจ</label>
             <input type="text" name="poiDetails" id="poiDetails"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-3 @error('poiDetails') error-input-style @enderror"
@@ -99,27 +108,21 @@
     @endif
 @endsection
 
-@section('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const emojiButton = document.getElementById('emojiButton');
-            const emojiPickerContainer = document.getElementById('emojiPickerContainer');
-            const iconInput = document.getElementById('iconInput');
 
-            emojiButton.addEventListener('click', () => {
-                emojiPickerContainer.classList.toggle('hidden');
-            });
 
-            emojiPickerContainer.querySelector('emoji-picker').addEventListener('emoji-click', event => {
-                iconInput.value = event.detail.unicode;
-                emojiPickerContainer.classList.add('hidden');
-            });
+<!-- Color picker -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const colorInput = document.getElementById("colorInput");
+        const colorButton = document.getElementById("colorButton");
+        const colorPicker = document.getElementById("colorPicker");
 
-            document.addEventListener('click', (event) => {
-                if (!emojiPickerContainer.contains(event.target) && event.target !== emojiButton) {
-                    emojiPickerContainer.classList.add('hidden');
-                }
-            });
+        colorButton.style.backgroundColor = colorInput.value || "#9e9e9e";
+
+        // เมื่อเลือกสีจาก Color Picker
+        colorPicker.addEventListener("input", function () {
+            colorInput.value = colorPicker.value;
+            colorButton.style.backgroundColor = colorPicker.value;
         });
 
         // Color Picker
