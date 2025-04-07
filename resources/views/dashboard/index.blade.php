@@ -149,7 +149,7 @@
                                     datasets: [{
                                         label: 'จำนวนสาขา', // "Number of Branches"
                                         data: chartValues,
-                                        backgroundColor: '#F846E1',
+                                        backgroundColor: '#3366C0',
                                         borderWidth: 1
                                     }]
                                 },
@@ -315,7 +315,7 @@
         </div>
 
         <!--  -->
-        <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
+        <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col" style="background-color:rgb(229, 238, 255)">
             <canvas id="branchVSprofit"></canvas>
         </div>
         <div class="flex flex-col gap-4">
@@ -356,7 +356,7 @@
                 </div>
                 <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
                     <div class="font-bold" style="font-size: 14px; color: black;" >Average (บาท)</div>
-                    <div class="flex justify-center items-center text-bold  text-base gap-2"style ="color: #DA25BF;">
+                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5"style ="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
@@ -556,92 +556,75 @@
             }
 
             function buildProvinceTable(region) {
-                // fetch /api/getRegionBranch?region=SOUTH
-                // example response
-                // {
-                //     "distinct_provinces": [
-                //         "กระบี่",
-                //         "ชุมพร",
-                //         "ตรัง",
-                //         "นครศรีธรรมราช",
-                //         "นราธิวาส",
-                //         "ปัตตานี",
-                //         "พังงา",
-                //         "พัทลุง",
-                //         "ภูเก็ต",
-                //         "ยะลา",
-                //         "ระนอง",
-                //         "สงขลา",
-                //         "สตูล",
-                //         "สุราษฎร์ธานี"
-                //     ],
-                //     "branch_count_by_province": [{
-                //             "province": "กระบี่",
-                //             "branch_count": 3
-                //         },
-                //         {
-                //             "province": "ชุมพร",
-                //             "branch_count": 2
-                //         },
-                //         {
-                //             "province": "ตรัง",
-                //             "branch_count": 1
-                //         },
-                //         {
-                //             "province": "นครศรีธรรมราช",
-                //             "branch_count": 2
-                //         },
-                //         {
-                //             "province": "ปัตตานี",
-                //             "branch_count": 5
-                //         },
-                //         {
-                //             "province": "ภูเก็ต",
-                //             "branch_count": 1
-                //         },
-                //         {
-                //             "province": "สุราษฎร์ธานี",
-                //             "branch_count": 11
-                //         }
-                //     ]
-                // }
-                const date = document.getElementById('timePeriod') ?
-                    document.getElementById('timePeriod').value :
-                    new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
-                const user_id = document.getElementById('subordinateSelect') ?
-                    document.getElementById('subordinateSelect').value :
-                    {{ session()->get(key: 'user')->user_id }}
-                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
-                        region,
-                        date,
-                        user_id
-                    }).toString())
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Province Branch Data:', data);
-                        clearTableBody();
-                        const provinceTableBody = document.getElementById('regionTableBody');
-                        provinceTableBody.innerHTML = ''; // Clear existing data
-                        data.branch_count_by_province.forEach((province, index) => {
-                            let row = `<tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                                <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
-                                <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                <td class="px-6 py-2 whitespace-nowrap text-center">${province.branch_count}</td>
-                                <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
-                            </tr>`;
-                            provinceTableBody.innerHTML += row;
-                        });
-                        let branchCount = data.branch_count_by_province.reduce((acc, region) => acc + region.branch_count,
-                            0);
-                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
-                        showBackButton();
-                        showRegionTable();
-                        setBackButtonOnClick(() => {
-                            buildRegionTable();
-                        });
-                    })
-                    .catch(error => console.error('Error fetching province branch data:', error));
-            }
+    const regions = {
+        'NORTH': 'ภาคเหนือ',
+        'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
+        'WEST': 'ภาคตะวันตก',
+        'CENTRAL': 'ภาคกลาง',
+        'EAST': 'ภาคตะวันออก',
+        'SOUTH': 'ภาคใต้',
+    };
+
+    // เปลี่ยนชื่อหัวเรื่อง (ใหญ่) เป็นชื่อภาค
+    const regionTitle = document.getElementById('regionTitle');
+    regionTitle.textContent = regions[region];
+
+    // ✅ ใช้ฟอนต์ขนาดใหญ่เสมอ
+    regionTitle.classList.remove('text-2xl');
+    regionTitle.classList.add('text-4xl');
+
+    // ✅ เปลี่ยนชื่อหัวตารางจาก "ภูมิภาค" เป็น "จังหวัด"
+    const regionHeader = document.querySelector('#regionTable thead th:nth-child(2)');
+    if (regionHeader) {
+        regionHeader.textContent = 'จังหวัด';
+    }
+
+    const date = document.getElementById('timePeriod') ?
+        document.getElementById('timePeriod').value :
+        new Date().toISOString().slice(0, 7);
+
+    const user_id = document.getElementById('subordinateSelect') ?
+        document.getElementById('subordinateSelect').value :
+        {{ session()->get('user')->user_id }};
+
+    fetch('/api/getRegionBranch?' + new URLSearchParams({
+        region,
+        date,
+        user_id
+    }).toString())
+        .then(response => response.json())
+        .then(data => {
+            console.log('Province Branch Data:', data);
+
+            clearTableBody();
+
+            const provinceTableBody = document.getElementById('regionTableBody');
+            provinceTableBody.innerHTML = ''; // Clear existing data
+
+            data.branch_count_by_province.forEach((province, index) => {
+                let row = `
+                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                        <td class="px-3 py-2 text-center whitespace-nowrap">
+                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                        </td>
+                    </tr>`;
+                provinceTableBody.innerHTML += row;
+            });
+
+            let branchCount = data.branch_count_by_province.reduce((acc, p) => acc + p.branch_count, 0);
+            document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+
+            showBackButton();
+            showRegionTable();
+            setBackButtonOnClick(() => {
+                buildRegionTable();
+            });
+        })
+        .catch(error => console.error('Error fetching province branch data:', error));
+}
 
 
             function buildBranchesTable(region, province) {
