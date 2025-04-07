@@ -303,7 +303,17 @@
         </div>
 
         <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
+                 <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
+                <div class="font-bold">ยอดรายได้ทั้งหมด (บาท) </div>
+                <div class="flex justify-around items-center">
+                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow font-medium text-success" style="font-size: 75px; flex-grow :1.5" id="thisMonthTotalMoneyIcon"></span>
+                    <span class="font-bold text-green-600 flex-grow " style="font-size: 28px;" id="thisMonthTotalMoneyNumber">784,723.2</span>
+                </div>
+                <div class="text-base font-medium text-end text-success" id="thisMonthTotalMoneyPercentParent">
+                    <span class="icon-[line-md--arrow-up]" id="thisMonthTotalMoneyArrow"></span>
+                    <span id="thisMonthTotalMoneyPercent">11.88</span>% จากก่อนหน้านี้
+                </div>
+            </div>
                 <div class="">ยอดรายได้ทั้งหมด</div>
                 <div class="flex justify-around items-center">
                     <span class="icon-[tabler--coin-filled] text-trinary" style="font-size: 75px;"
