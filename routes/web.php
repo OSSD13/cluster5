@@ -4,6 +4,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\PointOfInterestController;
 use App\Http\Controllers\PointOfInterestTypeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DatabaseTestController;
 use App\Http\Controllers\GoogleMapController;
@@ -82,6 +83,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/branch/edit', [BranchController::class, 'editBranch'])->name('api.branch.edit');
     Route::post('/api/branch/delete', [BranchController::class, 'deleteBranch'])->name('api.branch.delete');
     Route::get('/api/branch', [BranchController::class, 'getBranch'])->name('api.branch.get');
+
+    Route::get('/api/user/query', [UserController::class, 'queryUser'])->name('api.user.query');
 
 
     // Test routes
