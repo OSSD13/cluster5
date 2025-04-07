@@ -17,7 +17,7 @@ class CheckLogin
     {
         $user = session()->get('user');
         if(!isset($user)){
-            return redirect('');
+            return redirect('login');
         }
         return $next($request);
     }
