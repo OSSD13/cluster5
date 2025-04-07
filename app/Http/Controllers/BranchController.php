@@ -26,6 +26,16 @@ class BranchController extends Controller
         $branchQuery = Branch_store::query();
 
         $target = $request->input('target', '');
+        $reqUserId = session()->get('user')->user_id;
+        // check if target is user's subordinate
+        $reqUser = User::where('user_id', $reqUserId)->first();
+        $reqSub = $reqUser->getSubordinateIds();
+        if (!in_array($target, $reqSub)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You are not allowed to view this user branch'
+            ], 403);
+        }
         // check if target is valid user id
         $user = User::where('user_id', $target)->first();
         if ($user) {

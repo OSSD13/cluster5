@@ -3,12 +3,6 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-    <!-- <style>
-        .error-input-style {
-            border: 2px solid #F02801;
-        }
-    </style> -->
-
     <form method="POST" action="{{ route('poi.type.insert') }}">
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
