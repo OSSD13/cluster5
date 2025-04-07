@@ -10,15 +10,13 @@
 
             <!-- ประเภทสถานที่ -->
             <label class="block text-sm text-gray-600">ประเภทสถานที่ที่สนใจ</label>
-            <input type="text" name="poiType" id="poiType"
-                class="w-full p-2 border border-gray-300 rounded-lg"
+            <input type="text" name="poiType" id="poiType" class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="ประเภทสถานที่">
             <div class="text-red-500 text-sm mb-3 px-2" id="error-poiType"></div>
 
             <!-- ชื่อสถานที่ -->
             <label class="block text-sm text-gray-600">ชื่อสถานที่ที่สนใจ</label>
-            <input type="text" name="poiName" id="poiName"
-                class="w-full p-2 border border-gray-300 rounded-lg"
+            <input type="text" name="poiName" id="poiName" class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="ชื่อสถานที่">
             <div class="text-red-500 text-sm mb-3 px-2" id="error-poiName"></div>
 
@@ -26,8 +24,7 @@
             <label class="block text-sm text-gray-600">Icon</label>
             <div class="relative mb-3">
                 <input type="text" name="icon" id="iconInput" readonly
-                    class="w-full p-2 border border-gray-300 rounded-lg"
-                    placeholder="เลือกอีโมจิ">
+                    class="w-full p-2 border border-gray-300 rounded-lg" placeholder="เลือกอีโมจิ">
                 <button type="button" id="emojiButton"
                     class="absolute inset-y-0 right-0 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg">😀</button>
             </div>
@@ -40,8 +37,7 @@
             <label class="block text-sm text-gray-600">สี</label>
             <div class="relative mb-3 flex items-center">
                 <input type="text" name="color" id="colorInput"
-                    class="flex-grow p-2 border border-gray-300 rounded-l-lg"
-                    placeholder="สี (Hex)">
+                    class="flex-grow p-2 border border-gray-300 rounded-l-lg" placeholder="สี (Hex)">
                 <input type="color" id="colorPicker" class="w-0 h-0" value="#ffffff">
                 <button type="button" id="colorButton" class="h-full px-4 py-2 text-white rounded-r-lg"
                     style="background-color: #888">🎨</button>
@@ -51,14 +47,14 @@
             <!-- รายละเอียด -->
             <label class="block text-sm text-gray-600">รายละเอียดสถานที่ที่สนใจ</label>
             <input type="text" name="poiDetails" id="poiDetails"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3"
-                placeholder="รายละเอียด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รายละเอียด">
             <div class="text-red-500 text-sm mb-3 px-2" id="error-poiDetails"></div>
 
             <!-- ปุ่มบันทึกและยกเลิก -->
             <div class="flex justify-between">
                 <a href="{{ route('poi.type.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg">ยกเลิก</a>
-                <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg">บันทึก</button>
+                <button type="submit" class="px-4 py-2 text-white rounded-lg">บันทึก</button>
+
             </div>
         </div>
     </form>
@@ -92,16 +88,16 @@
             const colorButton = document.getElementById("colorButton");
             const colorPicker = document.getElementById("colorPicker");
 
-            colorPicker.addEventListener("input", function () {
+            colorPicker.addEventListener("input", function() {
                 colorInput.value = colorPicker.value;
                 colorButton.style.backgroundColor = colorPicker.value;
             });
 
-            colorInput.addEventListener("input", function () {
+            colorInput.addEventListener("input", function() {
                 colorButton.style.backgroundColor = colorInput.value;
             });
 
-            colorButton.addEventListener("click", function () {
+            colorButton.addEventListener("click", function() {
                 colorPicker.click();
             });
 
@@ -154,7 +150,8 @@
                     } else if (data.errors) {
                         displayValidationErrors(data.errors);
                     } else {
-                        Swal.fire("เกิดข้อผิดพลาด", data.message || "ไม่สามารถบันทึกข้อมูลได้", "error");
+                        Swal.fire("เกิดข้อผิดพลาด", data.message || "ไม่สามารถบันทึกข้อมูลได้",
+                        "error");
                     }
                 } catch (err) {
                     Swal.fire("ข้อผิดพลาด", "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", "error");
@@ -184,6 +181,37 @@
                 };
                 return map[field] || field;
             }
+
+            submitButton.disabled = true;
+            submitButton.classList.add('bg-gray-400', 'cursor-not-allowed'); // optional visual cue
+
+            const requiredFields = ['poiType', 'poiName', 'iconInput', 'colorInput'];
+
+            function validateForm() {
+                const isComplete = requiredFields.every(id => {
+                    const input = document.getElementById(id);
+                    return input && input.value.trim() !== '';
+                });
+
+                submitButton.disabled = !isComplete;
+
+                if (isComplete) {
+                    submitButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                    submitButton.classList.add('bg-green-700');
+                } else {
+                    submitButton.classList.remove('bg-green-700');
+                    submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                }
+            }
+
+            // Listen for input changes
+            requiredFields.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', validateForm);
+                }
+            });
+
         });
     </script>
 @endsection

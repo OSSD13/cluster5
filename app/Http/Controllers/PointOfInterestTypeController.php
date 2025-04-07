@@ -205,7 +205,7 @@ class PointOfInterestTypeController extends Controller
             ], 422);
         }
 
-        $poit = PointOfInterestType::where('poit_type', $request->input('poit_type'))->first();
+        $poit = PointOfInterestType::where('poit_type', '=', $request->input('poit_type'))->first();
         if (!$poit) {
             return response()->json([
                 'status' => 'error',
@@ -213,7 +213,7 @@ class PointOfInterestTypeController extends Controller
             ], 404);
         }
 
-        \DB::table('point_of_interests')->where('poi_type', '=', $request->input('poit_type'))->delete();
+        $poit->delete();
         return response()->json([
             'status' => 'success',
             'message' => 'ลบประเภทสถานที่เรียบร้อยแล้ว'

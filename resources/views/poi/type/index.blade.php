@@ -21,7 +21,7 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed " >
+        <table class="min-w-full mt-5 table-auto border-collapse rounded-lg bg-gray-100 " >
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-3 px-4 text-left">ชื่อ / ประเภท</th>
@@ -65,7 +65,8 @@
 
             paginated.forEach(poit => {
                 const row = document.createElement("tr");
-                row.classList.add("border-b", "border-gray-200", "hover:bg-blue-50"); // เพิ่ม border และ hover effect
+                row.classList.add("border-b", "border-gray-200",
+                "hover:bg-blue-50"); // เพิ่ม border และ hover effect
                 row.innerHTML = `
                     <td class="py-3 px-4 text-left font-semibold">${poit.poit_name}</td>
                     <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
@@ -94,7 +95,8 @@
 
             const prevBtn = document.createElement("button");
             prevBtn.innerText = "<";
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            prevBtn.className =
+                `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -102,7 +104,8 @@
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                btn.className =
+                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
                                 ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
@@ -110,7 +113,8 @@
 
             const nextBtn = document.createElement("button");
             nextBtn.innerText = ">";
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            nextBtn.className =
+                `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -320,9 +324,9 @@
         }
 
         // ค้นหา
-        document.getElementById("searchInput").addEventListener("input", function () {
+        document.getElementById("searchInput").addEventListener("input", function() {
             const keyword = this.value.toLowerCase();
-            const filtered = poits.filter(p => 
+            const filtered = poits.filter(p =>
                 p.poit_name.toLowerCase().includes(keyword) ||
                 p.poit_type.toLowerCase().includes(keyword) ||
                 (p.poit_description && p.poit_description.toLowerCase().includes(keyword))

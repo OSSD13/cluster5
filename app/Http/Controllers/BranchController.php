@@ -23,17 +23,19 @@ class BranchController extends Controller
         $target = $request->input('target', '');
 
         $branchQuery = Branch_store::query();
+        if ($target) {
+            $reqUserId = session()->get('user')->user_id;
+            $reqUser = User::where('user_id', $reqUserId)->first();
+            $reqSub = array_merge([$reqUserId], $reqUser->getSubordinateIds());
 
-        $reqUserId = session()->get('user')->user_id;
-        $reqUser = User::where('user_id', $reqUserId)->first();
-        $reqSub = array_merge([$reqUserId], $reqUser->getSubordinateIds());
-
-        if (!in_array($target, $reqSub)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'คุณไม่มีสิทธิ์ดูข้อมูลสาขานี้'
-            ], 403);
+            if (!in_array($target, $reqSub)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'คุณไม่มีสิทธิ์ดูข้อมูลสาขานี้'
+                ], 403);
+            }
         }
+
 
         $user = User::where('user_id', $target)->first();
         if ($user) {
@@ -199,10 +201,14 @@ class BranchController extends Controller
             ], 404);
         }
 
-        if ($request->has('name')) $branch->bs_name = $request->input('name');
-        if ($request->has('address')) $branch->bs_address = $request->input('address');
-        if ($request->has('detail')) $branch->bs_detail = $request->input('detail');
-        if ($request->has('bs_manager')) $branch->bs_manager = $request->input('bs_manager');
+        if ($request->has('name'))
+            $branch->bs_name = $request->input('name');
+        if ($request->has('address'))
+            $branch->bs_address = $request->input('address');
+        if ($request->has('detail'))
+            $branch->bs_detail = $request->input('detail');
+        if ($request->has('bs_manager'))
+            $branch->bs_manager = $request->input('bs_manager');
 
         $branch->save();
 

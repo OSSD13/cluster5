@@ -4,6 +4,21 @@
 
 @section('content')
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #map-container {
+    height: calc(100vh - 330px); /* adjust this based on header & controls */
+    width: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.75rem;
+}
         #infowindow-content {
             display: none;
         }
@@ -11,16 +26,32 @@
         #map #infowindow-content {
             display: inline;
         }
+        #result {
+    z-index: 1;
+    background-color: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+    max-height: 40vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: none;
+}
+
+#result.show {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
     </style>
+
     <div class="flex flex-col gap-4 h-full">
-        {{-- report card --}}
-        {{-- <div class=" bg-white shadow-md rounded-lg p-6 flex flex-col gap-3 "> --}}
-        <!--The div element for the map -->
+        <!-- Search & Controls -->
         <div class="flex flex-row gap-4 justify-center items-center bg-gray-100 rounded-lg p-2 cursor-pointer"
             onclick="document.getElementById('pac-input').focus()">
             <input id="pac-input" class="flex-grow p-4 py-2" type="text" placeholder="ค้นหา" />
             <span class="icon-[material-symbols--search] text-4xl"></span>
         </div>
+
         <div class='flex flex-row gap-4 justify-center items-center'>
             <button onclick="window.functions.analyze()"
                 class="bg-primary-light text-white px-4 py-2 rounded cursor-pointer flex-grow font-bold border border-gray-400">วิเคราะห์</button>
@@ -32,27 +63,25 @@
             </select>
         </div>
 
-        <div id="map" class="w-full h-96 rounded-xl shadow-md"></div>
+        <!-- Map & Floating Result Panel -->
+        <div id="map-container" class="w-full rounded-xl shadow-md">
+            <div id="map"></div>
+        </div>
+
         <div id="infowindow-content">
             <span id="place-name" class="title"></span><br />
             <strong>Place ID:</strong> <span id="place-id"></span><br />
             <span id="place-address"></span>
         </div>
-
-        <div class=" bg-white shadow-md rounded-lg p-6 hidden flex-col gap-3" id='result'>
+        <div id="result">
             <h3 class="text-2xl font-bold text-primary-dark">ผลวิเคราะห์</h3>
             <div id="resultAmount"></div>
             <div id="loading" class="hidden justify-center items-center w-full">
                 <span class="icon-[mdi--loading] text-4xl animate-spin"></span>
             </div>
-
-            <div id="results" class="grid grid-cols-1 divide-y divide-gray-200">
-            </div>
-
+            <div id="results" class="grid grid-cols-1 divide-y divide-gray-200"></div>
         </div>
     </div>
-
-    {{-- </div> --}}
 @endsection
 
 
@@ -431,8 +460,7 @@
             document.getElementById("loading").classList.add("flex");
 
             // show result 
-            document.getElementById("result").classList.remove("hidden");
-            document.getElementById("result").classList.add("flex");
+            document.getElementById("result").classList.add("show");
 
             // scroll to result 
             document.getElementById("result").scrollIntoView({
