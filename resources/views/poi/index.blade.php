@@ -25,16 +25,16 @@
     </div>
 
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
+        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
-                    <th class="py-2 px-2 text-left w-1/12 whitespace-nowrap">ID</th>
-                    <th class="py-2 px-4 text-center w-3/12 whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">ประเภท</th>
-                    <th class="py-2 px-2 text-center w-2/12 whitespace-nowrap">จังหวัด</th>
-                    <th class="py-2 px-2 text-center w-1/12 whitespace-nowrap">ตัวเลือก</th>
-                </tr>
+                    <th scope="col" class="py-2 px-4 text-left">ID</th>
+                    <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสถานที่ / ประเภท</th>
+                    <th class="py-3 px-4 text-center max-w-[120px]">จังหวัด</th>
+                    <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+                  </tr>
             </thead>
+    
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
         </table>
     </div>
@@ -74,9 +74,12 @@
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td class="py-3 px-4 w-16">${poi.poi_id}</td>
-                <td class="py-3 px-4 truncate">${poi.poi_name}</td>
-                <td class="py-3 px-4 truncate">${poi.poit_name}</td>
-                <td class="py-3 px-4 truncate">${poi.province}</td>
+                <td class="py-3 px-4 ">
+                    <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
+                    <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
+                </td>
+                <td class="py-3 px-4 text-center ">${poi.province}</td>
+
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
                     <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
