@@ -396,34 +396,41 @@
                 <div class="flex flex-col text-3xl mb-6 mt-4">
                      <b class=text-gray-800 >สร้างสมาชิก</b>
                  </div>
-                <div class="flex flex-col space-y-1 text-left">
-                    <label class="font-semibold text-gray-800">Email</label>
-                    <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" >
-
-                    <label class="font-semibold text-gray-800">Password</label>
-                    <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
-
-                    <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
-                    <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3">
-
-                    <label class="font-semibold text-gray-800">บทบาท</label>
-                    <select id="memberRole" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded" onchange="toggleSupervisor()">
+                <div class="flex flex-col space-y-2 text-left">
+                    <div class="w-full">
+                        <label class="font-semibold text-gray-800 text-sm">Email</label>
+                        <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                    </div>
+                <div class="w-full">
+                    <label class="font-semibold text-gray-800 text-sm">Password</label>
+                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">ชื่อผู้ใช้</label>
+                    <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">บทบาท</label>
+                    <select id="memberRole" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="toggleSupervisor()">
                         <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
                         <option value="Sale">Sale</option>
                         <option value="CEO">CEO</option>
                         <option value="Sale Sup.">Sale Supervisor</option>
                     </select>
-
+                </div>
+                <div class="w-full">
                     <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
                     <div id="supervisorSection" style="display: none;" class="mt-4">
-                        <label class="font-semibold text-gray-800">Sales supervisor</label>
-                        <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                        <label class="font-medium text-gray-800 text-sm">Sales supervisor</label>
+                        <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <option value="" selected disabled>เลือก Sales Supervisor</option>
                             ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
                                 `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
                             ).join('')}
                         </select>
                     </div>
+                </div>
+                </div>
                 </div>`,
             showCancelButton: true,
             confirmButtonText: "ยืนยัน",
@@ -514,36 +521,45 @@
         const member = members.find(item => item.id === id);
 
         Swal.fire({
-            title: `
-                <div class="flex flex-col items-center mb-1 ">
-                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="160" data-height="160"></span>
-                </div>
-                <b class=text-gray-800>แก้ไขสมาชิก </b>
-            `,
             html: `
-            
-                <div class="flex flex-col space-y-1 text-left">
-                    <label class="font-semibold text-gray-800">Email</label>
-                    <input type="email" id="memberEmail" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.email}" >
+             <div class="flex flex-col items-center mb-1">
+                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+                </div>
+                <div class="flex flex-col text-3xl mb-6 mt-4">
+                     <b class=text-gray-800 >แก้ไขสมาชิก</b>
+                 </div>
+                <div class="flex flex-col space-y-2 text-left">
+                    <div class="w-full">
+                    <label class="font-semibold text-gray-800 text-sm">Email</label>
+                    <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" >
+                    </div>
 
-                    <label class="font-semibold text-gray-800">Password</label>
-                    <input type="password" id="memberPassword" class="w-full p-2 border border-gray-300 rounded mb-3" >
+                    <div class="w-full">
+                    <label class="font-semibold text-gray-800 text-sm">Password</label>
+                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                    </div>
 
-                    <label class="font-semibold text-gray-800">ชื่อผู้ใช้</label>
-                    <input type="text" id="memberName" class="w-full p-2 border border-gray-300 rounded mb-3" value="${member.name}">
+                    <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">ชื่อผู้ใช้</label>
+                    <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}">
+                    </div>
 
-                    <label class="font-semibold text-gray-800">บทบาท</label>
-                    <select id="memberRole" onchange="toggleSupervisor()" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                    <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">บทบาท</label>
+                    <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                         <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
                         <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
                         <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
                     </select>
-
+                    </div>
+                     
+                    <div class="w-full">
                     <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
-                        <label class="font-semibold text-gray-800">Sales Supervisor</label>
-                        <select id="supervisorDropdown" class="swal2-input w-full h-10 text-lg px-3 text-gray-800 border border-gray-300 rounded">
+                        <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
+                        <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <!-- options จะเติมโดย toggleSupervisor() -->
                         </select>
+                    </div>
                     </div>
                 </div>
             `,
