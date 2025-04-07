@@ -286,16 +286,10 @@
         <div class="flex flex-row gap-4">
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="font-bold">ยอดพัสดุทั้งหมด</div>
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-2">
-                <div class="text-lg font-sm">ยอดพัสดุทั้งหมด</div>
                 <div class="flex justify-around items-center">
                     <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow" style="font-size: 55px;" id='thisMonthTotalPackageIcon'></span>
                     <span class="font-bold text-trinary flex-grow text-right" style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
                     <span class="font-medium text-xl flex-grow-0 text-right p-4">ชิ้น</span>
-                    <span class="icon-[streamline--upload-box-1-solid] text-6xl text-trinary"
-                        id='thisMonthTotalPackageIcon'></span>
-                    <span class="text-4xl font-bold text-trinary" id='thisMonthTotalPackageNumber'></span>
-                    <span class="text-2xl font-bold text-black">ชิ้น</span>
                 </div>
                 <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
