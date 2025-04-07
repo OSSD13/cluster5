@@ -16,7 +16,7 @@
         </div>
 
         <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสาขา" class="w-full p-2 border border-gray-300 rounded-md mb-3 shadow-lg">
+        <input type="SearchInput" text="text" placeholder="ค้นหาสาขา" class="w-full p-2 border border-gray-300 rounded-md mb-3 shadow-lg">
 
         <!-- Dropdowns -->
         <div class="mb-3">
@@ -49,6 +49,7 @@
             </thead>
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
         </table>
+        <div id="pagination" class="mt-4 flex justify-center items-center space-x-2"></div>
     </div>
 
     <!-- Pagination Controls -->
@@ -81,6 +82,25 @@
                 province: `${i % 5 === 0 ? 'อุดรธานี' : i % 5 === 1 ? 'ชลบุรี' : i % 5 === 2 ? 'กรุงเทพฯ' : i % 5 === 3 ? 'ขอนแก่น' : 'เชียงใหม่'}`,
             });
         }
+         //magicserch
+         function filterAll() {
+        const searchVal = document.getElementById("searchInput").value.toLowerCase();
+
+        const filtered = branches.filter(branch => {
+            return (
+                branch.id.toString().includes(searchVal) ||
+                branch.name.toLowerCase().includes(searchVal) ||
+                branch.type.toLowerCase().includes(searchVal) ||
+                branch.province.toLowerCase().includes(searchVal)
+            );
+        });
+
+        currentPage = 1;
+        renderTable(filtered);
+        document.getElementById("searchInput").addEventListener("input", filterAll);
+
+        }
+
         // Your existing data
         let currentPage = 1;
         const rowsPerPage = 10;
@@ -168,6 +188,22 @@
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
+
+            prevBtn.onclick = () => {
+            currentPage--;
+                renderTable(data);
+            };
+
+            nextBtn.onclick = () => {
+                currentPage++;
+                renderTable(data);
+            };
+
+            // inside numbered buttons:
+            btn.onclick = () => {
+                currentPage = i;
+                renderTable(data);
+            };
         }
 
 
