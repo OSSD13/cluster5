@@ -63,10 +63,72 @@
         let totalItems = 0;
         const apiUrl = `{{ route('api.branch.query') }}`;
 
-        let searchTimeout;
-        document.getElementById("searchInput").addEventListener("input", () => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => fetchBranches(1), 300);
+    let searchTimeout;
+    document.getElementById("searchInput").addEventListener("input", () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => fetchBranches(1), 300);
+    });
+
+    document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
+
+    async function fetchBranches(page = 1) {
+        const search = document.getElementById("searchInput").value.trim();
+        const role = document.getElementById("roleFilter").value;
+
+        const params = new URLSearchParams({ page, limit: rowsPerPage });
+        if (search) params.append('search', search);
+        if (role) params.append('role', role);
+
+        try {
+            const response = await fetch(`${apiUrl}?${params.toString()}`);
+            const json = await response.json();
+            branches = json.data || [];
+            currentPage = json.page || 1;
+            totalItems = json.total || 0;
+            rowsPerPage = json.limit || 10;
+            renderTable();
+        } catch (error) {
+            console.error("ไม่สามารถโหลดข้อมูลได้:", error);
+            document.getElementById("tableBody").innerHTML = `
+                <tr><td colspan="5" class="text-center py-4 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>
+            `;
+        }
+    }
+
+    function renderTable() {
+        const tableBody = document.getElementById("tableBody");
+        const resultCount = document.getElementById("resultCount");
+        tableBody.innerHTML = "";
+        resultCount.innerText = `ผลลัพธ์ ${totalItems} รายการ`;
+
+        if (branches.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-500">ไม่พบข้อมูล</td></tr>`;
+            return;
+        }
+
+        branches.forEach((branch) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="py-3 px-4 w-16">${branch.bs_id}</td>
+                <td class="py-3 px-4 ">
+                    <div class="font-semibold text-md" title="${branch.bs_name}">${branch.bs_name}</div>
+                    <div class="text-sm text-gray-400 " title="${branch.poit_name}">${branch.poit_name}</div>
+                </td>
+                <td class="py-3 px-4 text-center ">${branch.bs_manager_name}</td>
+
+                <td class="py-3 px-1 w-10 text-center relative">
+                    <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
+                    <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
+                        <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
+                            onclick="window.location.href='{{ route('branch.manage.index') }}?bs_id=${branch.bs_id}'">จัดการ</button>
+                        <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
+                            onclick="window.location.href='{{ route('branch.edit') }}?bs_id=${branch.bs_id}'">แก้ไข</button>
+                        <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer"
+                            onclick="deleteBranch(${branch.bs_id})" style="background-color: #CF3434">ลบ</button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(row);
         });
 
         document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
@@ -199,31 +261,7 @@
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
 
-        function deleteBranch(id) {
-            Swal.fire({
-                title: "ลบสาขา",
-                text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
-                icon: "warning",
-                iconColor: "#d33",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3062B8",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    branches = branches.filter(branch => branch.bs_id !== id);
-                    renderTable();
-                    Swal.fire({
-                        title: "ลบแล้ว!",
-                        text: "สาขาถูกลบเรียบร้อย",
-                        icon: "success"
-                    });
-                }
-            });
-        }
-
-        // Initial load
-        fetchBranches();
-    </script>
+    // Initial load
+    fetchBranches();
+</script>
 @endsection
