@@ -4,11 +4,11 @@
 
 @section('body')
     <div class="relative w-screen h-screen items-center justify-center bg-cover bg-center flex flex-col"
-        style="background-image: url('/assets/img/bgLogin.jpg'); background-position: 30% center;">
+        style="background-image: url('{{ asset('assets/img/bgLogin.jpg') }}'); background-position: 30% center;">
 
         <!-- โลโก้ -->
         <div class="flex flex-col items-center">
-            <img src="/assets/img/logo_myLocation.png" class="w-48 mb-1" alt="Logo">
+            <img src="{{ asset('assets/img/logo_myLocation.png') }}" class="w-48 mb-1" alt="Logo">
         </div>
 
         <!-- กล่อง Login -->
@@ -48,7 +48,7 @@
 
                 <a class="flex items-center justify-center w-full p-3 rounded-lg border border-gray-300 shadow-md bg-white 
                     hover:bg-gray-100" href="{{ route('google-auth') }}">
-                    <img src="/assets/img/LogoGg.png" class="w-6 h-6 mr-2"> Log in with Google
+                    <img src="{{ asset('assets/img/LogoGg.png') }}" class="w-6 h-6 mr-2"> Log in with Google
                 </a>
             </form>
         </div>
