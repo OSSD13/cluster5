@@ -10,6 +10,9 @@ class PointOfInterestType extends Model
     /** @use HasFactory<\Database\Factories\PointOfInterestTypeFactory> */
     use HasFactory;
 
+    protected $primaryKey = 'poit_type';
+    public $incrementing = false;
+    protected $keyType = 'string';
     /**
      * The attributes that are mass assignable.
      *
