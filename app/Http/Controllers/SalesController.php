@@ -14,13 +14,13 @@ class SalesController extends Controller
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $limit;
 
-        $branchId = $request->input('branch_id');
+        $branchId = $request->input('bs_id');
         $userId = $request->input('user_id');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
         $salesQuery = DB::table('sales')
-            ->join('branch_stores', 'sales.sales_branch_id', '=', 'branch_stores.bs_id')
+            ->join('branch_stores', 'sales.sales_bs_id', '=', 'branch_stores.bs_id')
             ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id')
             ->select(
                 'sales.sales_id',
@@ -33,7 +33,7 @@ class SalesController extends Controller
             );
 
         if ($branchId) {
-            $salesQuery->where('sales.sales_branch_id', $branchId);
+            $salesQuery->where('sales.sales_bs_id', $branchId);
         }
 
         if ($userId) {
@@ -153,11 +153,11 @@ class SalesController extends Controller
         }
 
         $results = DB::table('sales')
-            ->join('branch_stores', 'sales.sales_branch_id', '=', 'branch_stores.bs_id')
+            ->join('branch_stores', 'sales.sales_bs_id', '=', 'branch_stores.bs_id')
             ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id')
             ->select(
                 'sales.sales_id',
-                'sales.sales_branch_id',
+                'sales.sales_bs_id',
                 'branch_stores.bs_name as branch_name',
                 'sales.sales_month',
                 'sales.sales_amount',

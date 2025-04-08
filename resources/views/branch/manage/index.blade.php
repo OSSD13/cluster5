@@ -88,7 +88,7 @@
 
     async function fetchSales(page = 1) {
         const params = new URLSearchParams({
-            branch_id: branchId,
+            bs_id: branchId,
             page: page,
             limit: rowsPerPage
         });

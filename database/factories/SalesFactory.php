@@ -22,7 +22,7 @@ class SalesFactory extends Factory
         return [
             'sales_package_amount' => $sales_package_amount = fake()->numberBetween(1, 400),
             'sales_amount' => $sales_package_amount * fake()->randomFloat(2, 20, 50),
-            'sales_branch_id' => fake()->numberBetween(1, $max_bs_id),
+            'sales_bs_id' => fake()->numberBetween(1, $max_bs_id),
             'created_at' => fake()->dateTimeBetween('-1 years','now'),
             'sales_month' => fake()-> dateTimeBetween('-1 years','now'),
         ];
