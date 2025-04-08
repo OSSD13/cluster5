@@ -437,10 +437,17 @@
                     <th scope="col"
                         class="py-3 flex justify-center font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
                     <th scope="col"
+<<<<<<< HEAD
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
+                    <th scope="col"
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
+                    <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
+=======
                         class="px-6 py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
                         class="px-3 py-3 text-center text-base font-medium text-gray-500 uppercase tracking-wider hitespace-nowrap" style="color: black">จำนวนสาขา</th>
                     <th scope="col" class="px-3 py-3" id="regionBranchCount"></th>
+>>>>>>> origin/develop
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200" id="regionTableBody">
