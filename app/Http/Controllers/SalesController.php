@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\User;
 use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
@@ -174,6 +173,49 @@ class SalesController extends Controller
             'data' => $results
         ]);
     }
+
+    public function createSales(Request $request)
+{
+    $validator = \Validator::make($request->all(), [
+        'sales_branch_id' => 'required|integer|exists:branch_stores,bs_id',
+        'sales_amount' => 'required|numeric|min:0',
+        'sales_package_amount' => 'nullable|numeric|min:0',
+        'sales_month' => 'required|date_format:Y-m-d',
+    ], [
+        'sales_branch_id.required' => 'กรุณาระบุรหัสสาขา',
+        'sales_branch_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
+        'sales_branch_id.exists' => 'ไม่พบข้อมูลสาขาที่ระบุ',
+        'sales_amount.required' => 'กรุณาระบุยอดขาย',
+        'sales_amount.numeric' => 'ยอดขายต้องเป็นตัวเลข',
+        'sales_package_amount.numeric' => 'ยอดแพ็คเกจต้องเป็นตัวเลข',
+        'sales_month.required' => 'กรุณาระบุเดือนการขาย',
+        'sales_month.date_format' => 'รูปแบบวันที่ต้องเป็น YYYY-MM-DD',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'การตรวจสอบข้อมูลล้มเหลว',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    $salesId = DB::table('sales')->insertGetId([
+        'sales_branch_id' => $request->input('sales_branch_id'),
+        'sales_amount' => $request->input('sales_amount'),
+        'sales_package_amount' => $request->input('sales_package_amount'),
+        'sales_month' => $request->input('sales_month'),
+    ]);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'เพิ่มข้อมูลการขายเรียบร้อยแล้ว',
+        'data' => [
+            'sales_id' => $salesId
+        ]
+    ]);
+}
+
 
 
 }
