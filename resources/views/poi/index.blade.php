@@ -3,25 +3,26 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
-    <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold text-gray-700">POI จัดการสถานที่ที่สนใจ</h2>
-        <a href="{{ route('poi.create') }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
-                สร้าง POI
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-2xl font-bold text-gray-800" >POI จัดการสถานที่ที่สนใจ</h2>
+
+            <a href="{{ route('poi.create') }}">
+                <button class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
+                    สร้าง POI
+                </button>
+            </a>
+        </div>
+
+        <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
+
+        <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
+        <a href="{{ route('poi.type.index') }}">
+            <button class="hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
+                ไปหน้า POI type
             </button>
         </a>
     </div>
-
-    <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
-    <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
-
-    <a href="{{ route('poi.type.index') }}">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
-            ไปหน้า POI type
-        </button>
-    </a>
-</div>
 
 <div class="overflow-visible">
     <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
@@ -38,7 +39,7 @@
     </table>
 </div>
 
-<div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
+    <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 @endsection
 
 @section('script')
@@ -48,28 +49,27 @@
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchPois();
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchPois();
 
-            document.getElementById("searchInput").addEventListener("input", function () {
-                currentPage = 1;
-                fetchPois(this.value);
-            });
+        document.getElementById("searchInput").addEventListener("input", function () {
+            currentPage = 1;
+            fetchPois(this.value);
         });
+    });
 
-        async function fetchPois(search = '') {
-            const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
-            const result = await res.json();
-            pois = result.data;
-            
-            document.getElementById("resultCount").innerText = result.total;
-            renderTable();
-            renderPagination(result.total);
-        }
+    async function fetchPois(search = '') {
+        const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+        const result = await res.json();
+        pois = result.data;
+        document.getElementById("resultCount").innerText = result.total;
+        renderTable();
+        renderPagination(result.total);
+    }
 
-        function renderTable() {
-            const tableBody = document.getElementById("tableBody");
-            tableBody.innerHTML = "";
+    function renderTable() {
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
 
             pois.forEach((poi) => {
                 const row = document.createElement("tr");
@@ -120,20 +120,20 @@
             pagination.appendChild(nextBtn);
         }
 
-        function goToPage(pageNumber) {
-            currentPage = pageNumber;
-            fetchPois(document.getElementById("searchInput").value);
-        }
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        fetchPois(document.getElementById("searchInput").value);
+    }
 
-        function toggleMenu(event, id) {
-            event.stopPropagation();
-            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-            document.getElementById(`menu-${id}`).classList.toggle("hidden");
-        }
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+        document.getElementById(`menu-${id}`).classList.toggle("hidden");
+    }
 
-        document.addEventListener("click", () => {
-            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-        });
+    document.addEventListener("click", () => {
+        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+    });
 
         function deletePoi(id) {
             Swal.fire({
