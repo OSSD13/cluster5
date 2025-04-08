@@ -37,7 +37,7 @@
         <!-- User Info -->
         <div class="flex items-center space-x-2 ">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M6.5 7.5a5.5 5.5 0 1 1 11 0a5.5 5.5 0 0 1-11 0M3 19a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v3H3z"/></svg>
-            <span style="font-weight:bold;">torlapsayhi@gmail.com</span>
+            <span style="font-weight:bold;">{{ session()->get('user')->email }}</span>
         </div>
 
         <!-- Logout Button -->

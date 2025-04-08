@@ -65,7 +65,8 @@
 
             paginated.forEach(poit => {
                 const row = document.createElement("tr");
-                row.classList.add("border-b", "border-gray-200", "hover:bg-blue-50"); // เพิ่ม border และ hover effect
+                row.classList.add("border-b", "border-gray-200",
+                "hover:bg-blue-50"); // เพิ่ม border และ hover effect
                 row.innerHTML = `
                     <td class="py-3 px-4 text-left font-semibold">${poit.poit_name}</td>
                     <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
@@ -94,7 +95,8 @@
 
             const prevBtn = document.createElement("button");
             prevBtn.innerText = "<";
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            prevBtn.className =
+                `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -102,7 +104,8 @@
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                btn.className =
+                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
                                 ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
@@ -110,7 +113,8 @@
 
             const nextBtn = document.createElement("button");
             nextBtn.innerText = ">";
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            nextBtn.className =
+                `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -137,54 +141,47 @@
             window.location.href = `/poi/type/${id}/edit`;
         }
 
-// ฟังก์ชันสำหรับอัปเดต Icon ตามประเภทที่เลือก
-function updateIconPreview() {
-    const type = document.getElementById("poiType").value;
-    const iconPreview = document.getElementById("iconPreview");
-    iconPreview.innerHTML = getIconByType(type);
-}
-        document.addEventListener("DOMContentLoaded", () => {
-            renderTable();
+        const filterAll = () => {
+            const searchVal = document.getElementById("searchInput").value.toLowerCase();
+            const typeVal = document.getElementById("typeSelect").value;
+            const provVal = document.getElementById("provinceSelect").value;
 
-            const filterAll = () => {
-                const searchVal = document.getElementById("searchInput").value.toLowerCase();
-                const typeVal = document.getElementById("typeSelect").value;
-                const provVal = document.getElementById("provinceSelect").value;
+            const filtered = poits.filter(p =>
+                (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(
+                    searchVal) || p.province.toLowerCase().includes(searchVal)) &&
+                (!typeVal || p.type === typeVal) &&
+                (!provVal || p.province === provVal)
+            );
 
-                const filtered = poits.filter(p =>
-                    (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(searchVal) || p.province.toLowerCase().includes(searchVal)) &&
-                    (!typeVal || p.type === typeVal) &&
-                    (!provVal || p.province === provVal)
-                );
+            currentPage = 1;
+            renderTable(filtered);
+        };
 
-                currentPage = 1;
-                renderTable(filtered);
-            };
+        document.getElementById("searchInput").addEventListener("input", filterAll);
 
-            document.getElementById("searchInput").addEventListener("input", filterAll);
-            document.getElementById("typeSelect").addEventListener("change", filterAll);
-            document.getElementById("provinceSelect").addEventListener("change", filterAll);
-        });
 
         document.addEventListener("click", () => {
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
+
         function deletePoit(id) {
             if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบ?")) {
                 fetch(`/api/poit/delete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({ poit_type: getPoitTypeById(id) }) // คุณต้องดึง poit_type จาก id นี้
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    fetchPoits();
-                })
-                .catch(error => console.error("Delete error:", error));
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            poit_type: getPoitTypeById(id)
+                        }) // คุณต้องดึง poit_type จาก id นี้
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        fetchPoits();
+                    })
+                    .catch(error => console.error("Delete error:", error));
             }
         }
 
@@ -194,9 +191,9 @@ function updateIconPreview() {
         }
 
         // ค้นหา
-        document.getElementById("searchInput").addEventListener("input", function () {
+        document.getElementById("searchInput").addEventListener("input", function() {
             const keyword = this.value.toLowerCase();
-            const filtered = poits.filter(p => 
+            const filtered = poits.filter(p =>
                 p.poit_name.toLowerCase().includes(keyword) ||
                 p.poit_type.toLowerCase().includes(keyword) ||
                 (p.poit_description && p.poit_description.toLowerCase().includes(keyword))
