@@ -129,21 +129,28 @@
 
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5 mt-5">
         <div class="flex flex-col space-y-2 text-left max-w-xs">
-            <label class="font-medium text-gray-700 text-sm">เดือน</label>
+            <div class="flex flex-col space-y-2 text-left text-sm">
+            <label class="w-full">เดือน</label>
             <select class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                 <option>กุมภาพันธ์ - 2568</option>
             </select>
+            </div>
 
+            <div class="w-full">
             <label class="font-medium text-gray-700 text-sm">จำนวนกล่อง</label>
             <input type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            </div>
 
+            <div class="w-full">
             <label class="font-medium text-gray-700 text-sm">ยอดเงิน</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-
+            </div>
+            <div class="w-full">
             <button
-                class="w-full h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition" style="background-color: #3062B8">
+                class=" h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition" style="background-color: #3062B8">
                 เพิ่มรายการ
             </button>
+            </div>
 
             <p class="text-sm text-gray-600 mt-2">ผลลัพธ์ 302 รายการ</p>
         </div>
@@ -151,17 +158,18 @@
 
     <!-- Pagination Controls -->
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed ">
-            <thead class="text-gray-800" style="background-color: #B5CFF5">
+        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
-                    <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center"></th>
-                </tr>
+                    <th scope="col" class="py-2 px-4 text-left">ID</th>
+                    <th class="py-3 px-4 text-left min-w-[70px]">เดือน</th>
+                    <th class="py-3 px-4 text-left max-w-[70px]">ยอดเงิน</th>
+                    <th class="py-3 px-4 text-left ">เพิ่มโดย</th>
+                    <th class="py-3 px-1 w-7 text-center ">&#8230;</th>
+                  </tr>
             </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
+    
+            <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
         </table>
     </div>
 

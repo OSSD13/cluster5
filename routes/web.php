@@ -13,14 +13,13 @@ use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ManageUserController;
+use App\Http\Controllers\ViewController;
 use App\Http\Middleware\CheckLogin;
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
-Route::get('/login', function () {
-    return view('auth.login');
-}); // แก้ชื่อ method ให้ตรง (Login → login)
+ // แก้ชื่อ method ให้ตรง (Login → login)
 
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -28,34 +27,30 @@ Route::post('/login', [LoginController::class, 'login']);
 
 // testing
 Route::middleware([CheckLogin::class])->group(function () {
-    Route::get('/', function () {
-        return view('dashboard.index');
-    });
-    Route::get('/map', function () {
-        return view('map.index');
-    });
-    Route::get('/branch', function () {
-        return view('branch.index'); });
-    Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
+    
+    //view function
+    Route::get('/login', [ViewController::class, 'login']);
+    Route::get('/', [ViewController::class, 'dashbordIndex']);
+    Route::get('/branch', [ViewController::class, 'branchIndex']);
+    Route::get('/map', [ViewController::class, 'mapIndex']);
+    Route::get('/poi', [ViewController::class, 'branchIndex']);
+    Route::get('/user', [ViewController::class, 'userIndex']);
+    //branch
+    Route::get('/branch/create', [Controller::class, 'create'])->name('branch.create');
     Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
     Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
-
-    Route::get('/poi', function () {
-        return view('poi.index'); });
+    //poi
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
+    //poitype
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
     Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
     Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
     Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');
-
-
-    Route::get('/user', function () {
-        return view('user.index');
-    });
+   
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
 
