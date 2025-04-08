@@ -13,6 +13,7 @@ use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Middleware\CheckLogin;
+use App\Http\Controllers\InsertPointOfInterestTypeController;
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
@@ -68,6 +69,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/api/poi', [PointOfInterestController::class, 'queryPoi'])->name('api.poi.query');
     Route::post('/api/poi/edit', [PointOfInterestController::class, 'editPoi'])->name('api.poi.edit');
     Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
+    Route::post('/poi/type/insert', [InsertPointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::post('/api/poi/create', [PointOfInterestController::class, 'createPoi'])->name('api.poi.create');
 
     Route::get('/api/poit/query', [PointOfInterestTypeController::class, 'queryPoit'])->name('api.poit.query');
