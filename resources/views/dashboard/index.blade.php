@@ -356,7 +356,7 @@
                 </div>
                 <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
                     <div class="font-bold" style="font-size: 14px; color: black;" >Average (บาท)</div>
-                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5"style ="color: #DA25BF;">
+                    <div class="flex justify-center items-center text-bold  text-base gap-2"style ="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>

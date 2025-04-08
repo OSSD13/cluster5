@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class LocationController extends Controller
 {
     public function getLocations()
     {
-        $locations = \DB::table('locations')
-            ->select('district', 'amphoe', 'province', 'zipcode')
-            ->get();
+        // Cache for 60 minutes (adjust as needed)
+        $cacheKey = 'locations.all';
+        $locations = Cache::rememberForever($cacheKey, function () {
+            return DB::table('locations')
+                ->select('district', 'amphoe', 'province', 'zipcode')
+                ->get();
+        });
 
         return response()->json($locations);
     }

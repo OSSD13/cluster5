@@ -24,6 +24,7 @@ class PointOfInterest extends Model
         'address',
         'location_id',
     ];
+    protected $table = 'point_of_interests';
 
     public function getPOIId(): int
     {
