@@ -14,7 +14,7 @@ class SalesController extends Controller
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $limit;
 
-        $branchId = $request->input('branch_id');
+        $branchId = $request->input('bs_id');
         $userId = $request->input('user_id');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
