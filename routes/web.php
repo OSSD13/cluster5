@@ -12,6 +12,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\ManageUserController;
 use App\Http\Middleware\CheckLogin;
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
@@ -87,9 +88,10 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/api/user/query', [UserController::class, 'queryUser'])->name('api.user.query');
     Route::get('/api/user/query/all', [UserController::class, 'queryAllUser'])->name('api.user.query.all');
     Route::get('/api/user', [UserController::class, 'getUser'])->name('api.user.get');
-    Route::post('/api/user/create', [UserController::class, 'createUser'])->name('api.user.create');
-    Route::post('/api/user/edit', [UserController::class, 'editUser'])->name('api.user.edit');
-    Route::post('/api/user/delete', [UserController::class, 'deleteUser'])->name('api.user.delete');
+    Route::post('/api/user/create', [ManageUserController::class, 'createUser'])->name('api.user.create');
+    Route::post('/api/user/edit', [ManageUserController::class, 'editUser'])->name('api.user.edit');
+    Route::post('/api/user/delete', [ManageUserController::class, 'deleteUser'])->name('api.user.delete');
+
 
 
 
