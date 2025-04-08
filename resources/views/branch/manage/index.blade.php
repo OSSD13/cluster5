@@ -73,6 +73,91 @@
 
 
 
+<!-- กราฟและการ์ดสถิติยอดขาย -->
+<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+    <canvas id="branchSalesChart" class="w-full h-48"></canvas>
+</div>
+
+<div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-6">
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #F2DDD4;">
+        <div class="text-sm font-bold text-gray-700">Min (บาท)</div>
+        <div class="text-xl font-bold text-red-600" id="minValue">-</div>
+    </div>
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #D6F2D4;">
+        <div class="text-sm font-bold text-gray-700">Max (บาท)</div>
+        <div class="text-xl font-bold text-green-600" id="maxValue">-</div>
+    </div>
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #FAEAFF;">
+        <div class="text-sm font-bold text-gray-700">Standard Deviation</div>
+        <div class="text-xl font-bold text-pink-600" id="stdValue">-</div>
+    </div>
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #FAEAFF;">
+        <div class="text-sm font-bold text-gray-700">Average</div>
+        <div class="text-xl font-bold text-pink-600" id="avgValue">-</div>
+    </div>
+</div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetchBranchSalesStats();
+});
+
+async function fetchBranchSalesStats() {
+    try {
+        const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+        const result = await response.json();
+        const data = result.data || [];
+        const salesAmounts = data.map(s => parseFloat(s.sales_amount));
+
+        if (salesAmounts.length === 0) return;
+
+        const min = Math.min(...salesAmounts);
+        const max = Math.max(...salesAmounts);
+        const avg = salesAmounts.reduce((a, b) => a + b, 0) / salesAmounts.length;
+        const std = Math.sqrt(salesAmounts.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesAmounts.length);
+
+        document.getElementById('minValue').textContent = min.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('maxValue').textContent = max.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+        const bins = Array(10).fill(0);
+        const maxSale = Math.max(...salesAmounts);
+        const step = maxSale / bins.length;
+        salesAmounts.forEach(amount => {
+            const index = Math.min(Math.floor(amount / step), bins.length - 1);
+            bins[index]++;
+        });
+
+        const labels = bins.map((_, i) => `${Math.round(i * step / 1000)}k`);
+        const ctx = document.getElementById("branchSalesChart").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: "จำนวนสาขา",
+                    data: bins,
+                    backgroundColor: "#3366C0"
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error fetching stats:", error);
+    }
+}
+</script>
 
 
 
