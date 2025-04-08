@@ -78,7 +78,7 @@
                     <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
                     <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
                 </td>
-                <td class="py-3 px-4 text-center ">${poi.province}</td>
+                <td class="py-3 px-4 text-center ">${poi.province || '-'}</td>
 
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
