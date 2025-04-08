@@ -1,6 +1,6 @@
 
 @extends('layouts.screen')
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @section('screen')
 <div class="min-h-screen h-full w-full flex flex-col">
     <!-- Top Navbar -->

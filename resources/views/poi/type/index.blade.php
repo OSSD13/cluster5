@@ -72,6 +72,19 @@
         border-radius: 50%;
         /* ทำให้ปุ่มเปลี่ยนหน้าเป็นวงกลม */
     }
+        th:nth-child(1), td:nth-child(1) {
+        max-width: 100px; /* ลดความกว้างของคอลัมน์ประเภท */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    th:nth-child(3), td:nth-child(3) {
+        max-width: 150px; /* ลดความกว้างของคอลัมน์คำอธิบาย */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>
 
 @section('script')
