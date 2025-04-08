@@ -643,14 +643,14 @@
 
                         data.branch_count_by_province.forEach((province, index) => {
                             let row = `
-                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
-                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
-                        <td class="px-3 py-2 text-center whitespace-nowrap">
-                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
-                        </td>
-                    </tr>`;
+                            <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                                <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                                <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                                <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                                <td class="px-3 py-2 text-center whitespace-nowrap">
+                                    <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                                </td>
+                            </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
 
