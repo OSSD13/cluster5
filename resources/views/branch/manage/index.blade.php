@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        
+
         <!-- Header -->
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold text-gray-700">จัดการสาขา - บางแสน</h2>
@@ -16,7 +16,8 @@
             <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
                 value="{{ $branch->bs_name }}" readonly>
-            {{-- <pre>{{ json_encode($branch, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre> --}}
+            {{--
+            <pre>{{ json_encode($branch, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre> --}}
 
             <label class="font-medium text-gray-700 text-sm">ประเภท</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
@@ -39,38 +40,38 @@
 
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
         {{-- Dropdown: เดือน --}}
-        <div>
+        <div class="mb-4">
             <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
             <select
-                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                class="w-full h-10 px-4 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option>มกราคม - 2568</option>
                 <option selected>กุมภาพันธ์ - 2568</option>
                 <option>มีนาคม - 2568</option>
             </select>
         </div>
         {{-- Input: จำนวนกล่อง --}}
-        <div>
+        <div class="mb-4">
             <label class="block text-sm font-medium text-gray-800 mb-1">จำนวนกล่อง</label>
             <input type="number"
-                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full h-10 px-4 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="กรอกจำนวนกล่อง">
         </div>
         {{-- Input: ยอดเงิน --}}
-        <div>
+        <div class="mb-4">
             <label class="block text-sm font-medium text-gray-800 mb-1">ยอดเงิน</label>
             <input type="number"
-                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full h-10 px-4 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="กรอกยอดเงิน">
         </div>
         {{-- ปุ่มเพิ่มรายการ --}}
         <div>
             <button
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 rounded-md shadow-md transition">
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3 px-4 rounded-md shadow-md transition">
                 เพิ่มรายการ
             </button>
         </div>
         {{-- ข้อความผลลัพธ์ --}}
-        <div class="text-sm text-gray-700">
+        <div class="text-sm text-gray-700 mt-2">
             ผลลัพธ์ 302 รายการ
         </div>
     </div>
@@ -136,11 +137,11 @@
                     month: 'short'
                 });
                 row.innerHTML = `
-                <td class="py-3 px-4">${monthLabel}</td>
-                <td class="py-3 px-4 text-right">${parseFloat(sale.sales_amount).toLocaleString()}</td>
-                <td class="py-3 px-4 text-right">${sale.manager_name}</td>
-                <td class="py-3 px-1 w-7 text-center">&#8230;</td>
-            `;
+                    <td class="py-3 px-4">${monthLabel}</td>
+                    <td class="py-3 px-4 text-right">${parseFloat(sale.sales_amount).toLocaleString()}</td>
+                    <td class="py-3 px-4 text-right">${sale.manager_name}</td>
+                    <td class="py-3 px-1 w-7 text-center">&#8230;</td>
+                `;
                 tableBody.appendChild(row);
             });
         }
@@ -155,9 +156,8 @@
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement("button");
                 btn.textContent = i;
-                btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${
-                i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black"
-            }`;
+                btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black"
+                    }`;
                 btn.onclick = () => fetchSales(i);
                 pagination.appendChild(btn);
             }
