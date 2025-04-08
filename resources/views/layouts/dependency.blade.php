@@ -30,13 +30,6 @@
 
     {{-- jQuery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <script type="text/javascript"  src="{{ asset('assets/js/zip.js') }}"></script>
-    <script type="text/javascript"  src="{{ asset('assets/js/JQL.js') }}"></script>
-    <script type="text/javascript"  src="{{ asset('assets/js/typeahead.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('assets/css/thailand.jquery.css') }}">
-    <script type="text/javascript"  src="{{ asset('assets/js/thailand.jquery.js') }}"></script>
-    
 
     {{-- Favicon --}}
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
