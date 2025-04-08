@@ -12,19 +12,6 @@
 <form method="POST" action="{{ route('api.branch.create') }}" name="branchForm" id="branchForm" autocomplete="off">
     @csrf
     <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-<<<<<<< HEAD
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">รายละเอียดการสร้างสาขา</h2>
-
-        <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google"
-            id="googleLink">
-
-        <label class="block text-sm text-gray-600">ละติจูด</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด" id="latitude">
-
-        <label class="block text-sm text-gray-600">ลองจิจูด</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" id="longitude">
-=======
         <h2 class="text-2xl font-bold text-gray-800 mb-4">สร้างสาขา</h2>
 
         <label class="block text-sm text-gray-600">Link Google (Optional)</label>
@@ -41,7 +28,6 @@
         <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ลองจิจูด"
             name="longitude" value="{{ old('longitude') }}" id="longitude" inputmode="decimal">
         @error('longitude') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
->>>>>>> origin/develop
 
         <label class="block text-sm text-gray-600">แผนที่</label>
         <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">

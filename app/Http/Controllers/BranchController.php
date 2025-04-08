@@ -176,6 +176,7 @@ class BranchController extends Controller
             $branch->bs_poi_id = $poi->id;
             $branch->bs_manager = $userId;
             $branch->bs_detail = $request->input('detail', null);
+        try {
             $branch->save();
 
             return response()->json([

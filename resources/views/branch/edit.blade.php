@@ -13,7 +13,11 @@
     <h2 class="text-2xl font-bold text-gray-800 mb-4">รายละเอียดสาขา</h2>
 
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-    <input type="text" id="googleLink" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
+    <input type="text" id="googleLink" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google"
+    >
+    <label class="block text-sm text-gray-600">ชื่อสาขา</label>
+    <input type="text" id="branchName" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อสาขา"
+    value="{{ $branch->bs_name }}">
 
     <label class="block text-sm text-gray-600">ละติจูด</label>
     <input type="text" id="latitude" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด">

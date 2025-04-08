@@ -35,7 +35,7 @@ Route::middleware([CheckLogin::class])->group(function () {
         return view('map.index');
     })->name('map');
     Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
-    Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
+    Route::get('/branch/edit', [BranchController::class, 'editBranch'])->name('branch.edit');
     Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
