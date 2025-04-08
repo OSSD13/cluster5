@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+        
         <!-- Header -->
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold text-gray-700">จัดการสาขา - บางแสน</h2>
