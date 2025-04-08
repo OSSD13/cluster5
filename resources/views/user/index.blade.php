@@ -576,137 +576,138 @@ function renderPagination(totalItems) {
 
 
     // ฟังก์ชันสำหรับแก้ไขสมาชิก
-    function editMember(id) {
-        const member = members.find(item => item.user_id === id);
+    async function editMember(id) {
+    const member = members.find(item => item.user_id === id);
 
-        Swal.fire({
-            html: `
-             <div class="flex flex-col items-center mb-1">
-                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
-                </div>
-                <div class="flex flex-col text-3xl mb-6 mt-4">
-                     <b class=text-gray-800 >แก้ไขสมาชิก</b>
-                 </div>
-                <div class="flex flex-col space-y-2 text-left">
-                    <div class="w-full">
+    const result = await Swal.fire({
+        html: `
+            <div class="flex flex-col items-center mb-1">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+            </div>
+            <div class="flex flex-col text-3xl mb-6 mt-4">
+                <b class="text-gray-800">แก้ไขสมาชิก</b>
+            </div>
+            <div class="flex flex-col space-y-2 text-left">
+                <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Email</label>
-                    <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" >
-                    </div>
+                    <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}">
+                </div>
 
-                    <div class="w-full">
+                <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Password</label>
-                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"value ="${member.password}">
-                    </div>
+                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.password}">
+                </div>
 
-                    <div class="w-full">
+                <div class="w-full">
                     <label class="font-medium text-gray-800 text-sm">ชื่อผู้ใช้</label>
                     <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}">
-                    </div>
+                </div>
 
-                    <div class="w-full">
+                <div class="w-full">
                     <label class="font-medium text-gray-800 text-sm">บทบาท</label>
                     <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                        <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
-                        <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
-                        <option value="supervisor" ${member.role === 'supervisor' ? 'selected' : ''}>Sale Supervisor</option>
+                        <option value="sale" ${member.role_name === 'sale' ? 'selected' : ''}>Sale</option>
+                        <option value="ceo" ${member.role_name === 'ceo' ? 'selected' : ''}>CEO</option>
+                        <option value="supervisor" ${member.role_name === 'supervisor' ? 'selected' : ''}>Sale Supervisor</option>
                     </select>
-                    </div>
-                     
-                    <div class="w-full">
-                    <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
+                </div>
+                 
+                <div class="w-full">
+                    <div id="supervisorSection" style="display: ${member.role_name === 'sale' ? 'block' : 'none'};" class="mt-4">
                         <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
                         <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <!-- options จะเติมโดย toggleSupervisor() -->
                         </select>
                     </div>
-                    </div>
                 </div>
-            `,
-            didOpen: () => {
-                toggleSupervisor();
-                if (member.role === "Sale" && member.supervisorId) {
-                    const dropdown = document.getElementById("supervisorDropdown");
-                    setTimeout(() => {
-                        dropdown.value = member.supervisorId;
-                    }, 0); // รอให้ toggleSupervisor เติม option ก่อน
-                }
-            },
-            showCancelButton: true,
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#2D8C42",
-            focusCancel: true,
-            customClass: {
-                actions: "flex justify-between w-full px-4",
-                cancelButton: "ml-0",
-                confirmButton: "mr-0",
-            },
-            preConfirm: async () => {
-                const email = document.getElementById("memberEmail").value;
-                const name = document.getElementById("memberName").value;
-                const password = document.getElementById("memberPassword").value;
-                const role = document.getElementById("memberRole").value;
+            </div>
+        `,
+        didOpen: () => {
+            toggleSupervisor();
+            if (member.role_name === "sale" && member.supervisorId) {
+                const dropdown = document.getElementById("supervisorDropdown");
+                setTimeout(() => {
+                    dropdown.value = member.supervisorId;
+                }, 0); // รอให้ toggleSupervisor เติม option ก่อน
+            }
+        },
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        focusCancel: true,
+        customClass: {
+            actions: "flex justify-between w-full px-4",
+            cancelButton: "ml-0",
+            confirmButton: "mr-0",
+        },
+        preConfirm: async () => {
+            const email = document.getElementById("memberEmail").value;
+            const name = document.getElementById("memberName").value;
+            const password = document.getElementById("memberPassword").value;
+            const role = document.getElementById("memberRole").value;
 
-                if (!email || !name || !role) {
-                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                    return false;
-                }
+            if (!email || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
 
-                let manager = null;
-                if (role === "Sale") {
-                    manager = document.getElementById("supervisorDropdown").value;
-                    if (!manager) {
-                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
-                        return false;
-                    }
-                }
-
-                try {
-                    const response = await fetch("{{ route('api.user.edit') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                        },
-                        body: JSON.stringify({
-                            user_id: id,
-                            email: email,
-                            name: name,
-                            password: password || undefined,
-                            role_name: role,
-                            manager: manager ? parseInt(manager) : null,
-                            user_status: "normal"
-                        })
-                    });
-
-                    const result = await response.json();
-
-                    if (!response.ok) {
-                        const errorMsg = result?.message || "เกิดข้อผิดพลาด";
-                        Swal.showValidationMessage(errorMsg);
-                        return false;
-                    }
-
-                    Swal.fire({
-                        title: "สำเร็จ!",
-                        text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
-                        icon: "success",
-                        confirmButtonColor: "#2D8C42",
-                        confirmButtonText: "ตกลง"
-                    });
-
-                    // รีเฟรชข้อมูลจาก API ใหม่
-                    fetchMembers();
-
-                } catch (error) {
-                    Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ API");
-                    console.error("Edit API error:", error);
+            let manager = null;
+            if (role === "sale") {
+                manager = document.getElementById("supervisorDropdown").value;
+                if (!manager) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                     return false;
                 }
             }
 
-        });
-    }
+            try {
+                const response = await fetch("{{ route('api.user.edit') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify({
+                        user_id: id,
+                        email: email,
+                        name: name,
+                        password: password || undefined,
+                        role_name: role,
+                        manager: manager ? parseInt(manager) : null,
+                        user_status: "normal"
+
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    const errorMsg = result?.message || "เกิดข้อผิดพลาด";
+                    Swal.showValidationMessage(errorMsg);
+                    return false;
+                }
+
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42",
+                    confirmButtonText: "ตกลง"
+                });
+
+                // รีเฟรชข้อมูลจาก API ใหม่
+                fetchMembers();
+
+            } catch (error) {
+                Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ API");
+                console.error("Edit API error:", error);
+                return false;
+            }
+        }
+    });
+}
+
 
     // ฟังก์ชันสำหรับลบสมาชิก
     function deleteMember(id) {
