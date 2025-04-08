@@ -81,9 +81,7 @@ class UserController extends Controller
     {
         $role = $request->input('role', 'sale');
         $users = User::where('role_name', '=', $role)->get();
-        return response()->json([
-            'data' => $users
-        ]);
+        return response()->json(['data' => $users]);
     }
 
     public function createUser(Request $request)
@@ -165,27 +163,13 @@ class UserController extends Controller
             ], 404);
         }
 
-        // update user
-        if ($request->input('email')) {
-            $user->email = $request->input('email');
-        }
-        if ($request->input('name')) {
-            $user->name = $request->input('name');
-        }
-        if ($request->input('password')) {
-            $user->password = bcrypt($request->input(key: 'password'));
-        }
-        if ($request->input('role_name')) {
-            $user->role_name = $request->input('role_name');
-        }
-        if ($request->input('user_status')) {
-            $user->user_status = $request->input('user_status');
-        }
-        if ($request->input('manager')) {
-            $user->manager = $request->input('manager');
-        }
-        
-        // save user
+        if ($request->input('email')) $user->email = $request->input('email');
+        if ($request->input('name')) $user->name = $request->input('name');
+        if ($request->input('password')) $user->password = bcrypt($request->input('password'));
+        if ($request->input('role_name')) $user->role_name = $request->input('role_name');
+        if ($request->input('user_status')) $user->user_status = $request->input('user_status');
+        if ($request->input('manager')) $user->manager = $request->input('manager');
+
         $user->save();
 
         return response()->json([
