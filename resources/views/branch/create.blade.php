@@ -49,30 +49,6 @@
         </div>
 
         <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-<<<<<<< HEAD
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์"
-            id="zipcode">
-
-        <label class="block text-sm text-gray-600">จังหวัด</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด" id="province">
-
-        <label class="block text-sm text-gray-600">อำเภอ</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ" id="amphoe">
-
-        <label class="block text-sm text-gray-600">ตำบล</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล" id="district">
-
-        <label class="block text-sm text-gray-600">ที่อยู่</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่" id="address">
-
-        <label class="block text-sm text-gray-600">ชื่อ</label>
-        <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ" id="name">
-
-        <label class="block text-sm text-gray-600">ประเภท</label>
-        <select class="w-full p-2 border border-gray-300 rounded-lg mb-3" id="category">
-            <option>เลือกประเภทสถานที่</option>
-        </select>
-=======
         <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="รหัสไปรษณีย์"
             name="zipcode" value="{{ old('zipcode') }}" id="zipcode" pattern="\d{5}" inputmode="numeric">
         @error('zipcode') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -101,64 +77,25 @@
         <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ"
             name="name" value="{{ old('name') }}" id="name">
         @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
->>>>>>> origin/develop
 
         <div class="flex justify-between">
             <a href="{{ route('branch.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-center">ยกเลิก</a>
             <button type="submit" class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-not-allowed" disabled id="saveButton">บันทึก</button>
         </div>
     </div>
-<<<<<<< HEAD
-@endsection
-
-@section('script')
-    <script>
-        funcunction validateForm() {
-            const fields = [
-                document.getElementById("googleLink").value,
-                document.getElementById("latitude").value,
-                document.getElementById("longitude").value,
-                document.getElementById("zipcode").value,
-                document.getElementById("province").value,
-                document.getElementById("amphoe").value,
-                document.getElementById("district").value,
-                document.getElementById("address").value,
-                document.getElementById("name").value,
-            ];
-            const isFormValid = fields.every(field => field.trim() !== "");
-            document.getElementById("saveButton").disabled = !isFormValid;
-        }
-
-        document.querySelectorAll("input, select").forEach(input => {
-            input.addEventListener("input", validateForm);
-        });
-
-        document.getElementById("saveButton").addEventListener("click", function () {
-            // Add your save logic here
-            // Show SweetAlert
-=======
 </form>
 
 @if (session('success'))
     <script>
         document.addEventListener("DOMContentLoaded", function () {
->>>>>>> origin/develop
             Swal.fire({
                 title: "{{ session('success') }}",
                 icon: "success",
                 showConfirmButton: true,
                 confirmButtonColor: "#1c7d32",
                 confirmButtonText: "ยืนยัน"
-<<<<<<< HEAD
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Redirect to the branch index page
-                    window.location.href = "{{ route('branch.index') }}";
-                }
-=======
             }).then(() => {
                 window.location.href = "{{ route('branch.index') }}";
->>>>>>> origin/develop
             });
         });
 
