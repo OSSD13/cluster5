@@ -1,36 +1,33 @@
 @extends('layouts.main')
 
-@section('title', 'Branch')
+@section('title', 'Manage Branch')
 
 @section('content')
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        <!-- Header -->
-        <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-gray-700">จัดการสาขา - บางแสน</h2>
-        </div>
-    </div>
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        <div class="flex flex-col space-y-2 text-left">
-            <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
-            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="{{ $branch->bs_name }}" readonly>
-            {{-- <pre>{{ json_encode($branch, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre> --}}
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+    <h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
+</div>
+
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+    <div class="flex flex-col space-y-2 text-left">
+    <h3 class="text-2xl font-bold text-gray-800 text-center">ข้อมูลสาขา</h3>
+        <label class="font-medium text-gray-800 text-sm">ชื่อสาขา</label>
+        <input type="text" id="branchName" value="{{ $branch->bs_name ?? '' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
 
             <label class="font-medium text-gray-700 text-sm">ประเภท</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="{{ $branch->poit_name }}" readonly>
+                value="${branch.type}" readonly>
 
             <label class="font-medium text-gray-700 text-sm">จังหวัด</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="{{ $branch->province }}" readonly>
+                value="${branch.province}" readonly>
 
             <label class="font-medium text-gray-700 text-sm">วันที่เพิ่ม</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="{{ \Carbon\Carbon::parse($branch->created_at)->format('d M Y') }}" readonly>
+                value="17 ก.ย. 2568" readonly>
 
             <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="{{ $branch->bs_manager_email }}" readonly>
+                value="jeng@gmail.com" readonly>
         </div>
     </div>
 
@@ -55,75 +52,25 @@
             </div>
         </div>
 
-        <div class="flex flex-row gap-4">
-            <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
-                <div class="">ยอดรายได้ทั้งหมด</div>
-                <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-4xl text-trinary" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="text-2xl text-bold text-trinary" id='thisMonthTotalMoneyNumber'></span>บาท
-                </div>
-                <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
-                    <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
-                    <span id='thisMonthTotalMoneyPercent'></span>%
-                </div>
-            </div>
-        </div>
-
-
-        <div class="bg-purpur shadow-md rounded-lg p-6 flex flex-col">
-            <canvas id="branchVSprofit"></canvas>
-        </div>
-        <div class="flex flex-col gap-4">
-            <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark">
-                    <div class="">Min</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="minValue" class="text-2xl text-bold">0</span>บาท
-                    </div>
-                    <div id="minChange" class="text-sm text-end">
-                        <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
-                        <span id="minPercent">0</span>%
-                    </div>
-                </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success">
-                    <div class="">Max</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="maxValue" class="text-2xl text-bold">0</span>บาท
-                    </div>
-                    <div id="maxChange" class="text-sm text-end">
-                        <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
-                        <span id="maxPercent">0</span>%
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-row gap-4">
-                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
-                    <div class="">Standard Deviation</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="stdValue" class="text-2xl text-bold">0</span>บาท
-                    </div>
-                    <div id="stdChange" class="text-sm text-end">
-                        <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
-                        <span id="stdPercent">0</span>%
-                    </div>
-                </div>
-                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark">
-                    <div class="">Average</div>
-                    <div class="flex justify-center items-center text-bold gap-2">
-                        <span id="avgValue" class="text-2xl text-bold">0</span>บาท
-                    </div>
-                    <div id="avgChange" class="text-sm text-end">
-                        <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
-                        <span id="avgPercent">0</span>%
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+    {{-- Dropdown: เดือน --}}
+    <div>
+        <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
+        <select class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option>มกราคม - 2568</option>
+            <option selected>กุมภาพันธ์ - 2568</option>
+            <option>มีนาคม - 2568</option>
+        </select>
+    </div>
+    {{-- Input: จำนวนกล่อง --}}
+    <div>
+        <label class="block text-sm font-medium text-gray-800 mb-1">จำนวนกล่อง</label>
+        <input type="number" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกจำนวนกล่อง">
+    </div>
+    {{-- Input: ยอดเงิน --}}
+    <div>
+        <label class="block text-sm font-medium text-gray-800 mb-1">ยอดเงิน</label>
+        <input type="number" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกยอดเงิน">
     </div>
 
 
@@ -136,16 +83,13 @@
             </select>
 
             <label class="font-medium text-gray-700 text-sm">จำนวนกล่อง</label>
-            <input type="number"
-                class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            <input type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
 
             <label class="font-medium text-gray-700 text-sm">ยอดเงิน</label>
-            <input type="text"
-                class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
 
             <button
-                class="w-full h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition"
-                style="background-color: #3062B8">
+                class="w-full h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition" style="background-color: #3062B8">
                 เพิ่มรายการ
             </button>
 
@@ -153,103 +97,43 @@
         </div>
     </div>
 
-    <!-- Pagination Controls -->
-    <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed ">
-            <thead class="text-gray-800" style="background-color: #B5CFF5">
-                <tr>
-                    <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center"></th>
-                </tr>
-            </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
-        </table>
-    </div>
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+    <table class="w-full border-collapse rounded-lg overflow-hidden">
+        <thead class="bg-blue-500 text-white">
+            <tr>
+                <th class="py-3 px-4 text-left">เดือน</th>
+                <th class="py-3 px-4 text-right">ยอดเงิน</th>
+                <th class="py-3 px-4 text-right">เพิ่มโดย</th>
+                <th class="py-3 px-4 text-right"></th>
+            </tr>
+        </thead>
+        <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200">
+            <!-- Sales data will be dynamically added here -->
+        </tbody>
+    </table>
+</div>
 
-    <!-- Pagination Controls -->
-    <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-
+<div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 @endsection
-
 
 @section('script')
     <script>
-        let branches = [{
-                id: 1,
-                name: "บางแสน",
-                type: "ร้านอาหาร",
-                province: "ชลบุรี"
-            },
-            {
-                id: 2,
-                name: "อุดรธานี",
-                type: "ร้านกาแฟ",
-                province: "อุดรธานี"
-            },
-            {
-                id: 3,
-                name: "ศรีราชา",
-                type: "ร้านขนม",
-                province: "ชลบุรี"
-            },
-            {
-                id: 4,
-                name: "พัทยา",
-                type: "ผับบาร์",
-                province: "ชลบุรี"
-            },
-            {
-                id: 5,
-                name: "เซนทรัล",
-                type: "ศูนย์การค้า",
-                province: "ชลบุรี"
-            },
-            {
-                id: 6,
-                name: "ท่าพระ",
-                type: "ตลาด",
-                province: "ขอนแก่น"
-            },
-            {
-                id: 7,
-                name: "กรุงเทพฯ",
-                type: "ร้านอาหาร",
-                province: "กรุงเทพมหานคร"
-            },
-            {
-                id: 8,
-                name: "ปราจีนบุรี",
-                type: "ร้านกาแฟ",
-                province: "ปราจีนบุรี"
-            },
-            {
-                id: 9,
-                name: "ฉะเชิงเทรา",
-                type: "ตลาด",
-                province: "ฉะเชิงเทรา"
-            },
-            {
-                id: 10,
-                name: "สระบุรี",
-                type: "ร้านขนม",
-                province: "สระบุรี"
-            },
-            {
-                id: 11,
-                name: "แหลมแท่น",
-                type: "ที่เที่ยว",
-                province: "ชลบุรีหหหหหหหหหหห"
-            }
+        let branches = [
+            { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
+            { id: 2, name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี" },
+            { id: 3, name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี" },
+            { id: 4, name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี" },
+            { id: 5, name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี" },
+            { id: 6, name: "ท่าพระ", type: "ตลาด", province: "ขอนแก่น" },
+            { id: 7, name: "กรุงเทพฯ", type: "ร้านอาหาร", province: "กรุงเทพมหานคร" },
+            { id: 8, name: "ปราจีนบุรี", type: "ร้านกาแฟ", province: "ปราจีนบุรี" },
+            { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
+            { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
+            { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
         ]; // Your existing data
         let currentPage = 1;
         const rowsPerPage = 25;
-        let currentSort = {
-            column: null,
-            ascending: true
-        };
+        let currentSort = { column: null, ascending: true };
 
         function renderTable() {
             const tableBody = document.getElementById("tableBody");
@@ -291,8 +175,7 @@
             // Previous button
             const prevBtn = document.createElement("button");
             prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className =
-                `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -301,8 +184,7 @@
             if (currentPage > 3) {
                 const firstBtn = document.createElement("button");
                 firstBtn.innerText = "1";
-                firstBtn.className =
-                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                firstBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
                 firstBtn.onclick = () => goToPage(1);
                 pagination.appendChild(firstBtn);
                 pagination.appendChild(document.createTextNode("..."));
@@ -312,8 +194,7 @@
             for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
-                btn.className =
-                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
                                          ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
@@ -324,8 +205,7 @@
                 pagination.appendChild(document.createTextNode("..."));
                 const lastBtn = document.createElement("button");
                 lastBtn.innerText = totalPages;
-                lastBtn.className =
-                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                lastBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
                 lastBtn.onclick = () => goToPage(totalPages);
                 pagination.appendChild(lastBtn);
             }
@@ -333,8 +213,7 @@
             // Next button
             const nextBtn = document.createElement("button");
             nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className =
-                `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -388,7 +267,6 @@
                 confirmButtonColor: "#2D8C42",
             });
         }
-
         function edit(id) {
             const branch = branches.find(item => item.id === id);
 
@@ -427,10 +305,7 @@
             });
         }
 
-        function editBranch(id) {
-            alert(`แก้ไขข้อมูลของ ID ${id}`);
-        }
-
+        function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
         function deleteBranch(id) {
             Swal.fire({
                 title: "ลบสถานที่ที่สนใจ",
@@ -462,6 +337,7 @@
 
 
         renderTable();
+
     </script>
 
     <script>
@@ -535,7 +411,7 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             fetch('/api/getSubordinate')
                 .then(response => response.json())
                 .then(data => {
@@ -558,7 +434,7 @@
         function getBranchReport() {
             const userId = document.getElementById('subordinateSelect') ?
                 document.getElementById('subordinateSelect').value :
-                {{ session()->get('user')->user_id }};
+                            {{ session()->get('user')->user_id }};
             const date = document.getElementById('timePeriod') ?
                 document.getElementById('timePeriod').value :
                 new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -767,7 +643,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log("Fetching report...");
             getBranchReport();
         });
