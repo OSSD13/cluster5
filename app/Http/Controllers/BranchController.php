@@ -13,6 +13,11 @@ class BranchController extends Controller
     {
         return view('branch.index');
     }
+    public function indexManage(Request $request)
+    {
+        $branch = User::find($request->input('branch_id'));
+        return view('branch.manage.index', ['branch' => $branch]);
+    }
 
     public function queryBranch(Request $request)
     {
