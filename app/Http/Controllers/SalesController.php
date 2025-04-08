@@ -19,7 +19,7 @@ class SalesController extends Controller
         $endDate = $request->input('end_date');
 
         $salesQuery = DB::table('sales')
-            ->join('branch_stores', 'sales.sales_bs_id', '=', 'branch_stores.bs_id')
+            ->join('branch_stores', 'sales.sales_branch_id', '=', 'branch_stores.bs_id')
             ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id')
             ->select(
                 'sales.sales_id',
@@ -32,7 +32,7 @@ class SalesController extends Controller
             );
 
         if ($branchId) {
-            $salesQuery->where('sales.sales_bs_id', $branchId);
+            $salesQuery->where('sales.sales_branch_id', $branchId);
         }
 
         if ($userId) {
@@ -152,11 +152,11 @@ class SalesController extends Controller
         }
 
         $results = DB::table('sales')
-            ->join('branch_stores', 'sales.sales_bs_id', '=', 'branch_stores.bs_id')
+            ->join('branch_stores', 'sales.sales_branch_id', '=', 'branch_stores.bs_id')
             ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id')
             ->select(
                 'sales.sales_id',
-                'sales.sales_bs_id',
+                'sales.sales_branch_id',
                 'branch_stores.bs_name as branch_name',
                 'sales.sales_month',
                 'sales.sales_amount',

@@ -16,9 +16,9 @@ return new class extends Migration
             $table->double("sales_amount");
             $table->integer('sales_package_amount');
             $table->date('sales_month');
-            $table->unsignedBigInteger('sales_bs_id');
+            $table->unsignedBigInteger('sales_branch_id');
             // foreign key
-            $table->foreign('sales_bs_id')->references('bs_id')->on('branch_stores');
+            $table->foreign('sales_branch_id')->references('bs_id')->on('branch_stores');
             $table->timestamps();
         });
     }

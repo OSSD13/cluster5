@@ -98,24 +98,24 @@ class BranchReportController extends Controller
 
         // Fetch sales data for the past 12 months.
         $salesData = DB::table('sales')
-            ->whereIn('sales.sales_bs_id', $branches_ids)
+            ->whereIn('sales.sales_branch_id', $branches_ids)
             ->whereBetween('sales.sales_month', [
                 $date->copy()->subMonths(11)->startOfMonth()->format('Y-m-d'),
                 $date->endOfMonth()->format('Y-m-d')
             ])
             ->select(
-                'sales.sales_bs_id',
+                'sales.sales_branch_id',
                 DB::raw('DATE_FORMAT(sales.sales_month, "%Y-%m") as sales_month'),
                 DB::raw('SUM(sales.sales_amount) as total_sales_amount'),
                 DB::raw('SUM(sales.sales_package_amount) as total_sales_package_amount')
             )
-            ->groupBy('sales.sales_bs_id', 'sales_month')
+            ->groupBy('sales.sales_branch_id', 'sales_month')
             ->get();
 
         // Transform sales data into an associative array by branch ID
         $salesByBranch = [];
         foreach ($salesData as $sale) {
-            $salesByBranch[$sale->sales_bs_id][$sale->sales_month] = [
+            $salesByBranch[$sale->sales_branch_id][$sale->sales_month] = [
                 'sales_amount' => $sale->total_sales_amount,
                 'sales_package_amount' => $sale->total_sales_package_amount
             ];
@@ -178,12 +178,12 @@ class BranchReportController extends Controller
 
             foreach ($branches as $branch) {
                 $currentMonthSales = DB::table('sales')
-                    ->where('sales.sales_bs_id', $branch->branchId)
+                    ->where('sales.sales_branch_id', $branch->branchId)
                     ->where(DB::raw('DATE_FORMAT(sales.sales_month, "%Y-%m")'), $currentMonth)
                     ->sum('sales.sales_amount');
 
                 $lastMonthSales = DB::table('sales')
-                    ->where('sales.sales_bs_id', $branch->branchId)
+                    ->where('sales.sales_branch_id', $branch->branchId)
                     ->where(DB::raw('DATE_FORMAT(sales.sales_month, "%Y-%m")'), $lastMonth)
                     ->sum('sales.sales_amount');
 
