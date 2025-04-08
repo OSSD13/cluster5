@@ -63,17 +63,20 @@ class PointOfInterestController extends Controller
         ]);
     }
 
-    /*public function createPage()
-    {
-        return view('poi.create');
-    }*/
+    public function createPage()
+    {        // get all poi type
+        $poiTypes = \DB::table('point_of_interest_type')
+            ->select('poit_type', 'poit_name', 'poit_icon')
+            ->get();
+        return view('poi.create', compact('poiTypes'));
+    }
 
     public function createPoi(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'zipcode' => 'required|numeric',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'zipcode' => 'required|numeric|digits:5',
             'province' => 'required|string|max:255',
             'amphoe' => 'required|string|max:255',
             'district' => 'required|string|max:255',
@@ -81,10 +84,10 @@ class PointOfInterestController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
         ], [
-            'lat.required' => 'กรุณาระบุละติจูด',
-            'lat.numeric' => 'ละติจูดต้องเป็นตัวเลข',
-            'lng.required' => 'กรุณาระบุลองจิจูด',
-            'lng.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
+            'latitude.required' => 'กรุณาระบุละติจูด',
+            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+            'longitude.required' => 'กรุณาระบุลองจิจูด',
+            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
             'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
             'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
             'province.required' => 'กรุณาระบุจังหวัด',
@@ -118,10 +121,10 @@ class PointOfInterestController extends Controller
         }
 
         $location = \DB::table('locations')
-            ->where('zipcode', $request->input('zipcode'))
-            ->where('province', $request->input('province'))
-            ->where('amphoe', $request->input('amphoe'))
-            ->where('district', $request->input('district'))
+            ->where('zipcode', '=', $request->input('zipcode'))
+            ->where('province', '=', $request->input('province'))
+            ->where('amphoe', '=', $request->input('amphoe'))
+            ->where('district', '=', $request->input('district'))
             ->first();
 
         if (!$location) {
@@ -134,8 +137,8 @@ class PointOfInterestController extends Controller
         $poi = new PointOfInterest();
         $poi->poi_name = $request->input('name');
         $poi->poi_type = $type->poit_type;
-        $poi->poi_gps_lat = $request->input('lat');
-        $poi->poi_gps_lng = $request->input('lng');
+        $poi->poi_gps_lat = $request->input('latitude');
+        $poi->poi_gps_lng = $request->input('longitude');
         $poi->poi_address = $request->input('address');
         $poi->poi_location_id = $location->location_id;
         $poi->save();
@@ -147,13 +150,4 @@ class PointOfInterestController extends Controller
         ]);
     }
 
-    /*public function editPage(Request $request)
-    {
-        return view('poi.edit');
-    }
-
-    public function editPoi(Request $request)
-    {
-        return view('poi.create');
-    }*/
 }
