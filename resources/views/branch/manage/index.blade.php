@@ -3,26 +3,9 @@
 @section('title', 'Manage Branch')
 
 @section('content')
-<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-    <h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
-</div>
-
-<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-    <div class="flex flex-col space-y-2 text-left">
-        <h3 class="text-2xl font-bold text-gray-800 text-center">ข้อมูลสาขา</h3>
-        <label class="font-medium text-gray-800 text-sm">ชื่อสาขา</label>
-        <input type="text" id="branchName" value="{{ $branch->bs_name ?? '' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
-
-        <label class="font-medium text-gray-800 text-sm">จังหวัด</label>
-        <input type="text" id="branchProvince" value="{{ $branch->province_name ?? '-' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
-
-        <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
-        <input type="text" id="branchCreatedAt" value="{{ \Carbon\Carbon::parse($branch->created_at)->locale('th')->translatedFormat('j M Y') }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
-
-        <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
-        <input type="text" id="branchManager" value="{{ $branch->bs_manager ?? '-' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+        <h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
     </div>
-</div>
 
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
     <div>
@@ -51,21 +34,9 @@
     </div>
 </div>
 
-<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-    <table class="w-full border-collapse rounded-lg overflow-hidden">
-        <thead class="bg-blue-500 text-white">
-            <tr>
-                <th class="py-3 px-4 text-left">เดือน</th>
-                <th class="py-3 px-4 text-right">ยอดเงิน</th>
-                <th class="py-3 px-4 text-right">เพิ่มโดย</th>
-                <th class="py-3 px-4 text-right"></th>
-            </tr>
-        </thead>
-        <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200">
-            <!-- Sales data will be dynamically added here -->
-        </tbody>
-    </table>
-</div>
+            <label class="font-medium text-gray-700 text-sm">ประเภท</label>
+            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+                value="{{ $branch->poit_name }}" readonly>
 
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
@@ -112,9 +83,9 @@
                     <button onclick="toggleMenu(event, ${sale.sales_id})">&#8230;</button>
                 </td>
             `;
-            tableBody.appendChild(row);
-        });
-    }
+                tableBody.appendChild(row);
+            });
+        }
 
     function toggleMenu(event, id) {
         event.stopPropagation();
@@ -159,7 +130,6 @@
             btn.onclick = () => fetchSales(i);
             pagination.appendChild(btn);
         }
-    }
 
     function formatThaiDate(dateStr) {
         const date = new Date(dateStr);

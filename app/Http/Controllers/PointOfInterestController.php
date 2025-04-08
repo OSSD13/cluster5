@@ -67,8 +67,11 @@ class PointOfInterestController extends Controller
     }
 
     public function createPage()
-    {
-        return view('poi.create');
+    {        // get all poi type
+        $poiTypes = \DB::table('point_of_interest_type')
+            ->select('poit_type', 'poit_name', 'poit_icon')
+            ->get();
+        return view('poi.create', compact('poiTypes'));
     }
 
     public function createPoi(Request $request)
@@ -76,9 +79,9 @@ class PointOfInterestController extends Controller
         $validator = \Validator::make($request->all(), [
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
-            'postal_code' => 'required|numeric|digits:5',
+            'zipcode' => 'required|numeric|digits:5',
             'province' => 'required|string|max:255',
-            'sub_district' => 'required|string|max:255',
+            'amphoe' => 'required|string|max:255',
             'district' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
@@ -88,12 +91,12 @@ class PointOfInterestController extends Controller
             'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
             'longitude.required' => 'กรุณาระบุลองจิจูด',
             'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
-            'postal_code.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'postal_code.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
             'province.required' => 'กรุณาระบุจังหวัด',
             'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
-            'sub_district.required' => 'กรุณาระบุอำเภอ',
-            'sub_district.string' => 'อำเภอต้องเป็นตัวอักษร',
+            'amphoe.required' => 'กรุณาระบุอำเภอ',
+            'amphoe.string' => 'อำเภอต้องเป็นตัวอักษร',
             'district.required' => 'กรุณาระบุตำบล',
             'district.string' => 'ตำบลต้องเป็นตัวอักษร',
             'address.required' => 'กรุณาระบุที่อยู่',
@@ -121,10 +124,10 @@ class PointOfInterestController extends Controller
         }
 
         $location = \DB::table('locations')
-            ->where('zipcode', $request->input('zipcode'))
-            ->where('province', $request->input('province'))
-            ->where('sub_district', $request->input('sub_district'))
-            ->where('district', $request->input('district'))
+            ->where('zipcode', '=', $request->input('zipcode'))
+            ->where('province', '=', $request->input('province'))
+            ->where('amphoe', '=', $request->input('amphoe'))
+            ->where('district', '=', $request->input('district'))
             ->first();
 
         if (!$location) {
@@ -137,7 +140,7 @@ class PointOfInterestController extends Controller
         $poi = new PointOfInterest();
         $poi->poi_name = $request->input('name');
         $poi->poi_type = $type->poit_type;
-        $poi->poi_gps_lat = $request->input('lattitude');
+        $poi->poi_gps_lat = $request->input('latitude');
         $poi->poi_gps_lng = $request->input('longitude');
         $poi->poi_address = $request->input('address');
         $poi->poi_location_id = $location->location_id;
