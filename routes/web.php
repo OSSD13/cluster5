@@ -40,7 +40,9 @@ Route::middleware([CheckLogin::class])->group(function () {
 
     Route::get('/poi', function () { return view('poi.index'); });
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
+    
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
+    Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
     Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
