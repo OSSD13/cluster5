@@ -1,3 +1,4 @@
+
 @extends('layouts.screen')
 
 @section('screen')
@@ -78,26 +79,37 @@
         ];
     @endphp
 
-    @foreach ($navItems as $item)
-        @php
-            $fullPath = $prefix . $item['path'];
+@php
+    $navItems = [
+        ['name' => 'หน้าหลัก', 'path' => '/', 'icon' => 'icon-[material-symbols--home]'],
+        ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]', 'startsWith' => true],
+        ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]', 'startsWith' => true],
+        ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]', 'startsWith' => true],
+        ['name' => 'สมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]', 'startsWith' => true],
+    ];
+@endphp
 
-            $currentPath = request()->path(); // without domain
-            $relativePath = ltrim($fullPath, '/');
+@foreach ($navItems as $item)
+    @php
+        $fullPath = $item['path'];
 
-            $isActive =
-                ($item['path'] === '/' && $currentPath === $prefix) ||
-                (isset($item['startsWith']) && $item['startsWith']
-                    ? str_starts_with($currentPath, trim($relativePath, '/'))
-                    : $currentPath === trim($relativePath, '/'));
-        @endphp
+        $currentPath = request()->path();
+        $relativePath = ltrim($fullPath, '/');
 
-        <a href="{{ url($fullPath) }}"
-            class="flex flex-col items-center text-center w-1/5 {{ $isActive ? 'text-black' : 'text-gray-500' }}">
-            <span class="{{ $item['icon'] }} w-7 h-8"></span>
-            <span class="text-sm truncate w-full">{{ $item['name'] }}</span>
-        </a>
-    @endforeach
+        $isActive =
+            ($item['path'] === '/' && $currentPath === '/') ||
+            (isset($item['startsWith']) && $item['startsWith']
+                ? str_starts_with($currentPath, trim($relativePath, '/'))
+                : $currentPath === trim($relativePath, '/'));
+    @endphp
+
+    <a href="{{ url($fullPath) }}"
+        class="flex flex-col items-center text-center w-1/5 {{ $isActive ? 'text-black' : 'text-gray-500' }}">
+        <span class="{{ $item['icon'] }} w-7 h-8"></span>
+        <span class="text-sm truncate w-full">{{ $item['name'] }}</span>
+    </a>
+@endforeach
+
 </footer>
 
 </div>
