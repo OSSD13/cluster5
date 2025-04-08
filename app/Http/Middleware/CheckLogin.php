@@ -16,8 +16,9 @@ class CheckLogin
     public function handle(Request $request, Closure $next): Response
     {
         $user = session()->get('user');
-        if(!isset($user)){
-            return redirect('');
+        if (!isset($user)) {
+            return redirect(url()->route('loginGet'))->with('error', 'กรุณาเข้าสู่ระบบ');
+
         }
         return $next($request);
     }
