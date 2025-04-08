@@ -52,20 +52,44 @@
 @endsection
 @section('script')
 <script>
-document.getElementById("saveButton").addEventListener("click", function() {
-    // แสดง SweetAlert
-    Swal.fire({
-        title: "เเก้ไขสำเร็จ",
-        icon: "success",
-        showConfirmButton: true,
-        confirmButtonColor: "#1c7d32",
-        confirmButtonText: "ยืนยัน"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // เปลี่ยนหน้าไปที่ poi.index
-            window.location.href = "{{ route('poi.index') }}";
-        }
-    });
-});
+    // ฟังก์ชันเพื่อเริ่มต้นการแสดงแผนที่
+    function initMap() {
+        const initialPosition = {
+            lat: 13.7358,  // ค่าละติจูดเริ่มต้น
+            lng: 100.5231 // ค่าลองจิจูดเริ่มต้น
+        };
+
+        // สร้างแผนที่บน div ที่มี id="map"
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: initialPosition,  // ตั้งศูนย์แผนที่ตรงตำแหน่งเริ่มต้น
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        // สร้าง Marker
+        const marker = new google.maps.Marker({
+            position: initialPosition,
+            map: map,
+            title: "ตำแหน่งของคุณ",
+            draggable: true
+        });
+
+        // ฟังก์ชันการอัพเดตค่าละติจูดและลองจิจูดจากการลาก Marker
+        google.maps.event.addListener(marker, 'dragend', function(event) {
+            document.getElementById('latitude').value = event.latLng.lat();
+            document.getElementById('longitude').value = event.latLng.lng();
+        });
+    }
+
+    // โหลด Google Maps API พร้อมกับการเรียกใช้งานฟังก์ชัน initMap
+    function loadGoogleMapsAPI() {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
+    window.onload = loadGoogleMapsAPI;
 </script>
 @endsection
