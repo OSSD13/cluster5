@@ -91,6 +91,12 @@
                 console.error('Error:', error);
             }
         }
+            function truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.substring(0, maxLength) + "...";
+            }
+            return text;
+        }
 
         // แสดงตารางพร้อม pagination
         function renderTable(data = poits) {
@@ -119,6 +125,7 @@
                             </td>`;
                 tableBody.appendChild(row);
             });
+            
 
 
 
