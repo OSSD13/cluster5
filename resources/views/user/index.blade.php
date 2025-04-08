@@ -18,13 +18,18 @@
 
     <div class="mb-3">
         <label class="block text-gray-600 mb-1">Sale Supervisor</label>
-        <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded"></select>
+        <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded">
+            <option value="" selected>ค้นหาด้วย Sale Supervisor</option>
+            @foreach ($supervisors as $supervisor)
+                <option value="{{ $supervisor->user_id }}">{{ $supervisor->name }} - {{ $supervisor->email }}</option>
+            @endforeach
+        </select>
     </div>
 
     <div class="mb-3">
         <label class="block text-gray-600 mb-1">บทบาท</label>
         <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
-            <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
+            <option value="" selected  >ค้นหาด้วยตำแหน่ง</option>
             <option value="sale">Sale</option>
             <option value="supervisor">Sale Supervisor</option>
             <option value="ceo">CEO</option>
@@ -75,7 +80,6 @@ async function fetchUsers() {
         document.getElementById("resultCount").innerText = `ผลลัพธ์ ${result.total} รายการ`;
         renderTable();
         renderPagination(result.total);
-        populateSupervisorDropdown();
     } catch (error) {
         console.error(error);
         Swal.fire("ผิดพลาด", error.message ?? "ไม่สามารถโหลดข้อมูลได้", "error");
@@ -177,19 +181,6 @@ function goToPage(pageNumber) {
     currentPage = pageNumber;
     fetchUsers();
 }
-
-function populateSupervisorDropdown() {
-    const supervisorSelect = document.getElementById("supervisorSelect");
-    supervisorSelect.innerHTML = `<option value="">เลือก Sale Supervisor</option>`;
-    const supervisors = members.filter(m => m.role_name === "supervisor");
-    supervisors.forEach(sup => {
-        const option = document.createElement("option");
-        option.value = sup.user_id;
-        option.textContent = `${sup.name} - ${sup.email}`;
-        supervisorSelect.appendChild(option);
-    });
-}
-
 // Events
 window.addEventListener("DOMContentLoaded", () => {
     fetchUsers();
