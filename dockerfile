@@ -2,11 +2,11 @@ FROM php:8.2-apache
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
-# Configure Apache to use Laravel's public folder
+# Update Apache config to use Laravel's public folder
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Install system dependencies (includes Redis server)
+# Install system dependencies
 RUN apt-get update && \
     apt-get install -y git zip unzip nodejs npm libzip-dev libpng-dev libonig-dev libxml2-dev curl redis-server supervisor
 
@@ -30,14 +30,15 @@ COPY . .
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Install Laravel dependencies and Predis
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader \
     && composer require predis/predis
 
 # Build frontend assets
 RUN npm install && npm run build
 
-# Add supervisord config to run both Apache and Redis
+# Add supervisord config
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 
 CMD ["/usr/bin/supervisord"]

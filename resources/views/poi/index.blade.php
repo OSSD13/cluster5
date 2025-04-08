@@ -43,10 +43,11 @@
 @endsection
 
 @section('script')
-<script>
-    let pois = [];
-    let currentPage = 1;
-    const rowsPerPage = 10;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let pois = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
     document.addEventListener("DOMContentLoaded", () => {
         fetchPois();
@@ -75,15 +76,15 @@
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        pois.forEach((poi) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
+            pois.forEach((poi) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
                 <td class="py-3 px-4 w-16">${poi.poi_id}</td>
                 <td class="py-3 px-4 ">
                     <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
                     <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
                 </td>
-                <td class="py-3 px-4 text-center ">${displayValue(poi.province)}</td>
+                <td class="py-3 px-4 text-center ">${poi.province || '-'}</td>
 
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
@@ -95,50 +96,39 @@
                 </td>
             `;
             tableBody.appendChild(row);
-        });
-    }
-
-function renderPagination(totalItems) {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
-
-    const totalPages = Math.ceil(totalItems / rowsPerPage);
-    const maxVisiblePages = 5; // 4+1 current
-
-    const addButton = (text, page, isActive = false, isDisabled = false) => {
-        const btn = document.createElement("button");
-        btn.innerText = text;
-        btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-            ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black cursor-pointer"} 
-            ${isDisabled ? "text-gray-400 cursor-not-allowed" : ""}`;
-        if (!isDisabled) {
-            btn.onclick = () => goToPage(page);
+            });
         }
         pagination.appendChild(btn);
     };
 
-    const addEllipsis = () => {
-        const dots = document.createElement("span");
-        dots.innerText = "...";
-        dots.className = "mx-2 text-gray-500";
-        pagination.appendChild(dots);
-    };
+        function renderPagination(totalItems) {
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = "";
+            const totalPages = Math.ceil(totalItems / rowsPerPage);
 
-    // Previous button
-    const prevBtn = document.createElement("button");
-    prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-    prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => goToPage(currentPage - 1);
-    pagination.appendChild(prevBtn);
+            const prevBtn = document.createElement("button");
+            prevBtn.innerHTML = '&larr;';
+            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
 
-    // Always show page 1
-    addButton("1", 1, currentPage === 1);
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                const btn = document.createElement("button");
+                btn.innerText = i;
+                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                 ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black"}`;
+                btn.onclick = () => goToPage(i);
+                pagination.appendChild(btn);
+            }
 
-    // Left dots
-    if (currentPage > 4) {
-        addEllipsis();
-    }
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = '&rarr;';
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
 
     // Middle pages
     const startPage = Math.max(2, currentPage - 2);
@@ -182,74 +172,68 @@ function renderPagination(totalItems) {
         document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
     });
 
-    function deletePoi(id) {
-        if (confirm("ยืนยันการลบ POI?")) {
-            fetch(`/poi/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }).then(res => {
-                if (res.ok) {
-                    alert("ลบเรียบร้อย");
-                    fetchPois();
+        function deletePoi(id) {
+            Swal.fire({
+                title: "ลบสถานที่",
+                text: "คุณต้องการลบ POI นี้ใช่หรือไม่?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#aaa",
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/poi/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    }).then(res => {
+                        if (res.ok) {
+                            Swal.fire("สำเร็จ", "ลบเรียบร้อย", "success");
+                            fetchPois();
+                        } else {
+                            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบได้", "error");
+                        }
+                    });
                 }
             });
         }
-    }
 
-    function formatThaiDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('th-TH', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
+        function viewDetail(id) {
+            const poi = pois.find(p => p.poi_id === id);
+            if (!poi) return;
 
+            Swal.fire({
+                title: "รายละเอียดสถานที่",
+                html: `
+                    <div class="text-left space-y-2 text-sm text-gray-700">
+                        <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
+                        <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
+                        <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
+                        <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
+                        <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
+                    </div>
+                `,
+                confirmButtonText: "ปิด",
+                confirmButtonColor: "#3085d6"
+            });
+        }
 
-    function viewDetail(id) {
-    const poi = pois.find(item => item.poi_id === id);
+        function formatThaiDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString("th-TH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        }
 
-    if (!poi) {
-        Swal.fire("ไม่พบข้อมูล POI", "", "error");
-        return;
-    }
+            function safeText(text) {
+                return text ?? '-';
+            }
 
-    Swal.fire({
-        html: `
-            <div class="flex flex-col text-3xl mb-6 mt-4">
-                <b class="text-gray-800">รายละเอียดสถานที่</b>
-            </div>
-            <div class="flex flex-col space-y-2 text-left text-sm">
-                <div class="w-full">
-                    <label class="font-medium text-gray-800">ชื่อสถานที่</label>
-                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(poi.poi_name)}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800">ประเภท</label>
-                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(poi.poit_name)}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800">จังหวัด</label>
-                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(poi.province)}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800">วันที่เพิ่ม</label>
-                    <input type="text" class="w-full h-10 px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${displayValue(formatThaiDate(poi.created_at))}" readonly>
-                </div>
-            </div>
-        `,
-        customClass: {
-            popup: 'custom-popup'
-        },
-        confirmButtonText: "ยืนยัน",
-        confirmButtonColor: "#2D8C42",
-    });
-}
-
-</script>
+    </script>
 @endsection
