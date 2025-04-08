@@ -31,4 +31,6 @@ class PointOfInterest extends Model
         return $this->poi_id;
 
     }
+    // กำหนด primary key ให้เป็น 'poi_id'
+    protected $primaryKey = 'poi_id';
 }
