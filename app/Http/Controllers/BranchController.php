@@ -198,16 +198,13 @@ class BranchController extends Controller
 
     public function editBranch(Request $request)
     {
-        $validator = \Validator::make($request->all(), [
-            'bs_id' => 'required|integer|exists:branch_stores,id',
-            'name' => 'string|max:255',
-            'address' => 'string|max:255',
-            'detail' => 'nullable|string',
-            'bs_manager' => 'nullable|integer|exists:users,user_id',
+        // Validate branch_id exists
+        $branchValidator = Validator::make($request->all(), [
+            'branch_id' => 'required|integer|exists:branch_stores,id',
         ], [
-            'bs_id.required' => 'กรุณาระบุรหัสสาขา',
-            'bs_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
-            'bs_id.exists' => 'ไม่พบสาขาที่ระบุ',
+            'branch_id.required' => 'กรุณาระบุรหัสสาขา',
+            'branch_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
+            'branch_id.exists' => 'ไม่พบสาขาที่ระบุ',
         ]);
 
         if ($branchValidator->fails()) {
@@ -218,7 +215,6 @@ class BranchController extends Controller
             ], 422);
         }
 
-        $branch = Branch_store::find($request->input('bs_id'));
         // Then validate other fields
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
@@ -256,67 +252,33 @@ class BranchController extends Controller
 
             $branch->save();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'แก้ไขข้อมูลสาขาเรียบร้อยแล้ว',
-            'data' => $branch
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'แก้ไขข้อมูลสาขาเรียบร้อยแล้ว',
+                'data' => $branch
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'เกิดข้อผิดพลาดในการแก้ไขข้อมูลสาขา',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function manage(Request $request)
+    public function manage()
     {
-        $bs_id = $request->input('bs_id');
-    
-        if (!$bs_id) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'กรุณาระบุรหัสสาขา (bs_id)'
-            ], 400);
-        }
-    
-        $branch = \DB::table('branch_stores')
-            ->join('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
-            ->join('locations', 'locations.location_id', '=', 'point_of_interests.poi_location_id')
-            ->join('point_of_interest_type', 'point_of_interests.poi_type', '=', 'point_of_interest_type.poit_type')
-            ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id')
-            ->select(
-                'branch_stores.*',
-                'point_of_interest_type.poit_type',
-                'point_of_interest_type.poit_name',
-                'point_of_interest_type.poit_icon',
-                'point_of_interest_type.poit_color',
-                'point_of_interest_type.poit_description',
-                'users.name as bs_manager_name',
-                'users.email as bs_manager_email',
-                'users.user_status as bs_manager_user_status',
-                'users.role_name as bs_manager_role_name',
-                'locations.zipcode',
-                'locations.province',
-                'locations.amphoe',
-                'locations.district'
-            )
-            ->where('branch_stores.bs_id', $bs_id)
-            ->first();
-    
-        if (!$branch) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบข้อมูลสาขาที่ระบุ'
-            ], 404);
-        }
-    
-        return view('branch.manage.index', compact('branch'));
+        return view('branch.manage.index');
     }
-    
 
     public function deleteBranch(Request $request)
     {
-        $validator = \Validator::make($request->all(), [
-            'bs_id' => 'required|integer|exists:branch_stores,id',
+        $validator = Validator::make($request->all(), [
+            'branch_id' => 'required|integer|exists:branch_stores,id',
         ], [
-            'bs_id.required' => 'กรุณาระบุรหัสสาขา',
-            'bs_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
-            'bs_id.exists' => 'ไม่พบสาขาที่ระบุ',
+            'branch_id.required' => 'กรุณาระบุรหัสสาขา',
+            'branch_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
+            'branch_id.exists' => 'ไม่พบสาขาที่ระบุ',
         ]);
 
         if ($validator->fails()) {
@@ -327,17 +289,10 @@ class BranchController extends Controller
             ], 422);
         }
 
-        $branch = Branch_store::find($request->input('bs_id'));
-
-        if (!$branch) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบข้อมูลสาขา'
-            ], 404);
-        }
-
-        $poiId = $branch->bs_poi_id;
-        $branch->delete();
+        try {
+            $branch = Branch_store::find($request->input('branch_id'));
+            $poiId = $branch->bs_poi_id;
+            $branch->delete();
 
             if ($poiId) {
                 PointOfInterest::where('poi_id', $poiId)->delete();
