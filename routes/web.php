@@ -13,16 +13,15 @@ use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Middleware\CheckLogin;
-use App\Http\Controllers\InsertPointOfInterestTypeController;
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
 Route::get('/auth/google/call-back', [GoogleAuthController::class, 'callbackGoogle']);
 
 Route::get('/login', function () {
     return view('auth.login');
-})->name('login'); // แก้ชื่อ method ให้ตรง (Login → login)
+}); // แก้ชื่อ method ให้ตรง (Login → login)
 
-Route::post('/login', [LoginController::class, 'login'])->name('login'); // เปลี่ยนเป็น POST และเพิ่ม name
+Route::post('/login', [LoginController::class, 'login']);
 
 
 
@@ -30,16 +29,19 @@ Route::post('/login', [LoginController::class, 'login'])->name('login'); // เ�
 Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/', function () {
         return view('dashboard.index');
-    })->name('dashboard');
+    });
     Route::get('/map', function () {
         return view('map.index');
-    })->name('map');
+    });
+    Route::get('/branch', function () {
+        return view('branch.index'); });
     Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
     Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
-    Route::get('/branch', [BranchController::class, 'index'])->name('branch.index');
+    Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () { return view('poi.index'); });
+    Route::get('/poi', function () {
+        return view('poi.index'); });
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
@@ -66,7 +68,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/api/poi', [PointOfInterestController::class, 'queryPoi'])->name('api.poi.query');
     Route::post('/api/poi/edit', [PointOfInterestController::class, 'editPoi'])->name('api.poi.edit');
     Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
-    Route::post('/poi/type/insert', [InsertPointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::post('/api/poi/create', [PointOfInterestController::class, 'createPoi'])->name('api.poi.create');
 
     Route::get('/api/poit/query', [PointOfInterestTypeController::class, 'queryPoit'])->name('api.poit.query');

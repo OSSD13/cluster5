@@ -96,65 +96,7 @@ class PointOfInterestTypeController extends Controller
         return view('poi.type.create');
     }
 
-    public function createPoit(Request $request){
-        $validator = \Validator::make($request->all(), [
-            'poit_type' => 'required|string|max:255',
-            'poit_name' => 'required|string|max:255',
-            'poit_icon' => 'required|string|max:4',
-            'poit_color' => 'required|string|max:8',
-            'poit_description' => 'nullable|string|max:255',
-        ], [
-            'poit_type.required' => 'กรุณากรอกประเภทสถานที่',
-            'poit_type.string' => 'ประเภทสถานที่ต้องเป็นตัวอักษร',
-            'poit_type.max' => 'ประเภทสถานที่ต้องไม่เกิน 255 ตัวอักษร',
-
-            'poit_name.required' => 'กรุณากรอกชื่อสถานที่',
-            'poit_name.string' => 'ชื่อสถานที่ต้องเป็นตัวอักษร',
-            'poit_name.max' => 'ชื่อสถานที่ต้องไม่เกิน 255 ตัวอักษร',
-
-            'poit_icon.required' => 'กรุณาเลือกไอคอน',
-            'poit_icon.string' => 'ไอคอนต้องเป็นตัวอักษร',
-            'poit_icon.max' => 'ไอคอนต้องไม่เกิน 4 ตัวอักษร',
-
-            'poit_color.required' => 'กรุณากรอกรหัสสี',
-            'poit_color.string' => 'รหัสสีต้องเป็นตัวอักษร',
-            'poit_color.max' => 'รหัสสีต้องไม่เกิน 8 ตัวอักษร',
-
-            'poit_description.string' => 'รายละเอียดต้องเป็นตัวอักษร',
-            'poit_description.max' => 'รายละเอียดต้องไม่เกิน 255 ตัวอักษร',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $poit = PointOfInterestType::where('poit_type', $request->input('poit_type'))->first();
-        if ($poit) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ประเภทสถานที่นี้มีอยู่แล้ว'
-            ], 409);
-        }
-
-        $poit = new PointOfInterestType();
-        $poit->poit_type = $request->input('poit_type');
-        $poit->poit_name = $request->input('poit_name');
-        $poit->poit_icon = $request->input('poit_icon');
-        $poit->poit_color = $request->input('poit_color');
-        $poit->poit_description = $request->input('poit_description');
-        $poit->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'เพิ่มประเภทสถานที่เรียบร้อยแล้ว',
-            'data' => $poit
-        ]);
-    }
-
+    
     public function editPoit(Request $request){
         $validator = \Validator::make($request->all(), [
             'poit_type' => 'required|string|max:255',
