@@ -67,6 +67,11 @@
         renderPagination(result.total);
     }
 
+    function displayValue(value) {
+    return value === null || value === undefined || value === "" ? "-" : value;
+    }
+
+
     function renderTable() {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
@@ -93,6 +98,8 @@
             tableBody.appendChild(row);
             });
         }
+        pagination.appendChild(btn);
+    };
 
         function renderPagination(totalItems) {
             const pagination = document.getElementById("pagination");
@@ -122,6 +129,33 @@
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
         }
+
+    // Middle pages
+    const startPage = Math.max(2, currentPage - 2);
+    const endPage = Math.min(totalPages - 1, currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+        addButton(i, i, currentPage === i);
+    }
+
+    // Right dots
+    if (currentPage < totalPages - 3) {
+        addEllipsis();
+    }
+
+    // Always show last page (if > 1)
+    if (totalPages > 1) {
+        addButton(totalPages, totalPages, currentPage === totalPages);
+    }
+
+    // Next button
+    const nextBtn = document.createElement("button");
+    nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
+    nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => goToPage(currentPage + 1);
+    pagination.appendChild(nextBtn);
+}
 
     function goToPage(pageNumber) {
         currentPage = pageNumber;
