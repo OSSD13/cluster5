@@ -74,28 +74,63 @@
 
 
 <!-- กราฟและการ์ดสถิติยอดขาย -->
-<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-    <canvas id="branchSalesChart" class="w-full h-48"></canvas>
+
+
+<div class="flex flex-col gap-4">
+    <div class="flex flex-row gap-4">
+        <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark"
+             style="background-color: #F2DDD4;">
+            <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
+            <div class="flex justify-center items-center text-bold gap-2">
+                <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+            </div>
+            <div id="minChange" class="text-sm text-end">
+                <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
+                <span id="minPercent">0</span>%
+            </div>
+        </div>
+
+        <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success"
+             style="background-color: #D6F2D4;">
+            <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
+            <div class="flex justify-center items-center text-bold gap-2">
+                <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+            </div>
+            <div id="maxChange" class="text-sm text-end">
+                <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
+                <span id="maxPercent">0</span>%
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-row gap-4">
+        <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+             style="background-color: #FAEAFF;">
+            <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
+            <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
+                <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+            </div>
+            <div id="stdChange" class="text-base text-end text-bold" style="color: #DA25BF;">
+                <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
+                <span id="stdPercent">0</span>%
+            </div>
+        </div>
+
+        <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+             style="background-color: #FAEAFF;">
+            <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
+            <div class="flex justify-center items-center text-bold text-base gap-2 mt-5" style="color: #DA25BF;">
+                <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
+            </div>
+            <div id="avgChange" class="text-base text-end text-bold" style="color: #DA25BF;">
+                <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
+                <span id="avgPercent">0</span>%
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-6">
-    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #F2DDD4;">
-        <div class="text-sm font-bold text-gray-700">Min (บาท)</div>
-        <div class="text-xl font-bold text-red-600" id="minValue">-</div>
-    </div>
-    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #D6F2D4;">
-        <div class="text-sm font-bold text-gray-700">Max (บาท)</div>
-        <div class="text-xl font-bold text-green-600" id="maxValue">-</div>
-    </div>
-    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #FAEAFF;">
-        <div class="text-sm font-bold text-gray-700">Standard Deviation</div>
-        <div class="text-xl font-bold text-pink-600" id="stdValue">-</div>
-    </div>
-    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #FAEAFF;">
-        <div class="text-sm font-bold text-gray-700">Average</div>
-        <div class="text-xl font-bold text-pink-600" id="avgValue">-</div>
-    </div>
-</div>
 
 
 
@@ -164,9 +199,8 @@ async function fetchBranchSalesStats() {
 
 
 
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        <table class="w-full border-collapse rounded-lg overflow-hidden">
-            <thead class="bg-blue-500 text-white">
+<table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-3 px-4 text-left">เดือน</th>
                     <th class="py-3 px-4 text-right">ยอดเงิน</th>
@@ -176,13 +210,14 @@ async function fetchBranchSalesStats() {
             </thead>
             <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200"></tbody>
         </table>
-    </div>
 
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
     <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 @endsection
 
 @section('script')
+
+<script></script>
     <script>
         let sales = [];
         let currentPage = 1;
