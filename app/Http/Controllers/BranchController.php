@@ -104,31 +104,15 @@ class BranchController extends Controller
 
     public function createBranch(Request $request)
     {
-<<<<<<< HEAD
-        // Validate required fields
-        $validator = Validator::make($request->all(), [
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-=======
         $validator = \Validator::make($request->all(), [
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
->>>>>>> origin/develop
             'zipcode' => 'required|numeric',
             'province' => 'required|string|max:255',
             'amphoe' => 'required|string|max:255',
             'district' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255'
-<<<<<<< HEAD
-        ], [
-            'lat.required' => 'กรุณาระบุละติจูด',
-            'lat.numeric' => 'ละติจูดต้องเป็นตัวเลขเท่านั้น',
-            'lng.required' => 'กรุณาระบุลองจิจูด',
-            'lng.numeric' => 'ลองจิจูดต้องเป็นตัวเลขเท่านั้น',
-            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลขเท่านั้น',
-=======
         ],[
             'latitude.required' => 'กรุณาระบุละติจูด',
             'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
@@ -136,7 +120,6 @@ class BranchController extends Controller
             'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
             'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
             'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
->>>>>>> origin/develop
             'province.required' => 'กรุณาระบุจังหวัด',
             'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
             'amphoe.required' => 'กรุณาระบุอำเภอ',
