@@ -7,10 +7,7 @@ use App\Models\PointOfInterest;
 
 class PointOfInterestController extends Controller
 {
-    public function index()
-    {
-        return view('poi.index');
-    }
+   
 
     public function queryPoi(Request $request)
     {
@@ -66,10 +63,10 @@ class PointOfInterestController extends Controller
         ]);
     }
 
-    public function createPage()
+    /*public function createPage()
     {
         return view('poi.create');
-    }
+    }*/
 
     public function createPoi(Request $request)
     {
@@ -150,7 +147,7 @@ class PointOfInterestController extends Controller
         ]);
     }
 
-    public function editPage(Request $request)
+    /*public function editPage(Request $request)
     {
         return view('poi.edit');
     }
@@ -158,5 +155,5 @@ class PointOfInterestController extends Controller
     public function editPoi(Request $request)
     {
         return view('poi.create');
-    }
+    }*/
 }

@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class PointOfInterestTypeController extends Controller
 {
-    public function index(){
+    /*public function index(){
         return view('poi.type.index');
-    }
+    }*/
 
     public function queryPoit(Request $request)
     {
@@ -62,10 +62,10 @@ class PointOfInterestTypeController extends Controller
             'data' => $poits
         ]);
     }
-
+/*
     public function create(){
         return view('poi.type.create');
-    }
+    }*/
 
     public function createPoit(Request $request){
         $validator = \Validator::make($request->all(), [
@@ -219,8 +219,8 @@ class PointOfInterestTypeController extends Controller
             'message' => 'ลบประเภทสถานที่เรียบร้อยแล้ว'
         ]);
     }
-
+/*
     public function editPage(){
         return view('poi.type.edit');
-    }
+    }*/
 }

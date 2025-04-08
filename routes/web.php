@@ -28,20 +28,21 @@ Route::post('/login', [LoginController::class, 'login']);
 // testing
 Route::middleware([CheckLogin::class])->group(function () {
     
-    //view function
+    //view controller
+/*
     Route::get('/login', [ViewController::class, 'login']);
     Route::get('/', [ViewController::class, 'dashbordIndex']);
     Route::get('/branch', [ViewController::class, 'branchIndex']);
     Route::get('/map', [ViewController::class, 'mapIndex']);
-    Route::get('/poi', [ViewController::class, 'branchIndex']);
+    Route::get('/poi', [ViewController::class, 'poiIndex']);
     Route::get('/user', [ViewController::class, 'userIndex']);
     //branch
-    Route::get('/branch/create', [Controller::class, 'create'])->name('branch.create');
-    Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
-    Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
-    Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
+    Route::get('/branch/create', [ViewController::class, 'branchCreate'])->name('branch.create');
+    Route::get('/branch/edit', [ViewController::class, 'branchEdit'])->name('branch.edit');
+    Route::get('/branch/', [ViewController::class, 'index'])->name('branch.index');
+    Route::get('/branch/manage', [BranchController::class, 'branchManageIndex'])->name('branch.manage.index');
     //poi
-    Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
+    Route::get('/poi/create', [ViewController::class, 'poiCreate'])->name('poi.create');
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     //poitype
@@ -49,8 +50,32 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
     Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
-    Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');
+    Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');*/
    
+    // ViewController
+Route::controller(ViewController::class)->group(function () {
+    Route::get('/login', 'login');
+    Route::get('/', 'dashbordIndex');
+    Route::get('/map', 'mapIndex');
+    Route::get('/branch', 'branchIndex');
+    Route::get('/poi', 'poiIndex');
+    Route::get('/user', 'userIndex');
+
+    Route::get('/branch/create', 'branchCreate')->name('branch.create');
+    Route::get('/branch/edit', 'branchEdit')->name('branch.edit');
+    Route::get('/branch/', 'branchIndex')->name('branch.index');
+    Route::get('/branch/manage','branchManageIndex' )->name('branch.manage.index');
+
+    Route::get('/poi', 'poiIndex')->name('poi.index');
+    Route::get('/poi/create', 'poiCreate')->name('poi.create');
+    Route::get('/poi/edit', 'poiEdit')->name('poi.edit');
+
+    Route::get('/poi/type', 'poiTypeIndex')->name('poi.type.index');
+    Route::get('/poi/type/create', 'poiTypeCreate')->name('poi.type.create');
+    Route::get('/poi/type/edit', 'poiTypeEdit')->name('poi.type.edit');
+
+});
+
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
 
@@ -86,7 +111,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/user/create', [ManageUserController::class, 'createUser'])->name('api.user.create');
     Route::post('/api/user/edit', [ManageUserController::class, 'editUser'])->name('api.user.edit');
     Route::post('/api/user/delete', [ManageUserController::class, 'deleteUser'])->name('api.user.delete');
-
 
 
 
