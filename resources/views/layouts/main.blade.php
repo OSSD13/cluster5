@@ -20,7 +20,7 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 px-8">
+        <main class="flex-1 p-4 px-7">
             @yield('content')
         </main>
 

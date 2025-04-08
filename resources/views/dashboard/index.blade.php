@@ -421,6 +421,7 @@
                     arrow.classList.add('icon-[line-md--arrow-down]');
                 }
             }
+
         </script>
 
         <div class="grid grid-cols-3  gap-4  bg-lightblue shadow-md rounded-lg p-4 " style="background-color: #B8E0F8">
@@ -435,15 +436,15 @@
 
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <div style="resize: both; overflow: auto; max-width: 100%;">
-        <table class="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
+        <table class="table-auto divide-y divide-gray-200 rounded-lg overflow-hidden" id="regionTable">
             <thead class="bg-lightblue" style="background-color: #B6D2FF">
                 <tr>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
+                        class="py-3 flex justify-center font-medium text-gray-500 uppercase tracking-wider" style="color: black">#</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">ภูมิภาค</th>
                     <th scope="col"
-                        class="px-6 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
+                        class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider" style="color: black">จำนวนสาขา</th>
                     <th scope="col" class="px-6 py-3" id="regionBranchCount"></th>
                 </tr>
             </thead>
