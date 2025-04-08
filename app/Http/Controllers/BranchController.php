@@ -219,11 +219,10 @@ class BranchController extends Controller
         ]);
     }
 
-    public function manage(Request $request)
+    public function manage()
     {
         return view('branch.manage.index');
     }
-    
 
     public function deleteBranch(Request $request)
     {
