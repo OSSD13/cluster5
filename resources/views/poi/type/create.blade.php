@@ -10,7 +10,8 @@
 
             <!-- ประเภทสถานที่ -->
             <label class="block text-sm text-gray-600">ประเภทสถานที่ที่สนใจ</label>
-            <input type="text" name="poiType" id="poiType" class="w-full p-2 border border-gray-300 rounded-lg"
+            <input type="text" name="poiType" id="
+            poiType" class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="ประเภทสถานที่">
             <div class="text-red-500 text-sm mb-3 px-2" id="error-poiType"></div>
 
