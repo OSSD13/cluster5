@@ -25,9 +25,10 @@
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">Sale Supervisor</label>
             <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded">
-                
+                <option value="">ทั้งหมด</option>
             </select>
         </div>
+
 
         <!-- Dropdown: Role -->
         <div class="mb-3">
@@ -35,7 +36,7 @@
             <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
                 <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
                 <option value="Sale">Sale</option>
-                <option value="Sale Sup.">Sale Supervisor</option>
+                <option value="supervisor">Sale Supervisor</option>
                 <option value="CEO">CEO</option>
             </select>
         </div>
@@ -71,31 +72,51 @@
 <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
-let members = [];
-let currentPage = 1;
-const rowsPerPage = 10;
+    let members = [];
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    let totalMembers = 0;
+    let currentSort = { column: 'id', ascending: true };
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetchMembers();
-
-    document.getElementById("searchInput").addEventListener("input", function () {
-        currentPage = 1;
-        fetchMembers(this.value);
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchMembers();
+        document.getElementById("searchInput").addEventListener("input", () => {
+            currentPage = 1;
+            fetchMembers();
+        });
+        document.getElementById("supervisorSelect").addEventListener("change", () => {
+            currentPage = 1;
+            fetchMembers();
+        });
+        document.getElementById("roleSelect").addEventListener("change", () => {
+            currentPage = 1;
+            fetchMembers();
+        });
     });
-});
 
-async function fetchMembers(search = '') {
-    try {
-        const response = await fetch(`{{ route('api.user.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
-        const result = await response.json();
-        members = result.data || [];
-        document.getElementById("resultCount").textContent = `ผลลัพธ์ ${result.total} รายการ`;
-        renderTable();
-        renderPagination(result.total);
-    } catch (error) {
-        console.error('Error fetching members:', error);
+    async function fetchMembers() {
+        const search = document.getElementById("searchInput").value || '';
+        const supervisorId = document.getElementById("supervisorSelect").value || '';
+        const role = document.getElementById("roleSelect").value || '';
+
+        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&supervisor_id=${supervisorId}&role=${encodeURIComponent(role)}`;
+
+        try {
+            const response = await fetch(`{{ route('api.user.query') }}${query}`);
+            const result = await response.json();
+            members = result.data || [];
+            totalMembers = result.total || 0;
+
+            document.getElementById("resultCount").textContent = `ผลลัพธ์ ${totalMembers} รายการ`;
+
+            populateSupervisorDropdown(); // เติม dropdown ทุกครั้งเผื่อรายการเปลี่ยน
+            renderTable();
+            renderPagination(totalMembers);
+        } catch (error) {
+            console.error("Error fetching members:", error);
+        }
     }
-}
+
 
 function renderTable() {
     const tableBody = document.getElementById("tableBody");
@@ -109,7 +130,7 @@ function renderTable() {
                 <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
                 <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
             </td>
-            <td class="py-3 px-4 w-32 truncate text-md" title="${member.role_name}">${member.role_name}</td>
+            <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
             <td class="py-3 px-1 w-10 text-center relative">
                 <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
             </td>
@@ -180,12 +201,11 @@ function renderPagination(totalItems) {
     pagination.appendChild(nextBtn);
 }
 
-function goToPage(pageNumber) {
-    currentPage = pageNumber;
-    fetchMembers(document.getElementById("searchInput").value);
-}
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        fetchMembers(document.getElementById("searchInput").value);
+    }
 
-    
     // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
     function sortTable(column) {
         if (currentSort.column === column) {
@@ -225,18 +245,19 @@ function goToPage(pageNumber) {
     }
 
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
-    function populateSupervisorDropdown() {
-        const supervisorSelect = document.getElementById("supervisorSelect");
-        supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>`;
+    function populateSupervisorDropdown() { 
+    const supervisorSelect = document.getElementById("supervisorSelect");
+    supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>`;
 
-        const supervisors = members.filter(m => m.role === "Sale Sup.");
-        supervisors.forEach(sup => {
-            const option = document.createElement("option");
-            option.value = sup.id;
-            option.textContent = `${sup.name} - ${sup.email}`;
-            supervisorSelect.appendChild(option);
-        });
-    }
+    const supervisors = members.filter(m => m.role_name === "supervisor");
+    supervisors.forEach(sup => {
+        const option = document.createElement("option");
+        option.value = sup.id;  // ✅ แก้ตรงนี้
+        option.textContent = `${sup.name} - ${sup.email}`;
+        supervisorSelect.appendChild(option);
+    });
+}
+
 
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
     document.addEventListener("DOMContentLoaded", () => {
@@ -412,7 +433,7 @@ function goToPage(pageNumber) {
                         <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
                         <option value="Sale">Sale</option>
                         <option value="CEO">CEO</option>
-                        <option value="Sale Sup.">Sale Supervisor</option>
+                        <option value="supervisor">Sale Supervisor</option>
                     </select>
                 </div>
                 <div class="w-full">
@@ -421,7 +442,7 @@ function goToPage(pageNumber) {
                         <label class="font-medium text-gray-800 text-sm">Sales supervisor</label>
                         <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <option value="" selected disabled>เลือก Sales Supervisor</option>
-                            ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
+                            ${members.filter(member => member.role === 'supervisor').map(supervisor => 
                                 `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
                             ).join('')}
                         </select>
@@ -497,7 +518,7 @@ function goToPage(pageNumber) {
             section.style.display = "block";
             dropdown.innerHTML = "";
 
-            const supervisors = members.filter(member => member.role === "Sale Sup.");
+            const supervisors = members.filter(member => member.role === "supervisor");
 
             if (supervisors.length === 0) {
                 dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
@@ -546,7 +567,7 @@ function goToPage(pageNumber) {
                     <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                         <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
                         <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
-                        <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
+                        <option value="supervisor" ${member.role === 'supervisor' ? 'selected' : ''}>Sale Supervisor</option>
                     </select>
                     </div>
                      
