@@ -159,5 +159,40 @@
     function viewDetail(id) {
         alert("ดูรายละเอียด POI ID: " + id);
     }
+
+
+    function viewDetail(id) {
+            const poi = pois.find(p => p.poi_id === id);
+            if (!poi) return;
+
+            Swal.fire({
+                title: "รายละเอียดสถานที่",
+                html: `
+                    <div class="text-left space-y-2 text-sm text-gray-700">
+                        <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
+                        <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
+                        <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
+                        <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
+                        <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
+                    </div>
+                `,
+                confirmButtonText: "ปิด",
+                confirmButtonColor: "#3085d6"
+            });
+        }
+
+        function formatThaiDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString("th-TH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        }
+
+            function safeText(text) {
+                return text ?? '-';
+            }
 </script>
 @endsection

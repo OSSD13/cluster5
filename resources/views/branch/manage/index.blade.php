@@ -1,17 +1,15 @@
 @extends('layouts.main')
 
-@section('title', 'Branch')
+@section('title', 'Manage Branch')
 
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        <!-- Header -->
-        <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-gray-700">จัดการสาขา - </h2>
-        </div>
+        <h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
     </div>
+
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
         <div class="flex flex-col space-y-2 text-left">
-            <label class="font-medium text-gray-800 text-sm">ชื่อสถานที่</label>
+            <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
                 value="{{ $branch->bs_name }}" readonly>
             <label class="font-medium text-gray-700 text-sm">ประเภท</label>
@@ -25,7 +23,7 @@
                 value="{{ \Carbon\Carbon::parse($branch->created_at)->format('d M Y') }}" readonly>
             <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="jeng@gmail.com" readonly>
+                value="{{ $branch->bs_manager_email }}" readonly>
         </div>
     </div>
 
@@ -75,6 +73,91 @@
 
 
 
+<!-- กราฟและการ์ดสถิติยอดขาย -->
+<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto mb-5">
+    <canvas id="branchSalesChart" class="w-full h-48"></canvas>
+</div>
+
+<div class="grid grid-cols-2 gap-4 max-w-md mx-auto mb-6">
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #F2DDD4;">
+        <div class="text-sm font-bold text-gray-700">Min (บาท)</div>
+        <div class="text-xl font-bold text-red-600" id="minValue">-</div>
+    </div>
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #D6F2D4;">
+        <div class="text-sm font-bold text-gray-700">Max (บาท)</div>
+        <div class="text-xl font-bold text-green-600" id="maxValue">-</div>
+    </div>
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #FAEAFF;">
+        <div class="text-sm font-bold text-gray-700">Standard Deviation</div>
+        <div class="text-xl font-bold text-pink-600" id="stdValue">-</div>
+    </div>
+    <div class="shadow-md rounded-lg p-4 text-center" style="background-color: #FAEAFF;">
+        <div class="text-sm font-bold text-gray-700">Average</div>
+        <div class="text-xl font-bold text-pink-600" id="avgValue">-</div>
+    </div>
+</div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetchBranchSalesStats();
+});
+
+async function fetchBranchSalesStats() {
+    try {
+        const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+        const result = await response.json();
+        const data = result.data || [];
+        const salesAmounts = data.map(s => parseFloat(s.sales_amount));
+
+        if (salesAmounts.length === 0) return;
+
+        const min = Math.min(...salesAmounts);
+        const max = Math.max(...salesAmounts);
+        const avg = salesAmounts.reduce((a, b) => a + b, 0) / salesAmounts.length;
+        const std = Math.sqrt(salesAmounts.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesAmounts.length);
+
+        document.getElementById('minValue').textContent = min.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('maxValue').textContent = max.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+        const bins = Array(10).fill(0);
+        const maxSale = Math.max(...salesAmounts);
+        const step = maxSale / bins.length;
+        salesAmounts.forEach(amount => {
+            const index = Math.min(Math.floor(amount / step), bins.length - 1);
+            bins[index]++;
+        });
+
+        const labels = bins.map((_, i) => `${Math.round(i * step / 1000)}k`);
+        const ctx = document.getElementById("branchSalesChart").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: "จำนวนสาขา",
+                    data: bins,
+                    backgroundColor: "#3366C0"
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error fetching stats:", error);
+    }
+}
+</script>
 
 
 
@@ -85,38 +168,23 @@
         <table class="w-full border-collapse rounded-lg overflow-hidden">
             <thead class="bg-blue-500 text-white">
                 <tr>
-                    <th scope="col" class="py-2 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left min-w-[70px]">เดือน</th>
-                    <th class="py-3 px-4 text-left max-w-[70px]">ยอดเงิน</th>
-                    <th class="py-3 px-4 text-left ">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center ">&#8230;</th>
-                  </tr>
+                    <th class="py-3 px-4 text-left">เดือน</th>
+                    <th class="py-3 px-4 text-right">ยอดเงิน</th>
+                    <th class="py-3 px-4 text-right">เพิ่มโดย</th>
+                    <th class="py-3 px-4 text-right"></th>
+                </tr>
             </thead>
             <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200"></tbody>
         </table>
     </div>
 
-    <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
     <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 @endsection
 
-
 @section('script')
     <script>
-        let branches = [
-            { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
-            { id: 2, name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี" },
-            { id: 3, name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี" },
-            { id: 4, name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี" },
-            { id: 5, name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี" },
-            { id: 6, name: "ท่าพระ", type: "ตลาด", province: "ขอนแก่น" },
-            { id: 7, name: "กรุงเทพฯ", type: "ร้านอาหาร", province: "กรุงเทพมหานคร" },
-            { id: 8, name: "ปราจีนบุรี", type: "ร้านกาแฟ", province: "ปราจีนบุรี" },
-            { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
-            { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
-            { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
-        ]; // Your existing data
+        let sales = [];
         let currentPage = 1;
         const rowsPerPage = 10;
         const branchId = {{ $branch->bs_id ?? 'null' }};
@@ -140,11 +208,12 @@
             const tableBody = document.getElementById("salesTableBody");
             tableBody.innerHTML = "";
 
-            const start = (currentPage - 1) * rowsPerPage;
-            const paginatedData = branches.slice(start, start + rowsPerPage);
+            if (sales.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">ไม่พบข้อมูล</td></tr>`;
+                return;
+            }
 
-
-            paginatedData.forEach((branch) => {
+            sales.forEach(sale => {
                 const row = document.createElement("tr");
                 const monthLabel = formatThaiDate(sale.sales_month);
                 row.innerHTML = `
@@ -157,8 +226,6 @@
                 `;
                 tableBody.appendChild(row);
             });
-
-            renderPagination();
         }
 
         function toggleMenu(event, id) {

@@ -149,5 +149,11 @@ class PointOfInterestController extends Controller
             'data' => $poi
         ]);
     }
+    public function editPage()
+    {
+    
+
+        return view('poi.edit');
+    }
 
 }
