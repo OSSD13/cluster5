@@ -104,16 +104,23 @@ class BranchController extends Controller
 
     public function createBranch(Request $request)
     {
+<<<<<<< HEAD
         // Validate required fields
         $validator = Validator::make($request->all(), [
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
+=======
+        $validator = \Validator::make($request->all(), [
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+>>>>>>> origin/develop
             'zipcode' => 'required|numeric',
             'province' => 'required|string|max:255',
             'amphoe' => 'required|string|max:255',
             'district' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255'
+<<<<<<< HEAD
         ], [
             'lat.required' => 'กรุณาระบุละติจูด',
             'lat.numeric' => 'ละติจูดต้องเป็นตัวเลขเท่านั้น',
@@ -121,11 +128,25 @@ class BranchController extends Controller
             'lng.numeric' => 'ลองจิจูดต้องเป็นตัวเลขเท่านั้น',
             'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
             'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลขเท่านั้น',
+=======
+        ],[
+            'latitude.required' => 'กรุณาระบุละติจูด',
+            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+            'longitude.required' => 'กรุณาระบุลองจิจูด',
+            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
+            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+>>>>>>> origin/develop
             'province.required' => 'กรุณาระบุจังหวัด',
+            'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
             'amphoe.required' => 'กรุณาระบุอำเภอ',
+            'amphoe.string' => 'อำเภอต้องเป็นตัวอักษร',
             'district.required' => 'กรุณาระบุตำบล',
+            'district.string' => 'ตำบลต้องเป็นตัวอักษร',
             'address.required' => 'กรุณาระบุที่อยู่',
-            'name.required' => 'กรุณาระบุชื่อสาขา',
+            'address.string' => 'ที่อยู่ต้องเป็นตัวอักษร',
+            'name.required' => 'กรุณาระชื่อสถานที่',
+            'name.string' => 'ชื่อสถานที่ต้องเป็นตัวอักษร',
         ]);
 
         // Check if validation fails
@@ -153,16 +174,14 @@ class BranchController extends Controller
             ], 404);
         }
 
-        try {
-            // Create point of interest (POI)
-            $poi = new PointOfInterest();
-            $poi->poi_name = $request->input('name');
-            $poi->poi_type = 'branch';
-            $poi->poi_gps_lat = $request->input('lat');
-            $poi->poi_gps_lng = $request->input('lng');
-            $poi->poi_address = $request->input('address');
-            $poi->poi_location_id = $location->location_id;
-            $poi->save();
+        $poi = new PointOfInterest();
+        $poi->poi_name = $request->input('name');
+        $poi->poi_type = 'branch';
+        $poi->poi_gps_lat = $request->input('latitude');
+        $poi->poi_gps_lng = $request->input('longitude');
+        $poi->poi_address = $request->input('address');
+        $poi->poi_location_id = $location->location_id;
+        $poi->save();
 
             // Use authenticated user's ID for branch manager
             $userId = auth()->user()->user_id;
