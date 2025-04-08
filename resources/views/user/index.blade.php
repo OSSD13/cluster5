@@ -18,13 +18,18 @@
 
     <div class="mb-3">
         <label class="block text-gray-600 mb-1">Sale Supervisor</label>
-        <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded"></select>
+        <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded">
+            <option value="" selected>ค้นหาด้วย Sale Supervisor</option>
+            @foreach ($supervisors as $supervisor)
+                <option value="{{ $supervisor->user_id }}">{{ $supervisor->name }} - {{ $supervisor->email }}</option>
+            @endforeach
+        </select>
     </div>
 
     <div class="mb-3">
         <label class="block text-gray-600 mb-1">บทบาท</label>
         <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
-            <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
+            <option value="" selected  >ค้นหาด้วยตำแหน่ง</option>
             <option value="sale">Sale</option>
             <option value="supervisor">Sale Supervisor</option>
             <option value="ceo">CEO</option>
