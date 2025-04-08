@@ -11,12 +11,9 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-<<<<<<< HEAD
-        "laravel/socialite": "^5.18",
-=======
         "laravel/socialite": "*",
->>>>>>> origin/develop
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "predis/predis": "^2.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

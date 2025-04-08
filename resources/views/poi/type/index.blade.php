@@ -3,140 +3,118 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-    <!-- <form method="POST" action="{{ route('logout') }}">
-                @csrf -->
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
-        <!-- Header -->
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-2xl font-bold text-gray-700">POIT จัดการประเภทสถานที่ที่สนใจ</h2>
             <a href="{{ route('poi.type.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap"
+                    style="background-color: #3062B8">
                     สร้าง POI
                 </button>
             </a>
         </div>
 
-        <!-- Search Input -->
-        <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3"
+            id="searchInput">
 
-        <!-- Dropdowns -->
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">ประเภท</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>ประเภทสถานที่</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="block text-gray-600 mb-1">จังหวัด</label>
-            <select class="w-full p-2 border border-gray-300 rounded">
-                <option>จังหวัด</option>
-            </select>
-        </div>
-
-        <!-- Result Count -->
-        <p class="text-gray-700">ผลลัพธ์ 302 รายการ</p>
+        <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
     </div>
 
-
-    <!-- **************************************************************************** -->
-
-    <!-- Pagination Controls -->
-    <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
-            <thead class="bg-blue-500 text-white">
+    <div class="overflow-x-auto">
+        <table class="min-w-full mt-5 table-auto border-collapse rounded-lg bg-gray-100">
+            <thead class="bg-blue-500 text-white text-sm">
                 <tr>
-                    <th class="py-3 px-4 w-13 text-left">ID</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสถานที่</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
-                    <th class="py-3 px-4 text-left whitespace-nowrap">จังหวัด</th>
-                    <th class="py-3 px-1 w-7 text-center font-bold"></th>
+                    <th class="py-3 px-4 text-left">ชื่อ / ประเภท</th>
+                    <th class="py-3 px-4 text-center">Icon</th>
+                    <th class="py-3 px-4 text-left">คำอธิบาย</th>
+                    <th class="py-3 px-4 text-center">การจัดการ</th>
                 </tr>
             </thead>
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
+            <tbody id="tableBody" class="text-sm text-gray-700">
+                <!-- Filled by JS -->
+            </tbody>
         </table>
     </div>
 
-    <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-    @endsection
-    @section('script')
+@endsection
+
+@section('script')
     <script>
-        let branches = [
-            { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
-            { id: 2, name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี" },
-            { id: 3, name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี" },
-            { id: 4, name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี" },
-            { id: 5, name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี" },
-            { id: 6, name: "ท่าพระ", type: "ตลาด", province: "ขอนแก่น" },
-            { id: 7, name: "กรุงเทพฯ", type: "ร้านอาหาร", province: "กรุงเทพมหานคร" },
-            { id: 8, name: "ปราจีนบุรี", type: "ร้านกาแฟ", province: "ปราจีนบุรี" },
-            { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
-            { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
-            { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
-        ]; // Your existing data
+        let poits = [];
         let currentPage = 1;
-        const rowsPerPage = 5;
-        let currentSort = { column: null, ascending: true };
+        const rowsPerPage = 10;
 
-        function renderTable() {
+        async function fetchPoits() {
+            try {
+                const response = await fetch('{{ route('api.poit.query.all') }}');
+                const result = await response.json();
+                poits = result.data || [];
+                renderTable();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function renderTable(data = poits) {
             const tableBody = document.getElementById("tableBody");
-            tableBody.innerHTML = "";
-
             const start = (currentPage - 1) * rowsPerPage;
-            const paginatedData = branches.slice(start, start + rowsPerPage);
+            const paginated = data.slice(start, start + rowsPerPage);
+            tableBody.innerHTML = "";
+            document.getElementById("resultCount").innerText = data.length;
 
-            paginatedData.forEach((branch) => {
+            paginated.forEach(poit => {
                 const row = document.createElement("tr");
+                row.classList.add("border-b", "border-gray-200",
+                "hover:bg-blue-50"); // เพิ่ม border และ hover effect
                 row.innerHTML = `
-            <td class="py-3 px-4 w-16">${branch.id}</td>
-            <td class="py-3 px-4 truncate">${branch.name}</td>
-            <td class="py-3 px-4 w-32 truncate">${branch.type}</td>
-            <td class="py-3 px-4 w-32 truncate">${branch.province}</td>
-            <td class="py-3 px-1 w-10 text-center relative">
-                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.id})">&#8230;</button>
-                <div id="menu-${branch.id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 whitespace-nowrap cursor-pointer" onclick="viewDetail(${branch.id})">ดูรายละเอียด</button>
-                    <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 cursor-pointer" 
-                    onclick="window.location.href='{{ route('poi.type.edit') }}'">แก้ไข</button>
-                    <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 cursor-pointer" onclick="deleteBranch(${branch.id})">ลบ</button>
-                </div>
-            </td>
-        `;
+                    <td class="py-3 px-4 text-left font-semibold">${poit.poit_name}</td>
+                    <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
+                    <td class="py-3 px-4 text-left">${poit.poit_description || '-'}</td>
+                    <td class="py-3 px-4 text-center relative">
+                        <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
+                        <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                                onclick="viewDetail(${poit.poit_type})">ดูรายละเอียด</button>
+                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+                                onclick="editPoit(${poit.poit_type})">แก้ไข</button>
+                            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700"
+                                onclick="deletePoit(${poit.poit_type})">ลบ</button>
+                        </div>
+                    </td>`;
                 tableBody.appendChild(row);
             });
 
-            renderPagination();
+            renderPagination(data);
         }
 
-        function renderPagination() {
+        function renderPagination(data) {
             const pagination = document.getElementById("pagination");
-            pagination.innerHTML = ""; // Clear previous pagination
+            pagination.innerHTML = "";
+            const totalPages = Math.ceil(data.length / rowsPerPage);
 
-            const totalPages = Math.ceil(branches.length / rowsPerPage);
-
-            // Previous button
             const prevBtn = document.createElement("button");
-            prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.innerText = "<";
+            prevBtn.className =
+                `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
 
-            // Page number buttons
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                             ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                btn.className =
+                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
             }
 
-            // Next button
             const nextBtn = document.createElement("button");
-            nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            nextBtn.innerText = ">";
+            nextBtn.className =
+                `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -149,83 +127,84 @@
 
         function toggleMenu(event, id) {
             event.stopPropagation();
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+            document.querySelectorAll("[id^=menu-]").forEach(el => el.classList.add("hidden"));
             document.getElementById(`menu-${id}`).classList.toggle("hidden");
         }
+
+        // ✅ ฟังก์ชันปุ่ม
+        function viewDetail(id) {
+            alert("ดูรายละเอียด ID: " + id);
+            // หรือเปลี่ยนหน้า location.href = `/poi/type/${id}`
+        }
+
+        function editPoit(id) {
+            window.location.href = `/poi/type/${id}/edit`;
+        }
+
+        const filterAll = () => {
+            const searchVal = document.getElementById("searchInput").value.toLowerCase();
+            const typeVal = document.getElementById("typeSelect").value;
+            const provVal = document.getElementById("provinceSelect").value;
+
+            const filtered = poits.filter(p =>
+                (!searchVal || p.name.toLowerCase().includes(searchVal) || p.type.toLowerCase().includes(
+                    searchVal) || p.province.toLowerCase().includes(searchVal)) &&
+                (!typeVal || p.type === typeVal) &&
+                (!provVal || p.province === provVal)
+            );
+
+            currentPage = 1;
+            renderTable(filtered);
+        };
+
+        document.getElementById("searchInput").addEventListener("input", filterAll);
+
+
         document.addEventListener("click", () => {
             document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
         });
 
-        function viewDetail(id) {
-            const branch = branches.find(item => item.id === id);
-
-            Swal.fire({
-                title: "<b class=text-gray-800>รายละเอียดข้อมูล POI</b>",
-                html: `
-                <div class="flex flex-col space-y-2 text-left">
-                    <label class="font-semibold text-gray-800">ชื่อสถานที่</label>
-                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.name}" readonly>
-
-                    <label class="font-semibold text-gray-800">ประเภท</label>
-                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.type}" readonly>
-
-                    <label class="font-semibold text-gray-800">จังหวัด</label>
-                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="${branch.province}" readonly>
-
-                    <label class="font-semibold text-gray-800">วันที่เพิ่ม</label>
-                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="17 ก.ย. 2568" readonly>
-
-                    <label class="font-semibold text-gray-800">เพิ่มโดย</label>
-                    <input type="text" class="swal2-input w-full h-10 text-lg px-3 text-gray-800" value="jeng@gmail.com" readonly>
-                </div>
-            `,
-                customClass: {
-                    popup: 'custom-popup'
-                },
-                confirmButtonText: "ยืนยัน",
-                confirmButtonColor: "#2D8C42",
-            });
+        function deletePoit(id) {
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบ?")) {
+                fetch(`/api/poit/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            poit_type: getPoitTypeById(id)
+                        }) // คุณต้องดึง poit_type จาก id นี้
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        fetchPoits();
+                    })
+                    .catch(error => console.error("Delete error:", error));
+            }
         }
 
-        function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
-        function deleteBranch(id) {
-            Swal.fire({
-                title: "ลบสถานที่ที่สนใจ",
-                text: "คุณต้องการลบสถานที่ที่สนใจ ใช่หรือไม่",
-                icon: "warning",
-                iconColor: "#d33",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // ลบรายการออกจากอาร์เรย์
-                    branches = branches.filter(branch => branch.id !== id);
-
-                    // อัปเดตตาราง
-                    renderTable();
-
-                    // แจ้งเตือนว่าลบสำเร็จ
-                    Swal.fire({
-                        title: "ลบแล้ว!",
-                        text: "สถานที่ที่สนใจถูกลบเรียบร้อย",
-                        icon: "success"
-                    });
-                }
-            });
+        function getPoitTypeById(id) {
+            const item = poits.find(p => p.id === id);
+            return item ? item.poit_type : '';
         }
 
+        // ค้นหา
+        document.getElementById("searchInput").addEventListener("input", function() {
+            const keyword = this.value.toLowerCase();
+            const filtered = poits.filter(p =>
+                p.poit_name.toLowerCase().includes(keyword) ||
+                p.poit_type.toLowerCase().includes(keyword) ||
+                (p.poit_description && p.poit_description.toLowerCase().includes(keyword))
+            );
+            currentPage = 1;
+            renderTable(filtered);
+        });
 
-        renderTable();
-
+        document.addEventListener("DOMContentLoaded", fetchPoits);
+        document.addEventListener("click", () => {
+            document.querySelectorAll("[id^=menu-]").forEach(el => el.classList.add("hidden"));
+        });
     </script>
-
-
-
-
-    <!-- **************************************************************************** -->
-
-    <!-- </form> -->
 @endsection

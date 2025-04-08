@@ -5,15 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-<<<<<<<< HEAD:app/Models/Point_of_interests.php
-class Point_of_interests extends Model
-{
-    /** @use HasFactory<\Database\Factories\Point_of_interestsFactory> */
-========
 class PointOfInterest extends Model
 {
     /** @use HasFactory<\Database\Factories\PointOfInterestFactory> */
->>>>>>>> origin/develop:app/Models/PointOfInterest.php
     use HasFactory;
 
     /**
@@ -24,12 +18,13 @@ class PointOfInterest extends Model
     protected $fillable = [
         'poi_id',
         'poi_name',
-        'type',
+        'poi_type',
         'gps_lat',
         'gps_lng',
         'address',
         'location_id',
     ];
+    protected $table = 'point_of_interests';
 
     public function getPOIId(): int
     {

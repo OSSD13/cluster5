@@ -17,10 +17,10 @@ class LoginController extends Controller
         if ($user && $req->password && Hash::check($req->password, $user->password)) {
             $req->session()->forget('error');
             $req->session()->put('user', $user);
-            return redirect("/");
+            return redirect()->route('dashboard');
         } else {
             $req->session()->put('error', 'ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง');
-            return redirect("/login");
+            return redirect()->route('loginGet');
         }
     }
 
@@ -31,6 +31,6 @@ class LoginController extends Controller
         // ล้าง session ทั้งหมด
         $req->session()->flush();
         // Redirect ไปหน้า login
-        return redirect('/login')->with('logoutSuccess', 'ออกจากระบบสำเร็จ');
+        return redirect()->route('loginGet')->with('logoutSuccess', 'ออกจากระบบสำเร็จ');
     }
 }
