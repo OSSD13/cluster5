@@ -727,7 +727,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 }
 
-
     // ฟังก์ชันสำหรับลบสมาชิก
     function deleteMember(id) {
     Swal.fire({
