@@ -46,7 +46,7 @@
                 </script>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function () {
+                    document.addEventListener('DOMContentLoaded', function() {
                         fetch('/api/getSubordinate')
                             .then(response => response.json())
                             .then(data => {
@@ -70,7 +70,7 @@
                 function getBranchReport() {
                     const userId = document.getElementById('subordinateSelect') ?
                         document.getElementById('subordinateSelect').value :
-                                                                        {{ session()->get('user')->user_id }};
+                        {{ session()->get('user')->user_id }};
                     const date = document.getElementById('timePeriod') ?
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -278,7 +278,7 @@
                     }
                 }
 
-                document.addEventListener('DOMContentLoaded', function () {
+                document.addEventListener('DOMContentLoaded', function() {
                     console.log("Fetching report...");
                     getBranchReport();
                 });
@@ -290,8 +290,10 @@
             <div class="flex-1 bg-white shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="font-bold">ยอดพัสดุทั้งหมด (ชิ้น)</div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow: 3 font-medium" style="font-size: 55px; flex-grow :1" id='thisMonthTotalPackageIcon'></span>
-                    <span class="font-bold text-trinary flex-grow " style="font-size: 28px " id="thisMonthTotalPackageNumber"></span>
+                    <span class="icon-[streamline--upload-box-1-solid] text-trinary flex-grow: 3 font-medium"
+                        style="font-size: 55px; flex-grow :1" id='thisMonthTotalPackageIcon'></span>
+                    <span class="font-bold text-trinary flex-grow " style="font-size: 28px "
+                        id="thisMonthTotalPackageNumber"></span>
                 </div>
                 <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
@@ -304,8 +306,10 @@
             <div class="flex-1 bg-green shadow-md rounded-lg flex flex-col p-4 gap-4">
                 <div class="font-bold">ยอดรายได้ทั้งหมด (บาท) </div>
                 <div class="flex justify-around items-center">
-                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow font-medium" style="font-size: 75px; flex-grow :1.5" id='thisMonthTotalMoneyIcon'></span>
-                    <span class="font-bold text-green-600 flex-grow " style="font-size: 28px;" id='thisMonthTotalMoneyNumber'></span>
+                    <span class="icon-[tabler--coin-filled] text-green-600 flex-grow font-medium"
+                        style="font-size: 75px; flex-grow :1.5" id='thisMonthTotalMoneyIcon'></span>
+                    <span class="font-bold text-green-600 flex-grow " style="font-size: 28px;"
+                        id='thisMonthTotalMoneyNumber'></span>
                 </div>
                 <div class="text-success text-sm text-end" id='thisMonthTotalMoneyPercentParent'>
                     <span class="icon-[line-md--arrow-up]" id='thisMonthTotalMoneyArrow'></span>
@@ -320,8 +324,9 @@
         </div>
         <div class="flex flex-col gap-4">
             <div class="flex flex-row gap-4">
-                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark" style="background-color: #F2DDD4;">
-                    <div class="font-bold" style="font-size: 14px; color: black;"  >Min (บาท)</div>
+                <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark"
+                    style="background-color: #F2DDD4;">
+                    <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                     </div>
@@ -330,11 +335,12 @@
                         <span id="minPercent">0</span>%
                     </div>
                 </div>
-                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success " style="background-color: #D6F2D4;">
+                <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success "
+                    style="background-color: #D6F2D4;">
                     <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2">
                         <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
-                    
+
                     </div>
                     <div id="maxChange" class="text-sm text-end">
                         <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
@@ -343,20 +349,22 @@
                 </div>
             </div>
             <div class="flex flex-row gap-4">
-                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark " style="background-color: #FAEAFF;">
-                    <div class="font-bold" style="font-size: 14px; color:black;" >Standard Deviation (บาท)</div>
+                <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark "
+                    style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
                     <div class="flex justify-center items-center text-bold gap-2" style ="color: #DA25BF;">
                         <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
-                    
+
                     </div>
-                    <div id="stdChange" class="text-base text-end text-bold "style ="color: #DA25BF;"> 
-                        <span id="stdArrow" class="icon-[line-md--arrow-down]" ></span>
+                    <div id="stdChange" class="text-base text-end text-bold "style="color: #DA25BF;">
+                        <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="stdPercent">0</span>%
                     </div>
                 </div>
-                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark" style="background-color: #FAEAFF;">
-                    <div class="font-bold" style="font-size: 14px; color: black;" >Average (บาท)</div>
-                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5"style ="color: #DA25BF;">
+                <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+                    style="background-color: #FAEAFF;">
+                    <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
+                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5"style="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
@@ -392,13 +400,19 @@
                 updateCardStyle('maxCard', 'maxArrow', maxChange);
 
                 // Update Std Card
-                document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('stdValue').textContent = std.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
                 document.getElementById('stdPercent').textContent = stdChange.toFixed(2);
                 updateCardStyle('stdCard', 'stdArrow', stdChange);
 
 
                 // Update Avg Card
-                document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
                 document.getElementById('avgPercent').textContent = avgChange.toFixed(2);
                 updateCardStyle('avgCard', 'avgArrow', avgChange);
 
@@ -450,12 +464,14 @@
                         <th scope="col"
                             class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
                             style="color: black;">#</th>
-                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                        <th scope="col"
+                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
-                             จังหวัด</th>
-                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
-                        style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
-                                จำนวนสาขา</th>
+                            จังหวัด</th>
+                        <th scope="col"
+                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                            style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
+                            จำนวนสาขา</th>
                         <th scope="col" class="py-3" id="regionBranchCount"></th>
                     </tr>
                 </thead>
@@ -471,6 +487,7 @@
             let province = null;
             let branches = [];
             let currentPage = 1;
+
 
             function buildRegionTable() {
                 // fetch /api/getRegionBranch
@@ -526,83 +543,106 @@
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
-                    fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('/api/getRegionBranch?' + new URLSearchParams({
                         date,
                         user_id
                     }).toString())
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Region Branch Data:', data);
-                            clearTableBody();
-                            const regionTableBody = document.getElementById('regionTableBody');
-                            regionTableBody.innerHTML = ''; // Clear existing data
-                            data.branch_count_by_region.forEach((region, index) => {
-                                let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Region Branch Data:', data);
+                        clearTableBody();
+                        const regionTableBody = document.getElementById('regionTableBody');
+                        regionTableBody.innerHTML = ''; // Clear existing data
+                        data.branch_count_by_region.forEach((region, index) => {
+                            let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
                                         <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
                                         <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
                                         <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
                                         <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
                                      </tr>`;
-                                regionTableBody.innerHTML += row;
+                            regionTableBody.innerHTML += row;
+                        });
+                        let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
+                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+                        // Render full branch list if available
+                        if (data.branches) {
+                            const tableBody = document.getElementById('tableBody');
+                            tableBody.innerHTML = ''; // Clear previous rows
+
+                            data.branches.forEach((branch, index) => {
+                                let row = `
+                                    <tr class="hover:bg-gray-100">
+                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                            ${branch.branchName}
+                                        </td>
+                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `;
+                                tableBody.innerHTML += row;
                             });
-                            let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
-                            document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
-                            hideBackButton();
-                            showRegionTable();
-                            setBackButtonOnClick(() => {
-                                buildRegionTable();
-                            });
-                        }).catch(error => console.error('Error fetching region branch data:', error));
+                        }
+                        hideBackButton();
+                        showRegionTable();
+                        setBackButtonOnClick(() => {
+                            buildRegionTable();
+                        });
+                    }).catch(error => console.error('Error fetching region branch data:', error));
             }
 
             function buildProvinceTable(region) {
-    const regions = {
-        'NORTH': 'ภาคเหนือ',
-        'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
-        'WEST': 'ภาคตะวันตก',
-        'CENTRAL': 'ภาคกลาง',
-        'EAST': 'ภาคตะวันออก',
-        'SOUTH': 'ภาคใต้',
-    };
+                const regions = {
+                    'NORTH': 'ภาคเหนือ',
+                    'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
+                    'WEST': 'ภาคตะวันตก',
+                    'CENTRAL': 'ภาคกลาง',
+                    'EAST': 'ภาคตะวันออก',
+                    'SOUTH': 'ภาคใต้',
+                };
 
-    // เปลี่ยนชื่อหัวเรื่อง (ใหญ่) เป็นชื่อภาค
-    const regionTitle = document.getElementById('regionTitle');
-    regionTitle.textContent = regions[region];
+                // เปลี่ยนชื่อหัวเรื่อง (ใหญ่) เป็นชื่อภาค
+                const regionTitle = document.getElementById('regionTitle');
+                regionTitle.textContent = regions[region];
 
-    // ✅ ใช้ฟอนต์ขนาดใหญ่เสมอ
-    regionTitle.classList.remove('text-2xl');
-    regionTitle.classList.add('text-4xl');
+                // ✅ ใช้ฟอนต์ขนาดใหญ่เสมอ
+                regionTitle.classList.remove('text-2xl');
+                regionTitle.classList.add('text-4xl');
 
-    // ✅ เปลี่ยนชื่อหัวตารางจาก "ภูมิภาค" เป็น "จังหวัด"
-    const regionHeader = document.querySelector('#regionTable thead th:nth-child(2)');
-    if (regionHeader) {
-        regionHeader.textContent = 'จังหวัด';
-    }
+                // ✅ เปลี่ยนชื่อหัวตารางจาก "ภูมิภาค" เป็น "จังหวัด"
+                const regionHeader = document.querySelector('#regionTable thead th:nth-child(2)');
+                if (regionHeader) {
+                    regionHeader.textContent = 'จังหวัด';
+                }
 
-    const date = document.getElementById('timePeriod') ?
-        document.getElementById('timePeriod').value :
-        new Date().toISOString().slice(0, 7);
+                const date = document.getElementById('timePeriod') ?
+                    document.getElementById('timePeriod').value :
+                    new Date().toISOString().slice(0, 7);
 
-    const user_id = document.getElementById('subordinateSelect') ?
-        document.getElementById('subordinateSelect').value :
-        {{ session()->get('user')->user_id }};
+                const user_id = document.getElementById('subordinateSelect') ?
+                    document.getElementById('subordinateSelect').value :
+                    {{ session()->get('user')->user_id }};
 
-    fetch('/api/getRegionBranch?' + new URLSearchParams({
-        region,
-        date,
-        user_id
-    }).toString())
-        .then(response => response.json())
-        .then(data => {
-            console.log('Province Branch Data:', data);
+                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                        region,
+                        date,
+                        user_id
+                    }).toString())
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Province Branch Data:', data);
 
-            clearTableBody();
+                        clearTableBody();
 
-            const provinceTableBody = document.getElementById('regionTableBody');
-            provinceTableBody.innerHTML = ''; // Clear existing data
+                        const provinceTableBody = document.getElementById('regionTableBody');
+                        provinceTableBody.innerHTML = ''; // Clear existing data
 
-            data.branch_count_by_province.forEach((province, index) => {
-                let row = `
+                        data.branch_count_by_province.forEach((province, index) => {
+                            let row = `
                     <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
                         <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
                         <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
@@ -611,20 +651,42 @@
                             <span class="icon-[material-symbols--chevron-right-rounded]"></span>
                         </td>
                     </tr>`;
-                provinceTableBody.innerHTML += row;
-            });
+                            provinceTableBody.innerHTML += row;
+                        });
 
-            let branchCount = data.branch_count_by_province.reduce((acc, p) => acc + p.branch_count, 0);
-            document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+                        let branchCount = data.branch_count_by_province.reduce((acc, p) => acc + p.branch_count, 0);
+                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+                        // Render full branch list if available
+                        if (data.branches) {
+                            const tableBody = document.getElementById('tableBody');
+                            tableBody.innerHTML = ''; // Clear previous rows
 
-            showBackButton();
-            showRegionTable();
-            setBackButtonOnClick(() => {
-                buildRegionTable();
-            });
-        })
-        .catch(error => console.error('Error fetching province branch data:', error));
-}
+                            data.branches.forEach((branch, index) => {
+                                let row = `
+                                    <tr class="hover:bg-gray-100">
+                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                            ${branch.branchName}
+                                        </td>
+                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `;
+                                tableBody.innerHTML += row;
+                            });
+                        }
+                        showBackButton();
+                        showRegionTable();
+                        setBackButtonOnClick(() => {
+                            buildRegionTable();
+                        });
+                    })
+                    .catch(error => console.error('Error fetching province branch data:', error));
+            }
 
 
             function buildBranchesTable(region, province) {
@@ -662,14 +724,14 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                                                {{ session()->get('user')->user_id }};
+                    {{ session()->get('user')->user_id }};
 
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
-                    region,
-                    province,
-                    date,
-                    user_id
-                }).toString())
+                        region,
+                        province,
+                        date,
+                        user_id
+                    }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
@@ -703,7 +765,7 @@
                         regionTitle.textContent = province;
 
                         hideRegionTable(); // ซ่อนตารางภูมิภาค
-                        showBackButton();  // แสดงปุ่มย้อนกลับ
+                        showBackButton(); // แสดงปุ่มย้อนกลับ
 
                         setBackButtonOnClick(() => {
                             buildProvinceTable(region); // ย้อนกลับไปตารางจังหวัด
@@ -742,7 +804,7 @@
 
             function setBackButtonOnClick(func) {
                 const backButton = document.getElementById('regionTableBack');
-                backButton.onclick = function () {
+                backButton.onclick = function() {
                     // เปลี่ยนชื่อหัวเรื่องกลับเป็น "ภูมิภาค"
                     const regionTitle = document.getElementById('regionTitle');
                     regionTitle.textContent = "ภูมิภาค";
@@ -755,7 +817,7 @@
             }
 
 
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 buildRegionTable();
             });
         </script>
