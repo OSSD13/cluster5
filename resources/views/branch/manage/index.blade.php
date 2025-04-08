@@ -144,93 +144,18 @@
     }
 
     Swal.fire({
+        title: 'รายละเอียดยอดขาย',
         html: `
-            <div class="flex flex-col text-3xl mb-6 mt-4">
-                <b class="text-gray-800">รายละเอียดยอดขาย</b>
-            </div>
-
-            <div class="flex flex-col space-y-2 text-left">
-                <div class="w-full">
-                    <label class="font-medium text-gray-800 text-sm">เดือน</label>
-                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                        value="${formatThaiDate(sale.sales_month)}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800 text-sm">จำนวนกล่อง</label>
-                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                        value="${sale.sales_package_amount ?? '-'}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800 text-sm">ยอดเงิน (บาท)</label>
-                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                        value="${parseFloat(sale.sales_amount).toLocaleString()}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
-                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                        value="${formatThaiDate(sale.sales_month)}" readonly>
-                </div>
-
-                <div class="w-full">
-                    <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
-                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                        value="${sale.manager_name ?? '-'}" readonly>
-                </div>
+            <div class='text-left space-y-2'>
+                <div><b>เดือน:</b> ${formatThaiDate(sale.sales_month)}</div>
+                <div><b>ยอดขาย:</b> ${(+sale.sales_amount).toLocaleString()} บาท</div>
+                <div><b>จำนวนกล่อง:</b> ${sale.sales_package_amount ?? '-'}</div>
+                <div><b>เพิ่มโดย:</b> ${sale.manager_name ?? '-'}</div>
             </div>
         `,
-        confirmButtonText: "ปิด",
-        confirmButtonColor: "#2D8C42",
-        customClass: {
-            popup: 'custom-popup'
-        }
+        confirmButtonText: 'ปิด',
+        confirmButtonColor: '#3062B8'
     });
 }
-
-    function editSale(id) {
-        alert('แก้ไข #' + id);
-    }
-    
-    function deleteSale(id) {
-    Swal.fire({
-        title: "ลบรายการยอดขาย",
-        text: "คุณต้องการลบรายการนี้ใช่หรือไม่?",
-        icon: "warning",
-        iconColor: "#d33",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3062B8",
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch(`{{ route('api.sales.delete') }}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({ sales_id: id })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    sales = sales.filter(s => s.sales_id !== id);
-                    renderSalesTable();
-                    Swal.fire("ลบแล้ว!", "รายการถูกลบเรียบร้อย", "success");
-                } else {
-                    Swal.fire("เกิดข้อผิดพลาด", data.message || "ไม่สามารถลบข้อมูลได้", "error");
-                }
-            });
-        }
-    });
-}
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-        if (branchId !== null) fetchSales();
-    });
 </script>
 @endsection
