@@ -4,7 +4,7 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-
+    
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 
     <!-- <form method="POST" action="{{ route('logout') }}">
@@ -132,7 +132,7 @@ function renderTable() {
             </td>
             <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
             <td class="py-3 px-1 w-10 text-center relative">
-                <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
+                <button onclick="toggleMenu(event, ${member.user_id})">&#8230;</button>
             </td>
         `;
         tableBody.appendChild(row);
@@ -331,7 +331,7 @@ function renderPagination(totalItems) {
 
     // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
     function viewDetail(id) {
-        const member = members.find(item => item.id === id);
+        const member = members.find(item => item.user_id === id);
 
         // เช็คถ้าสมาชิกเป็น "Sale" และมี Sales Supervisor
         let supervisorInfo = "";
@@ -536,7 +536,7 @@ function renderPagination(totalItems) {
 
     // ฟังก์ชันสำหรับแก้ไขสมาชิก
     function editMember(id) {
-        const member = members.find(item => item.id === id);
+        const member = members.find(item => item.user_id === id);
 
         Swal.fire({
             html: `
@@ -554,7 +554,7 @@ function renderPagination(totalItems) {
 
                     <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Password</label>
-                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"value ="${member.password}">
                     </div>
 
                     <div class="w-full">
@@ -600,9 +600,10 @@ function renderPagination(totalItems) {
                 cancelButton: "ml-0",
                 confirmButton: "mr-0",
             },
-            preConfirm: () => {
+            preConfirm: async () => {
                 const email = document.getElementById("memberEmail").value;
                 const name = document.getElementById("memberName").value;
+                const password = document.getElementById("memberPassword").value;
                 const role = document.getElementById("memberRole").value;
 
                 if (!email || !name || !role) {
@@ -610,82 +611,120 @@ function renderPagination(totalItems) {
                     return false;
                 }
 
-                let supervisorId = null;
+                let manager = null;
                 if (role === "Sale") {
-                    supervisorId = document.getElementById("supervisorDropdown").value;
-                    if (!supervisorId) {
+                    manager = document.getElementById("supervisorDropdown").value;
+                    if (!manager) {
                         Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                         return false;
                     }
                 }
 
-                // อัปเดตข้อมูล
-                member.email = email;
-                member.name = name;
-                member.role = role;
-                if (role === "Sale") {
-                    member.supervisorId = parseInt(supervisorId);
-                } else {
-                    delete member.supervisorId;
+                try {
+                    const response = await fetch("{{ route('api.user.edit') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                        },
+                        body: JSON.stringify({
+                            user_id: id,
+                            email: email,
+                            name: name,
+                            password: password || undefined,
+                            role_name: role,
+                            manager: manager ? parseInt(manager) : null,
+                            user_status: "normal"
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        const errorMsg = result?.message || "เกิดข้อผิดพลาด";
+                        Swal.showValidationMessage(errorMsg);
+                        return false;
+                    }
+
+                    Swal.fire({
+                        title: "สำเร็จ!",
+                        text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                        icon: "success",
+                        confirmButtonColor: "#2D8C42",
+                        confirmButtonText: "ตกลง"
+                    });
+
+                    // รีเฟรชข้อมูลจาก API ใหม่
+                    fetchMembers();
+
+                } catch (error) {
+                    Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ API");
+                    console.error("Edit API error:", error);
+                    return false;
                 }
-
-                renderTable();
-
-                Swal.fire({
-                    title: "สำเร็จ!",
-                    text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
-                    icon: "success",
-                    confirmButtonColor: "#2D8C42",
-                    confirmButtonText: "ตกลง"
-                });
             }
+
         });
     }
 
     // ฟังก์ชันสำหรับลบสมาชิก
     function deleteMember(id) {
-        Swal.fire({
-            title: "ลบสมาชิก",
-            text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
-            icon: "warning",
-            iconColor: "#d33",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#6c757d",
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // ลบรายการออกจากอาร์เรย์
-                members = members.filter(member => member.id !== id);
-                
-                // คำนวณจำนวนหน้าหลังจากลบข้อมูล
-                const totalPages = Math.ceil(members.length / rowsPerPage);
+    Swal.fire({
+        title: "ลบสมาชิก",
+        text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
+        icon: "warning",
+        iconColor: "#d33",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch("{{ route('api.user.delete') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
+                    },
+                    body: JSON.stringify({
+                        user_id: id
+                    })
+                });
 
-                // ถ้าหน้าเกินจำนวนหน้าใหม่ เช่น ถ้าปัจจุบันอยู่ที่หน้า 3 แต่เหลือแค่ 2 หน้า
-                if (currentPage > totalPages) {
-                    currentPage = totalPages; // ไปที่หน้าสุดท้ายที่ยังมีข้อมูล
+                const result = await response.json();
+
+                if (!response.ok) {
+                    Swal.fire({
+                        title: "ผิดพลาด",
+                        text: result.message || "ไม่สามารถลบข้อมูลได้",
+                        icon: "error"
+                    });
+                    return;
                 }
 
-                // ถ้าหน้าเกินจำนวนหน้าใหม่ (ตัวอย่างเช่น ลบจนหน้า 3 ว่าง) ให้ไปที่หน้าก่อนหน้า
-                if (currentPage > 1 && members.length > 0) {
-                    currentPage--; // ย้ายไปหน้าก่อนหน้า
-                }
-
-                // รีเฟรชตารางา
-                renderTable();
-                
-
-                // แจ้งเตือนว่าลบสำเร็จ
                 Swal.fire({
                     title: "ลบแล้ว!",
                     text: "สมาชิกถูกลบเรียบร้อย",
-                    icon: "success"
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42"
+                });
+
+                fetchMembers(); // โหลดข้อมูลใหม่
+
+            } catch (error) {
+                console.error("ลบสมาชิก error:", error);
+                Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ไม่สามารถเชื่อมต่อ API ได้",
+                    icon: "error"
                 });
             }
-        });
-        
-    }
+        }
+    });
+}
+
 
     renderTable();
    
