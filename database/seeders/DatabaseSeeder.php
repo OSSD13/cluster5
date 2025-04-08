@@ -129,7 +129,7 @@ class DatabaseSeeder extends Seeder
         foreach ($branchIds as $branchId) {
             for ($month = 0; $month < 12; $month++) {
                 Sales::factory()->create([
-                    'sales_bs_id' => $branchId,
+                    'sales_branch_id' => $branchId,
                     'created_at' => now()->subMonthsNoOverflow($month)->startOfMonth()->setTimezone('UTC'),
                     'sales_month' => now()->subMonthsNoOverflow($month)->startOfMonth()->setTimezone('UTC'),
                 ]);
