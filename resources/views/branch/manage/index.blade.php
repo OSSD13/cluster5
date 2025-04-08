@@ -126,36 +126,41 @@
     </div>
 
 
-
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5 mt-5">
-        <div class="flex flex-col space-y-2 text-left max-w-xs">
-            <div class="flex flex-col space-y-2 text-left text-sm">
-            <label class="w-full">เดือน</label>
-            <select class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                <option>กุมภาพันธ์ - 2568</option>
-            </select>
+        <div class="flex flex-col space-y-4 text-sm">
+            <!-- เดือน -->
+            <div class="flex items-center space-x-4">
+                <label class="w-24 px-4 text-left text-md font-medium text-gray-800">เดือน</label>
+                <select class="flex-1 w-full min-w-0 h-10 px-4 border border-gray-300 rounded-lg shadow-sm appearance-none">
+                    <option>กุมภาพันธ์ - 2568</option>
+                </select>
             </div>
-
-            <div class="w-full">
-            <label class="font-medium text-gray-700 text-sm">จำนวนกล่อง</label>
-            <input type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+    
+            <!-- จำนวนกล่อง -->
+            <div class="flex items-center space-x-4">
+                <label class="w-24 px-4 text-left text-md font-medium text-gray-800">จำนวนกล่อง</label>
+                <input type="number" class="flex-1 w-full min-w-0 h-10 px-2 border border-gray-300 rounded-lg shadow-sm" />
             </div>
-
-            <div class="w-full">
-            <label class="font-medium text-gray-700 text-sm">ยอดเงิน</label>
-            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+    
+            <!-- ยอดเงิน -->
+            <div class="flex items-center space-x-4">
+                <label class="w-24 px-4 text-left text-md font-medium text-gray-800">ยอดเงิน</label>
+                <input type="text" class="flex-1 w-full min-w-0 h-10 px-4 border border-gray-300 rounded-lg shadow-sm" />
             </div>
-            <div class="w-full">
-            <button
-                class=" h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition" style="background-color: #3062B8">
-                เพิ่มรายการ
-            </button>
+    
+            <!-- ปุ่มเพิ่มรายการ -->
+            <div class="flex justify-center pt-2">
+                <button class="px-6 h-10 text-white rounded-lg shadow-md font-medium hover:bg-blue-700 transition" style="background-color: #3062B8;">
+                    เพิ่มรายการ
+                </button>
             </div>
-
-            <p class="text-sm text-gray-600 mt-2">ผลลัพธ์ 302 รายการ</p>
+    
+            <!-- ผลลัพธ์ -->
+            <p class="text-sm text-gray-800 text-left">ผลลัพธ์ 302 รายการ</p>
         </div>
     </div>
-
+    
+    
     <!-- Pagination Controls -->
     <div class="overflow-visible">
         <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
@@ -163,9 +168,9 @@
                 <tr>
                     <th scope="col" class="py-2 px-4 text-left">ID</th>
                     <th class="py-3 px-4 text-left min-w-[70px]">เดือน</th>
-                    <th class="py-3 px-4 text-left max-w-[70px]">ยอดเงิน</th>
-                    <th class="py-3 px-4 text-left ">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center ">&#8230;</th>
+                    <th class="py-3 px-4 text-left min-w-[70px]">ยอดเงิน</th>
+                    <th class="py-3 px-4 text-left min-w-[70px]">เพิ่มโดย</th>
+                    <th class="py-3 px-1 w-17 text-center ">&#8230;</th>
                   </tr>
             </thead>
     
