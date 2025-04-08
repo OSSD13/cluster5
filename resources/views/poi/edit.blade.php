@@ -10,35 +10,35 @@
     <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
 
     <label class="block text-sm text-gray-600">ละติจูด</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด">
+    <input id="latitude" name="latitude" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด" value="{{ $show->poi_gps_lat }}">
 
     <label class="block text-sm text-gray-600">ลองจิจูด</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด">
+    <input id="longitude" name="longitude" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด">
 
     <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
         <img src="your-map-image-url.png" alt="Map" class="w-full h-full object-cover rounded-lg">
     </div>
 
     <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์">
+    <input id="postal_code" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์">
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
+    <input id="province" name="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
 
     <label class="block text-sm text-gray-600">อำเภอ</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
+    <input id="district" name="district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
 
     <label class="block text-sm text-gray-600">ตำบล</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
+    <input id="sub_district" name="sub_district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
 
     <label class="block text-sm text-gray-600">ที่อยู่</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่">
+    <input id="address" name="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่">
 
     <label class="block text-sm text-gray-600">ชื่อ</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ">
+    <input id="name" name="name" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ">
 
     <label class="block text-sm text-gray-600">ประเภท</label>
-    <select class="w-full p-2 border border-gray-300 rounded-lg mb-3">
+    <select id="type" name="type" class="w-full p-2 border border-gray-300 rounded-lg mb-3">
         <option>เลือกประเภทสถานที่</option>
     </select>
 
@@ -55,7 +55,7 @@
 document.getElementById("saveButton").addEventListener("click", function() {
     // แสดง SweetAlert
     Swal.fire({
-        title: "เพิ่มสำเร็จ",
+        title: "เเก้ไขสำเร็จ",
         icon: "success",
         showConfirmButton: true,
         confirmButtonColor: "#1c7d32",

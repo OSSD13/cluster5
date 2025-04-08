@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\EditPointOfInterestController;
 use App\Http\Controllers\PointOfInterestController;
 use App\Http\Controllers\PointOfInterestTypeController;
 use App\Http\Controllers\UserController;
@@ -43,7 +44,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/poi', function () {
         return view('poi.index'); });
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
-    Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
+    Route::get('/poi/edit', [EditPointOfInterestController::class, 'editPoiPage'])->name('poi.edit');
     Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
     Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');

@@ -177,7 +177,7 @@ class PointOfInterestController extends Controller
         if (!$location) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'ไม่พบข้อมูลสถานที่ตั้งที่ตรงกับที่ระบุ'
+                'message' => 'ไม่พบข้อมูลสถานที่ตั้งตรงกับที่ระบุ'
             ], 404);
         }
 
