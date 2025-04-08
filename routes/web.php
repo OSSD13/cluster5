@@ -12,6 +12,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\BranchReportController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\SalesController;
 use App\Http\Middleware\CheckLogin;
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google-auth');
@@ -38,7 +39,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
     Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
     Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
-    Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
+    Route::get('/branch/manage/{id}', [BranchController::class, 'indexManage'])->name('branch.manage.index');
 
     Route::get('/poi', function () {
         return view('poi.index'); });
@@ -95,6 +96,11 @@ Route::middleware([CheckLogin::class])->group(function () {
 
     // Test routes
     Route::get('/api/map', [MapController::class, 'getNearbyPOIsGroupedByType'])->name('api.map.get');
+
+    Route::get('/api/sales/query', [SalesController::class, 'querySales'])->name('api.sales.query');
+    Route::post('/api/sales/edit', [SalesController::class, 'editSales'])->name('api.sales.edit');
+    Route::post('/api/sales/delete', [SalesController::class, 'deleteSales'])->name('api.sales.delete');
+
 
 
 

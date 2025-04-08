@@ -119,7 +119,7 @@
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
                     <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
                         <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
-                            onclick="window.location.href='{{ route('branch.manage.index') }}'">จัดการ</button>
+                            onclick="window.location.href='{{ route('branch.manage.index', ['id' => $branch['bs_id']]) }}'">จัดการ</button>
                         <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
                             onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
                         <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer"
