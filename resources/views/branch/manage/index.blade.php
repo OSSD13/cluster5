@@ -4,21 +4,63 @@
 
 @section('content')
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-<h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
+    <h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
 </div>
 
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
     <div class="flex flex-col space-y-2 text-left">
+    <h3 class="text-2xl font-bold text-gray-800 text-center">ข้อมูลสาขา</h3>
         <label class="font-medium text-gray-800 text-sm">ชื่อสาขา</label>
-        <input type="text" id="branchName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
+        <input type="text" id="branchName" value="{{ $branch->bs_name ?? '' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
 
         <label class="font-medium text-gray-800 text-sm">จังหวัด</label>
-        <input type="text" id="branchProvince" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
+        <input type="text" id="branchProvince" value="{{ $branch->province_name ?? '-' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
+        
+        <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
+        <input type="text" id="branchCreatedAt"
+            value="{{ \Carbon\Carbon::parse($branch->created_at)->locale('th')->translatedFormat('j M Y') }}"
+            class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
+            readonly>
+
+
+        <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
+        <input type="text" id="branchProvince" value="{{ $branch->bs_manager ?? '-' }}" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly>
     </div>
 </div>
 
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-    <h3 class="text-lg font-bold text-gray-800 mb-3">ยอดขาย</h3>
+    {{-- Dropdown: เดือน --}}
+    <div>
+        <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
+        <select class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option>มกราคม - 2568</option>
+            <option selected>กุมภาพันธ์ - 2568</option>
+            <option>มีนาคม - 2568</option>
+        </select>
+    </div>
+    {{-- Input: จำนวนกล่อง --}}
+    <div>
+        <label class="block text-sm font-medium text-gray-800 mb-1">จำนวนกล่อง</label>
+        <input type="number" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกจำนวนกล่อง">
+    </div>
+    {{-- Input: ยอดเงิน --}}
+    <div>
+        <label class="block text-sm font-medium text-gray-800 mb-1">ยอดเงิน</label>
+        <input type="number" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกยอดเงิน">
+    </div>
+    {{-- ปุ่มเพิ่มรายการ --}}
+    <div>
+        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 rounded-md shadow-md transition">
+            เพิ่มรายการ
+        </button>
+    </div>
+    {{-- ข้อความผลลัพธ์ --}}
+    <div class="text-sm text-gray-700">
+        ผลลัพธ์ 302 รายการ
+    </div>
+</div>
+
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
     <table class="w-full border-collapse rounded-lg overflow-hidden">
         <thead class="bg-blue-500 text-white">
             <tr>
@@ -42,7 +84,7 @@
     let sales = [];
     let currentPage = 1;
     const rowsPerPage = 10;
-    const branchId = 1; // Replace with the actual branch ID
+    const branchId = {{ $branch->bs_id ?? 'null' }}; // <- bs_id คือคีย์ในฐานข้อมูล
 
     async function fetchSales(page = 1) {
         const params = new URLSearchParams({
@@ -68,17 +110,21 @@
         tableBody.innerHTML = "";
 
         if (sales.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-500">ไม่พบข้อมูล</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-500">ไม่พบข้อมูล</td></tr>`;
             return;
         }
 
         sales.forEach(sale => {
             const row = document.createElement("tr");
+            const monthLabel = new Date(sale.sales_month).toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'short'
+            });
             row.innerHTML = `
-                <td class="py-3 px-4">${new Date(sale.sales_month).toLocaleDateString('th-TH', { month: 'short' })}</td>
-                <td class="py-3 px-4 text-right">${sale.sales_amount.toLocaleString()}</td>
-                <td class="py-3 px-4 text-right">${sale.manager_name.toLocaleString()}</td>
-                <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+                <td class="py-3 px-4">${monthLabel}</td>
+                <td class="py-3 px-4 text-right">${parseFloat(sale.sales_amount).toLocaleString()}</td>
+                <td class="py-3 px-4 text-right">${sale.manager_name}</td>
+                <td class="py-3 px-1 w-7 text-center">&#8230;</td>
             `;
             tableBody.appendChild(row);
         });
@@ -103,9 +149,20 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        fetchSales();
+        if (branchId !== null) {
+            fetchSales();
+        } else {
+            console.warn("ไม่พบ branchId");
+        }
     });
 
-    
+    function formatThaiDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('th-TH', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    });
+}
 </script>
 @endsection

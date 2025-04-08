@@ -13,11 +13,6 @@ class BranchController extends Controller
     {
         return view('branch.index');
     }
-    public function indexManage(Request $request)
-    {
-        $branch = User::find($request->input('branch_id'));
-        return view('branch.manage.index', ['branch' => $branch]);
-    }
 
     public function queryBranch(Request $request)
     {
@@ -224,10 +219,18 @@ class BranchController extends Controller
         ]);
     }
 
-    public function manage()
+    public function manage(Request $request)
     {
-        return view('branch.manage.index');
+        $branchId = $request->input('branch_id');
+    $branch = null;
+
+    if ($branchId) {
+        $branch = \App\Models\Branch_store::find($branchId);
     }
+
+    return view('branch.manage.index', compact('branch'));
+    }
+    
 
     public function deleteBranch(Request $request)
     {
