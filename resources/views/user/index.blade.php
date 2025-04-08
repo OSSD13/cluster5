@@ -387,7 +387,7 @@
                                 `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
                             ).join('')}
                         </select>
-                    </div>
+                    </div>  
                 </div>
                 </div>
                 </div>`,

@@ -29,27 +29,22 @@ Route::post('/login', [LoginController::class, 'login'])->name('loginPost'); // 
 Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/', function () {
         return view('dashboard.index');
-    });
+    })->name('dashboard');
     Route::get('/map', function () {
         return view('map.index');
-    });
-    Route::get('/branch', function () {
-        return view('branch.index'); });
+    })->name('map');
     Route::get('/branch/create', [BranchController::class, 'create'])->name('branch.create');
     Route::get('/branch/edit', [BranchController::class, 'edit'])->name('branch.edit');
-    Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
+    Route::get('/branch', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () {
-        return view('poi.index'); });
+    Route::get('/poi', function () { return view('poi.index'); })->name('poi.index');
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
-    Route::delete('/poi/{id}', [PointOfInterestController::class, 'destroy'])->name('poi.destroy');
+
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
-    Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
     Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
-    Route::get('/poi/', [PointOfInterestController::class, 'index'])->name('poi.index');
 
 
     Route::get('/user', function () {
@@ -67,14 +62,12 @@ Route::middleware([CheckLogin::class])->group(function () {
 
     Route::get('/api/poi', [PointOfInterestController::class, 'queryPoi'])->name('api.poi.query');
     Route::post('/api/poi/edit', [PointOfInterestController::class, 'editPoi'])->name('api.poi.edit');
-    Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
     Route::post('/api/poi/create', [PointOfInterestController::class, 'createPoi'])->name('api.poi.create');
 
     Route::get('/api/poit/query', [PointOfInterestTypeController::class, 'queryPoit'])->name('api.poit.query');
     Route::get('/api/poit/query/all', [PointOfInterestTypeController::class, 'allPoit'])->name('api.poit.query.all');
     Route::get('/api/poit', [PointOfInterestTypeController::class, 'getPoit'])->name('api.poit.get');
     Route::post('/api/poit/create', [PointOfInterestTypeController::class, 'createPoit'])->name('api.poit.create');
-    Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::post('/api/poit/delete', [PointOfInterestTypeController::class, 'deletePoit'])->name('api.poit.delete');
     Route::post('/api/poit/edit', [PointOfInterestTypeController::class, 'editPoit'])->name('api.poit.edit');
 
