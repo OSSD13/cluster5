@@ -13,7 +13,7 @@
         <div class="flex flex-col space-y-2 text-left">
             <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="${branch.name}" readonly>
+                value="{{ isset($branch) ? $branch->name : '' }}" readonly>
 
             <label class="font-medium text-gray-700 text-sm">ประเภท</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"

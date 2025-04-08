@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Branch_store;
@@ -7,6 +6,7 @@ use App\Models\PointOfInterest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
 {
@@ -24,8 +24,10 @@ class BranchController extends Controller
         $target = $request->input('target', '');
 
         $branchQuery = Branch_store::query();
+
+        // If target is provided, validate access permission
         if ($target) {
-            $reqUserId = session()->get('user')->user_id;
+            $reqUserId = auth()->user()->user_id; // Use auth() to get the authenticated user
             $reqUser = User::where('user_id', $reqUserId)->first();
             $reqSub = array_merge([$reqUserId], $reqUser->getSubordinateIds());
 
@@ -37,13 +39,13 @@ class BranchController extends Controller
             }
         }
 
-
-        $user = User::where('user_id', $target)->first();
-        if ($user) {
+        // Handle the query for specific user if target exists
+        if ($user = User::where('user_id', $target)->first()) {
             $subordinate = $user->getSubordinateIds();
             $targetUserIds = array_merge([$target], $subordinate);
         }
 
+        // Apply query joins and select fields
         $branchQuery->join('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
             ->join('point_of_interest_type', 'point_of_interests.poi_type', '=', 'point_of_interest_type.poit_type')
             ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id');
@@ -61,6 +63,7 @@ class BranchController extends Controller
             'users.role_name as bs_manager_role_name'
         );
 
+        // Search filter logic
         if ($search) {
             $branchQuery->where(function ($query) use ($search) {
                 $query->where('branch_stores.bs_name', 'LIKE', "%$search%")
@@ -74,6 +77,7 @@ class BranchController extends Controller
             });
         }
 
+        // Filter based on target user and their subordinates
         if (!empty($target) && isset($targetUserIds)) {
             $branchQuery->where(function ($query) use ($target, $targetUserIds) {
                 $query->where('branch_stores.bs_manager', '=', $target)
@@ -81,8 +85,10 @@ class BranchController extends Controller
             });
         }
 
+        // Count total and fetch paginated data
         $total = $branchQuery->count();
         $branch = $branchQuery->offset($offset)->limit($limit)->get();
+
         return response()->json([
             'data' => $branch,
             'total' => $total,
@@ -98,7 +104,7 @@ class BranchController extends Controller
 
     public function createBranch(Request $request)
     {
-        // Validate all required fields first
+        // Validate required fields
         $validator = Validator::make($request->all(), [
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
@@ -122,7 +128,7 @@ class BranchController extends Controller
             'name.required' => 'กรุณาระบุชื่อสาขา',
         ]);
 
-        // Check if validation fails and return all errors
+        // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -132,8 +138,8 @@ class BranchController extends Controller
             ], 422);
         }
 
-        // Validate location exists
-        $location = \DB::table('locations')
+        // Validate location exists in database
+        $location = DB::table('locations')
             ->where('zipcode', $request->input('zipcode'))
             ->where('province', $request->input('province'))
             ->where('amphoe', $request->input('amphoe'))
@@ -148,7 +154,7 @@ class BranchController extends Controller
         }
 
         try {
-            // Create point of interest
+            // Create point of interest (POI)
             $poi = new PointOfInterest();
             $poi->poi_name = $request->input('name');
             $poi->poi_type = 'branch';
@@ -158,7 +164,8 @@ class BranchController extends Controller
             $poi->poi_location_id = $location->location_id;
             $poi->save();
 
-            $userId = session()->get('user')->user_id;
+            // Use authenticated user's ID for branch manager
+            $userId = auth()->user()->user_id;
 
             // Create branch
             $branch = new Branch_store();
@@ -175,7 +182,7 @@ class BranchController extends Controller
                 'data' => $branch
             ]);
         } catch (\Exception $e) {
-            // Handle any exceptions during creation
+            // Handle any exceptions during branch creation
             return response()->json([
                 'status' => 'error',
                 'message' => 'เกิดข้อผิดพลาดในการสร้างสาขา',
@@ -191,7 +198,7 @@ class BranchController extends Controller
 
     public function editBranch(Request $request)
     {
-        // First validate that branch_id exists
+        // Validate branch_id exists
         $branchValidator = Validator::make($request->all(), [
             'branch_id' => 'required|integer|exists:branch_stores,id',
         ], [
