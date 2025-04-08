@@ -100,38 +100,34 @@
 
         // แสดงตารางพร้อม pagination
         function renderTable(data = poits) {
-            const tableBody = document.getElementById("tableBody");
-            const start = (currentPage - 1) * rowsPerPage;
-            const paginated = data.slice(start, start + rowsPerPage);
-            tableBody.innerHTML = "";
-            document.getElementById("resultCount").innerText = data.length;
+    const tableBody = document.getElementById("tableBody");
+    const start = (currentPage - 1) * rowsPerPage;
+    const paginated = data.slice(start, start + rowsPerPage);
+    tableBody.innerHTML = "";
+    document.getElementById("resultCount").innerText = data.length;
 
-            paginated.forEach(poit => {
-                const row = document.createElement("tr");
-                row.classList.add("border-b", "border-gray-200", "hover:bg-blue-50");
+    paginated.forEach(poit => {
+        const row = document.createElement("tr");
+        row.classList.add("border-b", "border-gray-200", "hover:bg-blue-50");
 
-                // แสดงแต่ละแถว
-                row.innerHTML = `
-                            <td class="py-3 px-4 text-left font-semibold">${poit.poit_name}</td>
-                            <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
-                            <td class="py-3 px-4 text-left">${poit.poit_description || '-'}</td>
-                            <td class="py-3 px-4 text-center relative">
-                                <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
-                                <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                                    <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">ดูรายละเอียด</button>
-                                    <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">แก้ไข</button>
-                                    <button class="delete-btn block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" data-type="${poit.poit_type}">ลบ</button>
-                                </div>
-                            </td>`;
-                tableBody.appendChild(row);
-            });
-            
+        // แสดงแต่ละแถว
+        row.innerHTML = `
+            <td class="py-3 px-4 text-left font-semibold">${truncateText(poit.poit_name, 15)}</td>
+            <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
+            <td class="py-3 px-4 text-left">${truncateText(poit.poit_description || '-', 25)}</td>
+            <td class="py-3 px-4 text-center relative">
+                <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
+                <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                    <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">ดูรายละเอียด</button>
+                    <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">แก้ไข</button>
+                    <button class="delete-btn block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" data-type="${poit.poit_type}">ลบ</button>
+                </div>
+            </td>`;
+        tableBody.appendChild(row);
+    });
 
-
-
-            renderPagination(data);
-        }
-
+    renderPagination(data);
+}
 
 
         // การเปลี่ยนหน้า
