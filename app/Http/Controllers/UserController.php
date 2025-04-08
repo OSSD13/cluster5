@@ -79,7 +79,7 @@ class UserController extends Controller
 
     public function queryAllUser(Request $request)
     {
-        $role = $request->input('role', 'sale');
+        $role = $request->input('role', 'supervisor');
         $users = User::where('role_name', '=', $role)->get();
         return response()->json(['data' => $users]);
     }
@@ -119,6 +119,7 @@ class UserController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->role_name = $request->input('role_name');
         $user->user_status = $request->input('user_status');
+        $user->manager = $request->input('manager');
         $user->save();
 
         return response()->json([

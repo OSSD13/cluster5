@@ -75,7 +75,6 @@ async function fetchUsers() {
         document.getElementById("resultCount").innerText = `ผลลัพธ์ ${result.total} รายการ`;
         renderTable();
         renderPagination(result.total);
-        populateSupervisorDropdown();
     } catch (error) {
         console.error(error);
         Swal.fire("ผิดพลาด", error.message ?? "ไม่สามารถโหลดข้อมูลได้", "error");
@@ -178,17 +177,127 @@ function goToPage(pageNumber) {
     fetchUsers();
 }
 
-function populateSupervisorDropdown() {
-    const supervisorSelect = document.getElementById("supervisorSelect");
-    supervisorSelect.innerHTML = `<option value="">เลือก Sale Supervisor</option>`;
-    const supervisors = members.filter(m => m.role_name === "supervisor");
-    supervisors.forEach(sup => {
-        const option = document.createElement("option");
-        option.value = sup.user_id;
-        option.textContent = `${sup.name} - ${sup.email}`;
-        supervisorSelect.appendChild(option);
-    });
-}
+function addMember() {
+        Swal.fire({
+
+            html: 
+                `
+                <div class="flex flex-col items-center mb-1">
+                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+                </div>
+                <div class="flex flex-col text-3xl mb-6 mt-4">
+                     <b class=text-gray-800 >สร้างสมาชิก</b>
+                 </div>
+                <div class="flex flex-col space-y-2 text-left">
+                    <div class="w-full">
+                        <label class="font-semibold text-gray-800 text-sm">Email</label>
+                        <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                    </div>
+                <div class="w-full">
+                    <label class="font-semibold text-gray-800 text-sm">Password</label>
+                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">ชื่อผู้ใช้</label>
+                    <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">บทบาท</label>
+                    <select id="memberRole" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="toggleSupervisor()">
+                        <option value="" selected disabled >-- เลือก บทบาท --</option>
+                        <option value="sale">Sale</option>
+                        <option value="ceo">CEO</option>
+                        <option value="supervisor">Sale Supervisor</option>
+                    </select>
+                </div>
+                <div class="w-full">
+                    <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
+                    <div id="supervisorSection" style="display: none;" class="mt-4">
+                        <label class="font-medium text-gray-800 text-sm">Sales supervisor</label>
+                        <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+                            <option value="" selected disabled>เลือก Sales Supervisor</option>
+                            ${members.filter(member => member.role === 'supervisor').map(supervisor => 
+                                `<option value="${supervisor.user_id}">${supervisor.name} - ${supervisor.email}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                </div>
+                </div>
+                </div>`,
+            showCancelButton: true,
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก",
+            confirmButtonColor: "#2D8C42",
+            focusCancel: true,
+            customClass: {
+                actions: "flex justify-between w-full px-4",
+                cancelButton: "ml-0",
+                confirmButton: "mr-0",
+            },
+            preConfirm: async () => {
+            const email = document.getElementById("memberEmail").value;
+            const password = document.getElementById("memberPassword").value;
+            const name = document.getElementById("memberName").value;
+            const role = document.getElementById("memberRole").value;
+
+            if (!email || !password || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            let manager = null;
+            if (role === "sale") {
+                manager = document.getElementById("supervisorDropdown").value;
+                if (!manager) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
+                    return false;
+                }
+            }
+
+            try {
+                const response = await fetch("{{ route('api.user.create') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        name: name,
+                        role_name: role, 
+                        user_status: "normal", 
+                        manager: manager ? parseInt(manager) : null
+                        
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
+                    return false;
+                }
+
+                Swal.fire({
+                    title: "สำเร็จ!",
+                    text: "เพิ่มสมาชิกเรียบร้อยแล้ว",
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42",
+                    confirmButtonText: "ตกลง"
+                });
+
+                fetchMembers(); // รีโหลดข้อมูลใหม่
+
+            } catch (error) {
+                console.error("Add user error:", error);
+                Swal.showValidationMessage("ไม่สามารถเชื่อมต่อ API ได้");
+            }
+        }
+
+        });
+    }
+
 
 // Events
 window.addEventListener("DOMContentLoaded", () => {
