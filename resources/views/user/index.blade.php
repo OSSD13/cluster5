@@ -1,3 +1,4 @@
+
 @extends('layouts.main')
 
 @section('title', 'Point of Interest')
@@ -45,41 +46,30 @@
         <p class="text-gray-700" id="resultCount">ผลลัพธ์ 0 รายการ</p>
     </div>
 
-    <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท" class="w-full p-2 border border-gray-300 rounded mb-3">
 
-    <div class="mb-3">
-        <label class="block text-gray-600 mb-1">Sale Supervisor</label>
-        <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded"></select>
-    </div>
+    <!-- **************************************************************************** -->
 
-    <div class="mb-3">
-        <label class="block text-gray-600 mb-1">บทบาท</label>
-        <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
-            <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
-            <option value="sale">Sale</option>
-            <option value="supervisor">Sale Supervisor</option>
-            <option value="ceo">CEO</option>
-        </select>
-    </div>
-
-    <p class="text-gray-700" id="resultCount">ผลลัพธ์ 0 รายการ</p>
-</div>
-
+<!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อ / อีเมล</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">บทบาท</th>
+                <th scope="col" class="py-2 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left min-w-[200px]">ชื่อ / อีเมล</th>
+                <th class="py-3 px-4 text-center max-w-[150px]">บทบาท</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-            </tr>
+              </tr>
         </thead>
-        <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
+
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
     </table>
 </div>
 
+<!-- Pagination Controls -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
+
+<!-- contextMenu Controls-->
+<div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 
 <script>
     let members = [];
@@ -226,13 +216,7 @@ function renderPagination(totalItems) {
         }
         members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
         renderTable();
-        renderPagination(result.total);
-        populateSupervisorDropdown();
-    } catch (error) {
-        console.error(error);
-        Swal.fire("ผิดพลาด", error.message ?? "ไม่สามารถโหลดข้อมูลได้", "error");
     }
-}
 
     // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
     function filterAll() {
@@ -327,28 +311,21 @@ function renderPagination(totalItems) {
                 ลบ
             </button>
         `;
-        tableBody.appendChild(row);
-    });
-}
 
-function renderPagination(totalItems) {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
+        
 
-    const totalPages = Math.ceil(totalItems / rowsPerPage);
-    const maxVisible = 1;
-    let startPage = Math.max(1, currentPage - maxVisible);
-    let endPage = Math.min(totalPages, currentPage + maxVisible);
+        menu.classList.remove("hidden");
 
-    if (totalPages <= 1) return;
+        // **แสดงเมนูก่อนเพื่อให้ offsetWidth ทำงาน**
+        menu.classList.remove("hidden");
 
-    const createPageButton = (page, isActive = false) => {
-        const btn = document.createElement("button");
-        btn.innerText = page;
-        btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
-        btn.onclick = () => goToPage(page);
-        return btn;
-    };
+        document.addEventListener("click", function () {
+        const menu = document.getElementById("contextMenu");
+        if (!menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+            activeMenuId = null;
+        }
+});
 
 
         // ตั้งตำแหน่งเมนูใหม่
@@ -435,16 +412,11 @@ function renderPagination(totalItems) {
                 month: "short",
                 day: "numeric"
             });
-        };
-        return btn;
-    };
+        }
 
-    const prevBtn = document.createElement("button");
-    prevBtn.innerHTML = "&lt;";
-    prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => goToPage(currentPage - 1);
-    pagination.appendChild(prevBtn);
+    // ฟังก์ชันสำหรับเพิ่มสมาชิกใหม่
+    function addMember() {
+        Swal.fire({
 
             html: 
                 `
@@ -800,4 +772,11 @@ function renderPagination(totalItems) {
    
 </script>
 
+
+
+
+    <!-- **************************************************************************** -->
+
+    <!-- </form> -->
 @endsection
+
