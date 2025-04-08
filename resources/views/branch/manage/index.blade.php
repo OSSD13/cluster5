@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-<h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name ?? 'ไม่พบข้อมูลสาขา' }}</h2>
+<h2 class="text-2xl font-bold text-gray-800">จัดการสาขา - {{ $branch->bs_name }}</h2>
 </div>
 
 <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">

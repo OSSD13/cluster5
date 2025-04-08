@@ -15,7 +15,8 @@ class BranchController extends Controller
     }
     public function indexManage(Request $request)
     {
-        $branch = User::find($request->input('branch_id'));
+    $branch = Branch_store::find($request->input('branch_id'));
+
         return view('branch.manage.index', ['branch' => $branch]);
     }
 
