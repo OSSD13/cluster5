@@ -13,23 +13,24 @@
         <div class="flex flex-col space-y-2 text-left">
             <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="${branch.name}" readonly>
+                value="{{ $branch->bs_name }}" readonly>
+            {{-- <pre>{{ json_encode($branch, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre> --}}
 
             <label class="font-medium text-gray-700 text-sm">ประเภท</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="${branch.type}" readonly>
+                value="{{ $branch->poit_name }}" readonly>
 
             <label class="font-medium text-gray-700 text-sm">จังหวัด</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="${branch.province}" readonly>
+                value="{{ $branch->province }}" readonly>
 
             <label class="font-medium text-gray-700 text-sm">วันที่เพิ่ม</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="17 ก.ย. 2568" readonly>
+                value="{{ \Carbon\Carbon::parse($branch->created_at)->format('d M Y') }}" readonly>
 
             <label class="font-medium text-gray-700 text-sm">เพิ่มโดย</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
-                value="jeng@gmail.com" readonly>
+                value="{{ $branch->bs_manager_email }}" readonly>
         </div>
     </div>
 
@@ -135,13 +136,16 @@
             </select>
 
             <label class="font-medium text-gray-700 text-sm">จำนวนกล่อง</label>
-            <input type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            <input type="number"
+                class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
 
             <label class="font-medium text-gray-700 text-sm">ยอดเงิน</label>
-            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+            <input type="text"
+                class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
 
             <button
-                class="w-full h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition" style="background-color: #3062B8">
+                class="w-full h-10 text-white border border-gray-400 font-medium rounded-md shadow-md hover:bg-blue-700 transition"
+                style="background-color: #3062B8">
                 เพิ่มรายการ
             </button>
 
@@ -173,22 +177,79 @@
 
 @section('script')
     <script>
-        let branches = [
-            { id: 1, name: "บางแสน", type: "ร้านอาหาร", province: "ชลบุรี" },
-            { id: 2, name: "อุดรธานี", type: "ร้านกาแฟ", province: "อุดรธานี" },
-            { id: 3, name: "ศรีราชา", type: "ร้านขนม", province: "ชลบุรี" },
-            { id: 4, name: "พัทยา", type: "ผับบาร์", province: "ชลบุรี" },
-            { id: 5, name: "เซนทรัล", type: "ศูนย์การค้า", province: "ชลบุรี" },
-            { id: 6, name: "ท่าพระ", type: "ตลาด", province: "ขอนแก่น" },
-            { id: 7, name: "กรุงเทพฯ", type: "ร้านอาหาร", province: "กรุงเทพมหานคร" },
-            { id: 8, name: "ปราจีนบุรี", type: "ร้านกาแฟ", province: "ปราจีนบุรี" },
-            { id: 9, name: "ฉะเชิงเทรา", type: "ตลาด", province: "ฉะเชิงเทรา" },
-            { id: 10, name: "สระบุรี", type: "ร้านขนม", province: "สระบุรี" },
-            { id: 11, name: "แหลมแท่น", type: "ที่เที่ยว", province: "ชลบุรีหหหหหหหหหหห" }
+        let branches = [{
+                id: 1,
+                name: "บางแสน",
+                type: "ร้านอาหาร",
+                province: "ชลบุรี"
+            },
+            {
+                id: 2,
+                name: "อุดรธานี",
+                type: "ร้านกาแฟ",
+                province: "อุดรธานี"
+            },
+            {
+                id: 3,
+                name: "ศรีราชา",
+                type: "ร้านขนม",
+                province: "ชลบุรี"
+            },
+            {
+                id: 4,
+                name: "พัทยา",
+                type: "ผับบาร์",
+                province: "ชลบุรี"
+            },
+            {
+                id: 5,
+                name: "เซนทรัล",
+                type: "ศูนย์การค้า",
+                province: "ชลบุรี"
+            },
+            {
+                id: 6,
+                name: "ท่าพระ",
+                type: "ตลาด",
+                province: "ขอนแก่น"
+            },
+            {
+                id: 7,
+                name: "กรุงเทพฯ",
+                type: "ร้านอาหาร",
+                province: "กรุงเทพมหานคร"
+            },
+            {
+                id: 8,
+                name: "ปราจีนบุรี",
+                type: "ร้านกาแฟ",
+                province: "ปราจีนบุรี"
+            },
+            {
+                id: 9,
+                name: "ฉะเชิงเทรา",
+                type: "ตลาด",
+                province: "ฉะเชิงเทรา"
+            },
+            {
+                id: 10,
+                name: "สระบุรี",
+                type: "ร้านขนม",
+                province: "สระบุรี"
+            },
+            {
+                id: 11,
+                name: "แหลมแท่น",
+                type: "ที่เที่ยว",
+                province: "ชลบุรีหหหหหหหหหหห"
+            }
         ]; // Your existing data
         let currentPage = 1;
         const rowsPerPage = 25;
-        let currentSort = { column: null, ascending: true };
+        let currentSort = {
+            column: null,
+            ascending: true
+        };
 
         function renderTable() {
             const tableBody = document.getElementById("tableBody");
@@ -230,7 +291,8 @@
             // Previous button
             const prevBtn = document.createElement("button");
             prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-            prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            prevBtn.className =
+                `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -239,7 +301,8 @@
             if (currentPage > 3) {
                 const firstBtn = document.createElement("button");
                 firstBtn.innerText = "1";
-                firstBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                firstBtn.className =
+                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
                 firstBtn.onclick = () => goToPage(1);
                 pagination.appendChild(firstBtn);
                 pagination.appendChild(document.createTextNode("..."));
@@ -249,7 +312,8 @@
             for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
                 const btn = document.createElement("button");
                 btn.innerText = i;
-                btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
+                btn.className =
+                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
                                          ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
@@ -260,7 +324,8 @@
                 pagination.appendChild(document.createTextNode("..."));
                 const lastBtn = document.createElement("button");
                 lastBtn.innerText = totalPages;
-                lastBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
+                lastBtn.className =
+                    `px-4 py-2 mx-1 rounded-lg text-base font-semibold bg-white border border-gray-300 text-black cursor-pointer`;
                 lastBtn.onclick = () => goToPage(totalPages);
                 pagination.appendChild(lastBtn);
             }
@@ -268,7 +333,8 @@
             // Next button
             const nextBtn = document.createElement("button");
             nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+            nextBtn.className =
+                `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -322,6 +388,7 @@
                 confirmButtonColor: "#2D8C42",
             });
         }
+
         function edit(id) {
             const branch = branches.find(item => item.id === id);
 
@@ -360,7 +427,10 @@
             });
         }
 
-        function editBranch(id) { alert(`แก้ไขข้อมูลของ ID ${id}`); }
+        function editBranch(id) {
+            alert(`แก้ไขข้อมูลของ ID ${id}`);
+        }
+
         function deleteBranch(id) {
             Swal.fire({
                 title: "ลบสถานที่ที่สนใจ",
@@ -392,7 +462,6 @@
 
 
         renderTable();
-
     </script>
 
     <script>
@@ -466,7 +535,7 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             fetch('/api/getSubordinate')
                 .then(response => response.json())
                 .then(data => {
@@ -489,7 +558,7 @@
         function getBranchReport() {
             const userId = document.getElementById('subordinateSelect') ?
                 document.getElementById('subordinateSelect').value :
-                            {{ session()->get('user')->user_id }};
+                {{ session()->get('user')->user_id }};
             const date = document.getElementById('timePeriod') ?
                 document.getElementById('timePeriod').value :
                 new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -698,7 +767,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             console.log("Fetching report...");
             getBranchReport();
         });
