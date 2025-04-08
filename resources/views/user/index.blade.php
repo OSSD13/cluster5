@@ -118,92 +118,103 @@
     }
 
 
-function renderTable() {
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = "";
+    function renderTable() {
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
 
-    members.forEach((member) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
-            <td class="py-3 px-4 max-w-[200px]">
-                <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
-                <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
-            </td>
-            <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
-            <td class="py-3 px-1 w-10 text-center relative">
-                <button onclick="toggleMenu(event, ${member.user_id})">&#8230;</button>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
+        members.forEach((member) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
+                <td class="py-3 px-4 max-w-[200px]">
+                    <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
+                    <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
+                </td>
+                <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
+                <td class="py-3 px-1 w-10 text-center relative">
+                    <button onclick="toggleMenu(event, ${member.user_id})">&#8230;</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 
-function renderPagination(totalItems) {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
+    function renderPagination(totalItems) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
 
-    const totalPages = Math.ceil(totalItems / rowsPerPage);
-    const maxVisiblePages = 5;
+        const totalPages = Math.ceil(totalItems / rowsPerPage);
+        const maxVisible = 1;
+        let startPage = Math.max(1, currentPage - maxVisible);
+        let endPage = Math.min(totalPages, currentPage + maxVisible);
 
-    const addButton = (text, page, isActive = false, isDisabled = false) => {
-        const btn = document.createElement("button");
-        btn.innerText = text;
-        btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-            ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black cursor-pointer"} 
-            ${isDisabled ? "text-gray-400 cursor-not-allowed" : ""}`;
-        if (!isDisabled) {
+        if (totalPages <= 1) return;
+
+        const createPageButton = (page, isActive = false) => {
+            const btn = document.createElement("button");
+            btn.innerText = page;
+            btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
             btn.onclick = () => goToPage(page);
+            return btn;
+        };
+
+        const createEllipsis = () => {
+            const btn = document.createElement("button");
+            btn.innerText = "...";
+            btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+            btn.onclick = () => {
+                Swal.fire({
+                    title: "ไปยังหน้าที่...",
+                    input: "number",
+                    inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
+                    inputAttributes: { min: 1, max: totalPages, step: 1 },
+                    showCancelButton: true,
+                    confirmButtonText: "ไปเลย!",
+                    confirmButtonColor: "#3062B8",
+                    inputValidator: (value) => {
+                        if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
+                        if (value < 1 || value > totalPages) return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                        return null;
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) goToPage(parseInt(result.value));
+                });
+            };
+            return btn;
+        };
+
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = "&lt;";
+        prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => goToPage(currentPage - 1);
+        pagination.appendChild(prevBtn);
+
+        if (startPage > 1) {
+            pagination.appendChild(createPageButton(1));
+            if (startPage > 2) pagination.appendChild(createEllipsis());
         }
-        pagination.appendChild(btn);
-    };
 
-    const addEllipsis = () => {
-        const dots = document.createElement("span");
-        dots.innerText = "...";
-        dots.className = "mx-2 text-gray-500";
-        pagination.appendChild(dots);
-    };
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.appendChild(createPageButton(i, i === currentPage));
+        }
 
-    // Previous
-    const prevBtn = document.createElement("button");
-    prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-    prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => goToPage(currentPage - 1);
-    pagination.appendChild(prevBtn);
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+            pagination.appendChild(createPageButton(totalPages));
+        }
 
-    addButton("1", 1, currentPage === 1);
-
-    if (currentPage > 4) {
-        addEllipsis();
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = "&gt;";
+        nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => goToPage(currentPage + 1);
+        pagination.appendChild(nextBtn);
     }
-
-    const startPage = Math.max(2, currentPage - 2);
-    const endPage = Math.min(totalPages - 1, currentPage + 2);
-    for (let i = startPage; i <= endPage; i++) {
-        addButton(i, i, currentPage === i);
-    }
-
-    if (currentPage < totalPages - 3) {
-        addEllipsis();
-    }
-
-    if (totalPages > 1) {
-        addButton(totalPages, totalPages, currentPage === totalPages);
-    }
-
-    const nextBtn = document.createElement("button");
-    nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-    nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.onclick = () => goToPage(currentPage + 1);
-    pagination.appendChild(nextBtn);
-}
 
     function goToPage(pageNumber) {
         currentPage = pageNumber;
-        fetchMembers(document.getElementById("searchInput").value);
+        fetchMembers();
     }
 
     // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
