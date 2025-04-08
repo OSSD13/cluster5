@@ -50,8 +50,12 @@
                     document.addEventListener('DOMContentLoaded', function () {
 =======
                     document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
 >>>>>>> origin/develop
                         fetch('/api/getSubordinate')
+=======
+                        fetch('{{ route('api.report.getSubordinate') }}')
+>>>>>>> origin/develop
                             .then(response => response.json())
                             .then(data => {
                                 const select = document.getElementById('subordinateSelect');
@@ -79,7 +83,7 @@
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
 
-                    fetch(`/api/getBranchReport?user_id=${userId}&date=${date}`)
+                    fetch(`{{ route('api.report.getBranchReport') }}?user_id=${userId}&date=${date}`)
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
@@ -563,6 +567,7 @@
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
 <<<<<<< HEAD
+<<<<<<< HEAD
                     fetch('/api/getRegionBranch?' + new URLSearchParams({
                         date,
                         user_id
@@ -577,6 +582,9 @@
                                 let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
 =======
                 fetch('/api/getRegionBranch?' + new URLSearchParams({
+=======
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
+>>>>>>> origin/develop
                         date,
                         user_id
                     }).toString())
@@ -746,7 +754,7 @@
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }};
 
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         region,
                         date,
                         user_id
@@ -856,7 +864,7 @@
 =======
                     {{ session()->get('user')->user_id }};
 
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         region,
                         province,
                         date,
