@@ -86,4 +86,59 @@
         </footer>
     </div>
 
+    <!-- Main Content -->
+    <main class="flex-1 p-4 px-4">
+        @yield('content')
+    </main>
+
+    <!-- Bottom Navbar -->
+    <footer
+    class="sticky bottom-0 left-0 z-10 w-full h-19.5 p-1 bg-gray-100 shadow flex items-center justify-around rounded-t-lg flex-shrink-0">
+    @php
+        $basePath = trim(parse_url(config('app.url'), PHP_URL_PATH), '/'); // will be "cluster5" or ""
+        $prefix = $basePath ? "/$basePath" : '';
+
+        $navItems = [
+            ['name' => 'หน้าหลัก', 'path' => '/', 'icon' => 'icon-[material-symbols--home]'],
+            ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]', 'startsWith' => true],
+            ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]', 'startsWith' => true],
+            ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]', 'startsWith' => true],
+            ['name' => 'สมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]', 'startsWith' => true],
+        ];
+    @endphp
+
+@php
+    $navItems = [
+        ['name' => 'หน้าหลัก', 'path' => '/', 'icon' => 'icon-[material-symbols--home]'],
+        ['name' => 'แผนที่', 'path' => '/map', 'icon' => 'icon-[material-symbols--map]', 'startsWith' => true],
+        ['name' => 'สาขา', 'path' => '/branch', 'icon' => 'icon-[ri--building-fill]', 'startsWith' => true],
+        ['name' => 'สถานที่สนใจ', 'path' => '/poi', 'icon' => 'icon-[material-symbols--star-rounded]', 'startsWith' => true],
+        ['name' => 'สมาชิก', 'path' => '/user', 'icon' => 'icon-[tdesign--member-filled]', 'startsWith' => true],
+    ];
+@endphp
+
+@foreach ($navItems as $item)
+    @php
+        $fullPath = $item['path'];
+
+        $currentPath = request()->path();
+        $relativePath = ltrim($fullPath, '/');
+
+        $isActive =
+            ($item['path'] === '/' && $currentPath === '/') ||
+            (isset($item['startsWith']) && $item['startsWith']
+                ? str_starts_with($currentPath, trim($relativePath, '/'))
+                : $currentPath === trim($relativePath, '/'));
+    @endphp
+
+    <a href="{{ url($fullPath) }}"
+        class="flex flex-col items-center text-center w-1/5 {{ $isActive ? 'text-black' : 'text-gray-500' }}">
+        <span class="{{ $item['icon'] }} w-7 h-8"></span>
+        <span class="text-sm truncate w-full">{{ $item['name'] }}</span>
+    </a>
+@endforeach
+
+</footer>
+
+</div>
 @endsection

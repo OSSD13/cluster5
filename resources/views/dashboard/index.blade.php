@@ -46,8 +46,8 @@
                 </script>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        fetch('/api/getSubordinate')
+                    document.addEventListener('DOMContentLoaded', function() {
+                        fetch('{{ route('api.report.getSubordinate') }}')
                             .then(response => response.json())
                             .then(data => {
                                 const select = document.getElementById('subordinateSelect');
@@ -75,7 +75,7 @@
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
 
-                    fetch(`/api/getBranchReport?user_id=${userId}&date=${date}`)
+                    fetch(`{{ route('api.report.getBranchReport') }}?user_id=${userId}&date=${date}`)
                         .then(response => response.json())
                         .then(data => {
                             console.log('Branch report:', data);
@@ -543,7 +543,7 @@
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         date,
                         user_id
                     }).toString())
@@ -627,7 +627,7 @@
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }};
 
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         region,
                         date,
                         user_id
@@ -643,14 +643,14 @@
 
                         data.branch_count_by_province.forEach((province, index) => {
                             let row = `
-                    <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                        <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
-                        <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                        <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
-                        <td class="px-3 py-2 text-center whitespace-nowrap">
-                            <span class="icon-[material-symbols--chevron-right-rounded]"></span>
-                        </td>
-                    </tr>`;
+                            <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                                <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                                <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                                <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                                <td class="px-3 py-2 text-center whitespace-nowrap">
+                                    <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                                </td>
+                            </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
 
@@ -726,7 +726,7 @@
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }};
 
-                fetch('/api/getRegionBranch?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         region,
                         province,
                         date,
