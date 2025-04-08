@@ -245,18 +245,30 @@ function renderPagination(totalItems) {
     }
 
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
-    function populateSupervisorDropdown() { 
-    const supervisorSelect = document.getElementById("supervisorSelect");
-    supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>`;
+    async function populateSupervisorDropdown() {
+        const supervisorSelect = document.getElementById("supervisorSelect");
+        supervisorSelect.innerHTML = `<option value="">ทั้งหมด</option>`;
 
-    const supervisors = members.filter(m => m.role_name === "supervisor");
-    supervisors.forEach(sup => {
-        const option = document.createElement("option");
-        option.value = sup.id;  // ✅ แก้ตรงนี้
-        option.textContent = `${sup.name} - ${sup.email}`;
-        supervisorSelect.appendChild(option);
-    });
-}
+        try {
+            const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
+            const result = await response.json();
+            const supervisors = result.data || [];
+
+            supervisors.forEach(sup => {
+                const option = document.createElement("option");
+                option.value = sup.user_id; // ใช้ user_id ตรงกับที่ใช้ตอนเพิ่ม
+                option.textContent = `${sup.name} - ${sup.email}`;
+                supervisorSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error("โหลด supervisor ไม่ได้:", error);
+            const option = document.createElement("option");
+            option.value = "";
+            option.textContent = "(โหลดรายชื่อ supervisor ไม่สำเร็จ)";
+            supervisorSelect.appendChild(option);
+        }
+    }
+
 
 
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
@@ -431,8 +443,8 @@ function renderPagination(totalItems) {
                     <label class="font-medium text-gray-800 text-sm">บทบาท</label>
                     <select id="memberRole" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="toggleSupervisor()">
                         <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
-                        <option value="Sale">Sale</option>
-                        <option value="CEO">CEO</option>
+                        <option value="sale">Sale</option>
+                        <option value="ceo">CEO</option>
                         <option value="supervisor">Sale Supervisor</option>
                     </select>
                 </div>
@@ -443,7 +455,7 @@ function renderPagination(totalItems) {
                         <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <option value="" selected disabled>เลือก Sales Supervisor</option>
                             ${members.filter(member => member.role === 'supervisor').map(supervisor => 
-                                `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
+                                `<option value="${supervisor.user_id}">${supervisor.name} - ${supervisor.email}</option>`
                             ).join('')}
                         </select>
                     </div>
@@ -460,41 +472,50 @@ function renderPagination(totalItems) {
                 cancelButton: "ml-0",
                 confirmButton: "mr-0",
             },
-            preConfirm: () => {
-                const email = document.getElementById("memberEmail").value;
-                const password = document.getElementById("memberPassword").value;
-                const name = document.getElementById("memberName").value;
-                const role = document.getElementById("memberRole").value;
+            preConfirm: async () => {
+            const email = document.getElementById("memberEmail").value;
+            const password = document.getElementById("memberPassword").value;
+            const name = document.getElementById("memberName").value;
+            const role = document.getElementById("memberRole").value;
 
-                if (!email || !password || !name || !role) {
-                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+            if (!email || !password || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            let manager = null;
+            if (role === "sale") {
+                manager = document.getElementById("supervisorDropdown").value;
+                if (!manager) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                     return false;
                 }
+            }
 
-                // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
-                let supervisorId = null;
-                if (role === "Sale") {
-                    supervisorId = document.getElementById("supervisorDropdown").value;
-                    if (!supervisorId) {
-                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
-                        return false;
-                    }
+            try {
+                const response = await fetch("{{ route('api.user.create') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        name: name,
+                        role_name: role, 
+                        user_status: "normal", 
+                        manager: manager ? parseInt(manager) : null
+                        
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
+                    return false;
                 }
-
-                let newMember = {
-                    id: members.length + 1,
-                    name: name,
-                    email: email,
-                    role: role
-                };
-
-                if (role === "Sale") {
-                    supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
-                    newMember.supervisorId = supervisorId;
-                }
-
-                members.push(newMember);
-                renderTable();
 
                 Swal.fire({
                     title: "สำเร็จ!",
@@ -503,36 +524,56 @@ function renderPagination(totalItems) {
                     confirmButtonColor: "#2D8C42",
                     confirmButtonText: "ตกลง"
                 });
+
+                fetchMembers(); // รีโหลดข้อมูลใหม่
+
+            } catch (error) {
+                console.error("Add user error:", error);
+                Swal.showValidationMessage("ไม่สามารถเชื่อมต่อ API ได้");
             }
+        }
+
         });
     }
 
-
     // ฟังก์ชันนี้สำหรับแสดงหรือซ่อน Sales Supervisor dropdown
-    function toggleSupervisor() {
+    // เรียก API เพื่อโหลด supervisor ทั้งหมด
+    async function toggleSupervisor() {
         const role = document.getElementById("memberRole").value;
         const section = document.getElementById("supervisorSection");
         const dropdown = document.getElementById("supervisorDropdown");
 
-        if (role === "Sale") {
+        if (role === "sale") {
             section.style.display = "block";
-            dropdown.innerHTML = "";
+            dropdown.innerHTML = `<option value="" disabled selected hidden>-- กำลังโหลด Supervisor... --</option>`;
 
-            const supervisors = members.filter(member => member.role === "supervisor");
+            try {
+                const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
+                const result = await response.json();
+                const supervisors = result.data || [];
 
-            if (supervisors.length === 0) {
-                dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
-            } else {
-                dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
-                supervisors.forEach(sup => {
-                    dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
-                });
+                dropdown.innerHTML = "";
+
+                if (supervisors.length === 0) {
+                    dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
+                } else {
+                    dropdown.innerHTML += `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
+                    supervisors.forEach(sup => {
+                        dropdown.innerHTML += `<option value="${sup.user_id}">${sup.name} - ${sup.email}</option>`;
+                    });
+                }
+
+            } catch (error) {
+                console.error("ไม่สามารถโหลด supervisor:", error);
+                dropdown.innerHTML = `<option value="">โหลด supervisor ไม่สำเร็จ</option>`;
             }
         } else {
             section.style.display = "none";
             dropdown.innerHTML = "";
         }
     }
+
+
 
     // ฟังก์ชันสำหรับแก้ไขสมาชิก
     function editMember(id) {
