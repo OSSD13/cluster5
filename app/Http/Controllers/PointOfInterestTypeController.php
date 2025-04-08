@@ -221,6 +221,6 @@ class PointOfInterestTypeController extends Controller
     }
 
     public function editPage(){
-        return view('poi.type.edit');
+        return view('poi.edit');
     }
 }
