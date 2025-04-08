@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PointOfInterest extends Model
 {
-    /** @use HasFactory<\Database\Factories\PointOfInterestFactory> */
+   
     use HasFactory;
 
     /**
