@@ -347,7 +347,7 @@ function renderPagination(totalItems) {
 
         // เช็คถ้าสมาชิกเป็น "Sale" และมี Sales Supervisor
         let supervisorInfo = "";
-        if (member.role === "Sale" && member.supervisorId) {
+        if (member.role_name === "sale" && member.supervisorId) {
             const supervisor = members.find(item => item.id === member.supervisorId);
             if (supervisor) {
                 supervisorInfo = `
