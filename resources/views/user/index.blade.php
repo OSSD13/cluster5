@@ -708,7 +708,6 @@ function renderPagination(totalItems) {
     });
 }
 
-
     // ฟังก์ชันสำหรับลบสมาชิก
     function deleteMember(id) {
     Swal.fire({
