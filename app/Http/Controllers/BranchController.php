@@ -50,11 +50,11 @@ class BranchController extends Controller
         $branchQuery->select(
             'branch_stores.*',
             'point_of_interest_type.poit_type',
-            'point_of_interest_type.poit_name',
+            'point_of_interest_type.poit_name', // ประเภท
             'point_of_interest_type.poit_icon',
             'point_of_interest_type.poit_color',
             'point_of_interest_type.poit_description',
-            'users.name as bs_manager_name',
+            'users.name as bs_manager_name', // เพิ่มโดย
             'users.email as bs_manager_email',
             'users.user_status as bs_manager_user_status',
             'users.role_name as bs_manager_role_name'
@@ -96,74 +96,49 @@ class BranchController extends Controller
     }
 
     public function createBranch(Request $request)
-    {
-        $validator = \Validator::make($request->all(), [
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'zipcode' => 'required|numeric',
-            'province' => 'required|string|max:255',
-            'amphoe' => 'required|string|max:255',
-            'district' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'name' => 'required|string|max:255'
-        ], [
-            'lat.required' => 'กรุณาระบุละติจูด',
-            'lng.required' => 'กรุณาระบุลองจิจูด',
-            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'province.required' => 'กรุณาระบุจังหวัด',
-            'amphoe.required' => 'กรุณาระบุอำเภอ',
-            'district.required' => 'กรุณาระบุตำบล',
-            'address.required' => 'กรุณาระบุที่อยู่',
-            'name.required' => 'กรุณาระบุชื่อสาขา',
-        ]);
+{
+    // Validate the incoming request
+    $validated = $request->validate([
+        'google_link' => 'nullable|url',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+        'zipcode' => 'required|string',
+        'province' => 'required|string',
+        'amphoe' => 'required|string',
+        'district' => 'required|string',
+        'address' => 'required|string',
+        'name' => 'required|string',
+        'type' => 'nullable|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+    // Create the PointOfInterest (POI)
+    $poi = new PointOfInterest();
+    $poi->poi_name = $request->input('name');
+    $poi->poi_type = $request->input('type', 'default');
+    $poi->poi_gps_lat = $request->input('latitude');
+    $poi->poi_gps_lng = $request->input('longitude');
+    $poi->poi_address = $request->input('address');
+    $poi->poi_link = $request->input('google_link');
+    $poi->save();
 
-        $location = \DB::table('locations')
-            ->where('zipcode', $request->input('zipcode'))
-            ->where('province', $request->input('province'))
-            ->where('amphoe', $request->input('amphoe'))
-            ->where('district', $request->input('district'))
-            ->first();
+    // Create the Branch Store
+    $branch = new Branch_store();
+    $branch->bs_name = $request->input('name');
+    $branch->bs_address = $request->input('address');
+    $branch->bs_poi_id = $poi->id;
+    $branch->bs_zipcode = $request->input('zipcode');
+    $branch->bs_province = $request->input('province');
+    $branch->bs_amphoe = $request->input('amphoe');
+    $branch->bs_district = $request->input('district');
+    $branch->save();
 
-        if (!$location) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบข้อมูลสถานที่ตั้งที่ระบุ'
-            ], 404);
-        }
+    // Respond with the branch data after saving it
+    return response()->json([
+        'message' => 'บันทึกข้อมูลสำเร็จ',
+        'data' => $branch
+    ]);
+}
 
-        $poi = new PointOfInterest();
-        $poi->poi_name = $request->input('name');
-        $poi->poi_type = 'branch';
-        $poi->poi_gps_lat = $request->input('lat');
-        $poi->poi_gps_lng = $request->input('lng');
-        $poi->poi_address = $request->input('address');
-        $poi->poi_location_id = $location->location_id;
-        $poi->save();
-
-        $userId = session()->get('user')->user_id;
-
-        $branch = new Branch_store();
-        $branch->bs_name = $request->input('name');
-        $branch->bs_address = $request->input('address');
-        $branch->bs_poi_id = $poi->id;
-        $branch->bs_manager = $userId;
-        $branch->bs_detail = $request->input('detail', null);
-        $branch->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'สร้างสาขาเรียบร้อยแล้ว',
-            'data' => $branch
-        ]);
-    }
 
     public function edit()
     {

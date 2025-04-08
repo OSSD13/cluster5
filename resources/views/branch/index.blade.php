@@ -93,42 +93,42 @@
             `;
         }
     }
-
     function renderTable() {
-        const tableBody = document.getElementById("tableBody");
-        const resultCount = document.getElementById("resultCount");
-        tableBody.innerHTML = "";
-        resultCount.innerText = `ผลลัพธ์ ${totalItems} รายการ`;
+    const tableBody = document.getElementById("tableBody");
+    const resultCount = document.getElementById("resultCount");
+    tableBody.innerHTML = "";
+    resultCount.innerText = `ผลลัพธ์ ${totalItems} รายการ`;
 
-        if (branches.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-500">ไม่พบข้อมูล</td></tr>`;
-            return;
-        }
-
-        branches.forEach((branch) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td class="py-3 px-4 w-16">${branch.bs_id}</td>
-                <td class="py-3 px-4 truncate">${branch.bs_name}</td>
-                <td class="py-3 px-4 w-32 truncate">${branch.poit_name}</td>
-                <td class="py-3 px-4 w-32 truncate">${branch.bs_manager_name}</td>
-                <td class="py-3 px-1 w-10 text-center relative">
-                    <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
-                    <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
-                        <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
-                            onclick="window.location.href='{{ route('branch.manage.index') }}'">จัดการ</button>
-                        <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
-                            onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
-                        <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer"
-                            onclick="deleteBranch(${branch.bs_id})" style="background-color: #CF3434">ลบ</button>
-                    </div>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        renderPagination();
+    if (branches.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-gray-500">ไม่พบข้อมูล</td></tr>`;
+        return;
     }
+
+    branches.forEach((branch) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td class="py-3 px-4 w-16">${branch.bs_id}</td>
+            <td class="py-3 px-4 truncate">${branch.bs_name}</td>
+            <td class="py-3 px-4 w-32 truncate">${branch.poit_name}</td>
+            <td class="py-3 px-4 w-32 truncate">${branch.bs_manager_name}</td>
+            <td class="py-3 px-1 w-10 text-center relative">
+                <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
+                <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
+                    <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
+                        onclick="window.location.href='{{ route('branch.manage.index') }}'">จัดการ</button>
+                    <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
+                        onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
+                    <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer"
+                        onclick="deleteBranch(${branch.bs_id})" style="background-color: #CF3434">ลบ</button>
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    renderPagination();
+}
+
 
     function renderPagination() {
         const pagination = document.getElementById("pagination");
