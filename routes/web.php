@@ -38,7 +38,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () { return view('poi.index'); });
+    Route::get('/poi', function () {
+        return view('poi.index'); });
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
     
     Route::get('/poi/edit', [PointOfInterestController::class, 'editPage'])->name('poi.edit');
