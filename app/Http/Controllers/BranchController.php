@@ -13,6 +13,15 @@ class BranchController extends Controller
     {
         return view('branch.index');
     }
+<<<<<<< HEAD
+=======
+    public function indexManage(Request $request)
+{
+    $branch = Branch_store::find($request->input('branch_id'));
+
+    return view('branch.manage.index', ['branch' => $branch]);
+}
+>>>>>>> 653ad83 (refactor(BranchController, index.blade.php): streamline code formatting and improve readability)
 
     public function queryBranch(Request $request)
 {
