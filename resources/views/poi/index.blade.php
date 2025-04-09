@@ -195,6 +195,7 @@
             document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
         });
 
+        //deletePoi
     function deletePoi(id) {
             Swal.fire({
                 title: "ลบสถานที่",
@@ -207,7 +208,7 @@
                 cancelButtonText: "ยกเลิก"
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    console.log(id);
+                    console.log(id); //ไม่เกี่ยวกับการลบ เป็นการตรวจสอบค่า id ว่าที่ส่งมามีค่าไหม
                     
                     const res = await fetch("{{ route('api.poi.delete') }}", {
                         method: 'DELETE',
