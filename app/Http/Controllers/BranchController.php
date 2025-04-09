@@ -341,7 +341,7 @@ public function edit(Request $request)
         }
     }
 
-    public function manage(Request $request)
+    public function manage()
     {
         $bs_id = $request->input('bs_id');
 

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Manage Branch')
+@section('title', 'Branch')
 
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
@@ -218,6 +218,7 @@ async function fetchBranchSalesStats() {
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
     <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 @endsection
+
 
 @section('script')
 

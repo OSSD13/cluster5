@@ -5,8 +5,7 @@
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-800" >POI จัดการสถานที่ที่สนใจ</h2>
-
+            <h2 class="text-2xl font-bold text-gray-800">POI จัดการสถานที่ที่สนใจ</h2>
             <a href="{{ route('poi.create') }}">
                 <button class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                     สร้าง POI
@@ -49,27 +48,27 @@
         let currentPage = 1;
         const rowsPerPage = 10;
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchPois();
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchPois();
 
-        document.getElementById("searchInput").addEventListener("input", function () {
-            currentPage = 1;
-            fetchPois(this.value);
+            document.getElementById("searchInput").addEventListener("input", function () {
+                currentPage = 1;
+                fetchPois(this.value);
+            });
         });
-    });
 
-    async function fetchPois(search = '') {
-        const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
-        const result = await res.json();
-        pois = result.data;
-        document.getElementById("resultCount").innerText = result.total;
-        renderTable();
-        renderPagination(result.total);
-    }
+        async function fetchPois(search = '') {
+            const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+            const result = await res.json();
+            pois = result.data;
+            document.getElementById("resultCount").innerText = result.total;
+            renderTable();
+            renderPagination(result.total);
+        }
 
-    function renderTable() {
-        const tableBody = document.getElementById("tableBody");
-        tableBody.innerHTML = "";
+        function renderTable() {
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
 
             pois.forEach((poi) => {
                 const row = document.createElement("tr");
@@ -123,20 +122,20 @@
             pagination.appendChild(nextBtn);
         }
 
-    function goToPage(pageNumber) {
-        currentPage = pageNumber;
-        fetchPois(document.getElementById("searchInput").value);
-    }
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            fetchPois(document.getElementById("searchInput").value);
+        }
 
-    function toggleMenu(event, id) {
-        event.stopPropagation();
-        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-        document.getElementById(`menu-${id}`).classList.toggle("hidden");
-    }
+        function toggleMenu(event, id) {
+            event.stopPropagation();
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+            document.getElementById(`menu-${id}`).classList.toggle("hidden");
+        }
 
-    document.addEventListener("click", () => {
-        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-    });
+        document.addEventListener("click", () => {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+        });
 
         function deletePoi(id) {
             Swal.fire({
@@ -197,9 +196,8 @@
             });
         }
 
-            function safeText(text) {
-                return text ?? '-';
-            }
-
+        function safeText(text) {
+            return text ?? '-';
+        }
     </script>
 @endsection
