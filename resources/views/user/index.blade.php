@@ -4,7 +4,7 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-
+    
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 
     <!-- <form method="POST" action="{{ route('logout') }}">
@@ -25,9 +25,10 @@
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">Sale Supervisor</label>
             <select id="supervisorSelect" class="w-full p-2 border border-gray-300 rounded">
-                
+                <option value="">ทั้งหมด</option>
             </select>
         </div>
+
 
         <!-- Dropdown: Role -->
         <div class="mb-3">
@@ -35,7 +36,7 @@
             <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
                 <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
                 <option value="Sale">Sale</option>
-                <option value="Sale Sup.">Sale Supervisor</option>
+                <option value="supervisor">Sale Supervisor</option>
                 <option value="CEO">CEO</option>
             </select>
         </div>
@@ -74,91 +75,148 @@
     let members = [];
     let currentPage = 1;
     const rowsPerPage = 10;
+    let totalMembers = 0;
     let currentSort = { column: 'id', ascending: true };
 
-    // ฟังก์ชันสำหรับดึงข้อมูลสมาชิกจาก API
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchMembers();
+        document.getElementById("searchInput").addEventListener("input", () => {
+            currentPage = 1;
+            fetchMembers();
+        });
+        document.getElementById("supervisorSelect").addEventListener("change", () => {
+            currentPage = 1;
+            fetchMembers();
+        });
+        document.getElementById("roleSelect").addEventListener("change", () => {
+            currentPage = 1;
+            fetchMembers();
+        });
+    });
+
     async function fetchMembers() {
+        const search = document.getElementById("searchInput").value || '';
+        const supervisorId = document.getElementById("supervisorSelect").value || '';
+        const role = document.getElementById("roleSelect").value || '';
+
+        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&supervisor_id=${supervisorId}&role=${encodeURIComponent(role)}`;
+
         try {
-            const response = await fetch('{{ route('api.user.query.all') }}'); // ดึงข้อมูลจาก API
+            const response = await fetch(`{{ route('api.user.query') }}${query}`);
             const result = await response.json();
-            members = result.data || []; // เก็บข้อมูลสมาชิกที่ดึงมา
-            console.log(members);
-            renderTable(); // เรียกฟังก์ชัน renderTable เพื่อแสดงข้อมูล
-            populateSupervisorDropdown(); // ป populate ตัวเลือก Supervisor
+            members = result.data || [];
+            totalMembers = result.total || 0;
+
+            document.getElementById("resultCount").textContent = `ผลลัพธ์ ${totalMembers} รายการ`;
+
+            populateSupervisorDropdown(); // เติม dropdown ทุกครั้งเผื่อรายการเปลี่ยน
+            renderTable();
+            renderPagination(totalMembers);
         } catch (error) {
-            console.error('Error fetching members:', error);
+            console.error("Error fetching members:", error);
         }
     }
 
-    // ฟังก์ชันสำหรับการแสดงข้อมูลในตาราง
-    function renderTable(filteredData = null) {
+
+    function renderTable() {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        const dataToRender = filteredData || members;
-
-        const start = (currentPage - 1) * rowsPerPage;
-        const paginatedData = dataToRender.slice(start, start + rowsPerPage);
-
-        const resultCount = document.querySelector("#resultCount");
-        resultCount.textContent = `ผลลัพธ์ ${dataToRender.length} รายการ`;
-
-        paginatedData.forEach((member) => {
+        members.forEach((member) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td class="py-3 px-4 w-16">${member.user_id}</td>
-                <td class="py-3 px-4">
+                <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
+                <td class="py-3 px-4 max-w-[200px]">
                     <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
                     <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
                 </td>
-                <td class="py-3 px-4 text-center" title="${member.role_name}">${member.role_name}</td>
+                <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
-                    <button onclick="toggleMenu(event, ${member.id})">&#8230;</button>
+                    <button onclick="toggleMenu(event, ${member.user_id})">&#8230;</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
-
-        renderPagination(dataToRender);
     }
 
-    // ฟังก์ชันที่ใช้ในการ render pagination
-    function renderPagination(dataToRender) {
-        const paginationContainer = document.getElementById('pagination');
-        paginationContainer.innerHTML = "";
+    function renderPagination(totalItems) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
 
-        const totalPages = Math.ceil(dataToRender.length / rowsPerPage);
+        const totalPages = Math.ceil(totalItems / rowsPerPage);
+        const maxVisible = 1;
+        let startPage = Math.max(1, currentPage - maxVisible);
+        let endPage = Math.min(totalPages, currentPage + maxVisible);
+
+        if (totalPages <= 1) return;
+
+        const createPageButton = (page, isActive = false) => {
+            const btn = document.createElement("button");
+            btn.innerText = page;
+            btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+            btn.onclick = () => goToPage(page);
+            return btn;
+        };
+
+        const createEllipsis = () => {
+            const btn = document.createElement("button");
+            btn.innerText = "...";
+            btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+            btn.onclick = () => {
+                Swal.fire({
+                    title: "ไปยังหน้าที่...",
+                    input: "number",
+                    inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
+                    inputAttributes: { min: 1, max: totalPages, step: 1 },
+                    showCancelButton: true,
+                    confirmButtonText: "ไปเลย!",
+                    confirmButtonColor: "#3062B8",
+                    inputValidator: (value) => {
+                        if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
+                        if (value < 1 || value > totalPages) return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                        return null;
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) goToPage(parseInt(result.value));
+                });
+            };
+            return btn;
+        };
 
         const prevBtn = document.createElement("button");
-        prevBtn.innerHTML = '<span class="icon-[material-symbols--chevron-left-rounded]"></span>';
-        prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+        prevBtn.innerHTML = "&lt;";
+        prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
         prevBtn.disabled = currentPage === 1;
         prevBtn.onclick = () => goToPage(currentPage - 1);
-        paginationContainer.appendChild(prevBtn);
+        pagination.appendChild(prevBtn);
 
-        for (let i = 1; i <= totalPages; i++) {
-            const pageBtn = document.createElement("button");
-            pageBtn.innerText = i;
-            pageBtn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-            pageBtn.onclick = () => goToPage(i);
-            paginationContainer.appendChild(pageBtn);
+        if (startPage > 1) {
+            pagination.appendChild(createPageButton(1));
+            if (startPage > 2) pagination.appendChild(createEllipsis());
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.appendChild(createPageButton(i, i === currentPage));
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+            pagination.appendChild(createPageButton(totalPages));
         }
 
         const nextBtn = document.createElement("button");
-        nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
+        nextBtn.innerHTML = "&gt;";
+        nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
         nextBtn.disabled = currentPage === totalPages;
         nextBtn.onclick = () => goToPage(currentPage + 1);
-        paginationContainer.appendChild(nextBtn);
+        pagination.appendChild(nextBtn);
     }
 
-    // ฟังก์ชันสำหรับเปลี่ยนหน้า
     function goToPage(pageNumber) {
         currentPage = pageNumber;
-        renderTable();
+        fetchMembers();
     }
-    
+
     // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
     function sortTable(column) {
         if (currentSort.column === column) {
@@ -198,18 +256,31 @@
     }
 
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
-    function populateSupervisorDropdown() {
+    async function populateSupervisorDropdown() {
         const supervisorSelect = document.getElementById("supervisorSelect");
-        supervisorSelect.innerHTML = `<option value="" selected disabled class="hidden">แสดงสมาชิก</option>`;
+        supervisorSelect.innerHTML = `<option value="">ทั้งหมด</option>`;
 
-        const supervisors = members.filter(m => m.role === "Sale Sup.");
-        supervisors.forEach(sup => {
+        try {
+            const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
+            const result = await response.json();
+            const supervisors = result.data || [];
+
+            supervisors.forEach(sup => {
+                const option = document.createElement("option");
+                option.value = sup.user_id; // ใช้ user_id ตรงกับที่ใช้ตอนเพิ่ม
+                option.textContent = `${sup.name} - ${sup.email}`;
+                supervisorSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error("โหลด supervisor ไม่ได้:", error);
             const option = document.createElement("option");
-            option.value = sup.id;
-            option.textContent = `${sup.name} - ${sup.email}`;
+            option.value = "";
+            option.textContent = "(โหลดรายชื่อ supervisor ไม่สำเร็จ)";
             supervisorSelect.appendChild(option);
-        });
+        }
     }
+
+
 
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
     document.addEventListener("DOMContentLoaded", () => {
@@ -283,11 +354,11 @@
 
     // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
     function viewDetail(id) {
-        const member = members.find(item => item.id === id);
+        const member = members.find(item => item.user_id === id);
 
         // เช็คถ้าสมาชิกเป็น "Sale" และมี Sales Supervisor
         let supervisorInfo = "";
-        if (member.role === "Sale" && member.supervisorId) {
+        if (member.role_name === "sale" && member.supervisorId) {
             const supervisor = members.find(item => item.id === member.supervisorId);
             if (supervisor) {
                 supervisorInfo = `
@@ -329,7 +400,7 @@
 
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">บทบาท</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role}" readonly>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role_name}" readonly>
                     </div>
 
                     ${supervisorInfo} <!-- แสดง Sales Supervisor ถ้ามี -->
@@ -383,9 +454,9 @@
                     <label class="font-medium text-gray-800 text-sm">บทบาท</label>
                     <select id="memberRole" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" onchange="toggleSupervisor()">
                         <option value="" selected disabled class="hidden">-- เลือก บทบาท --</option>
-                        <option value="Sale">Sale</option>
-                        <option value="CEO">CEO</option>
-                        <option value="Sale Sup.">Sale Supervisor</option>
+                        <option value="sale">Sale</option>
+                        <option value="ceo">CEO</option>
+                        <option value="supervisor">Sale Supervisor</option>
                     </select>
                 </div>
                 <div class="w-full">
@@ -394,8 +465,8 @@
                         <label class="font-medium text-gray-800 text-sm">Sales supervisor</label>
                         <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <option value="" selected disabled>เลือก Sales Supervisor</option>
-                            ${members.filter(member => member.role === 'Sale Sup.').map(supervisor => 
-                                `<option value="${supervisor.id}">${supervisor.name} - ${supervisor.email}</option>`
+                            ${members.filter(member => member.role === 'supervisor').map(supervisor => 
+                                `<option value="${supervisor.user_id}">${supervisor.name} - ${supervisor.email}</option>`
                             ).join('')}
                         </select>
                     </div>
@@ -412,41 +483,50 @@
                 cancelButton: "ml-0",
                 confirmButton: "mr-0",
             },
-            preConfirm: () => {
-                const email = document.getElementById("memberEmail").value;
-                const password = document.getElementById("memberPassword").value;
-                const name = document.getElementById("memberName").value;
-                const role = document.getElementById("memberRole").value;
+            preConfirm: async () => {
+            const email = document.getElementById("memberEmail").value;
+            const password = document.getElementById("memberPassword").value;
+            const name = document.getElementById("memberName").value;
+            const role = document.getElementById("memberRole").value;
 
-                if (!email || !password || !name || !role) {
-                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+            if (!email || !password || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            let manager = null;
+            if (role === "sale") {
+                manager = document.getElementById("supervisorDropdown").value;
+                if (!manager) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                     return false;
                 }
+            }
 
-                // ถ้าบทบาทเป็น Sale, ต้องมี Sales Supervisor
-                let supervisorId = null;
-                if (role === "Sale") {
-                    supervisorId = document.getElementById("supervisorDropdown").value;
-                    if (!supervisorId) {
-                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
-                        return false;
-                    }
+            try {
+                const response = await fetch("{{ route('api.user.create') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        name: name,
+                        role_name: role, 
+                        user_status: "normal", 
+                        manager: manager ? parseInt(manager) : null
+                        
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
+                    return false;
                 }
-
-                let newMember = {
-                    id: members.length + 1,
-                    name: name,
-                    email: email,
-                    role: role
-                };
-
-                if (role === "Sale") {
-                    supervisorId = parseInt(document.getElementById("supervisorDropdown").value);
-                    newMember.supervisorId = supervisorId;
-                }
-
-                members.push(newMember);
-                renderTable();
 
                 Swal.fire({
                     title: "สำเร็จ!",
@@ -455,30 +535,48 @@
                     confirmButtonColor: "#2D8C42",
                     confirmButtonText: "ตกลง"
                 });
+
+                fetchMembers(); // รีโหลดข้อมูลใหม่
+
+            } catch (error) {
+                console.error("Add user error:", error);
+                Swal.showValidationMessage("ไม่สามารถเชื่อมต่อ API ได้");
             }
+        }
+
         });
     }
 
-
     // ฟังก์ชันนี้สำหรับแสดงหรือซ่อน Sales Supervisor dropdown
-    function toggleSupervisor() {
+    // เรียก API เพื่อโหลด supervisor ทั้งหมด
+    async function toggleSupervisor() {
         const role = document.getElementById("memberRole").value;
         const section = document.getElementById("supervisorSection");
         const dropdown = document.getElementById("supervisorDropdown");
 
-        if (role === "Sale") {
+        if (role === "sale") {
             section.style.display = "block";
-            dropdown.innerHTML = "";
+            dropdown.innerHTML = `<option value="" disabled selected hidden>-- กำลังโหลด Supervisor... --</option>`;
 
-            const supervisors = members.filter(member => member.role === "Sale Sup.");
+            try {
+                const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
+                const result = await response.json();
+                const supervisors = result.data || [];
 
-            if (supervisors.length === 0) {
-                dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
-            } else {
-                dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
-                supervisors.forEach(sup => {
-                    dropdown.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.email}</option>`;
-                });
+                dropdown.innerHTML = "";
+
+                if (supervisors.length === 0) {
+                    dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
+                } else {
+                    dropdown.innerHTML += `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
+                    supervisors.forEach(sup => {
+                        dropdown.innerHTML += `<option value="${sup.user_id}">${sup.name} - ${sup.email}</option>`;
+                    });
+                }
+
+            } catch (error) {
+                console.error("ไม่สามารถโหลด supervisor:", error);
+                dropdown.innerHTML = `<option value="">โหลด supervisor ไม่สำเร็จ</option>`;
             }
         } else {
             section.style.display = "none";
@@ -486,102 +584,120 @@
         }
     }
 
+
+
     // ฟังก์ชันสำหรับแก้ไขสมาชิก
-    function editMember(id) {
-        const member = members.find(item => item.id === id);
+    async function editMember(id) {
+    const member = members.find(item => item.user_id === id);
 
-        Swal.fire({
-            html: `
-             <div class="flex flex-col items-center mb-1">
-                    <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
-                </div>
-                <div class="flex flex-col text-3xl mb-6 mt-4">
-                     <b class=text-gray-800 >แก้ไขสมาชิก</b>
-                 </div>
-                <div class="flex flex-col space-y-2 text-left">
-                    <div class="w-full">
+    const result = await Swal.fire({
+        html: `
+            <div class="flex flex-col items-center mb-1">
+                <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+            </div>
+            <div class="flex flex-col text-3xl mb-6 mt-4">
+                <b class="text-gray-800">แก้ไขสมาชิก</b>
+            </div>
+            <div class="flex flex-col space-y-2 text-left">
+                <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Email</label>
-                    <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" >
-                    </div>
+                    <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}">
+                </div>
 
-                    <div class="w-full">
+                <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Password</label>
-                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
-                    </div>
+                    <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.password}">
+                </div>
 
-                    <div class="w-full">
+                <div class="w-full">
                     <label class="font-medium text-gray-800 text-sm">ชื่อผู้ใช้</label>
                     <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}">
-                    </div>
+                </div>
 
-                    <div class="w-full">
+                <div class="w-full">
                     <label class="font-medium text-gray-800 text-sm">บทบาท</label>
                     <select id="memberRole" onchange="toggleSupervisor()" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
-                        <option value="Sale" ${member.role === 'Sale' ? 'selected' : ''}>Sale</option>
-                        <option value="CEO" ${member.role === 'CEO' ? 'selected' : ''}>CEO</option>
-                        <option value="Sale Sup." ${member.role === 'Sale Sup.' ? 'selected' : ''}>Sale Supervisor</option>
+                        <option value="sale" ${member.role_name === 'sale' ? 'selected' : ''}>Sale</option>
+                        <option value="ceo" ${member.role_name === 'ceo' ? 'selected' : ''}>CEO</option>
+                        <option value="supervisor" ${member.role_name === 'supervisor' ? 'selected' : ''}>Sale Supervisor</option>
                     </select>
-                    </div>
-                     
-                    <div class="w-full">
-                    <div id="supervisorSection" style="display: ${member.role === 'Sale' ? 'block' : 'none'};" class="mt-4">
+                </div>
+                 
+                <div class="w-full">
+                    <div id="supervisorSection" style="display: ${member.role_name === 'sale' ? 'block' : 'none'};" class="mt-4">
                         <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
                         <select id="supervisorDropdown" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
                             <!-- options จะเติมโดย toggleSupervisor() -->
                         </select>
                     </div>
-                    </div>
                 </div>
-            `,
-            didOpen: () => {
-                toggleSupervisor();
-                if (member.role === "Sale" && member.supervisorId) {
-                    const dropdown = document.getElementById("supervisorDropdown");
-                    setTimeout(() => {
-                        dropdown.value = member.supervisorId;
-                    }, 0); // รอให้ toggleSupervisor เติม option ก่อน
-                }
-            },
-            showCancelButton: true,
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#2D8C42",
-            focusCancel: true,
-            customClass: {
-                actions: "flex justify-between w-full px-4",
-                cancelButton: "ml-0",
-                confirmButton: "mr-0",
-            },
-            preConfirm: () => {
-                const email = document.getElementById("memberEmail").value;
-                const name = document.getElementById("memberName").value;
-                const role = document.getElementById("memberRole").value;
+            </div>
+        `,
+        didOpen: () => {
+            toggleSupervisor();
+            if (member.role_name === "sale" && member.supervisorId) {
+                const dropdown = document.getElementById("supervisorDropdown");
+                setTimeout(() => {
+                    dropdown.value = member.supervisorId;
+                }, 0); // รอให้ toggleSupervisor เติม option ก่อน
+            }
+        },
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        focusCancel: true,
+        customClass: {
+            actions: "flex justify-between w-full px-4",
+            cancelButton: "ml-0",
+            confirmButton: "mr-0",
+        },
+        preConfirm: async () => {
+            const email = document.getElementById("memberEmail").value;
+            const name = document.getElementById("memberName").value;
+            const password = document.getElementById("memberPassword").value;
+            const role = document.getElementById("memberRole").value;
 
-                if (!email || !name || !role) {
-                    Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+            if (!email || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
+            }
+
+            let manager = null;
+            if (role === "sale") {
+                manager = document.getElementById("supervisorDropdown").value;
+                if (!manager) {
+                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                     return false;
                 }
+            }
 
-                let supervisorId = null;
-                if (role === "Sale") {
-                    supervisorId = document.getElementById("supervisorDropdown").value;
-                    if (!supervisorId) {
-                        Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
-                        return false;
-                    }
+            try {
+                const response = await fetch("{{ route('api.user.edit') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+                    },
+                    body: JSON.stringify({
+                        user_id: id,
+                        email: email,
+                        name: name,
+                        password: password || undefined,
+                        role_name: role,
+                        manager: manager ? parseInt(manager) : null,
+                        user_status: "normal"
+
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    const errorMsg = result?.message || "เกิดข้อผิดพลาด";
+                    Swal.showValidationMessage(errorMsg);
+                    return false;
                 }
-
-                // อัปเดตข้อมูล
-                member.email = email;
-                member.name = name;
-                member.role = role;
-                if (role === "Sale") {
-                    member.supervisorId = parseInt(supervisorId);
-                } else {
-                    delete member.supervisorId;
-                }
-
-                renderTable();
 
                 Swal.fire({
                     title: "สำเร็จ!",
@@ -590,54 +706,77 @@
                     confirmButtonColor: "#2D8C42",
                     confirmButtonText: "ตกลง"
                 });
+
+                // รีเฟรชข้อมูลจาก API ใหม่
+                fetchMembers();
+
+            } catch (error) {
+                Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ API");
+                console.error("Edit API error:", error);
+                return false;
             }
-        });
-    }
+        }
+    });
+}
 
     // ฟังก์ชันสำหรับลบสมาชิก
     function deleteMember(id) {
-        Swal.fire({
-            title: "ลบสมาชิก",
-            text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
-            icon: "warning",
-            iconColor: "#d33",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#6c757d",
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // ลบรายการออกจากอาร์เรย์
-                members = members.filter(member => member.id !== id);
-                
-                // คำนวณจำนวนหน้าหลังจากลบข้อมูล
-                const totalPages = Math.ceil(members.length / rowsPerPage);
+    Swal.fire({
+        title: "ลบสมาชิก",
+        text: "คุณต้องการลบสมาชิก ใช่หรือไม่",
+        icon: "warning",
+        iconColor: "#d33",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch("{{ route('api.user.delete') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
+                    },
+                    body: JSON.stringify({
+                        user_id: id
+                    })
+                });
 
-                // ถ้าหน้าเกินจำนวนหน้าใหม่ เช่น ถ้าปัจจุบันอยู่ที่หน้า 3 แต่เหลือแค่ 2 หน้า
-                if (currentPage > totalPages) {
-                    currentPage = totalPages; // ไปที่หน้าสุดท้ายที่ยังมีข้อมูล
+                const result = await response.json();
+
+                if (!response.ok) {
+                    Swal.fire({
+                        title: "ผิดพลาด",
+                        text: result.message || "ไม่สามารถลบข้อมูลได้",
+                        icon: "error"
+                    });
+                    return;
                 }
 
-                // ถ้าหน้าเกินจำนวนหน้าใหม่ (ตัวอย่างเช่น ลบจนหน้า 3 ว่าง) ให้ไปที่หน้าก่อนหน้า
-                if (currentPage > 1 && members.length > 0) {
-                    currentPage--; // ย้ายไปหน้าก่อนหน้า
-                }
-
-                // รีเฟรชตารางา
-                renderTable();
-                
-
-                // แจ้งเตือนว่าลบสำเร็จ
                 Swal.fire({
                     title: "ลบแล้ว!",
                     text: "สมาชิกถูกลบเรียบร้อย",
-                    icon: "success"
+                    icon: "success",
+                    confirmButtonColor: "#2D8C42"
+                });
+
+                fetchMembers(); // โหลดข้อมูลใหม่
+
+            } catch (error) {
+                console.error("ลบสมาชิก error:", error);
+                Swal.fire({
+                    title: "เกิดข้อผิดพลาด",
+                    text: "ไม่สามารถเชื่อมต่อ API ได้",
+                    icon: "error"
                 });
             }
-        });
-        
-    }
+        }
+    });
+}
+
 
     renderTable();
    
