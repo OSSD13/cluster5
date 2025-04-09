@@ -17,7 +17,7 @@ class CheckLogin
     {
         $user = session()->get('user');
         if (!isset($user)) {
-            return redirect(url()->route('loginGet'))->with('error', 'กรุณาเข้าสู่ระบบ');
+            return redirect(url()->route('loginGet'));
 
         }
         return $next($request);
