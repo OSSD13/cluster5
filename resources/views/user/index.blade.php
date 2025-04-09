@@ -103,7 +103,10 @@
         const role = document.getElementById("roleSelect").value || '';
         const supervisorId = selectedSupervisor || '';
 
-        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&supervisor_id=${supervisorId}&role=${encodeURIComponent(role)}`;
+        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`;
+        if (supervisorId) {
+            query += `&target=${supervisorId}`;
+        }
 
         try {
             const response = await fetch(`{{ route('api.user.query') }}${query}`);
@@ -234,38 +237,41 @@
     }
 
     // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
-    function filterAll() {
-    const searchVal = document.getElementById("searchInput").value.toLowerCase();
-    const supervisorId = document.getElementById("supervisorSelect").value;
-    const roleVal = document.getElementById("roleSelect").value;
+    async function filterAll() {
+        const search = document.getElementById("searchInput").value || '';
+        const role = document.getElementById("roleSelect").value || '';
+        const supervisorId = document.getElementById("supervisorSelect").value || '';
 
-    const isShowAll = !searchVal && !supervisorId && !roleVal;
+        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`;
 
-    if (isShowAll) {
-        fetchMembers();
-        return;
+        // เพิ่ม target เมื่อเลือก supervisor
+        if (supervisorId) {
+            query += `&target=${supervisorId}`;
+        }
+
+        try {
+            const response = await fetch(`{{ route('api.user.query') }}${query}`);
+            const result = await response.json();
+            members = result.data || [];
+            totalMembers = result.total || 0;
+            
+            renderTable(members);
+            renderPagination(totalMembers);
+            document.getElementById("resultCount").textContent = `ผลลัพธ์ ${totalMembers} รายการ`;
+        } catch (error) {
+            console.error("Error fetching members:", error);
+        }
+        document.getElementById("supervisorSelect").addEventListener("change", () => {
+            currentPage = 1;
+            filterAll();
+        });
+
+        document.getElementById("roleSelect").addEventListener("change", () => {
+            currentPage = 1;
+            filterAll();
+        });
+
     }
-
-    let filtered = members.filter(m => {
-        const matchesSearch =
-            m.user_id.toString().includes(searchVal) ||
-            m.name.toLowerCase().includes(searchVal) ||
-            m.email.toLowerCase().includes(searchVal) ||
-            m.role_name.toLowerCase().includes(searchVal);
-
-        const matchesSupervisor = !supervisorId || m.manager?.toString() === supervisorId;
-        const matchesRole = !roleVal || m.role_name === roleVal;
-
-        return matchesSearch && matchesSupervisor && matchesRole;
-    });
-
-    currentPage = 1;
-    renderTable(filtered);
-    renderPagination(filtered.length);
-    document.getElementById("resultCount").textContent = `ผลลัพธ์ ${filtered.length} รายการ`;
-}
-
-
 
     let supervisors = [];
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
@@ -285,7 +291,6 @@
         supervisorSelect.value = preserveValue;
     }
 
-
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
     document.addEventListener("DOMContentLoaded", async () => {
         try {
@@ -304,8 +309,6 @@
             console.error("โหลด supervisor ไม่ได้:", e);
         }
     });
-
-
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
     let activeMenuId = null;
