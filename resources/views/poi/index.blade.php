@@ -29,6 +29,7 @@
         </a>
     </div>
 
+
     <div class="overflow-visible">
         <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
@@ -97,7 +98,7 @@
                             <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
                             <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
                                 <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?id=${poi.poi_id}'">แก้ไข</button>
+                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?poi_id=${poi.poi_id}'">แก้ไข</button>
                                 <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" onclick="deletePoi(${poi.poi_id})">ลบ</button>
                             </div>
                         </td>
