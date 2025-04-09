@@ -162,7 +162,7 @@ class BranchController extends Controller
         $branch = new Branch_store();
         $branch->bs_name = $request->input('name');
         $branch->bs_address = $request->input('address');
-        $branch->bs_poi_id = $poi->id;
+        $branch->bs_poi_id = $poi->poi_id;
         $branch->bs_manager = $userId;
         $branch->bs_detail = $request->input('detail', null);
         $branch->save();
@@ -188,6 +188,7 @@ class BranchController extends Controller
                 'point_of_interests.poi_gps_lng',
                 'point_of_interests.poi_address as poi_address',
                 'point_of_interest_type.poit_name',
+                'point_of_interest_type.poit_type',
                 'locations.zipcode',
                 'locations.province',
                 'locations.amphoe',
