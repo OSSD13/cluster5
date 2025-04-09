@@ -19,14 +19,16 @@
     <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท"
         class="w-full p-2 border border-gray-300 rounded mb-3">
 
-<!-- Role Dropdown -->
-<div class="mb-3">
-    <label class="block text-gray-800 mb-1">เลือกผู้เพิ่มสาขา</label>
-    <select id="roleFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
-        <option value="">ทั้งหมด</option>
-    </select>
-</div>
-
+    <!-- Role Dropdown -->
+    <div class="mb-3">
+        <label class="block text-gray-800 mb-1">บทบาท</label>
+        <select id="roleFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
+            <option value="">ทั้งหมด</option>
+            <option value="sale">Sale</option>
+            <option value="ceo">CEO</option>
+            <option value="supervisor">Sale Supervisor</option>
+        </select>
+    </div>
 
     <!-- Result Count -->
     <p class="text-gray-800" id='resultCount'>ผลลัพธ์ 0 รายการ</p>
@@ -66,61 +68,30 @@
         searchTimeout = setTimeout(() => fetchBranches(1), 300);
     });
 
-document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
+    document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
 
-document.addEventListener("DOMContentLoaded", () => {
-fetchFilterOptions();
-fetchBranches();
-});
+    async function fetchBranches(page = 1) {
+        const search = document.getElementById("searchInput").value.trim();
+        const role = document.getElementById("roleFilter").value;
 
-async function fetchFilterOptions() {
-    const roleSelect = document.getElementById("roleFilter");
-    roleSelect.innerHTML = `<option value="">ทั้งหมด</option>`;
+        const params = new URLSearchParams({ page, limit: rowsPerPage });
+        if (search) params.append('search', search);
+        if (role) params.append('role', role);
 
-    try {
-        const res = await fetch(`/getUserOptionsForBranchFilter`);
-        const data = await res.json();
-        console.log("📦 Users fetched for filter:", data);
-
-        (data.users || []).forEach(user => {
-            const option = document.createElement("option");
-            option.value = user.user_id;
-            option.textContent = `${user.role_name} - ${user.name}`;
-            roleSelect.appendChild(option);
-        });
-    } catch (err) {
-        console.error("Error fetching filter options:", err);
+        try {
+            const response = await fetch(`${apiUrl}?${params.toString()}`);
+            const json = await response.json();
+            branches = json.data || [];
+            totalItems = json.total || 0;
+            rowsPerPage = json.limit || 10;
+            renderTable();
+        } catch (error) {
+            console.error("ไม่สามารถโหลดข้อมูลได้:", error);
+            document.getElementById("tableBody").innerHTML = `
+                <tr><td colspan="5" class="text-center py-4 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>
+            `;
+        }
     }
-}
-
-
-
-
-
-async function fetchBranches(page = 1) {
-    const search = document.getElementById("searchInput").value.trim();
-    const userId = document.getElementById("roleFilter").value;
-
-    const params = new URLSearchParams({ page, limit: rowsPerPage });
-    if (search) params.append('search', search);
-    if (userId) params.append('user_id', userId); // ✅ ย้ายมาหลังประกาศ params
-
-    try {
-        const response = await fetch(`${apiUrl}?${params.toString()}`);
-        const json = await response.json();
-        branches = json.data || [];
-        currentPage = json.page || 1;
-        totalItems = json.total || 0;
-        rowsPerPage = json.limit || 10;
-        renderTable();
-    } catch (error) {
-        console.error("ไม่สามารถโหลดข้อมูลได้:", error);
-        document.getElementById("tableBody").innerHTML = `
-            <tr><td colspan="5" class="text-center py-4 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>
-        `;
-    }
-}
-
 
     function renderTable() {
         const tableBody = document.getElementById("tableBody");
