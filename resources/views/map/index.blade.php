@@ -361,8 +361,8 @@
             color,
             draggable = false,
             text = {
-                infoTitle = "",
-                description = ""
+                infoTitle: "",
+                description: ""
             }
         }) {
             let pinBackground = new PinElement({
@@ -541,7 +541,7 @@
                 Places.forEach((place, index) => {
                     log("place", place, index);
                     let title = place.poi_name;
-                    let description = place.poi_type;
+                    let description = `${place.poit_icon} ${place.poi_type}`;
                     if (place.poi_distance) {
                         description += ` (${place.poi_distance.toFixed(2)} M)`;
                     }
@@ -558,7 +558,7 @@
                         color: place.poit_color ? place.poit_color : "red",
                         draggable: false,
                         text: {
-                            title: title,
+                            infoTitle: title,
                             description: description
                         }
                     });
