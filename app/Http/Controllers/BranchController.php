@@ -297,7 +297,6 @@ class BranchController extends Controller
     
         return view('branch.manage.index', compact('branch'));
     }
-    
 
     public function deleteBranch(Request $request)
     {

@@ -46,6 +46,7 @@
     let currentPage = 1;
     const rowsPerPage = 10;
     let totalItems = 0;
+    let searchTimeout;
 
     async function fetchPoits(search = '') {
         try {
@@ -135,9 +136,13 @@
     });
 
     document.getElementById("searchInput").addEventListener("input", function () {
+    clearTimeout(searchTimeout);
+    const keyword = this.value;
+    searchTimeout = setTimeout(() => {
         currentPage = 1;
-        fetchPoits(this.value);
-    });
+        fetchPoits(keyword);
+    }, 300);
+});
 
     document.addEventListener("click", async function (e) {
         const poitType = e.target.dataset.type;
