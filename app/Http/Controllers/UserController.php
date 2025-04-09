@@ -215,9 +215,16 @@ class UserController extends Controller
 
     public function managePage(Request $request)
     {
+        $currentUser = session()->get('user');
+        
+        if (!$currentUser || $currentUser->role_name !== 'ceo') {
+            return view('unauthorized');
+        }
+
         $supervisors = User::where('role_name', 'supervisor')->get();
         return view('user.index', [
             'supervisors' => $supervisors,
         ]);
     }
+
 }

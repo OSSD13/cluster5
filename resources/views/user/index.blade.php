@@ -3,6 +3,12 @@
 
 @section('title', 'Point of Interest')
 
+@php
+    $user = session('user');
+@endphp
+
+@if ($user && $user->role_name === 'ceo')
+
 @section('content')
     
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
@@ -745,3 +751,24 @@ function viewDetail(id) {
 
     <!-- </form> -->
 @endsection
+
+@else
+    @section('content')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้',
+                    text: 'เฉพาะ CEO เท่านั้นที่สามารถใช้งานหน้านี้ได้',
+                    confirmButtonText: 'กลับไปหน้า Dashboard',
+                    confirmButtonColor: '#3062B8',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('dashboard') }}";
+                    }
+                });
+            });
+        </script>
+    @endsection
+@endif
