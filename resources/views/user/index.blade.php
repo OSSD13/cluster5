@@ -10,9 +10,6 @@
 @if ($user && $user->role_name === 'ceo')
 
 @section('content')
-    
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-
     <!-- <form method="POST" action="{{ route('logout') }}">
             @csrf -->
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">

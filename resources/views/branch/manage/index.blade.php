@@ -525,102 +525,108 @@ document.addEventListener("DOMContentLoaded", () => {
                 activeMenuId = null;
             }
         });
+        
         function editSale(id) {
-            const sale = sales.find(item => item.sales_id === id);
-            if (!sale) {
-                Swal.fire("ไม่พบข้อมูล", "รายการที่เลือกไม่มีอยู่ในระบบ", "error");
-                return;
+        const sale = sales.find(item => item.sales_id === id);
+        if (!sale) {
+            Swal.fire("ไม่พบข้อมูล", "รายการที่เลือกไม่มีอยู่ในระบบ", "error");
+            return;
+        }
+
+    // ✅ เตรียม dropdown เดือนย้อนหลัง 12 เดือน
+    const monthOptions = [];
+    const now = new Date();
+    for (let i = 0; i < 12; i++) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const label = date.toLocaleDateString("th-TH", { month: "long", year: "numeric" });
+        const value = date.toISOString().split("T")[0];
+        monthOptions.push({ value, label });
+    }
+
+    const selectedMonth = new Date(sale.sales_month).toISOString().split("T")[0];
+
+    Swal.fire({
+        html: `
+                    <div class="flex flex-col items-center mb-1">
+                        <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+                    </div>
+                <div class="text-xl font-bold mt-2 mb-4">แก้ไขยอด</div>
+            </div>
+
+            <div class="flex flex-col space-y-3 text-left">
+                <label class="text-gray-800 text-sm">เดือน</label>
+                <select id="editMonth" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"">
+                    ${monthOptions.map(opt =>
+                        `<option value="${opt.value}" ${opt.value === selectedMonth ? 'selected' : ''}>${opt.label}</option>`
+                    ).join("")}
+                </select>
+
+                <label class="text-gray-800 text-sm">จำนวน</label>
+                <input id="editBox" type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกจำนวนกล่อง" value="${sale.sales_package_amount || ''}">
+
+                <label class="text-gray-800 text-sm">ยอดเงิน</label>
+                <input id="editAmount" type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกยอดเงิน" value="${parseFloat(sale.sales_amount).toLocaleString()}">
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก",
+        confirmButtonColor: "#2D8C42",
+        cancelButtonColor: "#6B7280",
+        preConfirm: () => {
+            const sales_amount_raw = document.getElementById("editAmount").value.replace(/,/g, '').trim();
+            const sales_amount = parseFloat(sales_amount_raw);
+            const sales_package_amount = parseInt(document.getElementById("editBox").value.trim());
+            const sales_month = document.getElementById("editMonth").value;
+
+            if (!sales_month) {
+                Swal.showValidationMessage("กรุณาเลือกเดือนให้ถูกต้อง");
+                return false;
             }
 
-            // สร้าง options เดือนในรูปแบบ กุมภาพันธ์ - 2568
-            const monthOptions = [
-                { value: "2025-01-01", label: "มกราคม - 2568" },
-            ];
+            if (isNaN(sales_amount) || isNaN(sales_package_amount)) {
+                Swal.showValidationMessage("กรุณากรอกจำนวนและยอดเงินให้ถูกต้อง");
+                return false;
+            }
 
-            const selectedMonth = new Date(sale.sales_month).toISOString().split("T")[0];
+            if (sales_amount < 0 || sales_package_amount < 0) {
+                Swal.showValidationMessage("จำนวนและยอดเงินต้องไม่ติดลบ");
+                return false;
+            }
 
-            Swal.fire({
-                html: `
-                    <div class="flex flex-col items-center mb-4">
-                        <span class="iconify" data-icon="material-symbols:edit" data-width="60" data-height="60"></span>
-                        <div class="text-xl font-bold mt-2 mb-4">แก้ไขยอด</div>
-                    </div>
-
-                    <div class="flex flex-col space-y-3 text-left">
-                        <label class="text-sm font-semibold text-gray-700">เดือน</label>
-                        <select id="editMonth" class="swal2-select">
-                            ${monthOptions.map(opt =>
-                    `<option value="${opt.value}" ${opt.value === selectedMonth ? 'selected' : ''}>${opt.label}</option>`
-                ).join("")}
-                        </select>
-
-                        <label class="text-sm font-semibold text-gray-700">จำนวน</label>
-                        <input id="editBox" type="number" class="swal2-input" placeholder="กรอกจำนวนกล่อง" value="${sale.sales_package_amount || ''}">
-
-                        <label class="text-sm font-semibold text-gray-700">ยอดเงิน</label>
-                        <input id="editAmount" type="text" class="swal2-input" placeholder="กรอกยอดเงิน" value="${parseFloat(sale.sales_amount).toLocaleString()}">
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2D8C42",
-                cancelButtonColor: "#6B7280",
-                customClass: {
-                    actions: "mt-6 flex justify-between w-full px-4",
-                    confirmButton: "w-full",
-                    cancelButton: "w-full"
+            return fetch(`{{ route('api.sales.edit') }}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": '{{ csrf_token() }}'
                 },
-                preConfirm: () => {
-                    const sales_amount = parseFloat(document.getElementById("editAmount").value.replace(/,/g, ''));
-                    const sales_package_amount = parseInt(document.getElementById("editBox").value);
-                    const sales_month = document.getElementById("editMonth").value;
-
-                    // ✅ ตรวจสอบค่าที่ไม่ใช่ตัวเลขหรือค่าติดลบ
-                    if (isNaN(sales_amount) || isNaN(sales_package_amount)) {
-                        Swal.showValidationMessage("กรุณากรอกจำนวนและยอดเงินให้ถูกต้อง");
-                        return false;
-                    }
-
-                    if (sales_amount < 0 || sales_package_amount < 0) {
-                        Swal.showValidationMessage("จำนวนและยอดเงินต้องไม่ติดลบ");
-                        return false;
-                    }
-
-                    return fetch(`{{ route('api.sales.edit') }}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            sales_id: id,
-                            sales_amount,
-                            sales_package_amount,
-                            sales_month
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.status !== "success") {
-                            throw new Error(result.message || "เกิดข้อผิดพลาด");
-                        }
-                        return result;
-                    })
-                    .catch(error => {
-                        Swal.showValidationMessage(`ผิดพลาด: ${error.message}`);
-                    });
+                body: JSON.stringify({
+                    sales_id: id,
+                    sales_amount,
+                    sales_package_amount,
+                    sales_month
+                })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status !== "success") {
+                    throw new Error(result.message || "เกิดข้อผิดพลาด");
                 }
-
-            }).then(result => {
-                if (result.isConfirmed) {
-                    Swal.fire("สำเร็จ!", "อัปเดตข้อมูลเรียบร้อยแล้ว", "success");
-                    fetchSales(currentPage);
-                    fetchBranchSalesStats();
-                }
+                return result;
+            })
+            .catch(error => {
+                Swal.showValidationMessage(`ผิดพลาด: ${error.message}`);
             });
-            document.addEventListener("DOMContentLoaded", updateResultCount);
         }
+    }).then(result => {
+        if (result.isConfirmed) {
+            Swal.fire("สำเร็จ!", "อัปเดตข้อมูลเรียบร้อยแล้ว", "success");
+            fetchSales(currentPage);
+            fetchBranchSalesStats();
+        }
+    });
+}
+
 
         function deleteSale(id) {
             Swal.fire({
