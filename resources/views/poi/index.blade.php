@@ -68,8 +68,6 @@
         const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
         const result = await res.json();
         pois = result.data;
-        total = result.total;
-        document.getElementById("searchInput").value = search;
         document.getElementById("resultCount").innerText = result.total;
         renderTable();
         renderPagination(result.total);
@@ -120,13 +118,13 @@
                 pagination.appendChild(btn);
             }
 
-        const nextBtn = document.createElement("button");
-        nextBtn.innerHTML = "&gt;";
-        nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
-        nextBtn.disabled = currentPage === totalPages;
-        nextBtn.onclick = () => goToPage(currentPage + 1);
-        pagination.appendChild(nextBtn);
-    }
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = '&rarr;';
+            nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
 
         function goToPage(pageNumber) {
             currentPage = pageNumber;
