@@ -48,15 +48,20 @@
         let pois = [];
         let currentPage = 1;
         const rowsPerPage = 10;
+        let searchTimeout;
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchPois();
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchPois();
-
-        document.getElementById("searchInput").addEventListener("input", function () {
-            currentPage = 1;
-            fetchPois(this.value);
+            document.getElementById("searchInput").addEventListener("input", function () {
+                clearTimeout(searchTimeout);
+                const search = this.value;
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    fetchPois(search);
+                }, 300); // หน่วงเวลา 300 มิลลิวินาที
+            });
+            
         });
-    });
 
     async function fetchPois(search = '') {
         const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
