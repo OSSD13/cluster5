@@ -113,7 +113,6 @@
     }, 300); //  debounce 300ms
     }
 
-
     function renderTable(data = members) {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
@@ -225,32 +224,6 @@
         renderTable();
     }
 
-    // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
-    function filterAll() {
-        const searchVal = document.getElementById("searchInput").value.toLowerCase();
-        const supervisorId = document.getElementById("supervisorSelect").value;
-        const roleVal = document.getElementById("roleSelect").value;
-
-        let filtered = members.filter(m => {
-            const matchesSearch =
-                m.id.toString().includes(searchVal) ||
-                m.name.toLowerCase().includes(searchVal) ||
-                m.email.toLowerCase().includes(searchVal) ||
-                m.role.toLowerCase().includes(searchVal);
-
-            const matchesSupervisor = !supervisorId || (
-                m.role === "Sale" && m.supervisorId?.toString() === supervisorId
-            );
-
-            const matchesRole = !roleVal || m.role === roleVal;
-
-            return matchesSearch && matchesSupervisor && matchesRole;
-        });
-
-        currentPage = 1; // รีเซ็ตหน้าเป็นหน้าแรกเมื่อมีการกรองข้อมูล
-        renderTable(filtered); // เรียก renderTable โดยส่งข้อมูลที่กรองแล้ว
-    }
-
     let supervisors = [];
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
     async function populateSupervisorDropdown() {
@@ -274,9 +247,6 @@
         }
     }
 
-
-
-
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
     document.addEventListener("DOMContentLoaded", () => {
         fetchMembers(); // เรียกดึงข้อมูลจาก API
@@ -284,7 +254,6 @@
         document.getElementById("supervisorSelect").addEventListener("change", filterAll);
         document.getElementById("roleSelect").addEventListener("change", filterAll);
     });
-
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
     let activeMenuId = null;
@@ -317,8 +286,6 @@
                 ลบ
             </button>
         `;
-
-        
 
         menu.classList.remove("hidden");
 
