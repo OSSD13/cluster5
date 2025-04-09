@@ -34,7 +34,7 @@
         <div class="mb-3">
             <label class="block text-gray-600 mb-1">บทบาท</label>
             <select id="roleSelect" class="w-full p-2 border border-gray-300 rounded">
-                <option value="" selected disabled class="hidden">ค้นหาด้วยตำแหน่ง</option>
+                <option value="" selected  >ทั้งหมด</option>
                 <option value="Sale">Sale</option>
                 <option value="supervisor">Sale Supervisor</option>
                 <option value="CEO">CEO</option>
@@ -86,8 +86,9 @@
         });
         document.getElementById("supervisorSelect").addEventListener("change", () => {
             currentPage = 1;
-            fetchMembers();
+            filterAll(); // ใช้ฟังก์ชันนี้แทน fetchMembers();
         });
+
         document.getElementById("roleSelect").addEventListener("change", () => {
             currentPage = 1;
             fetchMembers();
@@ -96,8 +97,11 @@
 
     async function fetchMembers() {
         const search = document.getElementById("searchInput").value || '';
-        const supervisorId = document.getElementById("supervisorSelect").value || '';
+        const supervisorSelect = document.getElementById("supervisorSelect");
+        const selectedSupervisor = supervisorSelect.value; // 💡 จำค่านี้ไว้
+
         const role = document.getElementById("roleSelect").value || '';
+        const supervisorId = selectedSupervisor || '';
 
         let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&supervisor_id=${supervisorId}&role=${encodeURIComponent(role)}`;
 
@@ -109,7 +113,7 @@
 
             document.getElementById("resultCount").textContent = `ผลลัพธ์ ${totalMembers} รายการ`;
 
-            populateSupervisorDropdown(); // เติม dropdown ทุกครั้งเผื่อรายการเปลี่ยน
+            populateSupervisorDropdownFromArray(supervisorId);
             renderTable();
             renderPagination(totalMembers);
         } catch (error) {
@@ -117,12 +121,11 @@
         }
     }
 
-
-    function renderTable() {
+    function renderTable(data = members) {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
-        members.forEach((member) => {
+        data.forEach((member) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
@@ -138,6 +141,7 @@
             tableBody.appendChild(row);
         });
     }
+
 
     function renderPagination(totalItems) {
         const pagination = document.getElementById("pagination");
@@ -237,57 +241,62 @@
 
         let filtered = members.filter(m => {
             const matchesSearch =
-                m.id.toString().includes(searchVal) ||
+                m.user_id.toString().includes(searchVal) ||
                 m.name.toLowerCase().includes(searchVal) ||
                 m.email.toLowerCase().includes(searchVal) ||
-                m.role.toLowerCase().includes(searchVal);
+                m.role_name.toLowerCase().includes(searchVal);
 
-            const matchesSupervisor = !supervisorId || (
-                m.role === "Sale" && m.supervisorId?.toString() === supervisorId
-            );
-
-            const matchesRole = !roleVal || m.role === roleVal;
+            const matchesSupervisor = !supervisorId || m.manager?.toString() === supervisorId;
+            const matchesRole = !roleVal || m.role_name === roleVal;
 
             return matchesSearch && matchesSupervisor && matchesRole;
         });
 
-        currentPage = 1; // รีเซ็ตหน้าเป็นหน้าแรกเมื่อมีการกรองข้อมูล
-        renderTable(filtered); // เรียก renderTable โดยส่งข้อมูลที่กรองแล้ว
+        currentPage = 1;
+        renderTable(filtered);
+        renderPagination(members.length);
+
     }
+
 
     let supervisors = [];
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
-    async function populateSupervisorDropdown() {
-    const supervisorSelect = document.getElementById("supervisorSelect");
-        supervisorSelect.innerHTML = `<option value="">ทั้งหมด</option>`;
+    function populateSupervisorDropdownFromArray(preserveValue = "") {
+        const supervisorSelect = document.getElementById("supervisorSelect");
 
-        try {
-            const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
-            const result = await response.json();
-            supervisors = result.data || []; // เก็บข้อมูล supervisor ไว้ใช้
+        supervisorSelect.innerHTML = `<option value="">ทั้งหมด</option>`; // default option
 
-            supervisors.forEach(sup => {
-                const option = document.createElement("option");
-                option.value = sup.user_id;
-                option.textContent = `${sup.name} - ${sup.email}`;
-                supervisorSelect.appendChild(option);
-            });
-        } catch (error) {
-            console.error("โหลด supervisor ไม่ได้:", error);
-            supervisorSelect.innerHTML += `<option value="">(โหลดรายชื่อ supervisor ไม่สำเร็จ)</option>`;
-        }
+        supervisors.forEach(sup => {
+            const option = document.createElement("option");
+            option.value = sup.user_id;
+            option.textContent = `${sup.name} - ${sup.email}`;
+            supervisorSelect.appendChild(option);
+        });
+
+        // คืนค่าที่เลือกไว้ก่อนหน้านี้ ถ้ามี
+        supervisorSelect.value = preserveValue;
     }
 
 
-
-
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchMembers(); // เรียกดึงข้อมูลจาก API
-        document.getElementById("searchInput").addEventListener("input", filterAll);
-        document.getElementById("supervisorSelect").addEventListener("change", filterAll);
-        document.getElementById("roleSelect").addEventListener("change", filterAll);
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
+            const result = await response.json();
+            supervisors = result.data || [];
+
+            populateSupervisorDropdownFromArray(); // เติม dropdown ตอนโหลดหน้า
+            fetchMembers(); // แล้วค่อย fetch สมาชิก
+
+            // เพิ่ม event listener
+            document.getElementById("searchInput").addEventListener("input", filterAll);
+            document.getElementById("supervisorSelect").addEventListener("change", filterAll);
+            document.getElementById("roleSelect").addEventListener("change", filterAll);
+        } catch (e) {
+            console.error("โหลด supervisor ไม่ได้:", e);
+        }
     });
+
 
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
