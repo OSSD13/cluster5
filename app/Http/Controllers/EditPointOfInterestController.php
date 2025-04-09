@@ -10,7 +10,7 @@ class EditPointOfInterestController extends Controller
     public function editPoiPage(Request $request)
 {
     // ค้นหาข้อมูล POI จาก ID
-    $show = PointOfInterest::find($request->input('poi_id'));
+    $show = PointOfInterest::find($request->input('id'));
     // ตรวจสอบหากไม่พบข้อมูล POI
     if (!$show) {
         return redirect()->route('poi.index')->with('error', 'ไม่พบข้อมูล POI ที่ระบุ');
