@@ -122,7 +122,7 @@ class EditPointOfInterestController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->error
+                'errors' => $validator->errors()
             ], 422);
         }
         $type = \DB::table('point_of_interest_type')->where('point_type', $request->input('type'))->first();
