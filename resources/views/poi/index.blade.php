@@ -104,10 +104,10 @@
         ;
 
         function renderPagination(totalItems) {
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = "";
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
 
-            const totalPages = Math.ceil(totalItems / rowsPerPage);
+        const totalPages = Math.ceil(totalItems / rowsPerPage);
         const maxVisible = 1;
         let startPage = Math.max(1, currentPage - maxVisible);
         let endPage = Math.min(totalPages, currentPage + maxVisible);
@@ -147,12 +147,12 @@
             return btn;
         };
 
-            const prevBtn = document.createElement("button");
+        const prevBtn = document.createElement("button");
         prevBtn.innerHTML = "&lt;";
         prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
-            prevBtn.disabled = currentPage === 1;
-            prevBtn.onclick = () => goToPage(currentPage - 1);
-            pagination.appendChild(prevBtn);
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => goToPage(currentPage - 1);
+        pagination.appendChild(prevBtn);
 
         if (startPage > 1) {
             pagination.appendChild(createPageButton(1));
@@ -166,15 +166,15 @@
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
             pagination.appendChild(createPageButton(totalPages));
-            }
+        }
 
-            const nextBtn = document.createElement("button");
+        const nextBtn = document.createElement("button");
         nextBtn.innerHTML = "&gt;";
         nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
-            nextBtn.disabled = currentPage === totalPages;
-            nextBtn.onclick = () => goToPage(currentPage + 1);
-            pagination.appendChild(nextBtn);
-        }
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => goToPage(currentPage + 1);
+        pagination.appendChild(nextBtn);
+    }
 
     function goToPage(pageNumber) {
         currentPage = pageNumber;
