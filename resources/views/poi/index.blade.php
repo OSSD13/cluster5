@@ -63,19 +63,6 @@
             });
         });
 
-        async function fetchPois(search = '') {
-            const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
-            const result = await res.json();
-            pois = result.data;
-            document.getElementById("resultCount").innerText = result.total;
-            renderTable();
-            renderPagination(result.total);
-        }
-
-        function displayValue(value) {
-            return value === null || value === undefined || value === "" ? "-" : value;
-        }
-
     async function fetchPois(search = '') {
         const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
         const result = await res.json();

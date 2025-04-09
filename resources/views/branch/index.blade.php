@@ -21,12 +21,14 @@
 
     <!-- Role Dropdown -->
     <div class="mb-3">
-        <label class="block text-gray-800 mb-1">เลือกผู้เพิ่มสาขา</label>
+        <label class="block text-gray-800 mb-1">บทบาท</label>
         <select id="roleFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
             <option value="">ทั้งหมด</option>
+            <option value="sale">Sale</option>
+            <option value="ceo">CEO</option>
+            <option value="supervisor">Sale Supervisor</option>
         </select>
     </div>
-
 
     <!-- Result Count -->
     <p class="text-gray-800" id='resultCount'>ผลลัพธ์ 0 รายการ</p>
@@ -38,10 +40,10 @@
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
-                <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสาขา / ประเภท</th>
+                <th class="py-3 px-4 text-left min-w-[150px]">ชื่อสาขา / ประเภท</th>
                 <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-              </tr>
+            </tr>
         </thead>
 
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
@@ -68,48 +70,18 @@
 
     document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
 
-    document.addEventListener("DOMContentLoaded", () => {
-    fetchFilterOptions();
-    fetchBranches();
-});
-
-    async function fetchFilterOptions() {
-        const roleSelect = document.getElementById("roleFilter");
-        roleSelect.innerHTML = `<option value="">ทั้งหมด</option>`;
-
-        try {
-            const res = await fetch(`/getUserOptionsForBranchFilter`);
-            const data = await res.json();
-            console.log("📦 Users fetched for filter:", data);
-
-            (data.users || []).forEach(user => {
-                const option = document.createElement("option");
-                option.value = user.user_id;
-                option.textContent = `${user.role_name} - ${user.name}`;
-                roleSelect.appendChild(option);
-            });
-        } catch (err) {
-            console.error("Error fetching filter options:", err);
-        }
-    }
-
-
-
-
-    
     async function fetchBranches(page = 1) {
         const search = document.getElementById("searchInput").value.trim();
-        const userId = document.getElementById("roleFilter").value;
+        const role = document.getElementById("roleFilter").value;
 
         const params = new URLSearchParams({ page, limit: rowsPerPage });
         if (search) params.append('search', search);
-        if (userId) params.append('user_id', userId); // ✅ ย้ายมาหลังประกาศ params
+        if (role) params.append('role', role);
 
         try {
             const response = await fetch(`${apiUrl}?${params.toString()}`);
             const json = await response.json();
             branches = json.data || [];
-            currentPage = json.page || 1;
             totalItems = json.total || 0;
             rowsPerPage = json.limit || 10;
             renderTable();
@@ -120,7 +92,6 @@
             `;
         }
     }
-
 
     function renderTable() {
         const tableBody = document.getElementById("tableBody");
@@ -160,62 +131,88 @@
 
         renderPagination();
     }
-
     function renderPagination() {
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = "";
+const pagination = document.getElementById("pagination");
+pagination.innerHTML = "";
 
-        const totalPages = Math.ceil(totalItems / rowsPerPage);
-        if (totalPages <= 1) return;
+const totalPages = Math.ceil(totalItems / rowsPerPage);
+const maxVisible = 1;
+let startPage = Math.max(1, currentPage - maxVisible);
+let endPage = Math.min(totalPages, currentPage + maxVisible);
 
-        const createBtn = (text, page, disabled = false, active = false) => {
-            const btn = document.createElement("button");
-            btn.textContent = text;
-            btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${
-                active
-                    ? "bg-blue-600 text-white"
-                    : disabled
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "bg-white border border-gray-300 text-black hover:bg-gray-100"
-            }`;
-            btn.disabled = disabled;
-            if (!disabled && !active) btn.onclick = () => fetchBranches(page);
-            return btn;
-        };
+if (totalPages <= 1) return;
 
-        // « First
-        pagination.appendChild(createBtn("«", 1, currentPage === 1));
+const createPageButton = (page, isActive = false) => {
+    const btn = document.createElement("button");
+    btn.innerText = page;
+    btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+    btn.onclick = () => goToPage(page);
+    return btn;
+};
 
-        // Left Ellipsis
-        if (currentPage > 3) {
-            pagination.appendChild(createBtn("1", 1));
-            if (currentPage > 4) {
-                const ellipsis = document.createElement("span");
-                ellipsis.textContent = "...";
-                ellipsis.className = "mx-1 text-gray-500";
-                pagination.appendChild(ellipsis);
+const createEllipsis = () => {
+    const btn = document.createElement("button");
+    btn.innerText = "...";
+    btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+    btn.onclick = () => {
+        Swal.fire({
+            title: "ไปยังหน้าที่...",
+            input: "number",
+            inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
+            inputAttributes: { min: 1, max: totalPages, step: 1 },
+            showCancelButton: true,
+            confirmButtonText: "ไปเลย!",
+            confirmButtonColor: "#3062B8",
+            inputValidator: (value) => {
+                if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
+                if (value < 1 || value > totalPages) return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                return null;
             }
-        }
+        }).then(result => {
+            if (result.isConfirmed) goToPage(parseInt(result.value));
+        });
+    };
+    return btn;
+};
 
-        // Page Range (current -1, current, current +1)
-        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-            pagination.appendChild(createBtn(i, i, false, i === currentPage));
-        }
+const prevBtn = document.createElement("button");
+prevBtn.innerHTML = "&lt;";
+prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+prevBtn.disabled = currentPage === 1;
+prevBtn.onclick = () => goToPage(currentPage - 1);
+pagination.appendChild(prevBtn);
 
-        // Right Ellipsis
-        if (currentPage < totalPages - 2) {
-            if (currentPage < totalPages - 3) {
-                const ellipsis = document.createElement("span");
-                ellipsis.textContent = "...";
-                ellipsis.className = "mx-1 text-gray-500";
-                pagination.appendChild(ellipsis);
-            }
-            pagination.appendChild(createBtn(totalPages, totalPages));
-        }
+if (startPage > 1) {
+    pagination.appendChild(createPageButton(1));
+    if (startPage > 2) pagination.appendChild(createEllipsis());
+}
 
-        // » Last
-        pagination.appendChild(createBtn("»", totalPages, currentPage === totalPages));
+for (let i = startPage; i <= endPage; i++) {
+    pagination.appendChild(createPageButton(i, i === currentPage));
+}
+
+if (endPage < totalPages) {
+    if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+    pagination.appendChild(createPageButton(totalPages));
+}
+
+const nextBtn = document.createElement("button");
+nextBtn.innerHTML = "&gt;";
+nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+nextBtn.disabled = currentPage === totalPages;
+nextBtn.onclick = () => goToPage(currentPage + 1);
+pagination.appendChild(nextBtn);
+}
+
+
+
+
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        const searchValue = document.getElementById("searchInput").value || '';
+        fetchBranches(pageNumber);
     }
+
 
     function toggleMenu(event, id) {
         event.stopPropagation();
@@ -228,50 +225,28 @@
     });
 
     function deleteBranch(id) {
-    Swal.fire({
-        title: "ลบสาขา",
-        text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
-        icon: "warning",
-        iconColor: "#d33",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3062B8",
-        confirmButtonText: "ยืนยัน",
-        cancelButtonText: "ยกเลิก"
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                const response = await fetch(`/api/branch/delete`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": '{{ csrf_token() }}',
-                    },
-                    body: JSON.stringify({ bs_id: id }),
+        Swal.fire({
+            title: "ลบสาขา",
+            text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
+            icon: "warning",
+            iconColor: "#d33",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3062B8",
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                branches = branches.filter(branch => branch.bs_id !== id);
+                renderTable();
+                Swal.fire({
+                    title: "ลบแล้ว!",
+                    text: "สาขาถูกลบเรียบร้อย",
+                    icon: "success"
                 });
-
-                const data = await response.json();
-
-                if (data.status === "success") {
-                    branches = branches.filter(branch => branch.bs_id !== id);
-                    renderTable();
-
-                    Swal.fire({
-                        title: "ลบแล้ว!",
-                        text: "สาขาถูกลบเรียบร้อย",
-                        icon: "success"
-                    });
-                } else {
-                    Swal.fire("ผิดพลาด", data.message || "ไม่สามารถลบสาขาได้", "error");
-                }
-            } catch (error) {
-                console.error("Error deleting branch:", error);
-                Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์", "error");
             }
-        }
-    });
-}
-
+        });
+    }
 
     // Initial load
     fetchBranches();
