@@ -40,9 +40,6 @@
         <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
         <select id="saleMonth"
             class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="2025-01-01">มกราคม - 2568</option>
-            <option value="2025-02-01" selected>กุมภาพันธ์ - 2568</option>
-            <option value="2025-03-01">มีนาคม - 2568</option>
         </select>
     </div>
 
@@ -138,6 +135,8 @@
 
 
 
+
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     fetchBranchSalesStats();
@@ -199,10 +198,6 @@ async function fetchBranchSalesStats() {
 </script>
 
 
-
-
-
-
 <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
@@ -222,7 +217,51 @@ async function fetchBranchSalesStats() {
 
 @section('script')
 
-<script></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const select = document.getElementById("saleMonth");
+
+        // ดึงข้อมูลยอดขายปัจจุบัน
+        let existingMonths = [];
+
+        try {
+            const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+            const result = await response.json();
+            existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
+        } catch (err) {
+            console.error("Error fetching existing sales:", err);
+        }
+
+        // สร้างตัวเลือก 12 เดือนย้อนหลัง
+        const now = new Date();
+        for (let i = 0; i < 12; i++) {
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const value = date.toISOString().slice(0, 10);
+            const ym = date.toISOString().slice(0, 7);
+
+            if (!existingMonths.includes(ym)) {
+                const month = date.toLocaleString('th-TH', {
+                    year: 'numeric',
+                    month: 'long'
+                });
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = `${month}`;
+                select.appendChild(option);
+            }
+        }
+
+        // ถ้าไม่มีให้เลือก
+        if (select.options.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
+            opt.disabled = true;
+            opt.selected = true;
+            select.appendChild(opt);
+        }
+    });
+</script>
     <script>
         let sales = [];
         let currentPage = 1;

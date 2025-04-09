@@ -39,11 +39,10 @@
     <table class="w-full mt-5 border-collapse rounded-md overflow-hidden table-fixed">
         <thead class="text-gray-800" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 w-13 text-left">ID</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ชื่อสาขา</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">ประเภท</th>
-                <th class="py-3 px-4 text-left whitespace-nowrap">เพิ่มโดย</th>
-                <th class="py-3 px-1 w-7 text-center"></th>
+                <th scope="col" class="py-2 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left min-w-[150px]">ชื่อสาขา / ประเภท</th>
+                <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
+                <th class="py-3 px-1 w-7 text-center">&#8230;</th>
             </tr>
         </thead>
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -82,7 +81,6 @@
             const response = await fetch(`${apiUrl}?${params.toString()}`);
             const json = await response.json();
             branches = json.data || [];
-            currentPage = json.page || 1;
             totalItems = json.total || 0;
             rowsPerPage = json.limit || 10;
             renderTable();
@@ -129,62 +127,88 @@
 
         renderPagination();
     }
-
     function renderPagination() {
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = "";
+const pagination = document.getElementById("pagination");
+pagination.innerHTML = "";
 
-        const totalPages = Math.ceil(totalItems / rowsPerPage);
-        if (totalPages <= 1) return;
+const totalPages = Math.ceil(totalItems / rowsPerPage);
+const maxVisible = 1;
+let startPage = Math.max(1, currentPage - maxVisible);
+let endPage = Math.min(totalPages, currentPage + maxVisible);
 
-        const createBtn = (text, page, disabled = false, active = false) => {
-            const btn = document.createElement("button");
-            btn.textContent = text;
-            btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${
-                active
-                    ? "bg-blue-600 text-white"
-                    : disabled
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "bg-white border border-gray-300 text-black hover:bg-gray-100"
-            }`;
-            btn.disabled = disabled;
-            if (!disabled && !active) btn.onclick = () => fetchBranches(page);
-            return btn;
-        };
+if (totalPages <= 1) return;
 
-        // « First
-        pagination.appendChild(createBtn("«", 1, currentPage === 1));
+const createPageButton = (page, isActive = false) => {
+    const btn = document.createElement("button");
+    btn.innerText = page;
+    btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+    btn.onclick = () => goToPage(page);
+    return btn;
+};
 
-        // Left Ellipsis
-        if (currentPage > 3) {
-            pagination.appendChild(createBtn("1", 1));
-            if (currentPage > 4) {
-                const ellipsis = document.createElement("span");
-                ellipsis.textContent = "...";
-                ellipsis.className = "mx-1 text-gray-500";
-                pagination.appendChild(ellipsis);
+const createEllipsis = () => {
+    const btn = document.createElement("button");
+    btn.innerText = "...";
+    btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+    btn.onclick = () => {
+        Swal.fire({
+            title: "ไปยังหน้าที่...",
+            input: "number",
+            inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
+            inputAttributes: { min: 1, max: totalPages, step: 1 },
+            showCancelButton: true,
+            confirmButtonText: "ไปเลย!",
+            confirmButtonColor: "#3062B8",
+            inputValidator: (value) => {
+                if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
+                if (value < 1 || value > totalPages) return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                return null;
             }
-        }
+        }).then(result => {
+            if (result.isConfirmed) goToPage(parseInt(result.value));
+        });
+    };
+    return btn;
+};
 
-        // Page Range (current -1, current, current +1)
-        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-            pagination.appendChild(createBtn(i, i, false, i === currentPage));
-        }
+const prevBtn = document.createElement("button");
+prevBtn.innerHTML = "&lt;";
+prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+prevBtn.disabled = currentPage === 1;
+prevBtn.onclick = () => goToPage(currentPage - 1);
+pagination.appendChild(prevBtn);
 
-        // Right Ellipsis
-        if (currentPage < totalPages - 2) {
-            if (currentPage < totalPages - 3) {
-                const ellipsis = document.createElement("span");
-                ellipsis.textContent = "...";
-                ellipsis.className = "mx-1 text-gray-500";
-                pagination.appendChild(ellipsis);
-            }
-            pagination.appendChild(createBtn(totalPages, totalPages));
-        }
+if (startPage > 1) {
+    pagination.appendChild(createPageButton(1));
+    if (startPage > 2) pagination.appendChild(createEllipsis());
+}
 
-        // » Last
-        pagination.appendChild(createBtn("»", totalPages, currentPage === totalPages));
+for (let i = startPage; i <= endPage; i++) {
+    pagination.appendChild(createPageButton(i, i === currentPage));
+}
+
+if (endPage < totalPages) {
+    if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+    pagination.appendChild(createPageButton(totalPages));
+}
+
+const nextBtn = document.createElement("button");
+nextBtn.innerHTML = "&gt;";
+nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+nextBtn.disabled = currentPage === totalPages;
+nextBtn.onclick = () => goToPage(currentPage + 1);
+pagination.appendChild(nextBtn);
+}
+
+
+
+
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        const searchValue = document.getElementById("searchInput").value || '';
+        fetchBranches(pageNumber);
     }
+
 
     function toggleMenu(event, id) {
         event.stopPropagation();
