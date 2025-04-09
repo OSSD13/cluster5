@@ -99,31 +99,23 @@ class BranchController extends Controller
     public function createBranch(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
             'zipcode' => 'required|numeric',
             'province' => 'required|string|max:255',
             'amphoe' => 'required|string|max:255',
             'district' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255'
-        ],[
-            'latitude.required' => 'กรุณาระบุละติจูด',
-            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
-            'longitude.required' => 'กรุณาระบุลองจิจูด',
-            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
+        ], [
+            'lat.required' => 'กรุณาระบุละติจูด',
+            'lng.required' => 'กรุณาระบุลองจิจูด',
             'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
             'province.required' => 'กรุณาระบุจังหวัด',
-            'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
             'amphoe.required' => 'กรุณาระบุอำเภอ',
-            'amphoe.string' => 'อำเภอต้องเป็นตัวอักษร',
             'district.required' => 'กรุณาระบุตำบล',
-            'district.string' => 'ตำบลต้องเป็นตัวอักษร',
             'address.required' => 'กรุณาระบุที่อยู่',
-            'address.string' => 'ที่อยู่ต้องเป็นตัวอักษร',
-            'name.required' => 'กรุณาระชื่อสถานที่',
-            'name.string' => 'ชื่อสถานที่ต้องเป็นตัวอักษร',
+            'name.required' => 'กรุณาระบุชื่อสาขา',
         ]);
 
         if ($validator->fails()) {
@@ -151,8 +143,8 @@ class BranchController extends Controller
         $poi = new PointOfInterest();
         $poi->poi_name = $request->input('name');
         $poi->poi_type = 'branch';
-        $poi->poi_gps_lat = $request->input('latitude');
-        $poi->poi_gps_lng = $request->input('longitude');
+        $poi->poi_gps_lat = $request->input('lat');
+        $poi->poi_gps_lng = $request->input('lng');
         $poi->poi_address = $request->input('address');
         $poi->poi_location_id = $location->location_id;
         $poi->save();

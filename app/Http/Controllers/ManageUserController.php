@@ -2,91 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class ManageUserController extends Controller
 {
-    public function queryUser(Request $request)
-    {
-        $limit = $request->input('limit', 10);
-        $page = $request->input('page', 1);
-        $offset = ($page - 1) * $limit;
-        $search = $request->input('search', '');
-
-        $query = User::query();
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('email', 'like', "%$search%")
-                    ->orWhere('name', 'like', "%$search%")
-                    ->orWhere('user_id', 'like', "%$search%")
-                    ->orWhere('role_name', 'like', "%$search%")
-                    ->orWhere('user_status', 'like', "%$search%");
-            });
-        }
-
-        $role = $request->input('role', '');
-        if ($role) {
-            $query->where('role_name', '=', $role);
-        }
-
-        $target = $request->input('target', '');
-        if ($target) {
-            $reqUserId = session()->get('user')->user_id;
-            $reqUser = User::where('user_id', $reqUserId)->first();
-            $reqSub = $reqUser->getSubordinateIds();
-            if (!in_array($target, $reqSub)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลของผู้ใช้งานนี้'
-                ], 403);
-            }
-
-            $user = User::where('user_id', $target)->first();
-            if (!$user) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'ไม่พบผู้ใช้งาน'
-                ], 404);
-            }
-
-            $targetUserIds = array_merge([$target], $user->getSubordinateIds());
-            $query->whereIn('user_id', $targetUserIds);
-        }
-
-        $total = $query->count();
-        $users = $query->offset($offset)->limit($limit)->get();
-
-        return response()->json([
-            'data' => $users,
-            'total' => $total,
-            'page' => $page,
-            'limit' => $limit
-        ]);
-    }
-
-    public function getUser(Request $request)
-    {
-        $user = User::where('user_id', $request->input('user_id'))->first();
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบผู้ใช้งาน'
-            ], 404);
-        }
-        return response()->json(['data' => $user]);
-    }
-
-    public function queryAllUser(Request $request)
-    {
-        $role = $request->input('role', 'supervisor');
-        $users = User::where('role_name', '=', $role)->get();
-        return response()->json(['data' => $users]);
-    }
-
-<<<<<<< HEAD
     
-=======
     public function createUser(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -122,7 +42,6 @@ class UserController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->role_name = $request->input('role_name');
         $user->user_status = $request->input('user_status');
-        $user->manager = $request->input('manager');
         $user->save();
 
         return response()->json([
@@ -215,46 +134,4 @@ class UserController extends Controller
             'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
         ]);
     }
-
-    public function getUserOptionsForBranchFilter(Request $request)
-    {
-        $currentUser = session()->get('user');
-
-        if (!$currentUser) {
-            return response()->json(['users' => []]);
-        }
-
-        $role = $currentUser->role_name;
-
-        if ($role === 'sale') {
-            return response()->json([
-                'users' => [[
-                    'user_id' => $currentUser->user_id,
-                    'name' => $currentUser->name,
-                    'role_name' => $currentUser->role_name,
-                ]]
-            ]);
-        }
-
-        if ($role === 'supervisor') {
-            $users = User::where(function ($q) use ($currentUser) {
-                $q->where('user_id', $currentUser->user_id)
-                ->orWhere('manager', $currentUser->user_id);
-            })->get(['user_id', 'name', 'role_name']);
-
-            return response()->json(['users' => $users]);
-        }
-
-        if ($role === 'ceo') {
-            $users = User::whereIn('role_name', ['sale', 'supervisor'])
-                        ->get(['user_id', 'name', 'role_name']);
-            return response()->json(['users' => $users]);
-        }
-
-        return response()->json(['users' => []]);
-    }
-
-    
-
->>>>>>> origin/develop
 }
