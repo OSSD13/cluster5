@@ -1,4 +1,3 @@
-
 @extends('layouts.screen')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @section('screen')
