@@ -352,7 +352,7 @@
     }
 
     // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
-    function viewDetail(id) {
+function viewDetail(id) {
     const member = members.find(item => item.user_id === id);
 
     let supervisorInfo = "";
