@@ -53,7 +53,6 @@ Route::middleware([CheckLogin::class])->group(function () {
         return view('user.index');
     });
     Route::get('/getUserOptionsForBranchFilter', [UserController::class, 'getUserOptionsForBranchFilter']);
-    Route::get('/user', [UserController::class, 'managePage']);
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
 
@@ -73,6 +72,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/api/poit/query/all', [PointOfInterestTypeController::class, 'allPoit'])->name('api.poit.query.all');
     Route::get('/api/poit', [PointOfInterestTypeController::class, 'getPoit'])->name('api.poit.get');
     Route::post('/api/poit/create', [PointOfInterestTypeController::class, 'createPoit'])->name('api.poit.create');
+    Route::post('/poi/type/insert', [PointOfInterestTypeController::class, 'insert'])->name('poi.type.insert');
     Route::post('/api/poit/delete', [PointOfInterestTypeController::class, 'deletePoit'])->name('api.poit.delete');
     Route::post('/api/poit/edit', [PointOfInterestTypeController::class, 'editPoit'])->name('api.poit.edit');
 

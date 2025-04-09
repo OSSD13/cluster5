@@ -75,20 +75,26 @@
             overflow: hidden;
             text-overflow: clip;
         }
-                td:nth-child(2) {
-            text-align: center; /* จัดให้อยู่ตรงกลาง */
-            padding: 0.5rem; /* ลดระยะห่างรอบไอคอน */
-            width: 50px; /* กำหนดความกว้างของคอลัมน์ */
-        }
-                td:nth-child(3) {
-            white-space: nowrap; /* บังคับให้อยู่ในบรรทัดเดียว */
-            overflow: hidden; /* ซ่อนข้อความที่เกิน */
-            text-overflow: ellipsis; /* แสดง ... เมื่อข้อความยาวเกิน */
-            max-width: 100px; /* กำหนดความกว้างสูงสุด */
-        }
-        
 
+        td:nth-child(2) {
+            text-align: center;
+            /* จัดให้อยู่ตรงกลาง */
+            padding: 0.5rem;
+            /* ลดระยะห่างรอบไอคอน */
+            width: 50px;
+            /* กำหนดความกว้างของคอลัมน์ */
+        }
 
+        td:nth-child(3) {
+            white-space: nowrap;
+            /* บังคับให้อยู่ในบรรทัดเดียว */
+            overflow: hidden;
+            /* ซ่อนข้อความที่เกิน */
+            text-overflow: ellipsis;
+            /* แสดง ... เมื่อข้อความยาวเกิน */
+            max-width: 100px;
+            /* กำหนดความกว้างสูงสุด */
+        }
     </style>
 @endsection
 
@@ -129,29 +135,31 @@
 
                 // แสดงแต่ละแถว
                 row.innerHTML = `
-                    <td class="py-3 px-4 text-left font-semibold">
-                        <div>${poit.poit_name}</div>
-                        <div class="text-gray-500 text-xs">${poit.poit_type}</div>
-                    </td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="icon-small">${poit.poit_icon || '🏢'}</span>
-                    </td>
-                    <td class="py-3 px-4 text-left" title="${poit.poit_description || '-'}">
-                        ${poit.poit_description || '-'}
-                    </td>
-                    <td class="py-3 px-4 text-center relative">
+                        <td class="py-3 px-4 text-left font-semibold">
+                            <div>${poit.poit_name}</div>
+                            <div class="text-gray-500 text-xs">${poit.poit_type}</div>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <span class="icon-small">${poit.poit_icon || '🏢'}</span>
+                        </td>
+                        <td class="py-3 px-4 text-left" title="${poit.poit_description || '-'}">
+                            ${poit.poit_description || '-'}
+                        </td>
+                        <td class="py-3 px-4 text-center">
                         <button class="cursor-pointer text-blue-600 hover:text-blue-800 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200" onclick="toggleMenu(event, '${poit.poit_type}')">
-                            <span class="text-lg font-bold">⋯</span>
+                        <span class="text-lg font-bold">⋯</span>
                         </button>
-                        <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                            <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">ดูรายละเอียด</button>
-                            <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">แก้ไข</button>
-                            <button class="delete-btn block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" data-type="${poit.poit_type}">ลบ</button>
-                        </div>
-                    </td>`;
+                            </td>
+                            <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                                <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">ดูรายละเอียด</button>
+                                <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" data-type="${poit.poit_type}">แก้ไข</button>
+                                <button class="delete-btn block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" data-type="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ${poit.poit_type}">ลบ</button>
+                            </div>
+                        </td>`;
                 tableBody.appendChild(row);
             });
         }
+        
 
         // การเปลี่ยนหน้า
         function renderPagination() {
@@ -172,7 +180,7 @@
                 const btn = document.createElement("button");
                 btn.innerText = i;
                 btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                    ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
+                                        ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
             }
@@ -225,36 +233,36 @@
             if (e.target.classList.contains("view-btn")) {
                 Swal.fire({
                     html: `
-                                    <div class="flex flex-col text-3xl mb-6 mt-4">
-                                        <b class="text-gray-800">รายละเอียดข้อมูล POIT</b>
-                                    </div>
-                                    <div class="flex flex-col space-y-2 text-left">
-                                        <div class="w-full">
-                                            <label class="font-medium text-gray-800 text-sm">ชื่อ</label>
-                                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_name}" readonly>
+                                        <div class="flex flex-col text-3xl mb-6 mt-4">
+                                            <b class="text-gray-800">รายละเอียดข้อมูล POIT</b>
                                         </div>
-                                        <div class="w-full">
-                                            <label class="font-medium text-gray-800 text-sm">ประเภท</label>
-                                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_type}" readonly>
+                                        <div class="flex flex-col space-y-2 text-left">
+                                            <div class="w-full">
+                                                <label class="font-medium text-gray-800 text-sm">ชื่อ</label>
+                                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_name}" readonly>
+                                            </div>
+                                            <div class="w-full">
+                                                <label class="font-medium text-gray-800 text-sm">ประเภท</label>
+                                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_type}" readonly>
+                                            </div>
+                                            <div class="w-full">
+                                                <label class="font-medium text-gray-800 text-sm">Icon</label>
+                                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_icon}" readonly>
+                                            </div>
+                                            <div class="w-full">
+                                                <label class="font-medium text-gray-800 text-sm">สี</label>
+                                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_color}" readonly>
+                                            </div>
+                                            <div class="w-full">
+                                                <label class="font-medium text-gray-800 text-sm">รายละเอียด</label>
+                                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_description}" readonly>
+                                            </div>
+                                            <div class="w-full">
+                                                <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
+                                                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(poit.created_at)}" readonly>
+                                            </div>
                                         </div>
-                                        <div class="w-full">
-                                            <label class="font-medium text-gray-800 text-sm">Icon</label>
-                                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_icon}" readonly>
-                                        </div>
-                                        <div class="w-full">
-                                            <label class="font-medium text-gray-800 text-sm">สี</label>
-                                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_color}" readonly>
-                                        </div>
-                                        <div class="w-full">
-                                            <label class="font-medium text-gray-800 text-sm">รายละเอียด</label>
-                                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poit.poit_description}" readonly>
-                                        </div>
-                                        <div class="w-full">
-                                            <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
-                                            <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(poit.created_at)}" readonly>
-                                        </div>
-                                    </div>
-                                `,
+                                    `,
                     confirmButtonText: "ยืนยัน",
                     confirmButtonColor: "#2D8C42",
                     customClass: {
@@ -275,96 +283,98 @@
                     cancelButtonText: "ยกเลิก",
                     didOpen: () => {
                         document.getElementById("editPoitContainer").innerHTML = `
-                                        <div class="space-y-4 text-left">
-                                            <div>
-                                                <label class="block text-gray-700 font-medium mb-1">ชื่อ</label>
-                                                <input id="poitName" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800" value="${poit.poit_name}">
-                                            </div>
-                                            <div>
-                                                <label class="block text-gray-700 font-medium mb-1">ประเภท</label>
-                                                <input id="poitName" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800" value="${poit.poit_type}">
-                                            </div>
-                                            <div>
-                                                <label class="block text-gray-700 font-medium mb-1">Icon</label>
-                                                <div class="relative flex items-center">
-                                                    <input id="iconInput" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 pr-10" value="${poit.poit_icon || ''}"readonly>
-                                                    <button id="emojiButton" class="absolute right-0 top-0 bottom-0 px-3 bg-blue-600 text-white rounded-r">😀</button>
-                                                </div>
-                                                <div id="emojiPickerContainer" class="hidden">
-                                                    <emoji-picker class="w-full light"></emoji-picker>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label class="block text-gray-700 font-medium mb-1">สี</label>
-                                                <div class="relative flex items-center">
-                                                    <input id="colorInput" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 pr-10" value="${poit.poit_color || '#888'}">
-                                                    <button id="colorButton" class="absolute right-0 top-0 bottom-0 px-3 bg-blue-600 text-white rounded-r" style="background-color: ${poit.poit_color || '#888'};">🎨</button>
-                                                </div>
-                                                <input type="color" id="colorPicker" class="hidden" value="${poit.poit_color || '#888'}">
-                                            </div>
-                                            <div>
-                                                <label class="block text-gray-700 font-medium mb-1">คำอธิบาย</label>
-                                                <textarea id="poitDescription" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800">${poit.poit_description || ''}</textarea>
-                                            </div>
-                                        </div>`;
-
+                            <div class="space-y-4 text-left">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">ชื่อ</label>
+                                    <input id="editPoitName" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800" value="${poit.poit_name}">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">ประเภท</label>
+                                    <input id="editPoitType" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800" value="${poit.poit_type}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">Icon</label>
+                                    <div class="relative flex items-center">
+                                        <input id="editIconInput" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 pr-10" value="${poit.poit_icon || ''}" readonly>
+                                        <button id="editEmojiButton" class="absolute right-0 top-0 bottom-0 px-3 bg-blue-600 text-white rounded-r">😀</button>
+                                    </div>
+                                    <div id="editEmojiPickerContainer" class="hidden">
+                                        <emoji-picker class="w-full light"></emoji-picker>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">สี</label>
+                                    <div class="relative flex items-center">
+                                        <input id="editColorInput" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 pr-10" value="${poit.poit_color || '#888'}">
+                                        <button id="editColorButton" class="absolute right-0 top-0 bottom-0 px-3 bg-blue-600 text-white rounded-r" style="background-color: ${poit.poit_color || '#888'};">🎨</button>
+                                    </div>
+                                    <input type="color" id="editColorPicker" class="hidden" value="${poit.poit_color || '#888'}">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">คำอธิบาย</label>
+                                    <textarea id="editPoitDescription" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800">${poit.poit_description || ''}</textarea>
+                                </div>
+                            </div>`;
+                       
                         // Emoji picker logic
-                        document.getElementById("emojiButton").addEventListener("click", () => {
-                            document.getElementById("emojiPickerContainer").classList.toggle("hidden");
-                        });
-                        document.querySelector("emoji-picker").addEventListener("emoji-click", event => {
-                            document.getElementById("iconInput").value = event.detail.unicode;
-                            document.getElementById("emojiPickerContainer").classList.add("hidden");
-                        });
+document.getElementById("editEmojiButton").addEventListener("click", () => {
+    document.getElementById("editEmojiPickerContainer").classList.toggle("hidden");
+});
+document.querySelector("emoji-picker").addEventListener("emoji-click", event => {
+    document.getElementById("editIconInput").value = event.detail.unicode;
+    document.getElementById("editEmojiPickerContainer").classList.add("hidden");
+});
 
-                        // Color picker logic
-                        const colorInput = document.getElementById("colorInput");
-                        const colorButton = document.getElementById("colorButton");
-                        const colorPicker = document.getElementById("colorPicker");
+// Color picker logic
+const colorInput = document.getElementById("editColorInput");
+const colorButton = document.getElementById("editColorButton");
+const colorPicker = document.getElementById("editColorPicker");
 
-                        colorButton.addEventListener("click", () => colorPicker.click());
-                        colorInput.addEventListener("input", () => {
-                            colorButton.style.backgroundColor = colorInput.value;
-                        });
-                        colorPicker.addEventListener("input", () => {
-                            colorInput.value = colorPicker.value;
-                            colorButton.style.backgroundColor = colorPicker.value;
-                        });
+colorButton.addEventListener("click", () => colorPicker.click());
+colorInput.addEventListener("input", () => {
+    colorButton.style.backgroundColor = colorInput.value;
+});
+colorPicker.addEventListener("input", () => {
+    colorInput.value = colorPicker.value;
+    colorButton.style.backgroundColor = colorPicker.value;
+});
                     },
                     preConfirm: async () => {
-                        const name = document.getElementById("poitName").value;
-                        const icon = document.getElementById("iconInput").value;
-                        const color = document.getElementById("colorInput").value;
-                        const desc = document.getElementById("poitDescription").value;
+    const name = document.getElementById("editPoitName").value;
+    const type = document.getElementById("editPoitType").value;
+    const icon = document.getElementById("editIconInput").value;
+    const color = document.getElementById("editColorInput").value;
+    const desc = document.getElementById("editPoitDescription").value;
 
-                        if (!name || !desc) {
-                            Swal.showValidationMessage("กรุณากรอกชื่อและคำอธิบาย");
-                            return false;
-                        }
+    if (!name || !desc) {
+        Swal.showValidationMessage("กรุณากรอกชื่อและคำอธิบาย");
+        return false;
+    }
 
-                        const res = await fetch("{{ route('api.poit.edit') }}", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN": document.querySelector('meta[name=csrf-token]').content
-                            },
-                            body: JSON.stringify({
-                                poit_type: poitType, // ใช้ค่าจาก const ด้านบน
-                                poit_name: name,
-                                poit_icon: icon,
-                                poit_color: color,
-                                poit_description: desc
-                            })
-                        });
-                        const data = await res.json();
-                        if (data.status === "success") {
-                            fetchPoits(document.getElementById("searchInput").value);
-                            return true;
-                        } else {
-                            Swal.showValidationMessage(data.message || "ไม่สามารถอัปเดตข้อมูลได้");
-                            return false;
-                        }
-                    }
+    const res = await fetch("{{ route('api.poit.edit') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name=csrf-token]').content
+        },
+        body: JSON.stringify({
+            poit_type: type,
+            poit_name: name,
+            poit_icon: icon,
+            poit_color: color,
+            poit_description: desc
+        })
+    });
+
+    const data = await res.json();
+    if (data.status === "success") {
+        fetchPoits(document.getElementById("searchInput").value); // โหลดข้อมูลใหม่
+        return true;
+    } else {
+        Swal.showValidationMessage(data.message || "ไม่สามารถอัปเดตข้อมูลได้");
+        return false;
+    }
+}
                 });
             }
 

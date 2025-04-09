@@ -866,6 +866,12 @@
             white-space: nowrap;
             /* ป้องกันการตัดบรรทัด */
         }
+        table {
+            border-radius: 12px;
+            /* ทำให้ขอบตารางโค้ง */
+            overflow: hidden;
+            /* ป้องกันไม่ให้เนื้อหาเกินขอบ */
+        }
     </style>
 @endsection
 

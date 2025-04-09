@@ -1,3 +1,4 @@
+
 @extends('layouts.main')
 
 @section('title', 'Point of Interest')
@@ -48,8 +49,9 @@
 
     <!-- **************************************************************************** -->
 
+<!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
@@ -63,6 +65,7 @@
     </table>
 </div>
 
+<!-- Pagination Controls -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 
 <!-- contextMenu Controls-->
@@ -113,7 +116,6 @@
             console.error("Error fetching members:", error);
         }
     }
-}
 
 
     function renderTable() {
@@ -286,6 +288,53 @@
         document.getElementById("supervisorSelect").addEventListener("change", filterAll);
         document.getElementById("roleSelect").addEventListener("change", filterAll);
     });
+
+
+    // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
+    let activeMenuId = null;
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+
+        const menu = document.getElementById("contextMenu");
+        const button = event.currentTarget;
+        const parentCell = button.closest('td');
+
+        if (activeMenuId === id && !menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+            activeMenuId = null;
+            return;
+        }
+
+        activeMenuId = id;
+
+        menu.innerHTML = `
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8" 
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
+                ดูรายละเอียด
+            </button>
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" 
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
+                แก้ไข
+            </button>
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" 
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
+                ลบ
+            </button>
+        `;
+
+        
+
+        menu.classList.remove("hidden");
+
+        // **แสดงเมนูก่อนเพื่อให้ offsetWidth ทำงาน**
+        menu.classList.remove("hidden");
+
+        document.addEventListener("click", function () {
+        const menu = document.getElementById("contextMenu");
+        if (!menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+            activeMenuId = null;
+        }
 });
 
 
@@ -731,4 +780,3 @@
 
     <!-- </form> -->
 @endsection
-
