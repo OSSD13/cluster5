@@ -109,19 +109,16 @@
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td class="py-3 px-4 w-16">${branch.bs_id}</td>
-                <td class="py-3 px-4 ">
-                    <div class="font-semibold text-md" title="${branch.bs_name}">${branch.bs_name}</div>
-                    <div class="text-sm text-gray-400 " title="${branch.poit_name}">${branch.poit_name}</div>
-                </td>
-                <td class="py-3 px-4 text-center ">${branch.bs_manager_name}</td>
-
+                <td class="py-3 px-4 truncate">${branch.bs_name}</td>
+                <td class="py-3 px-4 w-32 truncate">${branch.poit_name}</td>
+                <td class="py-3 px-4 w-32 truncate">${branch.bs_manager_name}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
                     <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
                         <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
                             onclick="window.location.href='{{ route('branch.manage.index') }}?bs_id=${branch.bs_id}'">จัดการ</button>
                         <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
-                            onclick="window.location.href='{{ route('branch.edit') }}?bs_id=${branch.bs_id}'">แก้ไข</button>
+                            onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
                         <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer"
                             onclick="deleteBranch(${branch.bs_id})" style="background-color: #CF3434">ลบ</button>
                     </div>

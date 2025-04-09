@@ -6,7 +6,6 @@
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-2xl font-bold text-gray-800">POI จัดการสถานที่ที่สนใจ</h2>
-
             <a href="{{ route('poi.create') }}">
                 <button
                     class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap"
