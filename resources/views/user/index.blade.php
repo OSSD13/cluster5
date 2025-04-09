@@ -213,6 +213,7 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     const startPage = Math.max(2, currentPage - 2);
     const endPage = Math.min(totalPages - 1, currentPage + 2);
     for (let i = startPage; i <= endPage; i++) {
@@ -275,6 +276,38 @@ function goToPage(pageNumber) {
                 m.email.toLowerCase().includes(searchVal) ||
                 m.role.toLowerCase().includes(searchVal);
 
+=======
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        fetchMembers();
+    }
+
+    // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
+    function sortTable(column) {
+        if (currentSort.column === column) {
+            currentSort.ascending = !currentSort.ascending;
+        } else {
+            currentSort.column = column;
+            currentSort.ascending = true;
+        }
+        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
+        renderTable();
+    }
+
+    // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
+    function filterAll() {
+        const searchVal = document.getElementById("searchInput").value.toLowerCase();
+        const supervisorId = document.getElementById("supervisorSelect").value;
+        const roleVal = document.getElementById("roleSelect").value;
+
+        let filtered = members.filter(m => {
+            const matchesSearch =
+                m.id.toString().includes(searchVal) ||
+                m.name.toLowerCase().includes(searchVal) ||
+                m.email.toLowerCase().includes(searchVal) ||
+                m.role.toLowerCase().includes(searchVal);
+
+>>>>>>> refs/remotes/origin/develop
             const matchesSupervisor = !supervisorId || (
                 m.role === "Sale" && m.supervisorId?.toString() === supervisorId
             );
@@ -575,6 +608,7 @@ function goToPage(pageNumber) {
         const dropdown = document.getElementById("supervisorDropdown");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> db4a7ac (feat(user): add managePage method and update user route to handle supervisor retrieval)
 // Events
@@ -584,6 +618,8 @@ window.addEventListener("DOMContentLoaded", () => {
         currentPage = 1;
         fetchUsers();
 =======
+=======
+>>>>>>> refs/remotes/origin/develop
         if (role === "sale") {
             section.style.display = "block";
             dropdown.innerHTML = `<option value="" disabled selected hidden>-- กำลังโหลด Supervisor... --</option>`;
@@ -750,7 +786,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 return false;
             }
         }
+<<<<<<< HEAD
 >>>>>>> 6e32359 (feat(user): enhance user management interface with improved search, role filtering, and pagination controls)
+=======
+>>>>>>> refs/remotes/origin/develop
     });
 }
 
