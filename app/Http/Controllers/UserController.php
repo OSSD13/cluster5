@@ -212,4 +212,12 @@ class UserController extends Controller
             'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
         ]);
     }
+
+    public function managePage(Request $request)
+    {
+        $supervisors = User::where('role_name', 'supervisor')->get();
+        return view('user.index', [
+            'supervisors' => $supervisors,
+        ]);
+    }
 }
