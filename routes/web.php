@@ -53,7 +53,6 @@ Route::middleware([CheckLogin::class])->group(function () {
         return view('user.index');
     });
     Route::get('/getUserOptionsForBranchFilter', [UserController::class, 'getUserOptionsForBranchFilter']);
-    Route::get('/user', [UserController::class, 'managePage']);
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
 

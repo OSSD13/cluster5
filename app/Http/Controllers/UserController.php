@@ -15,21 +15,6 @@ class UserController extends Controller
         $search = $request->input('search', '');
 
         $query = User::query();
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('email', 'like', "%$search%")
-                    ->orWhere('name', 'like', "%$search%")
-                    ->orWhere('user_id', 'like', "%$search%")
-                    ->orWhere('role_name', 'like', "%$search%")
-                    ->orWhere('user_status', 'like', "%$search%");
-            });
-        }
-
-        $role = $request->input('role', '');
-        if ($role) {
-            $query->where('role_name', '=', $role);
-        }
-
         $target = $request->input('target', '');
         if ($target) {
             $reqUserId = session()->get('user')->user_id;
@@ -52,6 +37,20 @@ class UserController extends Controller
 
             $targetUserIds = array_merge([$target], $user->getSubordinateIds());
             $query->whereIn('user_id', $targetUserIds);
+        }
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('email', 'like', "%$search%")
+                    ->orWhere('name', 'like', "%$search%")
+                    ->orWhere('user_id', 'like', "%$search%")
+                    ->orWhere('role_name', 'like', "%$search%")
+                    ->orWhere('user_status', 'like', "%$search%");
+            });
+        }
+
+        $role = $request->input('role', '');
+        if ($role) {
+            $query->where('role_name', '=', $role);
         }
 
         $total = $query->count();
