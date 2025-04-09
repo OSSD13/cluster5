@@ -188,7 +188,7 @@ class UserController extends Controller
             'user_id.required' => 'กรุณาระบุรหัสผู้ใช้งาน',
             'user_id.numeric' => 'รหัสผู้ใช้งานต้องเป็นตัวเลข',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -196,7 +196,7 @@ class UserController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+    
         $user = User::where('user_id', $request->input('user_id'))->first();
         if (!$user) {
             return response()->json([
@@ -204,14 +204,22 @@ class UserController extends Controller
                 'message' => 'ไม่พบผู้ใช้งานที่ต้องการลบ'
             ], 404);
         }
-
+    
+        // ✅ เช็คก่อนว่ามีลูกน้องมั้ย แล้วอัปเดต manager_id ให้เป็น null
+        User::where('manager', $user->user_id)->update([
+            'manager' => null
+        ]);
+    
+        // 🔥 ลบ user
         $user->delete();
-
+    
         return response()->json([
             'status' => 'success',
-            'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
+            'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว และลูกน้องถูกย้ายออกจากหัวหน้าเรียบร้อย'
         ]);
     }
+    
+    
 
     public function getUserOptionsForBranchFilter(Request $request)
     {
