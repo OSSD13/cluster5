@@ -68,7 +68,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/poi/edit', [EditPointOfInterestController::class, 'editPoi'])->name('api.poi.edit');
     Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
     Route::post('/api/poi/create', [PointOfInterestController::class, 'createPoi'])->name('api.poi.create');
-    Route::DELETE('/api/poi/delete', [PointOfInterestController::class, 'deletePoi'])->name('api.poi.delete');
+    Route::delete('/api/poi/delete', [PointOfInterestController::class, 'deletePoi'])->name('api.poi.delete');
 
     Route::get('/api/poit/query', [PointOfInterestTypeController::class, 'queryPoit'])->name('api.poit.query');
     Route::get('/api/poit/query/all', [PointOfInterestTypeController::class, 'allPoit'])->name('api.poit.query.all');

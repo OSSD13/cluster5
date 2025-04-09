@@ -257,7 +257,7 @@ function toggleMenu(event, id) {
                             Swal.fire("สำเร็จ", "ลบเรียบร้อย", "success");
                             fetchPois();
                         } else {
-                            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบได้", "error");
+                            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบได้ poiนี้เป็นสาขา กรุณาลบข้อมูลที่หน้าสาขา", "error");
                         }
                     });
                 }

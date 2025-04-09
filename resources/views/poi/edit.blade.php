@@ -9,49 +9,49 @@
     }
 </style>
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เเก้ไขสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI แก้ไขสถานที่</h2>
+
+    <input type="hidden" id="poi_id" value="{{ $show->id }}">
 
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
     <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
 
     <label class="block text-sm text-gray-600">ละติจูด</label>
-    <input id="lat" name="lat" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด" value="{{ $show->poi_gps_lat }}">
+    <input id="lat" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_gps_lat }}">
 
     <label class="block text-sm text-gray-600">ลองจิจูด</label>
-    <input id="lng" name="lng" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" value="{{ $show->poi_gps_lng }}">
+    <input id="lng" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_gps_lng }}">
 
-    
     <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
-            <div id="map" class="w-full h-48"></div>
-        </div>
+        <div id="map" class="w-full h-48"></div>
+    </div>
 
     <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input id="zipcode" name="zipcode" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
+    <input id="zipcode" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
-    <input id="province" name="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
+    <input id="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
 
     <label class="block text-sm text-gray-600">อำเภอ</label>
-    <input id="district" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
+    <input id="district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
 
     <label class="block text-sm text-gray-600">ตำบล</label>
-    <input id="sub_district" name="
-    district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
+    <input id="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
 
     <label class="block text-sm text-gray-600">ที่อยู่</label>
-    <input id="address" name="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่" >
+    <input id="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_address }}">
 
     <label class="block text-sm text-gray-600">ชื่อ</label>
-    <input id="name" name="name" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ" value="{{ $show->poi_name }}">
+    <input id="name" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_name }}">
 
     <label class="block text-sm text-gray-600">ประเภท</label>
-    <select id="type" name="type" class="w-full p-2 border border-gray-300 rounded-lg mb-3">
+    <select id="type" class="w-full p-2 border border-gray-300 rounded-lg mb-3">
         <option>เลือกประเภทสถานที่</option>
     </select>
 
     <div class="flex justify-between">
         <a href="{{ route('poi.index') }}">
-                <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
+            <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
         </a>
         <button class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
     </div>
@@ -59,66 +59,121 @@
 @endsection
 
 @section('script')
+<script>
+    $(document).ready(function () {
+        // Load Types from API
+        $.getJSON('/api/poi/types', function(data) {
+            data.forEach(function(item) {
+                $('#type').append(`<option value="${item.point_type}">${item.point_type}</option>`);
+            });
 
-    <script type="module">
-        let functions = {};
+            $('#type').val('{{ $show->type->point_type ?? '' }}');
+        });
 
-        function log(...args) {
-            let date = `[${Date.now()}]`;
+        // Save Button Click
+        $('#saveButton').on('click', function () {
+            $('.error-input-style').removeClass('error-input-style'); // Reset error border
 
-            console.log(date, ...args);
-        }
-
-        const {
-            Map
-        } = await google.maps.importLibrary("maps");
-        const {
-            AdvancedMarkerElement,
-            PinElement
-        } = await google.maps.importLibrary("marker");
-        let map, MapMarker;
-
-        functions.initMap = async function() {
-            const position = {
-                lat: 13.2855079,
-                lng: 100.9246009
+            let data = {
+                id: $('#poi_id').val(),
+                lat: $('#lat').val(),
+                lng: $('#lng').val(),
+                zipcode: $('#zipcode').val(),
+                province: $('#province').val(),
+                district: $('#district').val(),
+                amphoe: $('#amphoe').val(),
+                address: $('#address').val(),
+                name: $('#name').val(),
+                type: $('#type').val(),
             };
-            map = new Map(document.getElementById("map"), {
-                zoom: 15,
-                center: position,
-                mapId: "DEMO_MAP_ID",
-            });
 
-            const pinBackground = new PinElement({
-                glyph: "⭐",
-                glyphColor: "white",
-                scale: 1.5
+            $.ajax({
+                url: '/api/poi/edit',
+                type: 'POST',
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function (res) {
+                    alert(res.message);
+                    window.location.href = '{{ route("poi.index") }}';
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        Object.keys(errors).forEach(key => {
+                            $('#' + key).addClass('error-input-style');
+                        });
+                        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                    } else {
+                        alert(xhr.responseJSON.message || 'เกิดข้อผิดพลาด');
+                    }
+                }
             });
-            MapMarker = new google.maps.marker.AdvancedMarkerElement({
-                position: position,
-                map: map,
-                content: pinBackground.element,
-                gmpDraggable: false,
-            });
-        }
+        });
 
-        functions.setMapPosition = function(lat, lng) {
-            const position = {
-                lat: parseFloat(lat),
-                lng: parseFloat(lng)
-            };
-            map.setCenter(position);
-            MapMarker.position = position;
-        }
-        
-        
-        functions.initMap();
-        window.functions = functions;
-        functions.setMapPosition('{{ $show->poi_gps_lat }}', '{{ $show->poi_gps_lng }}');        
-    </script>
-    <!-- prettier-ignore -->
+        // Thailand.js
+        $.Thailand({
+            database: '{{ asset('assets/js/db.json') }}',
+            database_type: 'json',
+            $district: $('#district'),
+            $amphoe: $('#amphoe'),
+            $province: $('#province'),
+            $zipcode: $('#zipcode'),
+        });
+    });
+</script>
+
+{{-- Google Maps --}}
+<script type="module">
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+
+    const position = {
+        lat: parseFloat('{{ $show->poi_gps_lat }}'),
+        lng: parseFloat('{{ $show->poi_gps_lng }}')
+    };
+
+    const map = new Map(document.getElementById("map"), {
+        zoom: 15,
+        center: position,
+        mapId: "DEMO_MAP_ID"
+    });
+
+    const pinBackground = new PinElement({
+        glyph: "⭐",
+        glyphColor: "white",
+        scale: 1.5
+    });
+
+    const MapMarker = new google.maps.marker.AdvancedMarkerElement({
+        position: position,
+        map: map,
+        content: pinBackground.element,
+        gmpDraggable: false
+    });
+</script>
+
+   <!-- prettier-ignore -->
 <script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
     ({ key: "AIzaSyCIqpKnIfAIP48YujVFbBISkubwaQNdIME", v: "weekly" });</script>
+
+<script>
+    document.getElementById('lat').addEventListener('input', updateMapPosition);
+document.getElementById('lng').addEventListener('input', updateMapPosition);
+
+function updateMapPosition() {
+    const newLat = parseFloat(document.getElementById('lat').value);
+    const newLng = parseFloat(document.getElementById('lng').value);
+
+    if (!isNaN(newLat) && !isNaN(newLng)) {
+        const newPos = { lat: newLat, lng: newLng };
+        map.setCenter(newPos);
+        MapMarker.position = newPos;
+    }
+}
+
+</script>
 
 <script>
     $(document).ready(function () {
