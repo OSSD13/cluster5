@@ -63,7 +63,7 @@
                 const keyword = this.value;
                 searchTimeout = setTimeout(() => {
                     currentPage = 1;
-                    fetchPoits(keyword);
+                    fetchPois(keyword);
                 }, 300); //  debounce 300ms
             });
         });
