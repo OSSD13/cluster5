@@ -6,7 +6,6 @@
     $user = session('user');
 @endphp
 
-@if ($user && $user->role_name === 'ceo')
 
 @if ($user && $user->role_name === 'ceo')
     @section('content')
