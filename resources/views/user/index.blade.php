@@ -359,7 +359,7 @@
 
 
         // ตั้งตำแหน่งเมนูใหม่
-        const top = parentCell.offsetTop + parentCell.offsetHeight - 60; // ลดลงมานิด (4px)
+        const top = parentCell.offsetTop + parentCell.offsetHeight - 120; // ลดลงมานิด (4px)
         const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
 
         menu.style.position = "absolute";
