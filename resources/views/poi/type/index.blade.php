@@ -24,7 +24,7 @@
     <table class="min-w-full mt-5 table-auto border-collapse rounded-lg bg-gray-100">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 text-left">ชื่อ / ประเภท</th>
+                <th class="py-3 px-4 text-left">ประเภท</th>
                 <th class="py-3 px-4 text-center">Icon</th>
                 <th class="py-3 px-4 text-left">คำอธิบาย</th>
                 <th class="py-3 px-4 text-center">การจัดการ</th>
@@ -48,18 +48,21 @@
     let totalItems = 0;
 
     async function fetchPoits(search = '') {
-        try {
-            console.log('logging', search)
-            const response = await fetch(`{{ route('api.poit.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
-            const result = await response.json();
-            poits = result.data || [];
-            totalItems = result.total || 0;
-            renderTable();
-            renderPagination();
-        } catch (error) {
-            console.error('Error fetching POITs:', error);
-        }
+    try {
+        const response = await fetch(`{{ route('api.poit.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+        const result = await response.json();
+        poits = result.data || [];
+        totalItems = result.total || 0;
+
+        document.getElementById("resultCount").textContent = `ผลลัพธ์ ${totalItems} รายการ`;
+
+        renderTable();
+        renderPagination(totalItems); // ส่งค่า totalItems เข้าไปเหมือนกับ fetchMembers()
+    } catch (error) {
+        console.error('Error fetching POITs:', error);
     }
+}
+
 
     function renderTable() {
         const tableBody = document.getElementById("tableBody");
@@ -93,35 +96,80 @@
     function renderPagination() {
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
+
         const totalPages = Math.ceil(totalItems / rowsPerPage);
+        const maxVisible = 1;
+        let startPage = Math.max(1, currentPage - maxVisible);
+        let endPage = Math.min(totalPages, currentPage + maxVisible);
+
+        if (totalPages <= 1) return;
+
+        const createPageButton = (page, isActive = false) => {
+            const btn = document.createElement("button");
+            btn.innerText = page;
+            btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+            btn.onclick = () => goToPage(page);
+            return btn;
+        };
+
+        const createEllipsis = () => {
+            const btn = document.createElement("button");
+            btn.innerText = "...";
+            btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+            btn.onclick = () => {
+                Swal.fire({
+                    title: "ไปยังหน้าที่...",
+                    input: "number",
+                    inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
+                    inputAttributes: { min: 1, max: totalPages, step: 1 },
+                    showCancelButton: true,
+                    confirmButtonText: "ไปเลย!",
+                    confirmButtonColor: "#3062B8",
+                    inputValidator: (value) => {
+                        if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
+                        if (value < 1 || value > totalPages) return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                        return null;
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) goToPage(parseInt(result.value));
+                });
+            };
+            return btn;
+        };
 
         const prevBtn = document.createElement("button");
-        prevBtn.innerText = "<";
-        prevBtn.className = `px-3 py-1 ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+        prevBtn.innerHTML = "&lt;";
+        prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
         prevBtn.disabled = currentPage === 1;
         prevBtn.onclick = () => goToPage(currentPage - 1);
         pagination.appendChild(prevBtn);
 
-        for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement("button");
-            btn.innerText = i;
-            btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                ${i === currentPage ? "bg-blue-600 text-white " : "bg-white border border-gray-300 text-black cursor-pointer"}`;
-            btn.onclick = () => goToPage(i);
-            pagination.appendChild(btn);
+        if (startPage > 1) {
+            pagination.appendChild(createPageButton(1));
+            if (startPage > 2) pagination.appendChild(createEllipsis());
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.appendChild(createPageButton(i, i === currentPage));
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+            pagination.appendChild(createPageButton(totalPages));
         }
 
         const nextBtn = document.createElement("button");
-        nextBtn.innerText = ">";
-        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600"} text-xl`;
+        nextBtn.innerHTML = "&gt;";
+        nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
         nextBtn.disabled = currentPage === totalPages;
         nextBtn.onclick = () => goToPage(currentPage + 1);
         pagination.appendChild(nextBtn);
     }
 
-    function goToPage(page) {
-        currentPage = page;
-        fetchPoits(document.getElementById("searchInput").value);
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        const searchValue = document.getElementById("searchInput").value || '';
+        fetchPoits(searchValue);
     }
 
     function toggleMenu(event, id) {
