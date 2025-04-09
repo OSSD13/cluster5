@@ -356,20 +356,22 @@ function viewDetail(id) {
     const member = members.find(item => item.user_id === id);
 
     let supervisorInfo = "";
-    if (member.role_name.toLowerCase() === "sale" && member.manager) {
-        const supervisor = supervisors.find(sup => sup.user_id === member.manager);
-        supervisorInfo = supervisor ? `
+    if (member.role_name.toLowerCase() === "sale") {
+        let supervisorLabel = "ไม่พบ Supervisor";
+        if (member.manager) {
+            const supervisor = supervisors.find(sup => sup.user_id === member.manager);
+            if (supervisor) {
+                supervisorLabel = `${supervisor.name} - ${supervisor.email}`;
+            }
+        }
+        supervisorInfo = `
             <div class="w-full">
                 <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
                 <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
-                       value="${supervisor.name} - ${supervisor.email}" readonly>
-            </div>` : `
-            <div class="w-full">
-                <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
-                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
-                       value="ไม่พบ Supervisor" readonly>
+                    value="${supervisorLabel}" readonly>
             </div>`;
     }
+
 
     Swal.fire({
         html: `
@@ -476,18 +478,9 @@ function viewDetail(id) {
             const name = document.getElementById("memberName").value;
             const role = document.getElementById("memberRole").value;
 
-            if (!email || !password || !name || !role) {
-                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                return false;
-            }
-
             let manager = null;
             if (role === "sale") {
                 manager = document.getElementById("supervisorDropdown").value;
-                if (!manager) {
-                    Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
-                    return false;
-                }
             }
 
             try {
@@ -498,20 +491,25 @@ function viewDetail(id) {
                         "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
                     },
                     body: JSON.stringify({
-                        email: email,
-                        password: password,
-                        name: name,
-                        role_name: role, 
-                        user_status: "normal", 
+                        email,
+                        password,
+                        name,
+                        role_name: role,
+                        user_status: "normal",
                         manager: manager ? parseInt(manager) : null
-                        
                     })
                 });
 
                 const result = await response.json();
 
                 if (!response.ok) {
-                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
+                    // ✅ ตรวจสอบว่า error แบบ validate Laravel หรือ error อื่น
+                    if (result?.errors) {
+                        const errorMessages = Object.values(result.errors).flat().join('<br>');
+                        Swal.showValidationMessage(errorMessages);
+                    } else {
+                        Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
+                    }
                     return false;
                 }
 
@@ -523,13 +521,14 @@ function viewDetail(id) {
                     confirmButtonText: "ตกลง"
                 });
 
-                fetchMembers(); // รีโหลดข้อมูลใหม่
+                fetchMembers();
 
             } catch (error) {
                 console.error("Add user error:", error);
                 Swal.showValidationMessage("ไม่สามารถเชื่อมต่อ API ได้");
             }
         }
+
 
         });
     }
