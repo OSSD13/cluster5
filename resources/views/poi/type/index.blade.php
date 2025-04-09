@@ -208,34 +208,34 @@
                                 </div>
                             </div>`;
 
-            // Emoji picker logic
-            document.getElementById("emojiButton").addEventListener("click", () => {
-                document.getElementById("emojiPickerContainer").classList.toggle("hidden");
-            });
-            document.querySelector("emoji-picker").addEventListener("emoji-click", event => {
-                document.getElementById("iconInput").value = event.detail.unicode;
-                document.getElementById("emojiPickerContainer").classList.add("hidden");
-            });
+                        // Emoji picker logic
+                        document.getElementById("emojiButton").addEventListener("click", () => {
+                            document.getElementById("emojiPickerContainer").classList.toggle("hidden");
+                        });
+                        document.querySelector("emoji-picker").addEventListener("emoji-click", event => {
+                            document.getElementById("iconInput").value = event.detail.unicode;
+                            document.getElementById("emojiPickerContainer").classList.add("hidden");
+                        });
 
-            // Color picker logic
-            const colorInput = document.getElementById("colorInput");
-            const colorButton = document.getElementById("colorButton");
-            const colorPicker = document.getElementById("colorPicker");
+                        // Color picker logic
+                        const colorInput = document.getElementById("colorInput");
+                        const colorButton = document.getElementById("colorButton");
+                        const colorPicker = document.getElementById("colorPicker");
 
-            colorButton.addEventListener("click", () => colorPicker.click());
-            colorInput.addEventListener("input", () => {
-                colorButton.style.backgroundColor = colorInput.value;
-            });
-            colorPicker.addEventListener("input", () => {
-                colorInput.value = colorPicker.value;
-                colorButton.style.backgroundColor = colorPicker.value;
-            });
-        },
-        preConfirm: async () => {
-            const name = document.getElementById("poitName").value.trim();
-            const icon = document.getElementById("iconInput").value.trim();
-            const color = document.getElementById("colorInput").value.trim();
-            const desc = document.getElementById("poitDescription").value.trim();
+                        colorButton.addEventListener("click", () => colorPicker.click());
+                        colorInput.addEventListener("input", () => {
+                            colorButton.style.backgroundColor = colorInput.value;
+                        });
+                        colorPicker.addEventListener("input", () => {
+                            colorInput.value = colorPicker.value;
+                            colorButton.style.backgroundColor = colorPicker.value;
+                        });
+                    },
+                    preConfirm: async () => {
+                        const name = document.getElementById("poitName").value;
+                        const icon = document.getElementById("iconInput").value;
+                        const color = document.getElementById("colorInput").value;
+                        const desc = document.getElementById("poitDescription").value;
 
                         if (!name || !desc) {
                             Swal.showValidationMessage("กรุณากรอกชื่อและคำอธิบาย");
@@ -267,41 +267,6 @@
                     }
                 });
             }
-
-            try {
-                const res = await fetch("/api/poit/edit", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: JSON.stringify({
-                        poit_type: poitType,
-                        poit_name: name,
-                        poit_icon: icon,
-                        poit_color: color,
-                        poit_description: desc
-                    })
-                });
-
-                const data = await res.json();
-
-                if (data.status === "success") {
-                    Swal.fire("สำเร็จ", "บันทึกข้อมูลเรียบร้อยแล้ว", "success");
-                    fetchPoits(document.getElementById("searchInput").value);
-                    return true;
-                } else {
-                    Swal.showValidationMessage(data.message || "เกิดข้อผิดพลาดในการบันทึก");
-                    return false;
-                }
-            } catch (err) {
-                Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-                return false;
-            }
-        }
-    });
-}
-
 
 
         if (e.target.classList.contains("delete-btn")) {
