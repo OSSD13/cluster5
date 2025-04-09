@@ -228,28 +228,50 @@
     });
 
     function deleteBranch(id) {
-        Swal.fire({
-            title: "ลบสาขา",
-            text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
-            icon: "warning",
-            iconColor: "#d33",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3062B8",
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                branches = branches.filter(branch => branch.bs_id !== id);
-                renderTable();
-                Swal.fire({
-                    title: "ลบแล้ว!",
-                    text: "สาขาถูกลบเรียบร้อย",
-                    icon: "success"
+    Swal.fire({
+        title: "ลบสาขา",
+        text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
+        icon: "warning",
+        iconColor: "#d33",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3062B8",
+        confirmButtonText: "ยืนยัน",
+        cancelButtonText: "ยกเลิก"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`/api/branch/delete`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ bs_id: id }),
                 });
+
+                const data = await response.json();
+
+                if (data.status === "success") {
+                    branches = branches.filter(branch => branch.bs_id !== id);
+                    renderTable();
+
+                    Swal.fire({
+                        title: "ลบแล้ว!",
+                        text: "สาขาถูกลบเรียบร้อย",
+                        icon: "success"
+                    });
+                } else {
+                    Swal.fire("ผิดพลาด", data.message || "ไม่สามารถลบสาขาได้", "error");
+                }
+            } catch (error) {
+                console.error("Error deleting branch:", error);
+                Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์", "error");
             }
-        });
-    }
+        }
+    });
+}
+
 
     // Initial load
     fetchBranches();
