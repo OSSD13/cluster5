@@ -18,6 +18,20 @@
 
         <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ"
             class="w-full p-2 border border-gray-300 rounded mb-3">
+        <label class="block text-gray-800 mb-1">ประเภท</label>
+            <select id="typeFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
+                <option value="">ทั้งหมด</option>
+                @foreach ($poits as $poit)
+                    <option value="{{ $poit->poit_type }}">{{ $poit->poit_icon }} {{ $poit->poit_name }}</option>
+                @endforeach
+            </select>
+        <label class="block text-gray-800 mb-1">จังหวัด</label>
+            <select id="provinceFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
+                <option value="">ทั้งหมด</option>
+                @foreach ($provinces as $province)
+                    <option value="{{ $province->province }}">{{ $province->province }}</option>
+                @endforeach
+            </select>
 
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
         <a href="{{ route('poi.type.index') }}">
@@ -61,6 +75,7 @@
                 currentPage = 1;
                 fetchPois(this.value);
             });
+            
         });
 
     async function fetchPois(search = '') {
@@ -202,6 +217,33 @@
         function safeText(text) {
             return text ?? '-';
         }
+document.getElementById("typeFilter").addEventListener("change", () => {
+    currentPage = 1;
+    fetchPois(document.getElementById("searchInput").value);
+});
+
+document.getElementById("provinceFilter").addEventListener("change", () => {
+    currentPage = 1;
+    fetchPois(document.getElementById("searchInput").value);
+});
+
+async function fetchPois(search = '') {
+    const type = document.getElementById("typeFilter").value;
+    const province = document.getElementById("provinceFilter").value;
+    const url = new URL(`{{ route('api.poi.query') }}`);
+    url.searchParams.append("limit", rowsPerPage);
+    url.searchParams.append("page", currentPage);
+    url.searchParams.append("search", search);
+    if (type) url.searchParams.append("type", type);
+    if (province) url.searchParams.append("province", province);
+
+    const res = await fetch(url);
+    const result = await res.json();
+    pois = result.data;
+    document.getElementById("resultCount").innerText = result.total;
+    renderTable();
+    renderPagination(result.total);
+}
 
     </script>
 @endsection

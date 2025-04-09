@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PointOfInterestType;
 use Illuminate\Http\Request;
 use App\Models\PointOfInterest;
 
@@ -9,7 +10,12 @@ class PointOfInterestController extends Controller
 {
     public function index()
     {
-        return view('poi.index');
+        $poits = PointOfInterestType::all();
+        $provinces = \DB::table("locations")
+            ->select('province')
+            ->distinct()
+            ->get();
+        return view('poi.index', compact('poits','provinces'));
     }
     public function insert(Request $request){
         $request->validate([
@@ -88,7 +94,7 @@ class PointOfInterestController extends Controller
         }
 
         if ($type) {
-            $poisQuery->where('type', $type);
+            $poisQuery->where('point_of_interests.poi_type', '=', $type);
         }
 
         if ($province) {

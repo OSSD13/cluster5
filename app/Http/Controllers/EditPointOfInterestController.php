@@ -99,29 +99,29 @@ public function queryPoi(Request $request)
     public function editPoi(Request $request){
         
         $validator = \Validator::make($request->all(),[
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'zipcode' => 'required|numeric',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'postal_code' => 'required|numeric',
             'province' => 'required|string|max:255', 
             'district' => 'required|string|max:255',
-            'amphoe' => 'required|string|max:255',
+            'sub_district' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255', 
         
         ],[
-            'lat.required' => 'กรุณาระบุละติจูด',
-            'latnumeric' => 'ละติจูดต้องเป็นตัวเลข',
-            'lng.required' => 'กรุณาระบุลองจิจูด',
-            'lng.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
-            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+            'latitude.required' => 'กรุณาระบุละติจูด',
+            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+            'longitude.required' => 'กรุณาระบุลองจิจูด',
+            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
+            'postal_code.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'postal_code.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
             'province.required' => 'กรุณาระบุจังหวัด',
             'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
             'district.required' => 'กรุณาระบุอำเภอ',
             'district.string' => 'อำเภอต้องเป็นตัวอักษร',
-            'amphoe.required' => 'กรุณาระบุตำบล',
-            'amphoe.string' => 'ตำบลต้องเป็นตัวอักษร',
+            'sub_district.required' => 'กรุณาระบุตำบล',
+            'sub_district.string' => 'ตำบลต้องเป็นตัวอักษร',
             'address.required' => 'กรุณาระบุที่อยู่',
             'address.string' => 'ที่อยู่ต้องเป็นตัวอักษร',
             'name.required' => 'กรุณาระบุชื่อสถานที่',
@@ -145,10 +145,10 @@ public function queryPoi(Request $request)
             ],404);
         }
         $location = \DB::table('location')
-        ->where('zipcode',$request->input('zipcode'))
+        ->where('postal_code',$request->input('postal_code'))
         ->where('province',$request->inptu('province'))
         ->where('district',$request->input('district'))
-        ->where('amphoe',$request->input('amphoe'))
+        ->where('sub_district',$request->input('sub_district'))
         ->first();
         if(!$location){
             return response()->json([

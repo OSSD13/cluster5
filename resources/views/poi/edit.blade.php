@@ -3,13 +3,8 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-<style>
-    .error-input-style {
-        border: 2px solid #F02801;
-    }
-</style>
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เเก้ไขสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
 
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
     <input id= "googleMapLink" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
@@ -21,13 +16,12 @@
     <label class="block text-sm text-gray-600">ลองจิจูด</label>
     <input id="lng" name="lng" type="text" oninput="functions.inputChanged()" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" value="{{ $show->poi_gps_lng }}">
 
-    
     <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
-            <div id="map" class="w-full h-48"></div>
-        </div>
+        <img src="your-map-image-url.png" alt="Map" class="w-full h-full object-cover rounded-lg">
+    </div>
 
     <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input id="zipcode" name="zipcode" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
+    <input id="postal_code" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
     <input id="province" name="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
@@ -58,7 +52,6 @@
     </div>
 </div>
 @endsection
-
 @section('script')
 
     <script type="module">
@@ -208,21 +201,30 @@
             }
         });
 
-        // Optional: log changes
-        $('#amphoe').on('change', function () {
-            console.log('ตำบล', this.value);
+        // สร้าง Marker
+        const marker = new google.maps.Marker({
+            position: initialPosition,
+            map: map,
+            title: "ตำแหน่งของคุณ",
+            draggable: true
         });
-        $('#district').on('change', function () {
-            console.log('อำเภอ', this.value);
+
+        // ฟังก์ชันการอัพเดตค่าละติจูดและลองจิจูดจากการลาก Marker
+        google.maps.event.addListener(marker, 'dragend', function(event) {
+            document.getElementById('latitude').value = event.latLng.lat();
+            document.getElementById('longitude').value = event.latLng.lng();
         });
-        $('#province').on('change', function () {
-            console.log('จังหวัด', this.value);
-        });
-        $('#zipcode').on('change', function () {
-            console.log('รหัสไปรษณีย์', this.value);
-        });
-    });
+    }
+
+    // โหลด Google Maps API พร้อมกับการเรียกใช้งานฟังก์ชัน initMap
+    function loadGoogleMapsAPI() {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
+    window.onload = loadGoogleMapsAPI;
 </script>
-
-
 @endsection
