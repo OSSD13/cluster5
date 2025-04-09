@@ -16,12 +16,6 @@
             <label class="font-medium text-gray-700 text-sm">ชื่อสถานที่</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
                 value="{{ $branch->bs_name }}" readonly>
-<<<<<<< HEAD
-            {{--
-            <pre>{{ json_encode($branch, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre> --}}
-
-=======
->>>>>>> origin/develop
             <label class="font-medium text-gray-700 text-sm">ประเภท</label>
             <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"
                 value="{{ $branch->poit_name }}" readonly>
@@ -38,43 +32,6 @@
     </div>
 
 
-<<<<<<< HEAD
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        {{-- Dropdown: เดือน --}}
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
-            <select
-                class="w-full h-10 px-4 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option>มกราคม - 2568</option>
-                <option selected>กุมภาพันธ์ - 2568</option>
-                <option>มีนาคม - 2568</option>
-            </select>
-        </div>
-        {{-- Input: จำนวนกล่อง --}}
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-800 mb-1">จำนวนกล่อง</label>
-            <input type="number"
-                class="w-full h-10 px-4 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="กรอกจำนวนกล่อง">
-        </div>
-        {{-- Input: ยอดเงิน --}}
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-800 mb-1">ยอดเงิน</label>
-            <input type="number"
-                class="w-full h-10 px-4 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="กรอกยอดเงิน">
-        </div>
-        {{-- ปุ่มเพิ่มรายการ --}}
-        <div>
-            <button
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3 px-4 rounded-md shadow-md transition">
-                เพิ่มรายการ
-            </button>
-        </div>
-        {{-- ข้อความผลลัพธ์ --}}
-        <div class="text-sm text-gray-700 mt-2">
-            ผลลัพธ์ 302 รายการ
-=======
 
 
     <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto mb-5">
@@ -147,7 +104,6 @@
                 <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
                 <span id="maxPercent">0</span>%
             </div>
->>>>>>> origin/develop
         </div>
     </div>
 
@@ -303,13 +259,9 @@ async function fetchBranchSalesStats() {
                     <td class="py-3 px-4">${monthLabel}</td>
                     <td class="py-3 px-4 text-right">${parseFloat(sale.sales_amount).toLocaleString()}</td>
                     <td class="py-3 px-4 text-right">${sale.manager_name}</td>
-<<<<<<< HEAD
-                    <td class="py-3 px-1 w-7 text-center">&#8230;</td>
-=======
                     <td class="py-3 px-1 w-7 text-center relative">
                         <button onclick="toggleMenu(event, ${sale.sales_id})">&#8230;</button>
                     </td>
->>>>>>> origin/develop
                 `;
                 tableBody.appendChild(row);
             });
@@ -320,23 +272,10 @@ async function fetchBranchSalesStats() {
             const menu = document.getElementById("contextMenu");
             const parentCell = event.currentTarget.closest("td");
 
-<<<<<<< HEAD
-            const totalPages = Math.ceil(totalItems / rowsPerPage);
-            if (totalPages <= 1) return;
-
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.textContent = i;
-                btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black"
-                    }`;
-                btn.onclick = () => fetchSales(i);
-                pagination.appendChild(btn);
-=======
             if (activeMenuId === id && !menu.classList.contains("hidden")) {
                 menu.classList.add("hidden");
                 activeMenuId = null;
                 return;
->>>>>>> origin/develop
             }
 
             activeMenuId = id;

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Branch_store extends Model
-{;
+{
     /** @use HasFactory<\Database\Factories\Branch_storeFactory> */
     use HasFactory;
 
