@@ -641,6 +641,7 @@
                         date,
                         user_id,
                         page: page || currentPage
+                        
                     }).toString())
                         .then(response => response.json())
                         .then(data => {
@@ -972,6 +973,10 @@
             /* เพิ่ม ... เมื่อข้อความยาวเกิน */
             white-space: nowrap;
             /* ป้องกันการตัดบรรทัด */
+        }
+        table {
+            boarder-radius: 12px;
+            overflow: hidden;
         }
     </style>
 @endsection
