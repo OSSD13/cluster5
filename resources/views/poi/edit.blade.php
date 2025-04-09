@@ -3,24 +3,30 @@
 @section('title', 'Point of Interest')
 
 @section('content')
+<style>
+    .error-input-style {
+        border: 2px solid #F02801;
+    }
+</style>
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เเก้ไขสถานที่</h2>
 
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
     <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
 
     <label class="block text-sm text-gray-600">ละติจูด</label>
-    <input id="latitude" name="latitude" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด" value="{{ $show->poi_gps_lat }}">
+    <input id="lat" name="lat" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด" value="{{ $show->poi_gps_lat }}">
 
     <label class="block text-sm text-gray-600">ลองจิจูด</label>
-    <input id="longitude" name="longitude" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" value="{{ $show->poi_gps_lng }}">
+    <input id="lng" name="lng" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" value="{{ $show->poi_gps_lng }}">
 
+    
     <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
-        <img src="your-map-image-url.png" alt="Map" class="w-full h-full object-cover rounded-lg">
-    </div>
+            <div id="map" class="w-full h-48"></div>
+        </div>
 
     <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input id="postal_code" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
+    <input id="zipcode" name="zipcode" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
     <input id="province" name="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
@@ -51,148 +57,104 @@
     </div>
 </div>
 @endsection
+
 @section('script')
-<script>
-    // ฟังก์ชันเพื่อเริ่มต้นการแสดงแผนที่
-    function initMap() {
-        const initialPosition = {
-            lat: 13.7358,  // ค่าละติจูดเริ่มต้น
-            lng: 100.5231 // ค่าลองจิจูดเริ่มต้น
-        };
 
-        // สร้างแผนที่บน div ที่มี id="map"
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: initialPosition,  // ตั้งศูนย์แผนที่ตรงตำแหน่งเริ่มต้น
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
+    <script type="module">
+        let functions = {};
 
-        // สร้าง Marker
-        const marker = new google.maps.Marker({
-            position: initialPosition,
-            map: map,
-            title: "ตำแหน่งของคุณ",
-            draggable: true
-        });
+        function log(...args) {
+            let date = `[${Date.now()}]`;
 
-        // ฟังก์ชันการอัพเดตค่าละติจูดและลองจิจูดจากการลาก Marker
-        google.maps.event.addListener(marker, 'dragend', function(event) {
-            document.getElementById('latitude').value = event.latLng.lat();
-            document.getElementById('longitude').value = event.latLng.lng();
-        });
-    }
-
-    // โหลด Google Maps API พร้อมกับการเรียกใช้งานฟังก์ชัน initMap
-    function loadGoogleMapsAPI() {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-    }
-
-    window.onload = loadGoogleMapsAPI;
-    // === 1. ปรับปรุง editPoi(id) ให้เหมือนหน้าแก้ไขสาขาแบบหน้าเต็ม ไม่ใช้ SweetAlert ===
-async function editPoi(id) {
-    const poi = pois.find(p => p.poi_id === id);
-    if (!poi) return;
-
-    // ดึงข้อมูลประเภทสถานที่
-    let poitOptions = '<option value="">เลือกประเภทสถานที่</option>';
-    try {
-        const res = await fetch("{{ route('api.poit.query.all') }}");
-        const result = await res.json();
-        const poitList = result.data || [];
-        poitList.forEach(poit => {
-            poitOptions += `<option value="${poit.poit_type}" ${poi.poi_type === poit.poit_type ? 'selected' : ''}>${poit.poit_name}</option>`;
-        });
-    } catch (err) {
-        poitOptions = '<option disabled>โหลดประเภทไม่สำเร็จ</option>';
-    }
-
-    // แสดงแบบเต็มหน้าแทน SweetAlert
-    const formHtml = `
-        <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">แก้ไขสถานที่</h2>
-
-            <input type="hidden" id="editPoiId" value="${poi.poi_id}">
-
-            <label class="block text-sm text-gray-600">ชื่อสถานที่</label>
-            <input id="editName" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.poi_name}">
-
-            <label class="block text-sm text-gray-600">ที่อยู่</label>
-            <input id="editAddress" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.poi_address}">
-
-            <label class="block text-sm text-gray-600">จังหวัด</label>
-            <input id="editProvince" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.province || ''}">
-
-            <label class="block text-sm text-gray-600">อำเภอ</label>
-            <input id="editAmphoe" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.amphoe || ''}">
-
-            <label class="block text-sm text-gray-600">ตำบล</label>
-            <input id="editDistrict" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.district || ''}">
-
-            <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-            <input id="editZipcode" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.zipcode || ''}">
-
-            <label class="block text-sm text-gray-600">ละติจูด</label>
-            <input id="editLat" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.poi_gps_lat || ''}">
-
-            <label class="block text-sm text-gray-600">ลองจิจูด</label>
-            <input id="editLng" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="${poi.poi_gps_lng || ''}">
-
-            <label class="block text-sm text-gray-600">ประเภท</label>
-            <select id="editType" class="w-full p-2 border border-gray-300 rounded-lg mb-3">${poitOptions}</select>
-
-            <div class="flex justify-between">
-                <a href="{{ route('poi.index') }}">
-                    <button class="px-4 py-2 bg-gray-500 text-white rounded-lg">ยกเลิก</button>
-                </a>
-                <button onclick="savePoiEdit()" class="px-4 py-2 bg-green-700 text-white rounded-lg">บันทึก</button>
-            </div>
-        </div>
-    `;
-
-    document.getElementById("main-content").innerHTML = formHtml; // สมมุติว่า wrapper หลักคือ main-content
-}
-
-// ฟังก์ชันสำหรับบันทึกข้อมูลที่แก้ไขแล้ว
-async function savePoiEdit() {
-    const payload = {
-        poi_id: document.getElementById("editPoiId").value,
-        name: document.getElementById("editName").value,
-        address: document.getElementById("editAddress").value,
-        province: document.getElementById("editProvince").value,
-        amphoe: document.getElementById("editAmphoe").value,
-        district: document.getElementById("editDistrict").value,
-        zipcode: document.getElementById("editZipcode").value,
-        latitude: document.getElementById("editLat").value,
-        longitude: document.getElementById("editLng").value,
-        type: document.getElementById("editType").value
-    };
-
-    try {
-        const res = await fetch("{{ route('api.poi.edit') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const result = await res.json();
-        if (result.status === "success") {
-            alert("บันทึกสำเร็จ");
-            window.location.href = "{{ route('poi.index') }}";
-        } else {
-            alert(result.message || "เกิดข้อผิดพลาดในการบันทึก");
+            console.log(date, ...args);
         }
-    } catch (err) {
-        alert("ไม่สามารถเชื่อมต่อ API ได้");
-    }
-}
 
-    
+        const {
+            Map
+        } = await google.maps.importLibrary("maps");
+        const {
+            AdvancedMarkerElement,
+            PinElement
+        } = await google.maps.importLibrary("marker");
+        let map, MapMarker;
+
+        functions.initMap = async function() {
+            const position = {
+                lat: 13.2855079,
+                lng: 100.9246009
+            };
+            map = new Map(document.getElementById("map"), {
+                zoom: 15,
+                center: position,
+                mapId: "DEMO_MAP_ID",
+            });
+
+            const pinBackground = new PinElement({
+                glyph: "⭐",
+                glyphColor: "white",
+                scale: 1.5
+            });
+            MapMarker = new google.maps.marker.AdvancedMarkerElement({
+                position: position,
+                map: map,
+                content: pinBackground.element,
+                gmpDraggable: false,
+            });
+        }
+
+        functions.setMapPosition = function(lat, lng) {
+            const position = {
+                lat: parseFloat(lat),
+                lng: parseFloat(lng)
+            };
+            map.setCenter(position);
+            MapMarker.position = position;
+        }
+        
+        
+        functions.initMap();
+        window.functions = functions;
+        functions.setMapPosition('{{ $show->poi_gps_lat }}', '{{ $show->poi_gps_lng }}');        
+    </script>
+    <!-- prettier-ignore -->
+<script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+    ({ key: "AIzaSyCIqpKnIfAIP48YujVFbBISkubwaQNdIME", v: "weekly" });</script>
+
+<script>
+    $(document).ready(function () {
+        $.Thailand({
+            database: '{{ asset('assets/js/db.json') }}',
+            database_type: 'json',
+
+            $district: $('#district'),
+            $amphoe: $('#amphoe'),
+            $province: $('#province'),
+            $zipcode: $('#zipcode'),
+
+            onDataFill: function (data) {
+                console.info('Data Filled', data);
+            },
+
+            onLoad: function () {
+                console.info('Thailand.js Autocomplete ready ✔️');
+            }
+        });
+
+        // Optional: log changes
+        $('#amphoe').on('change', function () {
+            console.log('ตำบล', this.value);
+        });
+        $('#district').on('change', function () {
+            console.log('อำเภอ', this.value);
+        });
+        $('#province').on('change', function () {
+            console.log('จังหวัด', this.value);
+        });
+        $('#zipcode').on('change', function () {
+            console.log('รหัสไปรษณีย์', this.value);
+        });
+    });
 </script>
+
+
 @endsection

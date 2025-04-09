@@ -10,8 +10,7 @@
 
             <!-- ประเภทสถานที่ -->
             <label class="block text-sm text-gray-600">ประเภทสถานที่ที่สนใจ</label>
-            <input type="text" name="poiType" id="
-            poiType" class="w-full p-2 border border-gray-300 rounded-lg"
+            <input type="text" name="poiType" id="poiType" class="w-full p-2 border border-gray-300 rounded-lg"
                 placeholder="ประเภทสถานที่">
             <div class="text-red-500 text-sm mb-3 px-2" id="error-poiType"></div>
 
@@ -76,6 +75,7 @@
             emojiPickerContainer.querySelector('emoji-picker').addEventListener('emoji-click', event => {
                 iconInput.value = event.detail.unicode;
                 emojiPickerContainer.classList.add('hidden');
+                validateForm(); // ✅ เรียก validate ทันทีเมื่อเลือก emoji
             });
 
             document.addEventListener('click', (event) => {
@@ -89,16 +89,18 @@
             const colorButton = document.getElementById("colorButton");
             const colorPicker = document.getElementById("colorPicker");
 
-            colorPicker.addEventListener("input", function() {
+            colorPicker.addEventListener("input", function () {
                 colorInput.value = colorPicker.value;
                 colorButton.style.backgroundColor = colorPicker.value;
+                validateForm(); // ✅ เรียก validate เมื่อเลือกสี
             });
 
-            colorInput.addEventListener("input", function() {
+            colorInput.addEventListener("input", function () {
                 colorButton.style.backgroundColor = colorInput.value;
+                validateForm(); // ✅ เรียก validate เมื่อพิมพ์สี
             });
 
-            colorButton.addEventListener("click", function() {
+            colorButton.addEventListener("click", function () {
                 colorPicker.click();
             });
 
@@ -176,8 +178,8 @@
                 const map = {
                     poit_type: 'poiType',
                     poit_name: 'poiName',
-                    poit_icon: 'icon',
-                    poit_color: 'color',
+                    poit_icon: 'iconInput',
+                    poit_color: 'colorInput',
                     poit_detail: 'poiDetails',
                 };
                 return map[field] || field;
@@ -186,23 +188,36 @@
             submitButton.disabled = true;
             submitButton.classList.add('bg-gray-400', 'cursor-not-allowed'); // optional visual cue
 
-            const requiredFields = ['poiType', 'poiName', 'iconInput', 'colorInput'];
+            const requiredFields = ['poiType', 'poiName', 'iconInput', 'colorInput' ];
 
             function validateForm() {
-                const isComplete = requiredFields.every(id => {
+                let isComplete = true;
+
+                requiredFields.forEach(id => {
                     const input = document.getElementById(id);
-                    return input && input.value.trim() !== '';
+                    const value = input?.value?.trim() ?? '';
+
+                    if (id === 'colorInput') {
+                        // ต้องเป็น Hex เช่น #AABBCC
+                        if (!/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                            isComplete = false;
+                        }
+                    } else if (id === 'iconInput') {
+                        if (value === '') {
+                            isComplete = false;
+                        }
+                    } else {
+                        if (value === '') {
+                            isComplete = false;
+                        }
+                    }
                 });
 
                 submitButton.disabled = !isComplete;
 
-                if (isComplete) {
-                    submitButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                    submitButton.classList.add('bg-green-700');
-                } else {
-                    submitButton.classList.remove('bg-green-700');
-                    submitButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-                }
+                submitButton.classList.toggle('bg-green-700', isComplete);
+                submitButton.classList.toggle('bg-gray-400', !isComplete);
+                submitButton.classList.toggle('cursor-not-allowed', !isComplete);
             }
 
             // Listen for input changes
@@ -210,9 +225,10 @@
                 const input = document.getElementById(id);
                 if (input) {
                     input.addEventListener('input', validateForm);
+                    input.addEventListener('blur', validateForm); // เผื่อบางคนคลิกออก
                 }
             });
-
+            validateForm() 
         });
     </script>
 @endsection

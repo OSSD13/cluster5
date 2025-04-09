@@ -78,24 +78,8 @@
     let totalMembers = 0;
     let currentSort = { column: 'id', ascending: true };
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchMembers();
-        document.getElementById("searchInput").addEventListener("input", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-        document.getElementById("supervisorSelect").addEventListener("change", () => {
-            currentPage = 1;
-            filterAll(); // ใช้ฟังก์ชันนี้แทน fetchMembers();
-        });
-
-        document.getElementById("roleSelect").addEventListener("change", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-    });
-
     async function fetchMembers() {
+        console.trace('fetchMember')
         const search = document.getElementById("searchInput").value || '';
         const supervisorSelect = document.getElementById("supervisorSelect");
         const selectedSupervisor = supervisorSelect.value; // 💡 จำค่านี้ไว้
@@ -103,7 +87,10 @@
         const role = document.getElementById("roleSelect").value || '';
         const supervisorId = selectedSupervisor || '';
 
-        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&supervisor_id=${supervisorId}&role=${encodeURIComponent(role)}`;
+        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`;
+        if (supervisorId) {
+            query += `&target=${supervisorId}`;
+        }
 
         try {
             const response = await fetch(`{{ route('api.user.query') }}${query}`);
@@ -233,39 +220,6 @@
         renderTable();
     }
 
-    // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
-    function filterAll() {
-    const searchVal = document.getElementById("searchInput").value.toLowerCase();
-    const supervisorId = document.getElementById("supervisorSelect").value;
-    const roleVal = document.getElementById("roleSelect").value;
-
-    const isShowAll = !searchVal && !supervisorId && !roleVal;
-
-    if (isShowAll) {
-        fetchMembers();
-        return;
-    }
-
-    let filtered = members.filter(m => {
-        const matchesSearch =
-            m.user_id.toString().includes(searchVal) ||
-            m.name.toLowerCase().includes(searchVal) ||
-            m.email.toLowerCase().includes(searchVal) ||
-            m.role_name.toLowerCase().includes(searchVal);
-
-        const matchesSupervisor = !supervisorId || m.manager?.toString() === supervisorId;
-        const matchesRole = !roleVal || m.role_name === roleVal;
-
-        return matchesSearch && matchesSupervisor && matchesRole;
-    });
-
-    currentPage = 1;
-    renderTable(filtered);
-    renderPagination(filtered.length);
-    document.getElementById("resultCount").textContent = `ผลลัพธ์ ${filtered.length} รายการ`;
-}
-
-
 
     let supervisors = [];
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
@@ -285,7 +239,6 @@
         supervisorSelect.value = preserveValue;
     }
 
-
     // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงข้อมูลสมาชิกจาก API
     document.addEventListener("DOMContentLoaded", async () => {
         try {
@@ -297,15 +250,13 @@
             fetchMembers(); // แล้วค่อย fetch สมาชิก
 
             // เพิ่ม event listener
-            document.getElementById("searchInput").addEventListener("input", filterAll);
-            document.getElementById("supervisorSelect").addEventListener("change", filterAll);
-            document.getElementById("roleSelect").addEventListener("change", filterAll);
+            document.getElementById("searchInput").addEventListener("input", fetchMembers);
+            document.getElementById("supervisorSelect").addEventListener("change", fetchMembers);
+            document.getElementById("roleSelect").addEventListener("change", fetchMembers);
         } catch (e) {
             console.error("โหลด supervisor ไม่ได้:", e);
         }
     });
-
-
 
     // ฟังก์ชันที่แสดงเมื่อกดคลิกที่ปุ่ม "Meatballbar"
     let activeMenuId = null;
