@@ -10,7 +10,7 @@
 </div>
 
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">รายละเอียดสาขา</h2>
 
     <input type="hidden" name="bs_id" value="{{ $branch->bs_id }}">
 
