@@ -15,6 +15,21 @@ class UserController extends Controller
         $search = $request->input('search', '');
 
         $query = User::query();
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('email', 'like', "%$search%")
+                    ->orWhere('name', 'like', "%$search%")
+                    ->orWhere('user_id', 'like', "%$search%")
+                    ->orWhere('role_name', 'like', "%$search%")
+                    ->orWhere('user_status', 'like', "%$search%");
+            });
+        }
+
+        $role = $request->input('role', '');
+        if ($role) {
+            $query->where('role_name', '=', $role);
+        }
+
         $target = $request->input('target', '');
         if ($target) {
             $reqUserId = session()->get('user')->user_id;
@@ -37,20 +52,6 @@ class UserController extends Controller
 
             $targetUserIds = array_merge([$target], $user->getSubordinateIds());
             $query->whereIn('user_id', $targetUserIds);
-        }
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('email', 'like', "%$search%")
-                    ->orWhere('name', 'like', "%$search%")
-                    ->orWhere('user_id', 'like', "%$search%")
-                    ->orWhere('role_name', 'like', "%$search%")
-                    ->orWhere('user_status', 'like', "%$search%");
-            });
-        }
-
-        $role = $request->input('role', '');
-        if ($role) {
-            $query->where('role_name', '=', $role);
         }
 
         $total = $query->count();
@@ -162,7 +163,6 @@ class UserController extends Controller
                 'message' => 'ไม่พบผู้ใช้งานที่ต้องการแก้ไข'
             ], 404);
         }
-        
 
         if ($request->input('email')) $user->email = $request->input('email');
         if ($request->input('name')) $user->name = $request->input('name');
@@ -212,6 +212,19 @@ class UserController extends Controller
             'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
         ]);
     }
-    
+
+    public function getUserOptionsForBranchFilter(Request $request)
+    {
+        $currentUser = session()->get('user');
+        
+        if (!$currentUser || $currentUser->role_name !== 'ceo') {
+            return view('unauthorized');
+        }
+
+        $supervisors = User::where('role_name', 'supervisor')->get();
+        return view('user.index', [
+            'supervisors' => $supervisors,
+        ]);
+    }
 
 }
