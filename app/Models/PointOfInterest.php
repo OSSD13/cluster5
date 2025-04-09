@@ -26,7 +26,9 @@ class PointOfInterest extends Model
         'location_id',
     ];
     protected $table = 'point_of_interests';
+    protected $primaryKey = 'poi_id';
 
+    // กำหนด primary key ให้เป็น 'poi_id'
     public function getPOIId(): int
     {
         return $this->poi_id;

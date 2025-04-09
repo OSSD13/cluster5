@@ -36,9 +36,6 @@
         <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
         <select id="saleMonth"
             class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="2025-01-01">มกราคม - 2568</option>
-            <option value="2025-02-01" selected>กุมภาพันธ์ - 2568</option>
-            <option value="2025-03-01">มีนาคม - 2568</option>
         </select>
     </div>
 
@@ -73,15 +70,132 @@
 
 
 
+<!-- กราฟและการ์ดสถิติยอดขาย -->
+
+
+<div class="flex flex-col gap-4">
+    <div class="flex flex-row gap-4">
+        <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark"
+             style="background-color: #F2DDD4;">
+            <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
+            <div class="flex justify-center items-center text-bold gap-2">
+                <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+            </div>
+            <div id="minChange" class="text-sm text-end">
+                <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
+                <span id="minPercent">0</span>%
+            </div>
+        </div>
+
+        <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success"
+             style="background-color: #D6F2D4;">
+            <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
+            <div class="flex justify-center items-center text-bold gap-2">
+                <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+            </div>
+            <div id="maxChange" class="text-sm text-end">
+                <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
+                <span id="maxPercent">0</span>%
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-row gap-4">
+        <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+             style="background-color: #FAEAFF;">
+            <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
+            <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
+                <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+            </div>
+            <div id="stdChange" class="text-base text-end text-bold" style="color: #DA25BF;">
+                <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
+                <span id="stdPercent">0</span>%
+            </div>
+        </div>
+
+        <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+             style="background-color: #FAEAFF;">
+            <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
+            <div class="flex justify-center items-center text-bold text-base gap-2 mt-5" style="color: #DA25BF;">
+                <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
+                <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
+            </div>
+            <div id="avgChange" class="text-base text-end text-bold" style="color: #DA25BF;">
+                <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
+                <span id="avgPercent">0</span>%
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 
 
 
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        <table class="w-full border-collapse rounded-lg overflow-hidden">
-            <thead class="bg-blue-500 text-white">
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetchBranchSalesStats();
+});
+
+async function fetchBranchSalesStats() {
+    try {
+        const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+        const result = await response.json();
+        const data = result.data || [];
+        const salesAmounts = data.map(s => parseFloat(s.sales_amount));
+
+        if (salesAmounts.length === 0) return;
+
+        const min = Math.min(...salesAmounts);
+        const max = Math.max(...salesAmounts);
+        const avg = salesAmounts.reduce((a, b) => a + b, 0) / salesAmounts.length;
+        const std = Math.sqrt(salesAmounts.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesAmounts.length);
+
+        document.getElementById('minValue').textContent = min.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('maxValue').textContent = max.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+        const bins = Array(10).fill(0);
+        const maxSale = Math.max(...salesAmounts);
+        const step = maxSale / bins.length;
+        salesAmounts.forEach(amount => {
+            const index = Math.min(Math.floor(amount / step), bins.length - 1);
+            bins[index]++;
+        });
+
+        const labels = bins.map((_, i) => `${Math.round(i * step / 1000)}k`);
+        const ctx = document.getElementById("branchSalesChart").getContext("2d");
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: "จำนวนสาขา",
+                    data: bins,
+                    backgroundColor: "#3366C0"
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error fetching stats:", error);
+    }
+}
+</script>
+
+
+<table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-3 px-4 text-left">เดือน</th>
                     <th class="py-3 px-4 text-right">ยอดเงิน</th>
@@ -91,13 +205,58 @@
             </thead>
             <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200"></tbody>
         </table>
-    </div>
 
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
     <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2"></div>
 @endsection
 
 @section('script')
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const select = document.getElementById("saleMonth");
+
+        // ดึงข้อมูลยอดขายปัจจุบัน
+        let existingMonths = [];
+
+        try {
+            const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+            const result = await response.json();
+            existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
+        } catch (err) {
+            console.error("Error fetching existing sales:", err);
+        }
+
+        // สร้างตัวเลือก 12 เดือนย้อนหลัง
+        const now = new Date();
+        for (let i = 0; i < 12; i++) {
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const value = date.toISOString().slice(0, 10);
+            const ym = date.toISOString().slice(0, 7);
+
+            if (!existingMonths.includes(ym)) {
+                const month = date.toLocaleString('th-TH', {
+                    year: 'numeric',
+                    month: 'long'
+                });
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = `${month}`;
+                select.appendChild(option);
+            }
+        }
+
+        // ถ้าไม่มีให้เลือก
+        if (select.options.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
+            opt.disabled = true;
+            opt.selected = true;
+            select.appendChild(opt);
+        }
+    });
+</script>
     <script>
         let sales = [];
         let currentPage = 1;

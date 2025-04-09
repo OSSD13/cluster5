@@ -79,7 +79,7 @@ class UserController extends Controller
 
     public function queryAllUser(Request $request)
     {
-        $role = $request->input('role', 'sale');
+        $role = $request->input('role', 'supervisor');
         $users = User::where('role_name', '=', $role)->get();
         return response()->json(['data' => $users]);
     }
@@ -119,6 +119,7 @@ class UserController extends Controller
         $user->password = bcrypt($request->input('password'));
         $user->role_name = $request->input('role_name');
         $user->user_status = $request->input('user_status');
+        $user->manager = $request->input('manager');
         $user->save();
 
         return response()->json([
@@ -211,4 +212,45 @@ class UserController extends Controller
             'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
         ]);
     }
+
+    public function getUserOptionsForBranchFilter(Request $request)
+    {
+        $currentUser = session()->get('user');
+
+        if (!$currentUser) {
+            return response()->json(['users' => []]);
+        }
+
+        $role = $currentUser->role_name;
+
+        if ($role === 'sale') {
+            return response()->json([
+                'users' => [[
+                    'user_id' => $currentUser->user_id,
+                    'name' => $currentUser->name,
+                    'role_name' => $currentUser->role_name,
+                ]]
+            ]);
+        }
+
+        if ($role === 'supervisor') {
+            $users = User::where(function ($q) use ($currentUser) {
+                $q->where('user_id', $currentUser->user_id)
+                ->orWhere('manager', $currentUser->user_id);
+            })->get(['user_id', 'name', 'role_name']);
+
+            return response()->json(['users' => $users]);
+        }
+
+        if ($role === 'ceo') {
+            $users = User::whereIn('role_name', ['sale', 'supervisor'])
+                        ->get(['user_id', 'name', 'role_name']);
+            return response()->json(['users' => $users]);
+        }
+
+        return response()->json(['users' => []]);
+    }
+
+    
+
 }
