@@ -15,80 +15,81 @@ class BranchController extends Controller
     }
 
     public function queryBranch(Request $request)
-    {
-        $limit = $request->input('limit', 10);
-        $page = $request->input('page', 1);
-        $offset = ($page - 1) * $limit;
-        $search = $request->input('search', '');
-        $target = $request->input('target', '');
+{
+    $limit = $request->input('limit', 10);
+    $page = $request->input('page', 1);
+    $offset = ($page - 1) * $limit;
+    $search = $request->input('search', '');
+    $userId = $request->input('user_id', '');
 
-        $branchQuery = Branch_store::query();
-        if ($target) {
-            $reqUserId = session()->get('user')->user_id;
-            $reqUser = User::where('user_id', $reqUserId)->first();
-            $reqSub = array_merge([$reqUserId], $reqUser->getSubordinateIds());
+    $branchQuery = Branch_store::query();
 
-            if (!in_array($target, $reqSub)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'คุณไม่มีสิทธิ์ดูข้อมูลสาขานี้'
-                ], 403);
-            }
+    // ตรวจสอบสิทธิ์การเข้าถึง user_id ที่เลือก
+    if ($userId) {
+        $reqUserId = session()->get('user')->user_id;
+        $reqUser = User::where('user_id', $reqUserId)->first();
+        $reqSub = array_merge([$reqUserId], $reqUser->getSubordinateIds());
+
+        if (!in_array($userId, $reqSub)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'คุณไม่มีสิทธิ์ดูข้อมูลสาขานี้'
+            ], 403);
         }
 
-
-        $user = User::where('user_id', $target)->first();
+        $user = User::where('user_id', $userId)->first();
         if ($user) {
             $subordinate = $user->getSubordinateIds();
-            $targetUserIds = array_merge([$target], $subordinate);
+            $targetUserIds = array_merge([$userId], $subordinate);
+            $branchQuery->whereIn('branch_stores.bs_manager', $targetUserIds);
         }
-
-        $branchQuery->join('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
-            ->join('point_of_interest_type', 'point_of_interests.poi_type', '=', 'point_of_interest_type.poit_type')
-            ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id');
-
-        $branchQuery->select(
-            'branch_stores.*',
-            'point_of_interest_type.poit_type',
-            'point_of_interest_type.poit_name',
-            'point_of_interest_type.poit_icon',
-            'point_of_interest_type.poit_color',
-            'point_of_interest_type.poit_description',
-            'users.name as bs_manager_name',
-            'users.email as bs_manager_email',
-            'users.user_status as bs_manager_user_status',
-            'users.role_name as bs_manager_role_name'
-        );
-
-        if ($search) {
-            $branchQuery->where(function ($query) use ($search) {
-                $query->where('branch_stores.bs_name', 'LIKE', "%$search%")
-                    ->orWhere('point_of_interest_type.poit_type', 'LIKE', "%$search%")
-                    ->orWhere('point_of_interest_type.poit_name', 'LIKE', "%$search%")
-                    ->orWhere('point_of_interest_type.poit_icon', 'LIKE', "%$search%")
-                    ->orWhere('point_of_interest_type.poit_color', 'LIKE', "%$search%")
-                    ->orWhere('point_of_interest_type.poit_description', 'LIKE', "%$search%")
-                    ->orWhere('users.name', 'LIKE', "%$search%")
-                    ->orWhere('users.email', 'LIKE', "%$search%");
-            });
-        }
-
-        if (!empty($target) && isset($targetUserIds)) {
-            $branchQuery->where(function ($query) use ($target, $targetUserIds) {
-                $query->where('branch_stores.bs_manager', '=', $target)
-                    ->orWhereIn('branch_stores.bs_manager', $targetUserIds);
-            });
-        }
-
-        $total = $branchQuery->count();
-        $branch = $branchQuery->offset($offset)->limit($limit)->get();
-        return response()->json([
-            'data' => $branch,
-            'total' => $total,
-            'page' => $page,
-            'limit' => $limit
-        ]);
     }
+
+    // Join ตารางที่เกี่ยวข้อง
+    $branchQuery->join('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
+        ->join('point_of_interest_type', 'point_of_interests.poi_type', '=', 'point_of_interest_type.poit_type')
+        ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id');
+
+    // Select field ที่ต้องการ
+    $branchQuery->select(
+        'branch_stores.*',
+        'point_of_interest_type.poit_type',
+        'point_of_interest_type.poit_name',
+        'point_of_interest_type.poit_icon',
+        'point_of_interest_type.poit_color',
+        'point_of_interest_type.poit_description',
+        'users.name as bs_manager_name',
+        'users.email as bs_manager_email',
+        'users.user_status as bs_manager_user_status',
+        'users.role_name as bs_manager_role_name'
+    );
+
+    // ค้นหาข้อมูล (search)
+    if ($search) {
+        $branchQuery->where(function ($query) use ($search) {
+            $query->where('branch_stores.bs_name', 'LIKE', "%$search%")
+                ->orWhere('point_of_interest_type.poit_type', 'LIKE', "%$search%")
+                ->orWhere('point_of_interest_type.poit_name', 'LIKE', "%$search%")
+                ->orWhere('point_of_interest_type.poit_icon', 'LIKE', "%$search%")
+                ->orWhere('point_of_interest_type.poit_color', 'LIKE', "%$search%")
+                ->orWhere('point_of_interest_type.poit_description', 'LIKE', "%$search%")
+                ->orWhere('users.name', 'LIKE', "%$search%")
+                ->orWhere('users.email', 'LIKE', "%$search%");
+        });
+    }
+
+    // แยกหน้า
+    $total = $branchQuery->count();
+    $branch = $branchQuery->offset($offset)->limit($limit)->get();
+
+    return response()->json([
+        'data' => $branch,
+        'total' => $total,
+        'page' => $page,
+        'limit' => $limit
+    ]);
+}
+
 
     public function create()
     {
