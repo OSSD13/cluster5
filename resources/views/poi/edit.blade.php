@@ -12,7 +12,7 @@
     <form method="POST" action="{{ route('api.poi.edit') }}" name="poiForm" id="poiForm" autocomplete="off">
         @csrf
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">แก้ POI สถานที่</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">POI แก้ไขสถานที่</h2>
 
             <label class="block text-sm text-gray-600">Link Google (Optional)</label>
             <input type="text" id="googleMapLink" name="googleMapLink"
@@ -137,6 +137,7 @@
         </script>
     @endif
 @endsection
+
 
 @section('script')
     <script>
