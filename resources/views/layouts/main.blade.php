@@ -1,4 +1,3 @@
-
 @extends('layouts.screen')
 
 @section('screen')

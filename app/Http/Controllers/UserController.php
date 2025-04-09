@@ -84,9 +84,6 @@ class UserController extends Controller
         return response()->json(['data' => $users]);
     }
 
-<<<<<<< HEAD
-    
-=======
     public function createUser(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -256,5 +253,4 @@ class UserController extends Controller
 
     
 
->>>>>>> origin/develop
 }
