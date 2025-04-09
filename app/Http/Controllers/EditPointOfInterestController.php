@@ -10,7 +10,7 @@ class EditPointOfInterestController extends Controller
     public function editPoiPage(Request $request)
 {
     // ค้นหาข้อมูล POI จาก ID
-    $show = PointOfInterest::find($request->input('poi_id'));
+    $show = PointOfInterest::find($request->input('id'));
     // ตรวจสอบหากไม่พบข้อมูล POI
     if (!$show) {
         return redirect()->route('poi.index')->with('error', 'ไม่พบข้อมูล POI ที่ระบุ');
@@ -22,29 +22,29 @@ class EditPointOfInterestController extends Controller
     public function editPoi(Request $request){
         
         $validator = \Validator::make($request->all(),[
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'postal_code' => 'required|numeric',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+            'zipcode' => 'required|numeric',
             'province' => 'required|string|max:255', 
             'district' => 'required|string|max:255',
-            'sub_district' => 'required|string|max:255',
+            'amphoe' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255', 
         
         ],[
-            'latitude.required' => 'กรุณาระบุละติจูด',
-            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
-            'longitude.required' => 'กรุณาระบุลองจิจูด',
-            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
-            'postal_code.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'postal_code.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+            'lat.required' => 'กรุณาระบุละติจูด',
+            'lat.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+            'lng.required' => 'กรุณาระบุลองจิจูด',
+            'lng.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
+            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
             'province.required' => 'กรุณาระบุจังหวัด',
             'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
             'district.required' => 'กรุณาระบุอำเภอ',
             'district.string' => 'อำเภอต้องเป็นตัวอักษร',
-            'sub_district.required' => 'กรุณาระบุตำบล',
-            'sub_district.string' => 'ตำบลต้องเป็นตัวอักษร',
+            'amphoe.required' => 'กรุณาระบุตำบล',
+            'amphoe.string' => 'ตำบลต้องเป็นตัวอักษร',
             'address.required' => 'กรุณาระบุที่อยู่',
             'address.string' => 'ที่อยู่ต้องเป็นตัวอักษร',
             'name.required' => 'กรุณาระบุชื่อสถานที่',
@@ -68,10 +68,10 @@ class EditPointOfInterestController extends Controller
             ],404);
         }
         $location = \DB::table('location')
-        ->where('postal_code',$request->input('postal_code'))
+        ->where('zipcode',$request->input('postal_code'))
         ->where('province',$request->inptu('province'))
         ->where('district',$request->input('district'))
-        ->where('sub_district',$request->input('sub_district'))
+        ->where('amphoe',$request->input('sub_district'))
         ->first();
         if(!$location){
             return response()->json([

@@ -6,23 +6,23 @@
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">POI แก้ไขสถานที่</h2>
 
-    <input type="hidden" id="poi_id" value="{{ $show->id }}">
-
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-    <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
+    <input id= "googleMapLink" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
+    <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
 
     <label class="block text-sm text-gray-600">ละติจูด</label>
-    <input id="lat" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_gps_lat }}">
+    <input id="lat" name="lat" type="text" oninput="functions.inputChanged()" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด" value="{{ $show->poi_gps_lat }}">
 
     <label class="block text-sm text-gray-600">ลองจิจูด</label>
-    <input id="lng" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_gps_lng }}">
+    <input id="lng" name="lng" type="text" oninput="functions.inputChanged()" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" value="{{ $show->poi_gps_lng }}">
 
     <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
-        <div id="map" class="w-full h-48"></div>
-    </div>
+            <div id="map" class="w-full h-48"></div>
+        </div>
+
 
     <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input id="zipcode" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
+    <input id="zipcode" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
     <input id="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
@@ -31,7 +31,7 @@
     <input id="district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
 
     <label class="block text-sm text-gray-600">ตำบล</label>
-    <input id="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
+    <input id="amphoe" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
 
     <label class="block text-sm text-gray-600">ที่อยู่</label>
     <input id="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_address }}">
@@ -52,61 +52,174 @@
     </div>
 </div>
 @endsection
+
 @section('script')
 <script>
-    $(document).ready(function () {
-        // Load Types from API
-        $.getJSON('/api/poi/types', function(data) {
-            data.forEach(function(item) {
-                $('#type').append(`<option value="${item.point_type}">${item.point_type}</option>`);
-            });
+document.getElementById("saveButton").addEventListener("click", async function () {
+    const payload = {
+        poi_id: document.querySelector('input[name="poi_id"]').value,
+        name: document.querySelector('input[name="name"]').value,
+        address: document.querySelector('input[name="address"]').value,
+        detail: document.querySelector('input[name="detail"]').value,
+    };
 
-            $('#type').val('{{ $show->type->point_type ?? '' }}');
+    try {
+        const res = await fetch("{{ route('api.poi.edit') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify(payload)
         });
 
-        // Save Button Click
-        $('#saveButton').on('click', function () {
-            $('.error-input-style').removeClass('error-input-style'); // Reset error border
+        const data = await res.json();
 
-            let data = {
-                id: $('#poi_id').val(),
-                lat: $('#lat').val(),
-                lng: $('#lng').val(),
-                zipcode: $('#zipcode').val(),
-                province: $('#province').val(),
-                district: $('#district').val(),
-                amphoe: $('#amphoe').val(),
-                address: $('#address').val(),
-                name: $('#name').val(),
-                type: $('#type').val(),
+        if (data.status === "success") {
+            Swal.fire("สำเร็จ", "แก้ไขเรียบร้อย", "success").then(() => {
+                window.location.href = "{{ route('poi.index') }}";
+            });
+        } else {
+            Swal.fire("ผิดพลาด", data.message ?? 'เกิดข้อผิดพลาดในการแก้ไข', "error");
+        }
+    } catch (err) {
+        console.error("❌ Error:", err);
+        Swal.fire("ผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+    }
+});
+
+</script>
+
+    <script type="module">
+
+        const googleMapLinkInput = document.getElementById('googleMapLink');
+        let functions = {};
+
+        function log(...args) {
+            let date = `[${Date.now()}]`;
+
+            console.log(date, ...args);
+        }
+
+        const {
+            Map
+        } = await google.maps.importLibrary("maps");
+        const {
+            AdvancedMarkerElement,
+            PinElement
+        } = await google.maps.importLibrary("marker");
+        let map, MapMarker;
+
+        functions.initMap = async function() {
+            const position = {
+                lat: 13.2855079,
+                lng: 100.9246009
             };
-
-            $.ajax({
-                url: '/api/poi/edit',
-                type: 'POST',
-                data: data,
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success: function (res) {
-                    alert(res.message);
-                    window.location.href = '{{ route("poi.index") }}';
-                },
-                error: function (xhr) {
-                    if (xhr.status === 422) {
-                        const errors = xhr.responseJSON.errors;
-                        Object.keys(errors).forEach(key => {
-                            $('#' + key).addClass('error-input-style');
-                        });
-                        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                    } else {
-                        alert(xhr.responseJSON.message || 'เกิดข้อผิดพลาด');
-                    }
-                }
+            
+            map = new Map(document.getElementById("map"), {
+                zoom: 15,
+                center: position,
+                mapId: "DEMO_MAP_ID",
             });
+
+            const pinBackground = new PinElement({
+                glyph: "⭐",
+                glyphColor: "white",
+                scale: 1.5
+            });
+            MapMarker = new google.maps.marker.AdvancedMarkerElement({
+                position: position,
+                map: map,
+                content: pinBackground.element,
+                gmpDraggable: false,
+            });
+        }
+
+        functions.setMapPosition = function(lat, lng) {
+            const position = {
+                lat: parseFloat(lat),
+                lng: parseFloat(lng)
+            };
+            // console.log(position);
+            
+            map.setCenter(position);
+            MapMarker.position = position;
+        }
+
+        functions.inputChanged = function() {
+            // รับค่าที่กรอกใน input
+            var latChanged = document.getElementById('lat').value;
+            var lngChanged = document.getElementById('lng').value;
+             console.log(latChanged,lngChanged);
+            console.log(parseFloat(latChanged),parseFloat(lngChanged));
+
+            functions.setMapPosition(latChanged, lngChanged);
+        }
+        function validateForm() {
+            const isComplete = requiredFields.every(id => {
+                const input = document.getElementById(id);
+                return input && input.value.trim() !== '';
+            });
+
+            submitButton.disabled = !isComplete;
+            submitButton.classList.toggle('bg-green-700', isComplete);
+            submitButton.classList.toggle('bg-gray-400', !isComplete);
+            submitButton.classList.toggle('cursor-not-allowed', !isComplete);
+        }
+         // Fetch lat/lng from Google Map link
+         googleMapLinkInput.addEventListener('blur', async () => {
+            const url = googleMapLinkInput.value.trim();
+            if (!url) return;
+
+            try {
+                const response = await fetch(`{{ route('handleConversion') }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        url
+                    })
+                });
+
+                const data = await response.json();
+                console.log(response.ok, data.lat, data.lng);
+
+                if (response.ok && data.lat && data.lng) {
+                    document.getElementById('lat').value = data.lat;
+                    document.getElementById('lng').value = data.lng;
+                    document.getElementById('googleLink-error').classList.add('hidden');
+                    window.functions.setMapPosition(data.lat, data.lng);
+                    // validateForm();
+                } else {
+                    throw new Error('Invalid data');
+                }
+            } catch (err) {
+                console.error('Error fetching lat/lng:', err);
+                document.getElementById('googleLink-error').classList.remove('hidden');
+                document.getElementById('lat').value = '';
+                document.getElementById('lng').value = '';
+            }
         });
 
-        // Thailand.js
+        googleMapLinkInput.addEventListener('input', () => {
+            document.getElementById('googleLink-error').classList.add('hidden');
+        });
+
+    
+        functions.initMap();
+        window.functions = functions;
+        functions.setMapPosition('{{ $show->poi_gps_lat }}', '{{ $show->poi_gps_lng }}');
+           
+    </script>
+    <!-- prettier-ignore -->
+<script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+    ({ key: "AIzaSyCIqpKnIfAIP48YujVFbBISkubwaQNdIME", v: "weekly" });</script>
+
+<script>
+    $(document).ready(function () {
         $.Thailand({
             database: '{{ asset('assets/js/db.json') }}',
             database_type: 'json',
@@ -114,72 +227,14 @@
             $amphoe: $('#amphoe'),
             $province: $('#province'),
             $zipcode: $('#zipcode'),
-        });
-    });
-</script>
 
-{{-- Google Maps --}}
-<script type="module">
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+            onDataFill: function (data) {
+                console.info('Data Filled', data);
+            },
 
-    const position = {
-        lat: parseFloat('{{ $show->poi_gps_lat }}'),
-        lng: parseFloat('{{ $show->poi_gps_lng }}')
-    };
-
-    const map = new Map(document.getElementById("map"), {
-        zoom: 15,
-        center: position,
-        mapId: "DEMO_MAP_ID"
-    });
-
-    const pinBackground = new PinElement({
-        glyph: "⭐",
-        glyphColor: "white",
-        scale: 1.5
-    });
-
-    const MapMarker = new google.maps.marker.AdvancedMarkerElement({
-        position: position,
-        map: map,
-        content: pinBackground.element,
-        gmpDraggable: false
-    });
-</script>
-
-   <!-- prettier-ignore -->
-<script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
-    ({ key: "AIzaSyCIqpKnIfAIP48YujVFbBISkubwaQNdIME", v: "weekly" });</script>
-
-<script>
-    document.getElementById('lat').addEventListener('input', updateMapPosition);
-document.getElementById('lng').addEventListener('input', updateMapPosition);
-
-function updateMapPosition() {
-    const newLat = parseFloat(document.getElementById('lat').value);
-    const newLng = parseFloat(document.getElementById('lng').value);
-
-    if (!isNaN(newLat) && !isNaN(newLng)) {
-        const newPos = { lat: newLat, lng: newLng };
-        map.setCenter(newPos);
-        MapMarker.position = newPos;
-    }
-}
-
-</script>
-
-<script>
-    $(document).ready(function () {
-        $.Thailand({
-            database: '{{ asset('assets/js/db.json') }}',
-            database_type: 'json',
-
-        // สร้างแผนที่บน div ที่มี id="map"
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: initialPosition,  // ตั้งศูนย์แผนที่ตรงตำแหน่งเริ่มต้น
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            onLoad: function () {
+                console.info('Thailand.js Autocomplete ready ✔️');
+            }
         });
 
         // สร้าง Marker
@@ -207,5 +262,33 @@ function updateMapPosition() {
     }
 
     window.onload = loadGoogleMapsAPI;
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadPoiTypes(); // โหลดประเภท
+});
+
+async function loadPoiTypes() {
+    const select = document.getElementById("poi_type");
+    const currentType = `{{ $show->poit_type }}`;
+
+    try {
+        const res = await fetch(`{{ route('api.poit.query.all') }}`);
+        const data = await res.json();
+
+        (data.data || []).forEach(poit => {
+            const option = document.createElement("option");
+            option.value = poit.poit_type;
+            option.textContent = `${poit.poit_icon ?? ''} ${poit.poit_name}`;
+            if (poit.poit_type === currentType) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    } catch (err) {
+        console.error("❌ ไม่สามารถโหลดประเภท POI:", err);
+    }
+}
 </script>
 @endsection
