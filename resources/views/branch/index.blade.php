@@ -121,13 +121,12 @@
                         <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
                             onclick="window.location.href='{{ route('branch.manage.index') }}?bs_id=${branch.bs_id}'">จัดการ</button>
                         <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
-                            onclick="window.location.href='{{ route('branch.edit') }}'">แก้ไข</button>
+                            onclick="window.location.href='{{ route('branch.edit') }}?bs_id=${branch.bs_id}'">แก้ไข</button>
                         <button class="block w-full px-4 py-2 text-white border rounded-md border-gray-400 shadow-lg hover:bg-red-700 cursor-pointer"
                             onclick="deleteBranch(${branch.bs_id})" style="background-color: #CF3434">ลบ</button>
                     </div>
                 </td>
             `;
-            
             tableBody.appendChild(row);
         });
 
