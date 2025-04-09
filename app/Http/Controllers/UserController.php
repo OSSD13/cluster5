@@ -224,15 +224,41 @@ class UserController extends Controller
     public function getUserOptionsForBranchFilter(Request $request)
     {
         $currentUser = session()->get('user');
-        
-        if (!$currentUser || $currentUser->role_name !== 'ceo') {
-            return view('unauthorized');
+
+        if (!$currentUser) {
+            return response()->json(['users' => []]);
         }
 
-        $supervisors = User::where('role_name', 'supervisor')->get();
-        return view('user.index', [
-            'supervisors' => $supervisors,
-        ]);
+        $role = $currentUser->role_name;
+
+        if ($role === 'sale') {
+            return response()->json([
+                'users' => [[
+                    'user_id' => $currentUser->user_id,
+                    'name' => $currentUser->name,
+                    'role_name' => $currentUser->role_name,
+                ]]
+            ]);
+        }
+
+        if ($role === 'supervisor') {
+            $users = User::where(function ($q) use ($currentUser) {
+                $q->where('user_id', $currentUser->user_id)
+                ->orWhere('manager', $currentUser->user_id);
+            })->get(['user_id', 'name', 'role_name']);
+
+            return response()->json(['users' => $users]);
+        }
+
+        if ($role === 'ceo') {
+            $users = User::whereIn('role_name', ['sale', 'supervisor'])
+                        ->get(['user_id', 'name', 'role_name']);
+            return response()->json(['users' => $users]);
+        }
+
+        return response()->json(['users' => []]);
     }
+
+    
 
 }
