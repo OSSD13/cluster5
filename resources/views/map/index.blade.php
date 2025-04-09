@@ -285,12 +285,12 @@
                 MapMarker.position = place.geometry.location
                 circle.circle.setCenter(place.geometry.location);
                 // marker.setVisible(true);
-                // infowindowContent.children.namedItem("place-name").textContent = place.name;
-                // infowindowContent.children.namedItem("place-id").textContent =
-                //     place.place_id;
-                // infowindowContent.children.namedItem("place-address").textContent =
-                //     place.formatted_address + "\n" + place.geometry.location;
-                // infowindow.open(map, MapMarker);
+                infowindowContent.children.namedItem("place-name").textContent = place.name;
+                infowindowContent.children.namedItem("place-id").textContent =
+                    place.place_id;
+                infowindowContent.children.namedItem("place-address").textContent =
+                    place.formatted_address + "\n" + place.geometry.location;
+                infowindow.open(map, MapMarker);
             });
 
 
