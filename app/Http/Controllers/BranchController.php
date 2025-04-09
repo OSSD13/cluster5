@@ -227,7 +227,7 @@ class BranchController extends Controller
         ]);
     }
 
-    public function manage()
+    public function manage(Request $request)
     {
         $bs_id = $request->input('bs_id');
     
