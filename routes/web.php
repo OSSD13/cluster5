@@ -52,6 +52,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/user', function () {
         return view('user.index');
     });
+    Route::get('/getUserOptionsForBranchFilter', [UserController::class, 'getUserOptionsForBranchFilter']);
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
 
@@ -98,6 +99,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/api/sales/query', [SalesController::class, 'querySales'])->name('api.sales.query');
     Route::post('/api/sales/edit', [SalesController::class, 'editSales'])->name('api.sales.edit');
     Route::post('/api/sales/delete', [SalesController::class, 'deleteSales'])->name('api.sales.delete');
+    Route::post('/api/sales/create', [SalesController::class, 'createSales'])->name('api.sales.create');
 
 
 

@@ -32,10 +32,11 @@
     <input id="province" name="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
 
     <label class="block text-sm text-gray-600">อำเภอ</label>
-    <input id="district" name="district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
+    <input id="district" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
 
     <label class="block text-sm text-gray-600">ตำบล</label>
-    <input id="amphoe" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
+    <input id="sub_district" name="
+    district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
 
     <label class="block text-sm text-gray-600">ที่อยู่</label>
     <input id="address" name="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่" >
