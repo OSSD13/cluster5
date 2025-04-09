@@ -587,7 +587,7 @@
 
 
             function buildRegionTable(page = 1) {
-                currentPage = page;
+                currentPage = page; // Ensure currentPage is set correctly
                 totalItems = 100;
                 // fetch /api/getRegionBranch
                 // example response
@@ -649,6 +649,9 @@
                     }).toString())
                         .then(response => response.json())
                         .then(data => {
+                        console.log('Branches Data:', data);
+                        totalItems = data.branch_count;
+                        
                             console.log('Region Branch Data:', data);
                             clearTableBody();
                             const regionTableBody = document.getElementById('regionTableBody');
@@ -846,7 +849,6 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
-            
                         totalItems = data.branch_count;
                         clearTableBody();
 
