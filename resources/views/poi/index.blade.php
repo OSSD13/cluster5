@@ -3,6 +3,7 @@
 @section('title', 'Point of Interest')
 
 @section('content')
+<div id="globalDropdownMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-[150px] z-50 p-2 space-y-2 transition duration-200"></div>
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-2xl font-bold text-gray-800" >POI จัดการสถานที่ที่สนใจ</h2>
@@ -175,15 +176,56 @@
     }
 
 
-    function toggleMenu(event, id) {
-        event.stopPropagation();
-        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-        document.getElementById(`menu-${id}`).classList.toggle("hidden");
+    let activeMenuId = null;
+
+function toggleMenu(event, id) {
+    event.stopPropagation();
+
+    const button = event.currentTarget;
+    const menu = document.getElementById("globalDropdownMenu");
+
+    // ปิดถ้าเมนูเดิมเปิดอยู่
+    if (activeMenuId === id && !menu.classList.contains("hidden")) {
+        menu.classList.add("hidden");
+        activeMenuId = null;
+        return;
     }
 
-    document.addEventListener("click", () => {
-        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-    });
+    activeMenuId = id;
+
+    menu.innerHTML = `
+        <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8" 
+            onclick="document.getElementById('globalDropdownMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
+            ดูรายละเอียด
+        </button>
+        <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" 
+            onclick="document.getElementById('globalDropdownMenu').classList.add('hidden'); activeMenuId = null; window.location.href='{{ route('poi.edit') }}?id=${id}'">
+            แก้ไข
+        </button>
+        <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" 
+            onclick="document.getElementById('globalDropdownMenu').classList.add('hidden'); activeMenuId = null; deletePoi(${id})">
+            ลบ
+        </button>
+    `;
+
+            // เอาตำแหน่งของปุ่มมา
+            const rect = button.getBoundingClientRect();
+            const menuWidth = menu.offsetWidth || 160; // default กว้างประมาณนี้
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+            // วางเมนูชิดซ้ายของปุ่ม
+            menu.style.left = `${rect.left - menuWidth + rect.width}px`;
+            menu.style.top = `${rect.top + scrollTop}px`;
+            menu.classList.remove("hidden");
+        }
+        document.addEventListener("click", function () {
+        const menu = document.getElementById("globalDropdownMenu");
+        if (!menu.classList.contains("hidden")) {
+            menu.classList.add("hidden");
+            activeMenuId = null;
+        }
+         });
+
 
         function deletePoi(id) {
             Swal.fire({
