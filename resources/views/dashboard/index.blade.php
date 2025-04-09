@@ -46,7 +46,7 @@
                 </script>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function() {
+                    document.addEventListener('DOMContentLoaded', function () {
                         fetch('{{ route('api.report.getSubordinate') }}')
                             .then(response => response.json())
                             .then(data => {
@@ -70,7 +70,7 @@
                 function getBranchReport() {
                     const userId = document.getElementById('subordinateSelect') ?
                         document.getElementById('subordinateSelect').value :
-                        {{ session()->get('user')->user_id }};
+                                        {{ session()->get('user')->user_id }};
                     const date = document.getElementById('timePeriod') ?
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -278,7 +278,7 @@
                     }
                 }
 
-                document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('DOMContentLoaded', function () {
                     console.log("Fetching report...");
                     getBranchReport();
                 });
@@ -352,11 +352,11 @@
                 <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark "
                     style="background-color: #FAEAFF;">
                     <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
-                    <div class="flex justify-center items-center text-bold gap-2" style ="color: #DA25BF;">
+                    <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
                         <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
 
                     </div>
-                    <div id="stdChange" class="text-base text-end text-bold "style="color: #DA25BF;">
+                    <div id="stdChange" class="text-base text-end text-bold " style="color: #DA25BF;">
                         <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="stdPercent">0</span>%
                     </div>
@@ -364,11 +364,11 @@
                 <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
                     style="background-color: #FAEAFF;">
                     <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
-                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5"style="color: #DA25BF;">
+                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5" style="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
-                    <div id="avgChange" class="text-base text-end text-bold" style ="color: #DA25BF;">
+                    <div id="avgChange" class="text-base text-end text-bold" style="color: #DA25BF;">
                         <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
                         <span id="avgPercent">0</span>%
                     </div>
@@ -450,11 +450,7 @@
                 ย้อนกลับ
             </button>
         </div>
-
-
-
-
-
+        
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <div class="overflow-x-auto w-full">
             <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden"
@@ -464,12 +460,10 @@
                         <th scope="col"
                             class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
                             style="color: black;">#</th>
-                        <th scope="col"
-                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
                             จังหวัด</th>
-                        <th scope="col"
-                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
                             จำนวนสาขา</th>
                         <th scope="col" class="py-3" id="regionBranchCount"></th>
@@ -479,18 +473,117 @@
                 </tbody>
             </table>
         </div>
-        
 
 
 
-        <script>
-            let region = null;
-            let province = null;
-            let branches = [];
-            let currentPage = 1;
+ <script>
+    let region = null;
+    let province = null;
+    let branches = [];
+    let currentPage = 1;
+    const totalItems = 100; // Total number of items (you will fetch this from the server)
+    const rowsPerPage = 10; // Number of items per page
+
+    function renderPagination(type = 'region', region, province, page = 1) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        const totalPages = Math.ceil(totalItems / rowsPerPage);
+        const maxVisible = 1;  // Number of pages before and after the current page to display
+        let startPage = Math.max(1, currentPage - maxVisible);
+        let endPage = Math.min(totalPages, currentPage + maxVisible);
+
+        if (totalPages <= 1) return;  // If only one page, no pagination needed
+
+        // Function to create a page button
+        const createPageButton = (page, isActive = false) => {
+            const btn = document.createElement("button");
+            btn.innerText = page;
+            btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+            btn.onclick = () => goToPage(type, region, province, page); // Pass region and province too
+            return btn;
+        };
+
+        // Function to create ellipsis button ("...")
+        const createEllipsis = () => {
+            const btn = document.createElement("button");
+            btn.innerText = "...";
+            btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+            btn.onclick = () => {
+                Swal.fire({
+                    title: "Go to page...",
+                    input: "number",
+                    inputLabel: `Enter page number (1 - ${totalPages})`,
+                    inputAttributes: { min: 1, max: totalPages, step: 1 },
+                    showCancelButton: true,
+                    confirmButtonText: "Go!",
+                    confirmButtonColor: "#3062B8",
+                    inputValidator: (value) => {
+                        if (!value || isNaN(value)) return "Please enter a valid number.";
+                        if (value < 1 || value > totalPages) return `Page number must be between 1 and ${totalPages}.`;
+                        return null;
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) goToPage(type, region, province, parseInt(result.value));
+                });
+            };
+            return btn;
+        };
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.innerHTML = "&lt;";
+        prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => goToPage(type, region, province, currentPage - 1);
+        pagination.appendChild(prevBtn);
+
+        // Display first page button and ellipsis if necessary
+        if (startPage > 1) {
+            pagination.appendChild(createPageButton(1));
+            if (startPage > 2) pagination.appendChild(createEllipsis());
+        }
+
+        // Display page numbers in the current range
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.appendChild(createPageButton(i, i === currentPage));
+        }
+
+        // Display last page button and ellipsis if necessary
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+            pagination.appendChild(createPageButton(totalPages));
+        }
+
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.innerHTML = "&gt;";
+        nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => goToPage(type, region, province, currentPage + 1);
+        pagination.appendChild(nextBtn);
+    }
+
+    // Function to navigate to a specific page
+    function goToPage(type = 'region', region = null, province = null, pageNumber) {
+        currentPage = pageNumber;
+
+        if (type == 'region') {
+            buildRegionTable(pageNumber);  // This should fetch data for the current page
+        } else if (type == 'province') {
+            buildProvinceTable(region, pageNumber);  // This should fetch data for the current page
+        } else if (type == 'branches') {
+            buildBranchesTable(region, province, pageNumber);  // This should fetch data for the current page
+        }
+        renderPagination(type, region, province);  // Re-render pagination
+    }
 
 
-            function buildRegionTable() {
+            // Call renderPagination whenever you need to update the pagination (e.g., after fetching data)
+
+
+            function buildRegionTable(page = 1) {
+                
                 // fetch /api/getRegionBranch
                 // example response
                 // {
@@ -544,59 +637,65 @@
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
-                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
+                    fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         date,
-                        user_id
+                        user_id,
+                        page: page || currentPage
                     }).toString())
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Region Branch Data:', data);
-                        clearTableBody();
-                        const regionTableBody = document.getElementById('regionTableBody');
-                        regionTableBody.innerHTML = ''; // Clear existing data
-                        data.branch_count_by_region.forEach((region, index) => {
-                            let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
-                                        <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
-                                        <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
-                                     </tr>`;
-                            regionTableBody.innerHTML += row;
-                        });
-                        let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
-                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
-                        // Render full branch list if available
-                        if (data.branches) {
-                            const tableBody = document.getElementById('tableBody');
-                            tableBody.innerHTML = ''; // Clear previous rows
-
-                            data.branches.forEach((branch, index) => {
-                                let row = `
-                                    <tr class="hover:bg-gray-100">
-                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
-                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
-                                            ${branch.branchName}
-                                        </td>
-                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
-                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                `;
-                                tableBody.innerHTML += row;
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Region Branch Data:', data);
+                            clearTableBody();
+                            const regionTableBody = document.getElementById('regionTableBody');
+                            regionTableBody.innerHTML = ''; // Clear existing data
+                            data.branch_count_by_region.forEach((region, index) => {
+                                let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
+                                                        <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
+                                                     </tr>`;
+                                regionTableBody.innerHTML += row;
                             });
-                        }
-                        hideBackButton();
-                        showRegionTable();
-                        setBackButtonOnClick(() => {
-                            buildRegionTable();
-                        });
-                    }).catch(error => console.error('Error fetching region branch data:', error));
+                            let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
+                            document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+                            // Render full branch list if available
+                            if (data.branches) {
+                                const tableBody = document.getElementById('tableBody');
+                                tableBody.innerHTML = ''; // Clear previous rows
+
+                                data.branches.forEach((branch, index) => {
+                                    let row = `
+                                                    <tr class="hover:bg-gray-100">
+                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                                            ${branch.branchName}
+                                                        </td>
+                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                    tableBody.innerHTML += row;
+                                });
+                            }
+                            hideBackButton();
+                            showRegionTable();
+                            setBackButtonOnClick(() => {
+                                buildRegionTable();
+                            });
+                            renderPagination('region', region);  // Render pagination for region table
+                        }).catch(error => console.error('Error fetching region branch data:', error));
+
+
             }
 
-            function buildProvinceTable(region) {
+
+            function buildProvinceTable(region, page = 1) {
+                currentPage = page;
                 const regions = {
                     'NORTH': 'ภาคเหนือ',
                     'NORTHEAST': 'ภาคตะวันออกเฉียงเหนือ',
@@ -626,13 +725,14 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
+                                    {{ session()->get('user')->user_id }};
 
                 fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
-                        region,
-                        date,
-                        user_id
-                    }).toString())
+                    region,
+                    date,
+                    user_id,
+                    page: page || currentPage
+                }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Province Branch Data:', data);
@@ -644,14 +744,14 @@
 
                         data.branch_count_by_province.forEach((province, index) => {
                             let row = `
-                            <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
-                                <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
-                                <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
-                                <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
-                                <td class="px-3 py-2 text-center whitespace-nowrap">
-                                    <span class="icon-[material-symbols--chevron-right-rounded]"></span>
-                                </td>
-                            </tr>`;
+                                            <tr class="cursor-pointer" onclick="buildBranchesTable('${region}', '${province.province}')">
+                                                <td class="px-6 py-2 text-center align-middle whitespace-nowrap">${index + 1}</td>
+                                                <td class="px-6 py-2 whitespace-nowrap">${province.province}</td>
+                                                <td class="px-6 py-2 text-center whitespace-nowrap">${province.branch_count}</td>
+                                                <td class="px-3 py-2 text-center whitespace-nowrap">
+                                                    <span class="icon-[material-symbols--chevron-right-rounded]"></span>
+                                                </td>
+                                            </tr>`;
                             provinceTableBody.innerHTML += row;
                         });
 
@@ -664,19 +764,19 @@
 
                             data.branches.forEach((branch, index) => {
                                 let row = `
-                                    <tr class="hover:bg-gray-100">
-                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
-                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
-                                            ${branch.branchName}
-                                        </td>
-                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
-                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                `;
+                                                    <tr class="hover:bg-gray-100">
+                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                                            ${branch.branchName}
+                                                        </td>
+                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                `;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -685,12 +785,15 @@
                         setBackButtonOnClick(() => {
                             buildRegionTable();
                         });
+                        renderPagination('province', region);  // Render pagination for province table
                     })
                     .catch(error => console.error('Error fetching province branch data:', error));
+
             }
 
 
-            function buildBranchesTable(region, province) {
+            function buildBranchesTable(region, province, page = 1) {
+                currentPage = page;
                 // fetch /api/getRegionBranch?region=SOUTH&province=กระบี่
                 // example response
                 // {
@@ -725,14 +828,15 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                    {{ session()->get('user')->user_id }};
+                                    {{ session()->get('user')->user_id }};
 
                 fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
-                        region,
-                        province,
-                        date,
-                        user_id
-                    }).toString())
+                    region,
+                    province,
+                    date,
+                    user_id,
+                    page: page || currentPage
+                }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
@@ -744,19 +848,19 @@
 
                         data.branches.forEach((branch, index) => {
                             let row = `
-                        <tr class="hover:bg-gray-100">
-                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
-                            <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
-                                ${branch.branchName}
-                            </td>
-                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
-                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                                <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                    ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                </span>
-                            </td>
-                        </tr>
-                        `;
+                                        <tr class="hover:bg-gray-100">
+                                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                            <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                                ${branch.branchName}
+                                            </td>
+                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
+                                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                                <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                    ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        `;
 
                             tableBody.innerHTML += row;
                         });
@@ -774,6 +878,7 @@
 
                         // อัปเดตจำนวนสาขา
                         document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${data.branch_count} สาขา`;
+                        renderPagination('branches', region, province);  // Render pagination for branches table
                     })
                     .catch(error => console.error('Error fetching branches data:', error));
             }
@@ -805,7 +910,7 @@
 
             function setBackButtonOnClick(func) {
                 const backButton = document.getElementById('regionTableBack');
-                backButton.onclick = function() {
+                backButton.onclick = function () {
                     // เปลี่ยนชื่อหัวเรื่องกลับเป็น "ภูมิภาค"
                     const regionTitle = document.getElementById('regionTitle');
                     regionTitle.textContent = "ภูมิภาค";
@@ -818,7 +923,7 @@
             }
 
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 buildRegionTable();
             });
         </script>
@@ -853,7 +958,7 @@
 
         <!-- Pagination Controls -->
         <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-        
+
 
 
     </div>
