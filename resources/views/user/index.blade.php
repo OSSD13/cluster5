@@ -353,53 +353,53 @@
 
     // ฟังก์ชันสำหรับดูรายละเอียดสมาชิก
     function viewDetail(id) {
-        const member = members.find(item => item.user_id === id);
+    const member = members.find(item => item.user_id === id);
 
-        let supervisorInfo = "";
-        if (member.role_name.toLowerCase() === "sale" && member.manager) {
-            const supervisor = supervisors.find(sup => sup.user_id === member.manager);
-            supervisorInfo = supervisor ? `
-                <div class="w-full">
-                    <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
-                        value="${supervisor.name} - ${supervisor.email}" readonly>
-                </div>` : `
-                <div class="w-full">
-                    <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
-                        value="ไม่พบ Supervisor" readonly>
-                </div>`;
-        }
-
-        Swal.fire({
-            html: `
-                <div class="flex flex-col text-3xl mb-6 mt-4">
-                    <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
-                </div>
-                <div class="flex flex-col space-y-2 text-left">
-                    <div class="w-full">
-                        <label class="font-medium text-gray-800 text-sm">ชื่อสมาชิก</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}" readonly>
-                    </div>
-                    <div class="w-full">
-                        <label class="font-medium text-gray-800 text-sm">อีเมล</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
-                    </div>
-                    <div class="w-full">
-                        <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(member.created_at)}" readonly>
-                    </div>
-                    <div class="w-full">
-                        <label class="font-medium text-gray-800 text-sm">บทบาท</label>
-                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role_name}" readonly>
-                    </div>
-                    ${supervisorInfo}
-                </div>`,
-            customClass: { popup: 'custom-popup' },
-            confirmButtonText: "ยืนยัน",
-            confirmButtonColor: "#2D8C42",
-        });
+    let supervisorInfo = "";
+    if (member.role_name.toLowerCase() === "sale" && member.manager) {
+        const supervisor = supervisors.find(sup => sup.user_id === member.manager);
+        supervisorInfo = supervisor ? `
+            <div class="w-full">
+                <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
+                       value="${supervisor.name} - ${supervisor.email}" readonly>
+            </div>` : `
+            <div class="w-full">
+                <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
+                <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
+                       value="ไม่พบ Supervisor" readonly>
+            </div>`;
     }
+
+    Swal.fire({
+        html: `
+            <div class="flex flex-col text-3xl mb-6 mt-4">
+                 <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
+            </div>
+            <div class="flex flex-col space-y-2 text-left">
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">ชื่อสมาชิก</label>
+                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}" readonly>
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">อีเมล</label>
+                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
+                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(member.created_at)}" readonly>
+                </div>
+                <div class="w-full">
+                    <label class="font-medium text-gray-800 text-sm">บทบาท</label>
+                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role_name}" readonly>
+                </div>
+                ${supervisorInfo}
+            </div>`,
+        customClass: { popup: 'custom-popup' },
+        confirmButtonText: "ยืนยัน",
+        confirmButtonColor: "#2D8C42",
+    });
+}
 
     // แปลงวันที่เป็นภาษาไทย
     function formatThaiDate(dateStr) {
@@ -657,10 +657,6 @@
                     Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                     return false;
                 }
-            }
-            
-            if (role === "ceo" || role === "supervisor") {
-                manager = null;
             }
 
             try {
