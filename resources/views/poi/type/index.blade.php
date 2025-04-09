@@ -160,73 +160,109 @@
         }
 
         if (e.target.classList.contains("edit-btn")) {
-            Swal.fire({
-                title: "แก้ไข POIT",
-                html: `<div id="editPoitContainer"></div>`,
-                showCancelButton: true,
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก",
-                didOpen: () => {
-                    document.getElementById("editPoitContainer").innerHTML = `
-                        <div class="space-y-2">
-                            <label>ชื่อ</label>
-                            <input id="poitName" class="w-full border rounded p-2" value="${poit.poit_name}">
-                            <label>ประเภท</label>
-                            <input id="poitType" class="w-full border rounded p-2" value="${poit.poit_type}" readonly>
-                            <label>Icon</label>
-                            <div class="relative">
-                                <input id="iconInput" class="w-full border rounded p-2" value="${poit.poit_icon || ''}">
-                                <button id="emojiButton" class="absolute right-0 top-0 h-full px-3 bg-blue-600 text-white rounded-r">😀</button>
-                            </div>
-                            <div id="emojiPickerContainer" class="hidden">
-                                <emoji-picker class="w-full light"></emoji-picker>
-                            </div>
-                            <label>สี</label>
-                            <input id="colorInput" type="color" class="w-full border rounded p-2" value="${poit.poit_color || '#888'}">
-                            <label>คำอธิบาย</label>
-                            <textarea id="poitDescription" class="w-full border rounded p-2">${poit.poit_description || ''}</textarea>
-                        </div>`;
+                const poitType = poit.poit_type; // เก็บไว้ตรงนี้เพื่อใช้ใน preConfirm
 
-                    document.getElementById("emojiButton").addEventListener("click", () => {
-                        document.getElementById("emojiPickerContainer").classList.toggle("hidden");
-                    });
+                Swal.fire({
+                    title: "แก้ไข POIT",
+                    html: `<div id="editPoitContainer"></div>`,
+                    showCancelButton: true,
+                    confirmButtonText: "ยืนยัน",
+                    cancelButtonText: "ยกเลิก",
+                    didOpen: () => {
+                        document.getElementById("editPoitContainer").innerHTML = `
+                            <div class="space-y-4 text-left">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">ประเภท (รหัส)</label>
+                                    <input class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 bg-gray-100" value="${poitType}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">ชื่อประเภท</label>
+                                    <input id="poitName" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800" value="${poit.poit_name}">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">Icon</label>
+                                    <div class="relative flex items-center">
+                                        <input id="iconInput" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 pr-10" value="${poit.poit_icon || ''}">
+                                        <button id="emojiButton" class="absolute right-0 top-0 bottom-0 px-3 bg-blue-600 text-white rounded-r">😀</button>
+                                    </div>
+                                    <div id="emojiPickerContainer" class="hidden">
+                                        <emoji-picker class="w-full light"></emoji-picker>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">สี</label>
+                                    <div class="relative flex items-center">
+                                        <input id="colorInput" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800 pr-10" value="${poit.poit_color || '#888'}">
+                                        <button id="colorButton" class="absolute right-0 top-0 bottom-0 px-3 bg-blue-600 text-white rounded-r" style="background-color: ${poit.poit_color || '#888'};">🎨</button>
+                                    </div>
+                                    <input type="color" id="colorPicker" class="hidden" value="${poit.poit_color || '#888'}">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-1">คำอธิบาย</label>
+                                    <textarea id="poitDescription" class="w-full p-2 border border-gray-300 rounded-md text-sm text-gray-800">${poit.poit_description || ''}</textarea>
+                                </div>
+                            </div>`;
 
-                    document.querySelector("emoji-picker").addEventListener("emoji-click", event => {
-                        document.getElementById("iconInput").value = event.detail.unicode;
-                        document.getElementById("emojiPickerContainer").classList.add("hidden");
-                    });
-                },
-                preConfirm: async () => {
-                    const name = document.getElementById("poitName").value;
-                    const type = document.getElementById("poitType").value;
-                    const icon = document.getElementById("iconInput").value;
-                    const color = document.getElementById("colorInput").value;
-                    const desc = document.getElementById("poitDescription").value;
+                        // Emoji picker logic
+                        document.getElementById("emojiButton").addEventListener("click", () => {
+                            document.getElementById("emojiPickerContainer").classList.toggle("hidden");
+                        });
+                        document.querySelector("emoji-picker").addEventListener("emoji-click", event => {
+                            document.getElementById("iconInput").value = event.detail.unicode;
+                            document.getElementById("emojiPickerContainer").classList.add("hidden");
+                        });
 
-                    if (!name || !desc) {
-                        Swal.showValidationMessage("กรุณากรอกชื่อและคำอธิบาย");
-                        return false;
+                        // Color picker logic
+                        const colorInput = document.getElementById("colorInput");
+                        const colorButton = document.getElementById("colorButton");
+                        const colorPicker = document.getElementById("colorPicker");
+
+                        colorButton.addEventListener("click", () => colorPicker.click());
+                        colorInput.addEventListener("input", () => {
+                            colorButton.style.backgroundColor = colorInput.value;
+                        });
+                        colorPicker.addEventListener("input", () => {
+                            colorInput.value = colorPicker.value;
+                            colorButton.style.backgroundColor = colorPicker.value;
+                        });
+                    },
+                    preConfirm: async () => {
+                        const name = document.getElementById("poitName").value;
+                        const icon = document.getElementById("iconInput").value;
+                        const color = document.getElementById("colorInput").value;
+                        const desc = document.getElementById("poitDescription").value;
+
+                        if (!name || !desc) {
+                            Swal.showValidationMessage("กรุณากรอกชื่อและคำอธิบาย");
+                            return false;
+                        }
+
+                        const res = await fetch("{{ route('api.poit.edit') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector('meta[name=csrf-token]').content
+                            },
+                            body: JSON.stringify({
+                                poit_type: poitType, // ใช้ค่าจาก const ด้านบน
+                                poit_name: name,
+                                poit_icon: icon,
+                                poit_color: color,
+                                poit_description: desc
+                            })
+                        });
+                        const data = await res.json();
+                        if (data.status === "success") {
+                            fetchPoits(document.getElementById("searchInput").value);
+                            return true;
+                        } else {
+                            Swal.showValidationMessage(data.message || "ไม่สามารถอัปเดตข้อมูลได้");
+                            return false;
+                        }
                     }
+                });
+            }
 
-                    const res = await fetch("{{ route('api.poit.edit') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('meta[name=csrf-token]').content
-                        },
-                        body: JSON.stringify({ poit_type: type, poit_name: name, poit_icon: icon, poit_color: color, poit_description: desc })
-                    });
-                    const data = await res.json();
-                    if (data.status === "success") {
-                        fetchPoits(document.getElementById("searchInput").value);
-                        return true;
-                    } else {
-                        Swal.showValidationMessage(data.message || "ไม่สามารถอัปเดตข้อมูลได้");
-                        return false;
-                    }
-                }
-            });
-        }
 
         if (e.target.classList.contains("delete-btn")) {
             Swal.fire({

@@ -5,20 +5,25 @@
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-800" >POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-800">POI จัดการสถานที่ที่สนใจ</h2>
 
             <a href="{{ route('poi.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap"
+                    style="background-color: #3062B8">
                     สร้าง POI
                 </button>
             </a>
         </div>
 
-        <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ"
+            class="w-full p-2 border border-gray-300 rounded mb-3">
 
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
         <a href="{{ route('poi.type.index') }}">
-            <button class="hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
+            <button
+                class="hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded whitespace-nowrap"
+                style="background-color: #3062B8">
                 ไปหน้า POI type
             </button>
         </a>
@@ -49,14 +54,27 @@
         let currentPage = 1;
         const rowsPerPage = 10;
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchPois();
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchPois();
 
-        document.getElementById("searchInput").addEventListener("input", function () {
-            currentPage = 1;
-            fetchPois(this.value);
+            document.getElementById("searchInput").addEventListener("input", function () {
+                currentPage = 1;
+                fetchPois(this.value);
+            });
         });
-    });
+
+        async function fetchPois(search = '') {
+            const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+            const result = await res.json();
+            pois = result.data;
+            document.getElementById("resultCount").innerText = result.total;
+            renderTable();
+            renderPagination(result.total);
+        }
+
+        function displayValue(value) {
+            return value === null || value === undefined || value === "" ? "-" : value;
+        }
 
     async function fetchPois(search = '') {
         const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
@@ -67,9 +85,9 @@
         renderPagination(result.total);
     }
 
-    function renderTable() {
-        const tableBody = document.getElementById("tableBody");
-        tableBody.innerHTML = "";
+        function renderTable() {
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
 
             pois.forEach((poi) => {
                 const row = document.createElement("tr");
@@ -107,7 +125,7 @@
                 const btn = document.createElement("button");
                 btn.innerText = i;
                 btn.className = `px-4 py-2 mx-1 rounded-lg text-base font-semibold 
-                                 ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black"}`;
+                                     ${i === currentPage ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black"}`;
                 btn.onclick = () => goToPage(i);
                 pagination.appendChild(btn);
             }
@@ -120,20 +138,20 @@
             pagination.appendChild(nextBtn);
         }
 
-    function goToPage(pageNumber) {
-        currentPage = pageNumber;
-        fetchPois(document.getElementById("searchInput").value);
-    }
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            fetchPois(document.getElementById("searchInput").value);
+        }
 
-    function toggleMenu(event, id) {
-        event.stopPropagation();
-        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-        document.getElementById(`menu-${id}`).classList.toggle("hidden");
-    }
+        function toggleMenu(event, id) {
+            event.stopPropagation();
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+            document.getElementById(`menu-${id}`).classList.toggle("hidden");
+        }
 
-    document.addEventListener("click", () => {
-        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-    });
+        document.addEventListener("click", () => {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+        });
 
         function deletePoi(id) {
             Swal.fire({
@@ -171,14 +189,14 @@
             Swal.fire({
                 title: "รายละเอียดสถานที่",
                 html: `
-                    <div class="text-left space-y-2 text-sm text-gray-700">
-                        <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
-                        <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
-                        <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
-                        <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
-                        <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
-                    </div>
-                `,
+                        <div class="text-left space-y-2 text-sm text-gray-700">
+                            <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
+                            <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
+                            <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
+                            <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
+                            <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
+                        </div>
+                    `,
                 confirmButtonText: "ปิด",
                 confirmButtonColor: "#3085d6"
             });
@@ -194,9 +212,9 @@
             });
         }
 
-            function safeText(text) {
-                return text ?? '-';
-            }
+        function safeText(text) {
+            return text ?? '-';
+        }
 
     </script>
 @endsection
