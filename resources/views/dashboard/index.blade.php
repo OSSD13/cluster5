@@ -929,10 +929,10 @@
             });
         </script>
 
-        <div class="overflow-x-auto w-full">
+        <div class="overflow-x-auto w-full rounded-lg">
             <table class="table-auto w-full border-collapse rounded-lg text-sm" id="branchTable"
                 style="table-layout: fixed;">
-                <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
+                <thead class="bg-blue-500 text-gray-800" style="background-color: #B6D2FF">
                     <tr>
                         <th class="px-2 py-2 text-center text-xs" style="min-width: 40px; width: 10%;">ID</th>
                         <th class="px-2 py-2 text-left text-xs" style="min-width: 150px; width: 40%;">ชื่อสาขา</th>
@@ -953,6 +953,20 @@
                         </td>
                     </tr>
                 </tbody>
+            </table>
+        </div>
+        <div class="overflow-visible">
+            <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+                <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
+                    <tr>
+                        <th class="py-3 px-4 text-left min-w-[0px]">ชื่อ / ประเภท</th>
+                        <th scope="col" class="py-2 px-4 text-left">Icon</th>
+                        <th class="py-3 px-4 text-center max-w-[120px]">คำอธิบาย</th>
+                        <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+                      </tr>
+                </thead>
+        
+                <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
             </table>
         </div>
 
