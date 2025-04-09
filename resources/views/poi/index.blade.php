@@ -3,28 +3,22 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-<div id="globalDropdownMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-[150px] z-50 p-2 space-y-2 transition duration-200"></div>
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-800">POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-800" >POI จัดการสถานที่ที่สนใจ</h2>
 
             <a href="{{ route('poi.create') }}">
-                <button
-                    class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap"
-                    style="background-color: #3062B8">
+                <button class="bg-blue-500 hover:bg-blue-700 border border-gray-400 text-white font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                     สร้าง POI
                 </button>
             </a>
         </div>
 
-        <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ"
-            class="w-full p-2 border border-gray-300 rounded mb-3">
+        <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3">
 
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
         <a href="{{ route('poi.type.index') }}">
-            <button
-                class="hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded whitespace-nowrap"
-                style="background-color: #3062B8">
+            <button class="hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded whitespace-nowrap" style="background-color: #3062B8">
                 ไปหน้า POI type
             </button>
         </a>
@@ -55,37 +49,39 @@
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchPois();
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchPois();
 
-            document.getElementById("searchInput").addEventListener("input", function () {
-                currentPage = 1;
-                fetchPois(this.value);
-            });
+        document.getElementById("searchInput").addEventListener("input", function () {
+            currentPage = 1;
+            fetchPois(this.value);
         });
+    });
 
     async function fetchPois(search = '') {
         const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
         const result = await res.json();
         pois = result.data;
-        document.getElementById("resultCount").innerText = result.total;
         total = result.total;
+        document.getElementById("searchInput").value = search;
+        document.getElementById("resultCount").innerText = result.total;
         renderTable();
         renderPagination(result.total);
     }
 
-        function renderTable() {
-            const tableBody = document.getElementById("tableBody");
-            tableBody.innerHTML = "";
+    function renderTable() {
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+
             pois.forEach((poi) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
                 <td class="py-3 px-4 w-16">${poi.poi_id}</td>
                 <td class="py-3 px-4 ">
-                    <div class="font-semibold text-md" title="${safeText(poi.poi_name)}">${safeText(poi.poi_name)}</div>
-                    <div class="text-sm text-gray-400 " title="${safeText(poi.poit_name)}">${safeText(poi.poit_name)}</div>
+                    <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
+                    <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
                 </td>
-                <td class="py-3 px-4 text-center ">${safeText(poi.province)|| '-'}</td>
+                <td class="py-3 px-4 text-center ">${poi.province || '-'}</td>
 
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
@@ -98,9 +94,7 @@
             `;
             tableBody.appendChild(row);
             });
-
         }
-
         function renderPagination() {
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
@@ -180,56 +174,16 @@
     fetchPois(searchValue);  // แก้ไขจาก fetchPoits เป็น fetchPois
     }
 
-    let activeMenuId = null;
 
-function toggleMenu(event, id) {
-    event.stopPropagation();
-
-    const button = event.currentTarget;
-    const menu = document.getElementById("globalDropdownMenu");
-
-    // ปิดถ้าเมนูเดิมเปิดอยู่
-    if (activeMenuId === id && !menu.classList.contains("hidden")) {
-        menu.classList.add("hidden");
-        activeMenuId = null;
-        return;
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+        document.getElementById(`menu-${id}`).classList.toggle("hidden");
     }
 
-    activeMenuId = id;
-
-    menu.innerHTML = `
-        <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8" 
-            onclick="document.getElementById('globalDropdownMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
-            ดูรายละเอียด
-        </button>
-        <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" 
-            onclick="document.getElementById('globalDropdownMenu').classList.add('hidden'); activeMenuId = null; window.location.href='{{ route('poi.edit') }}?id=${id}'">
-            แก้ไข
-        </button>
-        <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" 
-            onclick="document.getElementById('globalDropdownMenu').classList.add('hidden'); activeMenuId = null; deletePoi(${id})">
-            ลบ
-        </button>
-    `;
-
-            // เอาตำแหน่งของปุ่มมา
-            const rect = button.getBoundingClientRect();
-            const menuWidth = menu.offsetWidth || 160; // default กว้างประมาณนี้
-            const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-            // วางเมนูชิดซ้ายของปุ่ม
-            menu.style.left = `${rect.left - menuWidth + rect.width}px`;
-            menu.style.top = `${rect.top + scrollTop}px`;
-            menu.classList.remove("hidden");
-        }
-        document.addEventListener("click", function () {
-        const menu = document.getElementById("globalDropdownMenu");
-        if (!menu.classList.contains("hidden")) {
-            menu.classList.add("hidden");
-            activeMenuId = null;
-        }
-         });
-
+    document.addEventListener("click", () => {
+        document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
+    });
 
         function deletePoi(id) {
             Swal.fire({
@@ -241,17 +195,13 @@ function toggleMenu(event, id) {
                 cancelButtonColor: "#aaa",
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก"
-            }).then(async (result) => {
+            }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log(id);
-                    
-                    const res = await fetch("{{ route('api.poi.delete') }}", {
+                    fetch(`/poi/${id}`, {
                         method: 'DELETE',
                         headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
-                        } ,
-                        body: JSON.stringify({ poi_id: id })
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
                     }).then(res => {
                         if (res.ok) {
                             Swal.fire("สำเร็จ", "ลบเรียบร้อย", "success");
@@ -271,14 +221,14 @@ function toggleMenu(event, id) {
             Swal.fire({
                 title: "รายละเอียดสถานที่",
                 html: `
-                        <div class="text-left space-y-2 text-sm text-gray-700">
-                            <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
-                            <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
-                            <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
-                            <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
-                            <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
-                        </div>
-                    `,
+                    <div class="text-left space-y-2 text-sm text-gray-700">
+                        <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
+                        <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
+                        <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
+                        <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
+                        <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
+                    </div>
+                `,
                 confirmButtonText: "ปิด",
                 confirmButtonColor: "#3085d6"
             });
@@ -294,8 +244,9 @@ function toggleMenu(event, id) {
             });
         }
 
-        function safeText(text) {
-            return text ?? '-';
-        }
+            function safeText(text) {
+                return text ?? '-';
+            }
+
     </script>
 @endsection

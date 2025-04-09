@@ -3,11 +3,6 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-<style>
-    .error-input-style {
-        border: 2px solid #F02801;
-    }
-</style>
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
     <h2 class="text-2xl font-bold text-gray-800 mb-4">POI แก้ไขสถานที่</h2>
 
@@ -57,7 +52,6 @@
     </div>
 </div>
 @endsection
-
 @section('script')
 <script>
     $(document).ready(function () {
@@ -181,35 +175,37 @@ function updateMapPosition() {
             database: '{{ asset('assets/js/db.json') }}',
             database_type: 'json',
 
-            $district: $('#district'),
-            $amphoe: $('#amphoe'),
-            $province: $('#province'),
-            $zipcode: $('#zipcode'),
-
-            onDataFill: function (data) {
-                console.info('Data Filled', data);
-            },
-
-            onLoad: function () {
-                console.info('Thailand.js Autocomplete ready ✔️');
-            }
+        // สร้างแผนที่บน div ที่มี id="map"
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: initialPosition,  // ตั้งศูนย์แผนที่ตรงตำแหน่งเริ่มต้น
+            mapTypeId: google.maps.MapTypeId.ROADMAP
         });
 
-        // Optional: log changes
-        $('#amphoe').on('change', function () {
-            console.log('ตำบล', this.value);
+        // สร้าง Marker
+        const marker = new google.maps.Marker({
+            position: initialPosition,
+            map: map,
+            title: "ตำแหน่งของคุณ",
+            draggable: true
         });
-        $('#district').on('change', function () {
-            console.log('อำเภอ', this.value);
+
+        // ฟังก์ชันการอัพเดตค่าละติจูดและลองจิจูดจากการลาก Marker
+        google.maps.event.addListener(marker, 'dragend', function(event) {
+            document.getElementById('latitude').value = event.latLng.lat();
+            document.getElementById('longitude').value = event.latLng.lng();
         });
-        $('#province').on('change', function () {
-            console.log('จังหวัด', this.value);
-        });
-        $('#zipcode').on('change', function () {
-            console.log('รหัสไปรษณีย์', this.value);
-        });
-    });
+    }
+
+    // โหลด Google Maps API พร้อมกับการเรียกใช้งานฟังก์ชัน initMap
+    function loadGoogleMapsAPI() {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
+    window.onload = loadGoogleMapsAPI;
 </script>
-
-
 @endsection
