@@ -550,7 +550,6 @@ function viewDetail(id) {
 
 
 
-
     // ฟังก์ชันสำหรับแก้ไขสมาชิก
     async function editMember(id) {
     const member = members.find(item => item.user_id === id);
@@ -600,7 +599,7 @@ function viewDetail(id) {
         `,
         didOpen: async () => {
             if (member.role_name === "sale") {
-                await toggleSupervisor(member.manager); // 👈 แทนที่จะ setTimeout
+                await toggleSupervisor(member.manager);
             } else {
                 toggleSupervisor();
             }
@@ -634,6 +633,8 @@ function viewDetail(id) {
                     Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
                     return false;
                 }
+            } else {
+                manager = null
             }
 
             try {
@@ -651,7 +652,6 @@ function viewDetail(id) {
                         role_name: role,
                         manager: manager ? parseInt(manager) : null,
                         user_status: "normal"
-
                     })
                 });
 
@@ -671,15 +671,14 @@ function viewDetail(id) {
                     confirmButtonText: "ตกลง"
                 });
 
-                // รีเฟรชข้อมูลจาก API ใหม่
                 fetchMembers();
-
             } catch (error) {
                 Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ API");
                 console.error("Edit API error:", error);
                 return false;
             }
         }
+
     });
 }
 

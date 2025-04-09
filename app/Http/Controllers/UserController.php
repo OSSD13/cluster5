@@ -87,7 +87,7 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:6',
             'role_name' => 'required|string|in:sale,supervisor,ceo',
@@ -96,6 +96,7 @@ class UserController extends Controller
         ], [
             'email.required' => 'กรุณากรอกอีเมล',
             'email.email' => 'รูปแบบอีเมลไม่ถูกต้อง',
+            'email.unique' => 'อีเมลนี้ถูกใช้งานแล้ว',
             'name.required' => 'กรุณากรอกชื่อ',
             'password.required' => 'กรุณากรอกรหัสผ่าน',
             'password.min' => 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
@@ -169,7 +170,19 @@ class UserController extends Controller
         if ($request->input('password')) $user->password = bcrypt($request->input('password'));
         if ($request->input('role_name')) $user->role_name = $request->input('role_name');
         if ($request->input('user_status')) $user->user_status = $request->input('user_status');
-        if ($request->input('manager')) $user->manager = $request->input('manager');
+        if ($request->has('role_name') && $request->input('role_name') !== 'sale') {
+            $user->manager = null;
+        } elseif ($request->has('manager')) {
+            $user->manager = $request->input('manager');
+        }
+        
+        // ห้ามเลือกตัวเองเป็นหัวหน้า
+        if ($request->has('manager') && $request->input('manager') == $user->user_id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ไม่สามารถเลือกตัวเองเป็นหัวหน้าได้'
+            ], 422);
+        }
 
         $user->save();
 
