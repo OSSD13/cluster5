@@ -235,28 +235,36 @@
 
     // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
     function filterAll() {
-        const searchVal = document.getElementById("searchInput").value.toLowerCase();
-        const supervisorId = document.getElementById("supervisorSelect").value;
-        const roleVal = document.getElementById("roleSelect").value;
+    const searchVal = document.getElementById("searchInput").value.toLowerCase();
+    const supervisorId = document.getElementById("supervisorSelect").value;
+    const roleVal = document.getElementById("roleSelect").value;
 
-        let filtered = members.filter(m => {
-            const matchesSearch =
-                m.user_id.toString().includes(searchVal) ||
-                m.name.toLowerCase().includes(searchVal) ||
-                m.email.toLowerCase().includes(searchVal) ||
-                m.role_name.toLowerCase().includes(searchVal);
+    const isShowAll = !searchVal && !supervisorId && !roleVal;
 
-            const matchesSupervisor = !supervisorId || m.manager?.toString() === supervisorId;
-            const matchesRole = !roleVal || m.role_name === roleVal;
-
-            return matchesSearch && matchesSupervisor && matchesRole;
-        });
-
-        currentPage = 1;
-        renderTable(filtered);
-        renderPagination(members.length);
-
+    if (isShowAll) {
+        fetchMembers();
+        return;
     }
+
+    let filtered = members.filter(m => {
+        const matchesSearch =
+            m.user_id.toString().includes(searchVal) ||
+            m.name.toLowerCase().includes(searchVal) ||
+            m.email.toLowerCase().includes(searchVal) ||
+            m.role_name.toLowerCase().includes(searchVal);
+
+        const matchesSupervisor = !supervisorId || m.manager?.toString() === supervisorId;
+        const matchesRole = !roleVal || m.role_name === roleVal;
+
+        return matchesSearch && matchesSupervisor && matchesRole;
+    });
+
+    currentPage = 1;
+    renderTable(filtered);
+    renderPagination(filtered.length);
+    document.getElementById("resultCount").textContent = `ผลลัพธ์ ${filtered.length} รายการ`;
+}
+
 
 
     let supervisors = [];
@@ -512,7 +520,7 @@ function viewDetail(id) {
                 const result = await response.json();
 
                 if (!response.ok) {
-                    // ✅ ตรวจสอบว่า error แบบ validate Laravel หรือ error อื่น
+                    
                     if (result?.errors) {
                         const errorMessages = Object.values(result.errors).flat().join('<br>');
                         Swal.showValidationMessage(errorMessages);
