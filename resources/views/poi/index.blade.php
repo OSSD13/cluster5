@@ -185,7 +185,7 @@
         document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
     });
 
-        function deletePoi(id) {
+    function deletePoi(id) {
             Swal.fire({
                 title: "ลบสถานที่",
                 text: "คุณต้องการลบ POI นี้ใช่หรือไม่?",
@@ -195,13 +195,17 @@
                 cancelButtonColor: "#aaa",
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก"
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    fetch(`/poi/${id}`, {
+                    console.log(id);
+                    
+                    const res = await fetch("{{ route('api.poi.delete') }}", {
                         method: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
+                        } ,
+                        body: JSON.stringify({ poi_id: id })
                     }).then(res => {
                         if (res.ok) {
                             Swal.fire("สำเร็จ", "ลบเรียบร้อย", "success");
