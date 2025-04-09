@@ -223,7 +223,7 @@ class UserController extends Controller
             'manager' => null
         ]);
     
-        // 🔥 ลบ user
+        
         $user->delete();
     
         return response()->json([
