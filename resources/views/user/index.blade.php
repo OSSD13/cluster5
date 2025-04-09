@@ -78,24 +78,8 @@
     let totalMembers = 0;
     let currentSort = { column: 'id', ascending: true };
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchMembers();
-        document.getElementById("searchInput").addEventListener("input", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-        document.getElementById("supervisorSelect").addEventListener("change", () => {
-            currentPage = 1;
-            filterAll(); // ใช้ฟังก์ชันนี้แทน fetchMembers();
-        });
-
-        document.getElementById("roleSelect").addEventListener("change", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-    });
-
     async function fetchMembers() {
+        console.trace('fetchMember')
         const search = document.getElementById("searchInput").value || '';
         const supervisorSelect = document.getElementById("supervisorSelect");
         const selectedSupervisor = supervisorSelect.value; // 💡 จำค่านี้ไว้
@@ -236,42 +220,6 @@
         renderTable();
     }
 
-    // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
-    async function filterAll() {
-        const search = document.getElementById("searchInput").value || '';
-        const role = document.getElementById("roleSelect").value || '';
-        const supervisorId = document.getElementById("supervisorSelect").value || '';
-
-        let query = `?page=${currentPage}&limit=${rowsPerPage}&search=${encodeURIComponent(search)}&role=${encodeURIComponent(role)}`;
-
-        // เพิ่ม target เมื่อเลือก supervisor
-        if (supervisorId) {
-            query += `&target=${supervisorId}`;
-        }
-
-        try {
-            const response = await fetch(`{{ route('api.user.query') }}${query}`);
-            const result = await response.json();
-            members = result.data || [];
-            totalMembers = result.total || 0;
-            
-            renderTable(members);
-            renderPagination(totalMembers);
-            document.getElementById("resultCount").textContent = `ผลลัพธ์ ${totalMembers} รายการ`;
-        } catch (error) {
-            console.error("Error fetching members:", error);
-        }
-        document.getElementById("supervisorSelect").addEventListener("change", () => {
-            currentPage = 1;
-            filterAll();
-        });
-
-        document.getElementById("roleSelect").addEventListener("change", () => {
-            currentPage = 1;
-            filterAll();
-        });
-
-    }
 
     let supervisors = [];
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
@@ -302,9 +250,9 @@
             fetchMembers(); // แล้วค่อย fetch สมาชิก
 
             // เพิ่ม event listener
-            document.getElementById("searchInput").addEventListener("input", filterAll);
-            document.getElementById("supervisorSelect").addEventListener("change", filterAll);
-            document.getElementById("roleSelect").addEventListener("change", filterAll);
+            document.getElementById("searchInput").addEventListener("input", fetchMembers);
+            document.getElementById("supervisorSelect").addEventListener("change", fetchMembers);
+            document.getElementById("roleSelect").addEventListener("change", fetchMembers);
         } catch (e) {
             console.error("โหลด supervisor ไม่ได้:", e);
         }
