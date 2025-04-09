@@ -74,9 +74,8 @@
         </div>
 
         <div id="infowindow-content">
-            <span id="place-name" class="title"></span><br />
-            <strong>Place ID:</strong> <span id="place-id"></span><br />
-            <span id="place-address"></span>
+            <span id="title"></span><br />
+            <span id="description"></span><br />
         </div>
         <div id="result">
             <h3 class="text-2xl font-bold text-primary-dark">ผลวิเคราะห์</h3>
@@ -158,13 +157,11 @@
                 infowindow.close();
             },
             setContent: function({
-                name,
-                placeId,
-                address
+                title,
+                description
             }) {
-                infowindowContent.children.namedItem("place-name").textContent = name;
-                infowindowContent.children.namedItem("place-id").textContent = placeId;
-                infowindowContent.children.namedItem("place-address").textContent = address;
+                infowindowContent.children.namedItem("title").textContent = title;
+                infowindowContent.children.namedItem("description").textContent = description;
             },
         }
 
@@ -232,28 +229,28 @@
                 let dist = spherical.computeDistanceBetween(MapMarker.position, pos);
 
                 return
-                if (e.placeId) {
-                    // get the place details for the place ID.
-                    const geocoder = new Geocoder();
-                    geocoder.geocode({
-                        placeId: e.placeId
-                    }, (results, status) => {
-                        if (status !== "OK") {
-                            window.alert("Geocoder failed due to: " + status);
-                            return;
-                        }
-                        MapMarker.position = e.latLng;
-                        map.setZoom(17);
-                        map.setCenter(e.latLng);
-                        infoWindow.close();
-                        infoWindow.setContent({
-                            name: results[0].name,
-                            placeId: results[0].place_id,
-                            address: results[0].formatted_address
-                        });
-                        infoWindow.open(map, MapMarker);
-                    });
-                }
+                // if (e.placeId) {
+                //     // get the place details for the place ID.
+                //     const geocoder = new Geocoder();
+                //     geocoder.geocode({
+                //         placeId: e.placeId
+                //     }, (results, status) => {
+                //         if (status !== "OK") {
+                //             window.alert("Geocoder failed due to: " + status);
+                //             return;
+                //         }
+                //         MapMarker.position = e.latLng;
+                //         map.setZoom(17);
+                //         map.setCenter(e.latLng);
+                //         infoWindow.close();
+                //         infoWindow.setContent({
+                //             name: results[0].name,
+                //             placeId: results[0].place_id,
+                //             address: results[0].formatted_address
+                //         });
+                //         infoWindow.open(map, MapMarker);
+                //     });
+                // }
             });
 
 
@@ -284,13 +281,13 @@
                 // marker.setPosition(place.geometry.location);
                 MapMarker.position = place.geometry.location
                 circle.circle.setCenter(place.geometry.location);
-                // marker.setVisible(true);
-                infowindowContent.children.namedItem("place-name").textContent = place.name;
-                infowindowContent.children.namedItem("place-id").textContent =
-                    place.place_id;
-                infowindowContent.children.namedItem("place-address").textContent =
-                    place.formatted_address + "\n" + place.geometry.location;
-                infowindow.open(map, MapMarker);
+                // // marker.setVisible(true);
+                // infowindowContent.children.namedItem("place-name").textContent = place.name;
+                // infowindowContent.children.namedItem("place-id").textContent =
+                //     place.place_id;
+                // infowindowContent.children.namedItem("place-address").textContent =
+                //     place.formatted_address + "\n" + place.geometry.location;
+                // infowindow.open(map, MapMarker);
             });
 
 
@@ -362,7 +359,11 @@
             title,
             scale,
             color,
-            draggable = false
+            draggable = false,
+            text = {
+                infoTitle = "",
+                description = ""
+            }
         }) {
             let pinBackground = new PinElement({
                 glyph: title,
@@ -381,9 +382,8 @@
                 log("click_marker", marker);
                 infoWindow.close();
                 infoWindow.setContent({
-                    name: title,
-                    placeId: marker.placeId,
-                    address: marker.position
+                    title: text.infoTitle,
+                    description: text.description
                 });
                 infoWindow.open(map, marker);
             });
@@ -539,6 +539,14 @@
                 });
                 log("Places", Places);
                 Places.forEach((place, index) => {
+                    log("place", place, index);
+                    let title = place.poi_name;
+                    let description = place.poi_type;
+                    if (place.poi_distance) {
+                        description += ` (${place.poi_distance.toFixed(2)} M)`;
+                    }
+
+
                     functions.placeMarker({
                         position: {
                             lat: place.poi_gps_lat,
@@ -548,7 +556,11 @@
                         title: `${index + 1}`,
                         scale: 1,
                         color: place.poit_color ? place.poit_color : "red",
-                        draggable: false
+                        draggable: false,
+                        text: {
+                            title: title,
+                            description: description
+                        }
                     });
                 });
             } catch (error) {
