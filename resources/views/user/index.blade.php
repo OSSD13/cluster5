@@ -54,7 +54,7 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+    <table class="w-full mt-5 border-collapse rounded-lg">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
