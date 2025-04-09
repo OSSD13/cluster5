@@ -212,19 +212,6 @@ class UserController extends Controller
             'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
         ]);
     }
-
-    public function managePage(Request $request)
-    {
-        $currentUser = session()->get('user');
-        
-        if (!$currentUser || $currentUser->role_name !== 'ceo') {
-            return view('unauthorized');
-        }
-
-        $supervisors = User::where('role_name', 'supervisor')->get();
-        return view('user.index', [
-            'supervisors' => $supervisors,
-        ]);
-    }
+    
 
 }

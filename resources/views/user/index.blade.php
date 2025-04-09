@@ -83,9 +83,12 @@
     const rowsPerPage = 10;
     let totalMembers = 0;
     let currentSort = { column: 'id', ascending: true };
+    let searchTimeout; // ✅ เพิ่ม
 
-    async function fetchMembers() {
-        console.trace('fetchMember')
+    function fetchMembers() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(async() => {
+        
         const search = document.getElementById("searchInput").value || '';
         const supervisorSelect = document.getElementById("supervisorSelect");
         const selectedSupervisor = supervisorSelect.value; // 💡 จำค่านี้ไว้
@@ -112,7 +115,10 @@
         } catch (error) {
             console.error("Error fetching members:", error);
         }
+        
+    }, 300); //  debounce 300ms
     }
+
 
     function renderTable(data = members) {
         const tableBody = document.getElementById("tableBody");
@@ -759,7 +765,7 @@ function viewDetail(id) {
                 Swal.fire({
                     icon: 'error',
                     title: 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้',
-                    text: 'เฉพาะ CEO เท่านั้นที่สามารถใช้งานหน้านี้ได้',
+                    text: 'เฉพาะ CEO เท่านั้นที่สามารถใช้งานฟังก์ชันนี้ได้',
                     confirmButtonText: 'กลับไปหน้า Dashboard',
                     confirmButtonColor: '#3062B8',
                     allowOutsideClick: false
