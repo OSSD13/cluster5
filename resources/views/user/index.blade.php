@@ -552,7 +552,7 @@ function viewDetail(id) {
 
     // ฟังก์ชันนี้สำหรับแสดงหรือซ่อน Sales Supervisor dropdown
     // เรียก API เพื่อโหลด supervisor ทั้งหมด
-    async function toggleSupervisor() {
+    async function toggleSupervisor(selectedId = null) {
         const role = document.getElementById("memberRole").value;
         const section = document.getElementById("supervisorSection");
         const dropdown = document.getElementById("supervisorDropdown");
@@ -566,15 +566,17 @@ function viewDetail(id) {
                 const result = await response.json();
                 const supervisors = result.data || [];
 
-                dropdown.innerHTML = "";
+                dropdown.innerHTML = `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
+                supervisors.forEach(sup => {
+                    const option = document.createElement("option");
+                    option.value = sup.user_id;
+                    option.textContent = `${sup.name} - ${sup.email}`;
+                    dropdown.appendChild(option);
+                });
 
-                if (supervisors.length === 0) {
-                    dropdown.innerHTML = `<option value="">(ไม่มี Supervisor)</option>`;
-                } else {
-                    dropdown.innerHTML += `<option value="" disabled selected hidden>-- เลือก Supervisor --</option>`;
-                    supervisors.forEach(sup => {
-                        dropdown.innerHTML += `<option value="${sup.user_id}">${sup.name} - ${sup.email}</option>`;
-                    });
+                // ถ้ามี selectedId ให้เซ็ตเลยหลังโหลดเสร็จ
+                if (selectedId) {
+                    dropdown.value = selectedId;
                 }
 
             } catch (error) {
@@ -586,6 +588,7 @@ function viewDetail(id) {
             dropdown.innerHTML = "";
         }
     }
+
 
 
 
@@ -636,15 +639,14 @@ function viewDetail(id) {
                 </div>
             </div>
         `,
-        didOpen: () => {
-            toggleSupervisor();
-            if (member.role_name === "sale" && member.supervisorId) {
-                const dropdown = document.getElementById("supervisorDropdown");
-                setTimeout(() => {
-                    dropdown.value = member.supervisorId;
-                }, 0); // รอให้ toggleSupervisor เติม option ก่อน
+        didOpen: async () => {
+            if (member.role_name === "sale") {
+                await toggleSupervisor(member.manager); // 👈 แทนที่จะ setTimeout
+            } else {
+                toggleSupervisor();
             }
-        },
+        }
+        ,
         showCancelButton: true,
         confirmButtonText: "ยืนยัน",
         cancelButtonText: "ยกเลิก",
