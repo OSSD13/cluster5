@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PointOfInterestType;
 use Illuminate\Http\Request;
 use App\Models\PointOfInterest;
 
@@ -9,7 +10,12 @@ class PointOfInterestController extends Controller
 {
     public function index()
     {
-        return view('poi.index');
+        $poits = PointOfInterestType::all();
+        $provinces = \DB::table("locations")
+            ->select('province')
+            ->distinct()
+            ->get();
+        return view('poi.index', compact('poits','provinces'));
     }
     public function insert(Request $request){
         $request->validate([
@@ -88,7 +94,7 @@ class PointOfInterestController extends Controller
         }
 
         if ($type) {
-            $poisQuery->where('type', $type);
+            $poisQuery->where('point_of_interests.poi_type', '=', $type);
         }
 
         if ($province) {
@@ -120,25 +126,6 @@ class PointOfInterestController extends Controller
             ->get();
         return view('poi.create', compact('poiTypes'));
     }
-    public function updatePoi(Request $request){
-    $poi = PointOfInterest::find($request->input('poi_id'));
-    if (!$poi) {
-        return response()->json(['status' => 'error', 'message' => 'ไม่พบข้อมูล']);
-    }
-
-    $poi->poi_name = $request->input('name');
-    $poi->poi_address = $request->input('address');
-    $poi->poi_gps_lat = $request->input('latitude');
-    $poi->poi_gps_lng = $request->input('longitude');
-    $poi->poi_type = $request->input('type');
-
-    // อัปเดต location_id ตาม province/amphoe/district/zipcode ด้วยก็ได้ (optional)
-
-    $poi->save();
-
-    return response()->json(['status' => 'success', 'message' => 'อัปเดตสำเร็จ']);
-    }
-
 
     public function createPoi(Request $request)
     {
@@ -220,57 +207,12 @@ class PointOfInterestController extends Controller
     }
 
     public function editPage(Request $request)
-{
-    $poiId = $request->input('id');
-    $poi = \DB::table('point_of_interests')
-        ->join('locations', 'locations.location_id', '=', 'point_of_interests.poi_location_id')
-        ->join('point_of_interest_type', 'point_of_interest_type.poit_type', '=', 'point_of_interests.poi_type')
-        ->where('poi_id', $poiId)
-        ->select('point_of_interests.*', 'locations.*', 'point_of_interest_type.poit_name')
-        ->first();
-
-    if (!$poi) {
-        return redirect()->route('poi.index')->with('error', 'ไม่พบข้อมูล');
+    {
+        return view('poi.edit');
     }
-
-    return view('poi.edit', ['show' => $poi]);
-}
-
 
     public function editPoi(Request $request)
     {
         return view('poi.create');
-    }
-
-    public function deletePoi(Request $request){
-        $validator = \Validator::make($request->all(), [
-            'poi_id' => 'required|numeric|exists:point_of_interests,poi_id',
-        ], [
-            'poi_id.required' => 'กรุณาระบุรหัสผู้ใช้งาน',
-            'poi_id.numeric' => 'รหัสผู้ใช้งานต้องเป็นตัวเลข',
-        ]);
-
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $poi = PointOfInterest::where('poi_id', '=', $request->input('poi_id'))->first();
-        if (!$poi) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบประเภทสถานที่ที่ต้องการลบ'
-            ], 404);
-        }
-
-        \DB::statement('DELETE FROM point_of_interests WHERE poi_id = ?', bindings: [$request->input('poi_id')]);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'ลบประเภทสถานที่เรียบร้อยแล้ว'
-        ]);
     }
 }
