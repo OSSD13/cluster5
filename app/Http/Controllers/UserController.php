@@ -218,7 +218,7 @@ class UserController extends Controller
             ], 404);
         }
     
-        // ✅ เช็คก่อนว่ามีลูกน้องมั้ย แล้วอัปเดต manager_id ให้เป็น null
+        
         User::where('manager', $user->user_id)->update([
             'manager' => null
         ]);
