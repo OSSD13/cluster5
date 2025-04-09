@@ -113,7 +113,15 @@
                     <div class="font-semibold text-md" title="${branch.bs_name}">${branch.bs_name}</div>
                     <div class="text-sm text-gray-400 " title="${branch.poit_name}">${branch.poit_name}</div>
                 </td>
-                <td class="py-3 px-4 text-center ">${branch.bs_manager_name}</td>
+                <td class="py-3 px-4 text-center">
+                    <div class="font-semibold text-sm truncate w-[120px] mx-auto" title="${branch.bs_manager_name}">
+                        ${branch.bs_manager_name}
+                    </div>
+                    <div class="text-sm text-gray-400 truncate w-[120px] mx-auto" title="${branch.bs_manager_email}">
+                        ${branch.bs_manager_email}
+                    </div>
+                </td>
+
 
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
@@ -127,6 +135,7 @@
                     </div>
                 </td>
             `;
+            
             tableBody.appendChild(row);
         });
 
