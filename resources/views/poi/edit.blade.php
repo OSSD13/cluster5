@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI เพิ่มสถานที่</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">POI แก้ไขสถานที่</h2>
 
     <label class="block text-sm text-gray-600">Link Google (Optional)</label>
     <input id= "googleMapLink" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="Link Google">
@@ -17,11 +17,12 @@
     <input id="lng" name="lng" type="text" oninput="functions.inputChanged()" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด" value="{{ $show->poi_gps_lng }}">
 
     <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
-        <img src="your-map-image-url.png" alt="Map" class="w-full h-full object-cover rounded-lg">
-    </div>
+            <div id="map" class="w-full h-48"></div>
+        </div>
+
 
     <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
-    <input id="postal_code" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
+    <input id="zipcode" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
     <input id="province" name="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
@@ -30,8 +31,7 @@
     <input id="district" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
 
     <label class="block text-sm text-gray-600">ตำบล</label>
-    <input id="sub_district" name="
-    district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
+    <input id="amphoe" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
 
     <label class="block text-sm text-gray-600">ที่อยู่</label>
     <input id="address" name="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่" >
@@ -52,7 +52,43 @@
     </div>
 </div>
 @endsection
+
 @section('script')
+<script>
+document.getElementById("saveButton").addEventListener("click", async function () {
+    const payload = {
+        poi_id: document.querySelector('input[name="poi_id"]').value,
+        name: document.querySelector('input[name="name"]').value,
+        address: document.querySelector('input[name="address"]').value,
+        detail: document.querySelector('input[name="detail"]').value,
+    };
+
+    try {
+        const res = await fetch("{{ route('api.poi.edit') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+            Swal.fire("สำเร็จ", "แก้ไขเรียบร้อย", "success").then(() => {
+                window.location.href = "{{ route('poi.index') }}";
+            });
+        } else {
+            Swal.fire("ผิดพลาด", data.message ?? 'เกิดข้อผิดพลาดในการแก้ไข', "error");
+        }
+    } catch (err) {
+        console.error("❌ Error:", err);
+        Swal.fire("ผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้", "error");
+    }
+});
+
+</script>
 
     <script type="module">
 
@@ -226,5 +262,33 @@
     }
 
     window.onload = loadGoogleMapsAPI;
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadPoiTypes(); // โหลดประเภท
+});
+
+async function loadPoiTypes() {
+    const select = document.getElementById("poi_type");
+    const currentType = `{{ $show->poit_type }}`;
+
+    try {
+        const res = await fetch(`{{ route('api.poit.query.all') }}`);
+        const data = await res.json();
+
+        (data.data || []).forEach(poit => {
+            const option = document.createElement("option");
+            option.value = poit.poit_type;
+            option.textContent = `${poit.poit_icon ?? ''} ${poit.poit_name}`;
+            if (poit.poit_type === currentType) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    } catch (err) {
+        console.error("❌ ไม่สามารถโหลดประเภท POI:", err);
+    }
+}
 </script>
 @endsection
