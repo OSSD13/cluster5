@@ -117,7 +117,7 @@ document.getElementById("saveButton").addEventListener("click", async function (
             mapId: "DEMO_MAP_ID",
         });
 
-        const pin = new PinElement({ glyph: "📍", glyphColor: "white", scale: 1.5 });
+        const pin = new PinElement({ glyph: "⭐", glyphColor: "white", scale: 1.5 });
         MapMarker = new AdvancedMarkerElement({
             position: position,
             map: map,
