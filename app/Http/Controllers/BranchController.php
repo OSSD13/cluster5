@@ -174,15 +174,39 @@ class BranchController extends Controller
         ]);
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
-        return view('branch.edit');
+        $bs_id = $request->query('bs_id');
+
+        $branch = \DB::table('branch_stores')
+            ->join('point_of_interests', 'branch_stores.bs_poi_id', '=', 'point_of_interests.poi_id')
+            ->join('locations', 'locations.location_id', '=', 'point_of_interests.poi_location_id')
+            ->join('point_of_interest_type', 'point_of_interests.poi_type', '=', 'point_of_interest_type.poit_type')
+            ->select(
+                'branch_stores.*',
+                'point_of_interests.poi_gps_lat',
+                'point_of_interests.poi_gps_lng',
+                'point_of_interests.poi_address as poi_address',
+                'point_of_interest_type.poit_name',
+                'locations.zipcode',
+                'locations.province',
+                'locations.amphoe',
+                'locations.district'
+            )
+            ->where('branch_stores.bs_id', $bs_id)
+            ->first();
+    
+        if (!$branch) {
+            return redirect()->route('branch.index')->with('error', 'ไม่พบข้อมูลสาขา');
+        }
+    
+        return view('branch.edit', compact('branch'));
     }
 
     public function editBranch(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'bs_id' => 'required|integer|exists:branch_stores,id',
+            'bs_id' => 'required|integer|exists:branch_stores,bs_id',
             'name' => 'string|max:255',
             'address' => 'string|max:255',
             'detail' => 'nullable|string',
@@ -201,7 +225,7 @@ class BranchController extends Controller
             ], 422);
         }
 
-        $branch = Branch_store::find($request->input('bs_id'));
+        $branch = Branch_store::where('bs_id', $request->input('bs_id'))->first();
 
         if (!$branch) {
             return response()->json([
@@ -277,7 +301,7 @@ class BranchController extends Controller
     public function deleteBranch(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'bs_id' => 'required|integer|exists:branch_stores,id',
+            'bs_id' => 'required|integer|exists:branch_stores,bs_id',
         ], [
             'bs_id.required' => 'กรุณาระบุรหัสสาขา',
             'bs_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
@@ -300,6 +324,11 @@ class BranchController extends Controller
                 'message' => 'ไม่พบข้อมูลสาขา'
             ], 404);
         }
+
+        // delete sale 
+        $sale = \DB::table('sales')
+            ->where('sales_branch_id', $branch->bs_id)
+            ->delete();
 
         $poiId = $branch->bs_poi_id;
         $branch->delete();
