@@ -3,6 +3,12 @@
 
 @section('title', 'Point of Interest')
 
+@php
+    $user = session('user');
+@endphp
+
+@if ($user && $user->role_name === 'ceo')
+
 @section('content')
     
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
@@ -77,24 +83,12 @@
     const rowsPerPage = 10;
     let totalMembers = 0;
     let currentSort = { column: 'id', ascending: true };
+    let searchTimeout; // ✅ เพิ่ม
 
-    document.addEventListener("DOMContentLoaded", () => {
-        fetchMembers();
-        document.getElementById("searchInput").addEventListener("input", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-        document.getElementById("supervisorSelect").addEventListener("change", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-        document.getElementById("roleSelect").addEventListener("change", () => {
-            currentPage = 1;
-            fetchMembers();
-        });
-    });
-
-    async function fetchMembers() {
+    function fetchMembers() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(async() => {
+        
         const search = document.getElementById("searchInput").value || '';
         const supervisorId = document.getElementById("supervisorSelect").value || '';
         const role = document.getElementById("roleSelect").value || '';
@@ -115,10 +109,12 @@
         } catch (error) {
             console.error("Error fetching members:", error);
         }
+        
+    }, 300); //  debounce 300ms
     }
 
 
-    function renderTable() {
+    function renderTable(data = members) {
         const tableBody = document.getElementById("tableBody");
         tableBody.innerHTML = "";
 
@@ -339,7 +335,7 @@
 
 
         // ตั้งตำแหน่งเมนูใหม่
-        const top = parentCell.offsetTop + parentCell.offsetHeight - 60; // ลดลงมานิด (4px)
+        const top = parentCell.offsetTop + parentCell.offsetHeight - 120; // ลดลงมานิด (4px)
         const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
 
         menu.style.position = "absolute";
@@ -780,3 +776,24 @@
 
     <!-- </form> -->
 @endsection
+
+@else
+    @section('content')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้',
+                    text: 'เฉพาะ CEO เท่านั้นที่สามารถใช้งานฟังก์ชันนี้ได้',
+                    confirmButtonText: 'กลับไปหน้า Dashboard',
+                    confirmButtonColor: '#3062B8',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('dashboard') }}";
+                    }
+                });
+            });
+        </script>
+    @endsection
+@endif
