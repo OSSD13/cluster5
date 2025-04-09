@@ -40,7 +40,7 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () { return view('poi.index'); })->name('poi.index');
+    Route::get('/poi', [PointOfInterestController::class, 'index'])->name('poi.index');
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
     Route::get('/poi/edit', [EditPointOfInterestController::class, 'editPoiPage'])->name('poi.edit');
 
@@ -49,7 +49,10 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/poi/type', [PointOfInterestTypeController::class, 'index'])->name('poi.type.index');
 
 
-    Route::get('/user', [UserController::class, 'managePage']);
+    Route::get('/user', function () {
+        return view('user.index');
+    });
+    Route::get('/getUserOptionsForBranchFilter', [UserController::class, 'getUserOptionsForBranchFilter']);
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // เปลี่ยนเป็น POST และเพิ่ม name
 

@@ -17,6 +17,20 @@
 
         <input id="searchInput" type="text" placeholder="ค้นหาสถานที่ที่สนใจ"
             class="w-full p-2 border border-gray-300 rounded mb-3">
+        <label class="block text-gray-800 mb-1">ประเภท</label>
+            <select id="typeFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
+                <option value="">ทั้งหมด</option>
+                @foreach ($poits as $poit)
+                    <option value="{{ $poit->poit_type }}">{{ $poit->poit_icon }} {{ $poit->poit_name }}</option>
+                @endforeach
+            </select>
+        <label class="block text-gray-800 mb-1">จังหวัด</label>
+            <select id="provinceFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
+                <option value="">ทั้งหมด</option>
+                @foreach ($provinces as $province)
+                    <option value="{{ $province->province }}">{{ $province->province }}</option>
+                @endforeach
+            </select>
 
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
         <a href="{{ route('poi.type.index') }}">
@@ -28,20 +42,20 @@
         </a>
     </div>
 
-    <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
-            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
-                <tr>
-                    <th scope="col" class="py-2 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสถานที่ / ประเภท</th>
-                    <th class="py-3 px-4 text-center max-w-[120px]">จังหวัด</th>
-                    <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-                </tr>
-            </thead>
-
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
-        </table>
-    </div>
+<div class="overflow-visible">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden table-fixed">
+        <thead class="bg-blue-500 text-black text-sm" style="background-color: #B5CFF5">
+            <tr>
+                <th class="py-2 px-2 text-left w-1/12">ID</th>
+                <th class="py-2 px-4 text-center w-3/12">ชื่อสถานที่</th>
+                <th class="py-2 px-2 text-center w-2/12">ประเภท</th>
+                <th class="py-2 px-2 text-center w-2/12">จังหวัด</th>
+                <th class="py-2 px-2 text-center w-1/12">ตัวเลือก</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
+    </table>
+</div>
 
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 @endsection
@@ -52,29 +66,29 @@
         let pois = [];
         let currentPage = 1;
         const rowsPerPage = 10;
-
+        let searchTimeout;
         document.addEventListener("DOMContentLoaded", () => {
             fetchPois();
 
             document.getElementById("searchInput").addEventListener("input", function () {
-                currentPage = 1;
-                fetchPois(this.value);
+                clearTimeout(searchTimeout);
+                const search = this.value;
+                searchTimeout = setTimeout(() => {
+                    currentPage = 1;
+                    fetchPois(search);
+                }, 300); // หน่วงเวลา 300 มิลลิวินาที
             });
+            
         });
 
-        async function fetchPois(search = '') {
-            const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
-            const result = await res.json();
-            pois = result.data;
-            document.getElementById("resultCount").innerText = result.total;
-            renderTable();
-            renderPagination(result.total);
-        }
-
-        function displayValue(value) {
-            return value === null || value === undefined || value === "" ? "-" : value;
-        }
-
+    async function fetchPois(search = '') {
+        const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+        const result = await res.json();
+        pois = result.data;
+        document.getElementById("resultCount").innerText = result.total;
+        renderTable();
+        renderPagination(result.total);
+    }
 
         function renderTable() {
             const tableBody = document.getElementById("tableBody");
@@ -83,24 +97,22 @@
             pois.forEach((poi) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-        <td class="py-3 px-4 w-16">${poi.poi_id}</td>
-        <td class="py-3 px-4 truncate">${safeText(poi.poi_name)}</td>
-        <td class="py-3 px-4 w-40 truncate">${safeText(poi.province)}</td>
-        <td class="py-3 px-2 w-16 text-center relative">
-            <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
-            <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                <button class="block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
-                <button class="block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" onclick="window.location.href='{{ route('poi.edit') }}?poi_id=${poi.poi_id}'">แก้ไข</button>
-                <button class="block w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg" onclick="deletePoi(${poi.poi_id})">ลบ</button>
-            </div>
-        </td>
-    `;
-
+                    <td class="py-3 px-4 w-16">${poi.poi_id}</td>
+                    <td class="py-3 px-4 truncate">${safeText(poi.poi_name)}</td>
+                    <td class="py-3 px-4 truncate">${safeText(poi.poit_name)}</td>
+                    <td class="py-3 px-4 truncate">${safeText(poi.province)}</td>
+                    <td class="py-3 px-1 w-10 text-center relative">
+                        <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
+                        <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                            <button class="block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
+                            <button class="block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" onclick="window.location.href='{{ route('poi.edit') }}?id=${poi.poi_id}'">แก้ไข</button>
+                            <button class="block w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg" onclick="deletePoi(${poi.poi_id})">ลบ</button>
+                        </div>
+                    </td>
+                `;
                 tableBody.appendChild(row);
             });
         }
-        pagination.appendChild(btn);
-        ;
 
         function renderPagination(totalItems) {
             const pagination = document.getElementById("pagination");
@@ -130,33 +142,6 @@
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
         }
-
-        // Middle pages
-        const startPage = Math.max(2, currentPage - 2);
-        const endPage = Math.min(totalPages - 1, currentPage + 2);
-
-        for (let i = startPage; i <= endPage; i++) {
-            addButton(i, i, currentPage === i);
-        }
-
-        // Right dots
-        if (currentPage < totalPages - 3) {
-            addEllipsis();
-        }
-
-        // Always show last page (if > 1)
-        if (totalPages > 1) {
-            addButton(totalPages, totalPages, currentPage === totalPages);
-        }
-
-        // Next button
-        const nextBtn = document.createElement("button");
-        nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-        nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-        nextBtn.disabled = currentPage === totalPages;
-        nextBtn.onclick = () => goToPage(currentPage + 1);
-        pagination.appendChild(nextBtn);
-
 
         function goToPage(pageNumber) {
             currentPage = pageNumber;
@@ -235,5 +220,33 @@
         function safeText(text) {
             return text ?? '-';
         }
+document.getElementById("typeFilter").addEventListener("change", () => {
+    currentPage = 1;
+    fetchPois(document.getElementById("searchInput").value);
+});
+
+document.getElementById("provinceFilter").addEventListener("change", () => {
+    currentPage = 1;
+    fetchPois(document.getElementById("searchInput").value);
+});
+
+async function fetchPois(search = '') {
+    const type = document.getElementById("typeFilter").value;
+    const province = document.getElementById("provinceFilter").value;
+    const url = new URL(`{{ route('api.poi.query') }}`);
+    url.searchParams.append("limit", rowsPerPage);
+    url.searchParams.append("page", currentPage);
+    url.searchParams.append("search", search);
+    if (type) url.searchParams.append("type", type);
+    if (province) url.searchParams.append("province", province);
+
+    const res = await fetch(url);
+    const result = await res.json();
+    pois = result.data;
+    document.getElementById("resultCount").innerText = result.total;
+    renderTable();
+    renderPagination(result.total);
+}
+
     </script>
 @endsection
