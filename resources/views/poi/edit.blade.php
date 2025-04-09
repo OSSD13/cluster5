@@ -25,16 +25,16 @@
     <input id="zipcode" name="postal_code" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์" >
 
     <label class="block text-sm text-gray-600">จังหวัด</label>
-    <input id="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
+    <input id="province" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="" placeholder="จังหวัด">
 
     <label class="block text-sm text-gray-600">อำเภอ</label>
-    <input id="district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="">
+    <input id="district" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="" placeholder="อำเภอ">
 
     <label class="block text-sm text-gray-600">ตำบล</label>
     <input id="amphoe" name="amphoe" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
 
     <label class="block text-sm text-gray-600">ที่อยู่</label>
-    <input id="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_address }}">
+    <input id="address" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_address }}" placeholder="ที่อยู่">
 
     <label class="block text-sm text-gray-600">ชื่อ</label>
     <input id="name" type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-3" value="{{ $show->poi_name }}">

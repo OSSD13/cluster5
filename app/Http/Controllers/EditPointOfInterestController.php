@@ -15,9 +15,12 @@ class EditPointOfInterestController extends Controller
         if (!$show) {
             return redirect()->route('poi.index')->with('error', 'ไม่พบข้อมูล POI ที่ระบุ');
         }
+        $poiTypes = \DB::table('point_of_interest_type')
+            ->select('poit_type', 'poit_name', 'poit_icon')
+            ->get();
 
         // ส่งตัวแปร $show ไปยัง View
-        return view('poi.edit', compact('show')); // ส่ง $show ผ่าน compact()
+        return view('poi.edit', compact('show','poiTypes')); // ส่ง $show ผ่าน compact()
     }
 
     public function queryPoi(Request $request)

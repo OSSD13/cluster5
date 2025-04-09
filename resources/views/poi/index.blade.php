@@ -45,6 +45,8 @@
     </div>
 
     <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
+    <div id="contextMenu" class="hidden absolute bg-white shadow-lg rounded-lg w-40 z-50 p-2 space-y-2"></div>
+
 @endsection
 
 @section('script')
@@ -86,22 +88,22 @@
             pois.forEach((poi) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                        <td class="py-3 px-4 w-16">${poi.poi_id}</td>
-                        <td class="py-3 px-4 ">
-                            <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
-                            <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
-                        </td>
-                        <td class="py-3 px-4 text-center ">${poi.province || '-'}</td>
+                                    <td class="py-3 px-4 w-16">${poi.poi_id}</td>
+                                    <td class="py-3 px-4 ">
+                                        <div class="font-semibold text-md" title="${poi.poi_name}">${poi.poi_name}</div>
+                                        <div class="text-sm text-gray-400 " title="${poi.poit_name}">${poi.poit_name}</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center ">${poi.province || '-'}</td>
 
-                        <td class="py-3 px-1 w-10 text-center relative">
-                            <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
-                            <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?id=${poi.poi_id}'">แก้ไข</button>
-                                <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" onclick="deletePoi(${poi.poi_id})">ลบ</button>
-                            </div>
-                        </td>
-                    `;
+                                    <td class="py-3 px-1 w-10 text-center relative">
+                                        <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
+                                        <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
+                                            <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?id=${poi.poi_id}'">แก้ไข</button>
+                                            <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" onclick="deletePoi(${poi.poi_id})">ลบ</button>
+                                        </div>
+                                    </td>
+                                `;
                 tableBody.appendChild(row);
             });
         }
@@ -185,18 +187,63 @@
         }
 
 
+        let activeMenuId = null;
         function toggleMenu(event, id) {
             event.stopPropagation();
-            document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
-            document.getElementById(`menu-${id}`).classList.toggle("hidden");
+
+            const menu = document.getElementById("contextMenu");
+            const button = event.currentTarget;
+            const parentCell = button.closest('td');
+
+            if (activeMenuId === id && !menu.classList.contains("hidden")) {
+                menu.classList.add("hidden");
+                activeMenuId = null;
+                return;
+            }
+
+            activeMenuId = id;
+
+            menu.innerHTML = `
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
+                ดูรายละเอียด
+            </button>
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; window.location.href='{{ route('poi.edit') }}?id=${id}'">
+                แก้ไข
+            </button>
+            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700 whitespace-nowrap"
+                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deletePoi(${id})">
+                ลบ
+            </button>
+        `;
+
+            menu.classList.remove("hidden");
+
+            const top = parentCell.offsetTop + parentCell.offsetHeight - 120;
+            const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
+
+            menu.style.position = "absolute";
+            menu.style.top = `${top}px`;
+            menu.style.left = `${left}px`;
+            menu.style.zIndex = "5";
         }
+
+        document.addEventListener("click", function () {
+            const menu = document.getElementById("contextMenu");
+            if (!menu.classList.contains("hidden")) {
+                menu.classList.add("hidden");
+                activeMenuId = null;
+            }
+        });
+
 
         document.addEventListener("click", () => {
             document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
         });
 
         //deletePoi
-    function deletePoi(id) {
+        function deletePoi(id) {
             Swal.fire({
                 title: "ลบสถานที่",
                 text: "คุณต้องการลบ POI นี้ใช่หรือไม่?",
@@ -209,13 +256,13 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     console.log(id); //ไม่เกี่ยวกับการลบ เป็นการตรวจสอบค่า id ว่าที่ส่งมามีค่าไหม
-                    
+
                     const res = await fetch("{{ route('api.poi.delete') }}", {
                         method: 'DELETE',
                         headers: {
                             "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
-                        } ,
+                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
+                        },
                         body: JSON.stringify({ poi_id: id })
                     }).then(res => {
                         if (res.ok) {
@@ -236,14 +283,14 @@
             Swal.fire({
                 title: "รายละเอียดสถานที่",
                 html: `
-                            <div class="text-left space-y-2 text-sm text-gray-700">
-                                <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
-                                <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
-                                <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
-                                <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
-                                <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
-                            </div>
-                        `,
+                                        <div class="text-left space-y-2 text-sm text-gray-700">
+                                            <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
+                                            <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
+                                            <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
+                                            <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
+                                            <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
+                                        </div>
+                                    `,
                 confirmButtonText: "ปิด",
                 confirmButtonColor: "#3085d6"
             });
