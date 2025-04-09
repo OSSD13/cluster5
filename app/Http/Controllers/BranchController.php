@@ -162,7 +162,7 @@ class BranchController extends Controller
         $branch = new Branch_store();
         $branch->bs_name = $request->input('name');
         $branch->bs_address = $request->input('address');
-        $branch->bs_poi_id = $poi->id;
+        $branch->bs_poi_id = $poi->poi_id;
         $branch->bs_manager = $userId;
         $branch->bs_detail = $request->input('detail', null);
         $branch->save();
