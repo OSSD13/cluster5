@@ -19,18 +19,18 @@
 
     <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
 </div>
-
-<div class="overflow-x-auto">
-    <table class="min-w-full mt-5 table-auto border-collapse rounded-lg bg-gray-100">
+<div class="overflow-visible">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 text-left">ชื่อ / ประเภท</th>
-                <th class="py-3 px-4 text-center">Icon</th>
-                <th class="py-3 px-4 text-left">คำอธิบาย</th>
-                <th class="py-3 px-4 text-center">การจัดการ</th>
-            </tr>
+                <th class="py-3 px-4 text-left min-w-[0px]">ชื่อ / ประเภท</th>
+                <th scope="col" class="py-2 px-4 text-left">Icon</th>
+                <th class="py-3 px-4 text-center max-w-[120px]">คำอธิบาย</th>
+                <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+              </tr>
         </thead>
-        <tbody id="tableBody" class="text-sm text-gray-700 bg-white"></tbody>
+
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
     </table>
 </div>
 
@@ -79,7 +79,7 @@
                 <td class="py-3 px-4 text-center text-xl">${poit.poit_icon || '🏢'}</td>
                 <td class="py-3 px-4">${poit.poit_description || '-'}</td>
                 <td class="py-3 px-4 text-center relative">
-                    <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
+                    <button class="cursor-pointer text-gray-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
                     <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
                         <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" data-type="${poit.poit_type}">ดูรายละเอียด</button>
                         <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" data-type="${poit.poit_type}">แก้ไข</button>
