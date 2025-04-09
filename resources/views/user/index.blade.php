@@ -212,71 +212,6 @@
         pagination.appendChild(nextBtn);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    const startPage = Math.max(2, currentPage - 2);
-    const endPage = Math.min(totalPages - 1, currentPage + 2);
-    for (let i = startPage; i <= endPage; i++) {
-        addButton(i, i, currentPage === i);
-    }
-
-    if (currentPage < totalPages - 3) {
-        addEllipsis();
-    }
-
-    if (totalPages > 1) {
-        addButton(totalPages, totalPages, currentPage === totalPages);
-    }
-
-    const nextBtn = document.createElement("button");
-    nextBtn.innerHTML = '<span class="icon-[material-symbols--chevron-right-rounded]"></span>';
-    nextBtn.className = `px-3 py-1 ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 cursor-pointer"} text-5xl`;
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.onclick = () => goToPage(currentPage + 1);
-    pagination.appendChild(nextBtn);
-}
-
-<<<<<<< HEAD
-function goToPage(pageNumber) {
-    currentPage = pageNumber;
-    fetchUsers();
-}
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 52c21d9 (fix(users-view) pagination user)
-    function goToPage(pageNumber) {
-        currentPage = pageNumber;
-        fetchMembers();
-    }
->>>>>>> 6e32359 (feat(user): enhance user management interface with improved search, role filtering, and pagination controls)
-
-    // ฟังก์ชันสำหรับเรียงข้อมูลตามคอลัมน์ที่เลือก
-    function sortTable(column) {
-        if (currentSort.column === column) {
-            currentSort.ascending = !currentSort.ascending;
-        } else {
-            currentSort.column = column;
-            currentSort.ascending = true;
-        }
-        members.sort((a, b) => (a[column] < b[column] ? (currentSort.ascending ? -1 : 1) : (a[column] > b[column] ? (currentSort.ascending ? 1 : -1) : 0)));
-        renderTable();
-    }
-
-    // ฟังก์ชันสำหรับกรองข้อมูลทั้งหมด
-    function filterAll() {
-        const searchVal = document.getElementById("searchInput").value.toLowerCase();
-        const supervisorId = document.getElementById("supervisorSelect").value;
-        const roleVal = document.getElementById("roleSelect").value;
-
-        let filtered = members.filter(m => {
-            const matchesSearch =
-                m.id.toString().includes(searchVal) ||
-                m.name.toLowerCase().includes(searchVal) ||
-                m.email.toLowerCase().includes(searchVal) ||
-                m.role.toLowerCase().includes(searchVal);
-
-=======
     function goToPage(pageNumber) {
         currentPage = pageNumber;
         fetchMembers();
@@ -307,7 +242,6 @@ function goToPage(pageNumber) {
                 m.email.toLowerCase().includes(searchVal) ||
                 m.role.toLowerCase().includes(searchVal);
 
->>>>>>> refs/remotes/origin/develop
             const matchesSupervisor = !supervisorId || (
                 m.role === "Sale" && m.supervisorId?.toString() === supervisorId
             );
@@ -607,19 +541,6 @@ function goToPage(pageNumber) {
         const section = document.getElementById("supervisorSection");
         const dropdown = document.getElementById("supervisorDropdown");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> db4a7ac (feat(user): add managePage method and update user route to handle supervisor retrieval)
-// Events
-window.addEventListener("DOMContentLoaded", () => {
-    fetchUsers();
-    document.getElementById("searchInput").addEventListener("input", () => {
-        currentPage = 1;
-        fetchUsers();
-=======
-=======
->>>>>>> refs/remotes/origin/develop
         if (role === "sale") {
             section.style.display = "block";
             dropdown.innerHTML = `<option value="" disabled selected hidden>-- กำลังโหลด Supervisor... --</option>`;
@@ -786,10 +707,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 return false;
             }
         }
-<<<<<<< HEAD
->>>>>>> 6e32359 (feat(user): enhance user management interface with improved search, role filtering, and pagination controls)
-=======
->>>>>>> refs/remotes/origin/develop
     });
 }
 
@@ -863,4 +780,3 @@ window.addEventListener("DOMContentLoaded", () => {
 
     <!-- </form> -->
 @endsection
-

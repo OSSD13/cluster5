@@ -15,40 +15,9 @@
         </a>
     </div>
 
-        <!-- Search Input -->
-        <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท"
-            class="w-full p-2 border border-gray-300 rounded mb-3">
-        <!-- Search Input -->
-        <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท"
-            class="w-full p-2 border border-gray-300 rounded mb-3">
-
-        <!-- Role Dropdown -->
-        <div class="mb-3">
-            <label class="block text-gray-800 mb-1">บทบาท</label>
-            <select id="roleFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
-                <option value="">ทั้งหมด</option>
-                <option value="sale">Sale</option>
-                <option value="ceo">CEO</option>
-                <option value="supervisor">Sale Supervisor</option>
-            </select>
-        </div>
-
-        <!-- Result Count -->
-        <p class="text-gray-800" id='resultCount'>ผลลัพธ์ 0 รายการ</p>
->>>>>>> 653ad83 (refactor(BranchController, index.blade.php): streamline code formatting and improve readability)
-    </div>
-
-    <!-- Results Table -->
-    <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
-            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
-                <tr>
-                    <th scope="col" class="py-2 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสาขา / ประเภท</th>
-                    <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-                </tr>
-            </thead>
+    <!-- Search Input -->
+    <input type="text" id="searchInput" placeholder="ค้นหาชื่อ อีเมล หรือบทบาท"
+        class="w-full p-2 border border-gray-300 rounded mb-3">
 
     <!-- Role Dropdown -->
     <div class="mb-3">
@@ -59,45 +28,37 @@
     </div>
 
 
-        <!-- Result Count -->
-        <p class="text-gray-800" id='resultCount'>ผลลัพธ์ 0 รายการ</p>
-    </div>
+    <!-- Result Count -->
+    <p class="text-gray-800" id='resultCount'>ผลลัพธ์ 0 รายการ</p>
+</div>
 
-    <!-- Results Table -->
-    <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
-            <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
-                <tr>
-                    <th scope="col" class="py-2 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสาขา / ประเภท</th>
-                    <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
-                    <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-                </tr>
-            </thead>
+<!-- Results Table -->
+<div class="overflow-visible">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
+            <tr>
+                <th scope="col" class="py-2 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสาขา / ประเภท</th>
+                <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
+                <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+              </tr>
+        </thead>
 
-            <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
-        </table>
-    </div>
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
+    </table>
+</div>
 
 <!-- Pagination -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
-    <!-- Pagination -->
-    <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 @endsection
 
 @section('script')
-    <script>
-        let branches = [];
-        let currentPage = 1;
-        let rowsPerPage = 10;
-        let totalItems = 0;
-        const apiUrl = `{{ route('api.branch.query') }}`;
-    <script>
-        let branches = [];
-        let currentPage = 1;
-        let rowsPerPage = 10;
-        let totalItems = 0;
-        const apiUrl = `{{ route('api.branch.query') }}`;
+<script>
+    let branches = [];
+    let currentPage = 1;
+    let rowsPerPage = 10;
+    let totalItems = 0;
+    const apiUrl = `{{ route('api.branch.query') }}`;
 
     let searchTimeout;
     document.getElementById("searchInput").addEventListener("input", () => {
@@ -197,150 +158,99 @@
             tableBody.appendChild(row);
         });
 
-        document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
+        renderPagination();
+    }
 
-        async function fetchBranches(page = 1) {
-            const search = document.getElementById("searchInput").value.trim();
-            const role = document.getElementById("roleFilter").value;
+    function renderPagination() {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
 
-            const params = new URLSearchParams({ page, limit: rowsPerPage });
-            if (search) params.append('search', search);
-            if (role) params.append('role', role);
+        const totalPages = Math.ceil(totalItems / rowsPerPage);
+        if (totalPages <= 1) return;
 
         const createBtn = (text, page, disabled = false, active = false) => {
             const btn = document.createElement("button");
             btn.textContent = text;
             btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${
                 active
-            const createBtn = (text, page, disabled = false, active = false) => {
-                const btn = document.createElement("button");
-                btn.textContent = text;
-                btn.className = `px-3 py-2 mx-1 rounded-lg text-sm font-semibold ${active
                     ? "bg-blue-600 text-white"
                     : disabled
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "bg-white border border-gray-300 text-black hover:bg-gray-100"
-                    }`;
-                btn.disabled = disabled;
-                if (!disabled && !active) btn.onclick = () => fetchBranches(page);
-                return btn;
-            };
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "bg-white border border-gray-300 text-black hover:bg-gray-100"
-                    }`;
-                btn.disabled = disabled;
-                if (!disabled && !active) btn.onclick = () => fetchBranches(page);
-                return btn;
-            };
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "bg-white border border-gray-300 text-black hover:bg-gray-100"
+            }`;
+            btn.disabled = disabled;
+            if (!disabled && !active) btn.onclick = () => fetchBranches(page);
+            return btn;
+        };
 
-            // « First
-            pagination.appendChild(createBtn("«", 1, currentPage === 1));
-            // « First
-            pagination.appendChild(createBtn("«", 1, currentPage === 1));
+        // « First
+        pagination.appendChild(createBtn("«", 1, currentPage === 1));
 
-            // Left Ellipsis
-            if (currentPage > 3) {
-                pagination.appendChild(createBtn("1", 1));
-                if (currentPage > 4) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.textContent = "...";
-                    ellipsis.className = "mx-1 text-gray-500";
-                    pagination.appendChild(ellipsis);
-                }
+        // Left Ellipsis
+        if (currentPage > 3) {
+            pagination.appendChild(createBtn("1", 1));
+            if (currentPage > 4) {
+                const ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                ellipsis.className = "mx-1 text-gray-500";
+                pagination.appendChild(ellipsis);
             }
-            // Left Ellipsis
-            if (currentPage > 3) {
-                pagination.appendChild(createBtn("1", 1));
-                if (currentPage > 4) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.textContent = "...";
-                    ellipsis.className = "mx-1 text-gray-500";
-                    pagination.appendChild(ellipsis);
-                }
-            }
-
-            // Page Range (current -1, current, current +1)
-            for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-                pagination.appendChild(createBtn(i, i, false, i === currentPage));
-            }
-            // Page Range (current -1, current, current +1)
-            for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
-                pagination.appendChild(createBtn(i, i, false, i === currentPage));
-            }
-
-            // Right Ellipsis
-            if (currentPage < totalPages - 2) {
-                if (currentPage < totalPages - 3) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.textContent = "...";
-                    ellipsis.className = "mx-1 text-gray-500";
-                    pagination.appendChild(ellipsis);
-                }
-                pagination.appendChild(createBtn(totalPages, totalPages));
-            }
-            // Right Ellipsis
-            if (currentPage < totalPages - 2) {
-                if (currentPage < totalPages - 3) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.textContent = "...";
-                    ellipsis.className = "mx-1 text-gray-500";
-                    pagination.appendChild(ellipsis);
-                }
-                pagination.appendChild(createBtn(totalPages, totalPages));
-            }
-
-            // » Last
-            pagination.appendChild(createBtn("»", totalPages, currentPage === totalPages));
-        }
-            // » Last
-            pagination.appendChild(createBtn("»", totalPages, currentPage === totalPages));
         }
 
-        function toggleMenu(event, id) {
-            event.stopPropagation();
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-            document.getElementById(`menu-${id}`).classList.toggle("hidden");
-        }
-        function toggleMenu(event, id) {
-            event.stopPropagation();
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-            document.getElementById(`menu-${id}`).classList.toggle("hidden");
+        // Page Range (current -1, current, current +1)
+        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+            pagination.appendChild(createBtn(i, i, false, i === currentPage));
         }
 
-        document.addEventListener("click", () => {
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+        // Right Ellipsis
+        if (currentPage < totalPages - 2) {
+            if (currentPage < totalPages - 3) {
+                const ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                ellipsis.className = "mx-1 text-gray-500";
+                pagination.appendChild(ellipsis);
+            }
+            pagination.appendChild(createBtn(totalPages, totalPages));
+        }
+
+        // » Last
+        pagination.appendChild(createBtn("»", totalPages, currentPage === totalPages));
+    }
+
+    function toggleMenu(event, id) {
+        event.stopPropagation();
+        document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+        document.getElementById(`menu-${id}`).classList.toggle("hidden");
+    }
+
+    document.addEventListener("click", () => {
+        document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
+    });
+
+    function deleteBranch(id) {
+        Swal.fire({
+            title: "ลบสาขา",
+            text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
+            icon: "warning",
+            iconColor: "#d33",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3062B8",
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                branches = branches.filter(branch => branch.bs_id !== id);
+                renderTable();
+                Swal.fire({
+                    title: "ลบแล้ว!",
+                    text: "สาขาถูกลบเรียบร้อย",
+                    icon: "success"
+                });
+            }
         });
-        document.addEventListener("click", () => {
-            document.querySelectorAll("[id^=menu-]").forEach(menu => menu.classList.add("hidden"));
-        });
+    }
 
-        function deleteBranch(id) {
-            Swal.fire({
-                title: "ลบสาขา",
-                text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
-                icon: "warning",
-                iconColor: "#d33",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3062B8",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    branches = branches.filter(branch => branch.bs_id !== id);
-                    renderTable();
-                    Swal.fire({
-                        title: "ลบแล้ว!",
-                        text: "สาขาถูกลบเรียบร้อย",
-                        icon: "success"
-                    });
-                }
-            });
-        }
-
-        // Initial load
-        fetchBranches();
-    </script>
     // Initial load
     fetchBranches();
 </script>
