@@ -255,30 +255,29 @@
         renderTable(filtered); // เรียก renderTable โดยส่งข้อมูลที่กรองแล้ว
     }
 
+    let supervisors = [];
     // ฟังก์ชันสำหรับกรองข้อมูลตาม Supervisor
     async function populateSupervisorDropdown() {
-        const supervisorSelect = document.getElementById("supervisorSelect");
+    const supervisorSelect = document.getElementById("supervisorSelect");
         supervisorSelect.innerHTML = `<option value="">ทั้งหมด</option>`;
 
         try {
             const response = await fetch("{{ route('api.user.query.all') }}?role=supervisor");
             const result = await response.json();
-            const supervisors = result.data || [];
+            supervisors = result.data || []; // เก็บข้อมูล supervisor ไว้ใช้
 
             supervisors.forEach(sup => {
                 const option = document.createElement("option");
-                option.value = sup.user_id; // ใช้ user_id ตรงกับที่ใช้ตอนเพิ่ม
+                option.value = sup.user_id;
                 option.textContent = `${sup.name} - ${sup.email}`;
                 supervisorSelect.appendChild(option);
             });
         } catch (error) {
             console.error("โหลด supervisor ไม่ได้:", error);
-            const option = document.createElement("option");
-            option.value = "";
-            option.textContent = "(โหลดรายชื่อ supervisor ไม่สำเร็จ)";
-            supervisorSelect.appendChild(option);
+            supervisorSelect.innerHTML += `<option value="">(โหลดรายชื่อ supervisor ไม่สำเร็จ)</option>`;
         }
     }
+
 
 
 
@@ -356,64 +355,52 @@
     function viewDetail(id) {
         const member = members.find(item => item.user_id === id);
 
-        // เช็คถ้าสมาชิกเป็น "Sale" และมี Sales Supervisor
         let supervisorInfo = "";
-        if (member.role_name === "sale" && member.supervisorId) {
-            const supervisor = members.find(item => item.id === member.supervisorId);
-            if (supervisor) {
-                supervisorInfo = `
+        if (member.role_name.toLowerCase() === "sale" && member.manager) {
+            const supervisor = supervisors.find(sup => sup.user_id === member.manager);
+            supervisorInfo = supervisor ? `
                 <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"" value="${supervisor.name} - ${supervisor.email}" readonly>
-                </div>
-                `;
-            } else {
-                supervisorInfo = `
+                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
+                        value="${supervisor.name} - ${supervisor.email}" readonly>
+                </div>` : `
                 <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Sales Supervisor</label>
-                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"" value="ไม่พบ Supervisor" readonly>
-                </div>
-                `;
-            }
+                    <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" 
+                        value="ไม่พบ Supervisor" readonly>
+                </div>`;
         }
 
         Swal.fire({
             html: `
                 <div class="flex flex-col text-3xl mb-6 mt-4">
-                     <b class=text-gray-800 >รายละเอียดข้อมูลสมาชิก</b>
-                 </div>
+                    <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
+                </div>
                 <div class="flex flex-col space-y-2 text-left">
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">ชื่อสมาชิก</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.name}" readonly>
                     </div>
-
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">อีเมล</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.email}" readonly>
                     </div>
-
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(member.created_at)}" readonly>
                     </div>
-
                     <div class="w-full">
                         <label class="font-medium text-gray-800 text-sm">บทบาท</label>
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${member.role_name}" readonly>
                     </div>
-
-                    ${supervisorInfo} <!-- แสดง Sales Supervisor ถ้ามี -->
-                </div>
-            `,
-            customClass: {
-                popup: 'custom-popup'
-            },
+                    ${supervisorInfo}
+                </div>`,
+            customClass: { popup: 'custom-popup' },
             confirmButtonText: "ยืนยัน",
             confirmButtonColor: "#2D8C42",
         });
-
     }
+
     // แปลงวันที่เป็นภาษาไทย
     function formatThaiDate(dateStr) {
             if (!dateStr) return '-';
@@ -671,6 +658,10 @@
                     return false;
                 }
             }
+            
+            if (role === "ceo" || role === "supervisor") {
+                manager = null;
+            }
 
             try {
                 const response = await fetch("{{ route('api.user.edit') }}", {
@@ -789,4 +780,3 @@
 
     <!-- </form> -->
 @endsection
-

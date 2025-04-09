@@ -213,11 +213,44 @@ class UserController extends Controller
         ]);
     }
 
-    public function managePage(Request $request)
+    public function getUserOptionsForBranchFilter(Request $request)
     {
-        $supervisors = User::where('role_name', 'supervisor')->get();
-        return view('user.index', [
-            'supervisors' => $supervisors,
-        ]);
+        $currentUser = session()->get('user');
+
+        if (!$currentUser) {
+            return response()->json(['users' => []]);
+        }
+
+        $role = $currentUser->role_name;
+
+        if ($role === 'sale') {
+            return response()->json([
+                'users' => [[
+                    'user_id' => $currentUser->user_id,
+                    'name' => $currentUser->name,
+                    'role_name' => $currentUser->role_name,
+                ]]
+            ]);
+        }
+
+        if ($role === 'supervisor') {
+            $users = User::where(function ($q) use ($currentUser) {
+                $q->where('user_id', $currentUser->user_id)
+                ->orWhere('manager', $currentUser->user_id);
+            })->get(['user_id', 'name', 'role_name']);
+
+            return response()->json(['users' => $users]);
+        }
+
+        if ($role === 'ceo') {
+            $users = User::whereIn('role_name', ['sale', 'supervisor'])
+                        ->get(['user_id', 'name', 'role_name']);
+            return response()->json(['users' => $users]);
+        }
+
+        return response()->json(['users' => []]);
     }
+
+    
+
 }
