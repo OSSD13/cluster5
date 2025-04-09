@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PointOfInterestType;
 use Illuminate\Http\Request;
 use App\Models\PointOfInterest;
 
@@ -9,7 +10,12 @@ class PointOfInterestController extends Controller
 {
     public function index()
     {
-        return view('poi.index');
+        $poits = PointOfInterestType::all();
+        $provinces = \DB::table("locations")
+            ->select('province')
+            ->distinct()
+            ->get();
+        return view('poi.index', compact('poits','provinces'));
     }
     public function insert(Request $request){
         $request->validate([
@@ -88,7 +94,7 @@ class PointOfInterestController extends Controller
         }
 
         if ($type) {
-            $poisQuery->where('type', $type);
+            $poisQuery->where('point_of_interests.poi_type', '=', $type);
         }
 
         if ($province) {
@@ -208,37 +214,5 @@ class PointOfInterestController extends Controller
     public function editPoi(Request $request)
     {
         return view('poi.create');
-    }
-
-    public function deletePoi(Request $request){
-        $validator = \Validator::make($request->all(), [
-            'poi_id' => 'required|numeric|exists:point_of_interests,poi_id',
-        ], [
-            'poi_id.required' => 'กรุณาระบุรหัสผู้ใช้งาน',
-            'poi_id.numeric' => 'รหัสผู้ใช้งานต้องเป็นตัวเลข',
-        ]);
-
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $poi = PointOfInterest::where('poi_id', '=', $request->input('poi_id'))->first();
-        if (!$poi) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบประเภทสถานที่ที่ต้องการลบ'
-            ], 404);
-        }
-
-        \DB::statement('DELETE FROM point_of_interests WHERE poi_id = ?', bindings: [$request->input('poi_id')]);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'ลบประเภทสถานที่เรียบร้อยแล้ว'
-        ]);
     }
 }

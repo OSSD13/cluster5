@@ -40,10 +40,9 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/branch/', [BranchController::class, 'index'])->name('branch.index');
     Route::get('/branch/manage', [BranchController::class, 'manage'])->name('branch.manage.index');
 
-    Route::get('/poi', function () { return view('poi.index'); })->name('poi.index');
+    Route::get('/poi', [PointOfInterestController::class, 'index'])->name('poi.index');
     Route::get('/poi/create', [PointOfInterestController::class, 'createPage'])->name('poi.create');
     Route::get('/poi/edit', [EditPointOfInterestController::class, 'editPoiPage'])->name('poi.edit');
-    
 
     Route::get('/poi/type/create', [PointOfInterestTypeController::class, 'create'])->name('poi.type.create');
     Route::get('/poi/type/edit', [PointOfInterestTypeController::class, 'edit'])->name('poi.type.edit');
@@ -68,7 +67,6 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::post('/api/poi/edit', [EditPointOfInterestController::class, 'editPoi'])->name('api.poi.edit');
     Route::post('/poi/insert', [PointOfInterestController::class, 'insert'])->name('poi.insert');
     Route::post('/api/poi/create', [PointOfInterestController::class, 'createPoi'])->name('api.poi.create');
-    Route::DELETE('/api/poi/delete', [PointOfInterestController::class, 'deletePoi'])->name('api.poi.delete');
 
     Route::get('/api/poit/query', [PointOfInterestTypeController::class, 'queryPoit'])->name('api.poit.query');
     Route::get('/api/poit/query/all', [PointOfInterestTypeController::class, 'allPoit'])->name('api.poit.query.all');
@@ -114,6 +112,8 @@ Route::middleware([CheckLogin::class])->group(function () {
     Route::get('/convert-link', [GoogleMapController::class, 'showForm']);
     Route::post('/convert-url', [GoogleMapController::class, 'convertShareToLatLng'])->name('handleConversion');
 
+
+    
 
 });
 
