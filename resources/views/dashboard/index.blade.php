@@ -80,8 +80,10 @@
                         .then(data => {
                             console.log('Branch report:', data);
 
-                            const branchCount = data.branch_count;
+                            let branchCount = data.branch_count;
                             const branches = data.branches;
+                            totalItems =  branchCount;
+                            console.log(totalItems);
 
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
@@ -481,10 +483,12 @@
     let province = null;
     let branches = [];
     let currentPage = 1;
-    const totalItems = 100; // Total number of items (you will fetch this from the server)
+    let totalItems = 100; // Total number of items (you will fetch this from the server)
     const rowsPerPage = 10; // Number of items per page
 
     function renderPagination(type = 'region', region, province, page = 1) {
+        console.log(totalItems);
+        
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
 
@@ -583,7 +587,8 @@
 
 
             function buildRegionTable(page = 1) {
-                
+                currentPage = page; // Ensure currentPage is set correctly
+                totalItems = 100;
                 // fetch /api/getRegionBranch
                 // example response
                 // {
@@ -644,6 +649,9 @@
                     }).toString())
                         .then(response => response.json())
                         .then(data => {
+                        console.log('Branches Data:', data);
+                        totalItems = data.branch_count;
+                        
                             console.log('Region Branch Data:', data);
                             clearTableBody();
                             const regionTableBody = document.getElementById('regionTableBody');
@@ -663,7 +671,6 @@
                             if (data.branches) {
                                 const tableBody = document.getElementById('tableBody');
                                 tableBody.innerHTML = ''; // Clear previous rows
-
                                 data.branches.forEach((branch, index) => {
                                     let row = `
                                                     <tr class="hover:bg-gray-100">
@@ -736,6 +743,7 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Province Branch Data:', data);
+                        totalItems = data.branch_count;
 
                         clearTableBody();
 
@@ -785,11 +793,12 @@
                         setBackButtonOnClick(() => {
                             buildRegionTable();
                         });
-                        renderPagination('province', region);  // Render pagination for province table
+                        renderPagination('province', region,);  // Render pagination for province table
                     })
                     .catch(error => console.error('Error fetching province branch data:', error));
 
             }
+            
 
 
             function buildBranchesTable(region, province, page = 1) {
@@ -840,7 +849,7 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
-
+                        totalItems = data.branch_count;
                         clearTableBody();
 
                         const tableBody = document.getElementById('tableBody');
