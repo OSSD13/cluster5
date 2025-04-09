@@ -188,6 +188,7 @@ class BranchController extends Controller
                 'point_of_interests.poi_gps_lng',
                 'point_of_interests.poi_address as poi_address',
                 'point_of_interest_type.poit_name',
+                'point_of_interest_type.poit_type',
                 'locations.zipcode',
                 'locations.province',
                 'locations.amphoe',
