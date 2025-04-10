@@ -14,6 +14,8 @@
         <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">POI แก้ไขสถานที่</h2>
 
+            <input type="hidden" name="poi_id" value="{{ $poi->poi_id }}">
+
             <label class="block text-sm text-gray-600">Link Google (Optional)</label>
             <input type="text" id="googleMapLink" name="googleMapLink"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="Link Google">
@@ -225,13 +227,14 @@
                 address: form.address.value,
                 name: form.name.value,
                 type: form.type.value,
+                poi_id: form.poi_id.value,
             };
 
             submitButton.disabled = true;
             submitButton.innerText = 'กำลังบันทึก...';
 
             try {
-                const response = await fetch(`{{ route('api.poi.create') }}`, {
+                const response = await fetch(`{{ route('api.poi.edit') }}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

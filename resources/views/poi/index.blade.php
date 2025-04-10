@@ -28,8 +28,6 @@
             </button>
         </a>
     </div>
-
-
     <div class="overflow-visible">
         <table class="w-full mt-5 border-collapse rounded-lg">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
@@ -235,16 +233,33 @@
             if (!poi) return;
 
             Swal.fire({
-                title: "รายละเอียดสถานที่",
                 html: `
-                            <div class="text-left space-y-2 text-sm text-gray-700">
-                                <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
-                                <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
-                                <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
-                                <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
-                                <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
-                            </div>
-                        `,
+                    <div class="flex flex-col text-3xl mb-6 mt-4">
+                    <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
+                    </div>
+                    <div class="flex flex-col space-y-2 text-left">
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ชื่อสถานที่</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value=" ${poi.poi_name || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ประเภท</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poi.poit_name || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ประเภท</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poi.province || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ที่อยู่</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poi.poi_address || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">เพิ่มเมื่อ</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(poi.created_at)}" readonly>
+                    </div>
+                     </div>`,
+                        
                 confirmButtonText: "ปิด",
                 confirmButtonColor: "#3085d6"
             });
