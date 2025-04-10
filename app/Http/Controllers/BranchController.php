@@ -346,6 +346,7 @@ class BranchController extends Controller
         return view('branch.manage.index', compact('branch'));
     }
 
+
     public function deleteBranch(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -390,4 +391,5 @@ class BranchController extends Controller
             'message' => 'ลบข้อมูลสาขาเรียบร้อยแล้ว'
         ]);
     }
+
 }

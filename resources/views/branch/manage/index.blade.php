@@ -600,18 +600,18 @@
             const now = new Date();
             for (let i = 0; i < 12; i++) {
                 const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
+
                 const label = date.toLocaleDateString("th-TH", {
                     month: "long",
                     year: "numeric"
                 });
-                const value = date.toISOString().split("T")[0];
-                monthOptions.push({
-                    value,
-                    label
-                });
+
+                monthOptions.push({ value, label });
             }
 
-            const selectedMonth = new Date(sale.sales_month).toISOString().split("T")[0];
+
+            const selectedMonth = `${sale.sales_month}-01`;
 
             Swal.fire({
                 html: `
