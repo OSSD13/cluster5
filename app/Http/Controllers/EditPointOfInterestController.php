@@ -84,66 +84,90 @@ class EditPointOfInterestController extends Controller
         ]);
     }
     public function editPoi(Request $request)
-    {
+{
+    $validator = \Validator::make($request->all(), [
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric', // fixed field name
+        'zipcode' => 'nullable|numeric',
+        'province' => 'nullable|string|max:255',
+        'district' => 'nullable|string|max:255',
+        'amphoe' => 'nullable|string|max:255',
+        'address' => 'nullable|string|max:255',
+        'name' => 'required|string|max:255',
+        'type' => 'required|string|max:255', 
+    ], [
+        'latitude.required' => 'กรุณาระบุละติจูด',
+        'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+        'longitude.required' => 'กรุณาระบุลองจิจูด',
+        'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
+        'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+        'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
+        'district.string' => 'อำเภอต้องเป็นตัวอักษร',
+        'amphoe.string' => 'ตำบลต้องเป็นตัวอักษร',
+        'address.string' => 'ที่อยู่ต้องเป็นตัวอักษร',
+        'name.required' => 'กรุณาระบุชื่อสถานที่',
+        'name.string' => 'ชื่อสถานที่ต้องเป็นตัวอักษร',
+        'type.required' => 'กรุณาระบุประเภทสถานที่',
+        'type.string' => 'ประเภทสถานที่ต้องเป็นตัวอักษร',
+    ]);
 
-        $validator = \Validator::make($request->all(), [
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'zipcode' => 'required|numeric',
-            'province' => 'required|string|max:255',
-            'district' => 'required|string|max:255',
-            'amphoe' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255', 
-        
-        ],[
-            'latitude.required' => 'กรุณาระบุละติจูด',
-            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
-            'longitude.required' => 'กรุณาระบุลองจิจูด',
-            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
-            'postal_code.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'postal_code.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
-            'province.required' => 'กรุณาระบุจังหวัด',
-            'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
-            'district.required' => 'กรุณาระบุอำเภอ',
-            'district.string' => 'อำเภอต้องเป็นตัวอักษร',
-            'amphoe.required' => 'กรุณาระบุตำบล',
-            'amphoe.string' => 'ตำบลต้องเป็นตัวอักษร',
-            'address.required' => 'กรุณาระบุที่อยู่',
-            'address.string' => 'ที่อยู่ต้องเป็นตัวอักษร',
-            'name.required' => 'กรุณาระบุชื่อสถานที่',
-            'name.string' => 'ชื่อสถานที่ต้องเป็นตัวอักษร',
-            'type.required' => 'กรุณาระบุประเภทสถานที่',
-            'type.string' => 'ประเภทสถานที่ต้องเป็นตัวอักษร',
-        ]);
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'การตรวจสอบข้อมูลล้มเหลว',
+            'errors' => $validator->errors()
+        ], 422);
+    }
 
-        if ($validator->fail()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        $type = \DB::table('point_of_interest_type')->where('point_type', $request->input('type'))->first();
-        if (!$type) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบประเภทสถานที่ที่ระบุ'
-            ], 404);
-        }
-        $location = \DB::table('location')
-        ->where('postal_code',$request->input('postal_code'))
-        ->where('province',$request->inptu('province'))
-        ->where('district',$request->input('district'))
-        ->where('sub_district',$request->input('sub_district'))
+    $type = \DB::table('point_of_interest_type')
+        ->where('poit_type', $request->input('type'))
         ->first();
-        if(!$location){
+
+    if (!$type) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'ไม่พบประเภทสถานที่ที่ระบุ'
+        ], 404);
+    }
+
+    // Optional: only check location if all fields exist
+    $hasLocationFields = $request->filled(['zipcode', 'province', 'district', 'amphoe']);
+    if ($hasLocationFields) {
+        $location = \DB::table('location')
+            ->where('zipcode', $request->input('zipcode'))
+            ->where('province', $request->input('province'))
+            ->where('district', $request->input('district'))
+            ->where('amphoe', $request->input('amphoe'))
+            ->first();
+
+        if (!$location) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'ไม่พบข้อมูลสถานที่ตั้งตรงกับที่ระบุ'
             ], 404);
-
         }
     }
+
+    // ✅ Update the POI
+    $poi = PointOfInterest::find($request->input('poi_id'));
+    if (!$poi) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'ไม่พบข้อมูลสถานที่ที่ระบุ'
+        ], 404);
+    }
+    $poi->poi_name = $request->input('name');
+    $poi->poi_location_id = $location->location_id ?? null; // Use location ID if exists
+    $poi->poi_type = $type->poit_type;
+    $poi->poi_gps_lat = $request->input('latitude');
+    $poi->poi_gps_lng = $request->input('longitude');
+    $poi->poi_address = $request->input('address');
+    $poi->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'อัปเดตข้อมูลสถานที่เรียบร้อยแล้ว'
+    ]);
+}
+
 }
