@@ -3,16 +3,16 @@
 @section('title', 'Point of Interest')
 
 @section('content')
-    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
-        <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-700">POIT จัดการประเภทสถานที่ที่สนใจ</h2>
-            <a href="{{ route('poi.type.create') }}">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap"
-                    style="background-color: #3062B8">
-                    สร้าง POIT
-                </button>
-            </a>
-        </div>
+<div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
+    <div class="flex justify-between items-center mb-3">
+        <h2 class="text-2xl font-bold text-gray-700">POIT จัดการประเภทสถานที่สนใจ</h2>
+        <a href="{{ route('poi.type.create') }}">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded whitespace-nowrap"
+                style="background-color: #3062B8">
+                สร้าง POIT
+            </button>
+        </a>
+    </div>
 
         <input type="text" placeholder="ค้นหาสถานที่ที่สนใจ" class="w-full p-2 border border-gray-300 rounded mb-3"
             id="searchInput">

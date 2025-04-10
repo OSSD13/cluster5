@@ -434,20 +434,20 @@
             }
 
             function updateCardStyle(cardId, arrowId, change) {
-                const card = document.getElementById(cardId);
-                const arrow = document.getElementById(arrowId);
+            const card = document.getElementById(cardId);
+            const arrow = document.getElementById(arrowId);
 
-                card.classList.remove('bg-red-light', 'bg-green', 'bg-lightblue');
-                arrow.classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
-
-                if (change > 0) {
-                    card.classList.add('bg-green');
-                    arrow.classList.add('icon-[line-md--arrow-up]');
-                } else {
-                    card.classList.add('bg-red-light');
-                    arrow.classList.add('icon-[line-md--arrow-down]');
-                }
+            if (change > 0) {
+            card.classList.add('bg-green');
+            arrow.classList.add('icon-[line-md--arrow-up]', 'text-success');
+            } 
+            else {
+                card.classList.add('bg-red-light');
+                arrow.classList.add('icon-[line-md--arrow-down]', 'text-danger');
             }
+            
+         }
+
         </script>
 
         <!-- กรอบหัวเรื่องภูมิภาค -->

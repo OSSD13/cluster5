@@ -17,7 +17,7 @@
             }
         </style>
         <!-- <form method="POST" action="{{ route('logout') }}">
-                    @csrf -->
+                            @csrf -->
         <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
             <!-- Header -->
             <div class="flex justify-between items-center mb-3">
@@ -136,9 +136,9 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                 <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
-                <td class="py-3 px-4 max-w-[200px]">
-                    <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
-                    <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
+                <td class="py-3 px-4 max-w-[150px]">
+                    <div class="font-semibold text-md break-words whitespace-normal leading-tight">${member.name}</div>
+                    <div class="text-sm text-gray-400 break-words whitespace-normal leading-tight">${member.email}</div>
                 </td>
                 <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
@@ -663,11 +663,16 @@
                         const password = document.getElementById("memberPassword").value;
                         const role = document.getElementById("memberRole").value;
 
-                        if (!email || !name || !role) {
-                            Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
-                            return false;
-                        }
-
+                        // 🧼 Clear old error messages
+                        const fields = ['memberEmail', 'memberPassword', 'memberName', 'memberRole',
+                            'supervisorDropdown'
+                        ];
+                        fields.forEach(id => {
+                            const el = document.getElementById(id);
+                            const next = el?.nextElementSibling;
+                            if (next && next.classList.contains('error-text')) next.remove();
+                        });
+                        
                         let manager = null;
                         if (role === "sale") {
                             manager = document.getElementById("supervisorDropdown").value;
@@ -701,10 +706,27 @@
                             const result = await response.json();
 
                             if (!response.ok) {
-                                const errorMsg = result?.message || "เกิดข้อผิดพลาด";
-                                Swal.showValidationMessage(errorMsg);
+                                // 🚫 Show validation errors below each input
+                                if (result?.errors) {
+                                    Object.entries(result.errors).forEach(([field, messages]) => {
+                                        const targetId = field === "role_name" ? "memberRole" :
+                                            field === "manager" ? "supervisorDropdown" :
+                                            `member${field.charAt(0).toUpperCase() + field.slice(1)}`;
+                                        const input = document.getElementById(targetId);
+                                        if (input) {
+                                            const errorEl = document.createElement('div');
+                                            errorEl.className = 'text-xs text-red-600 mt-1 error-text';
+                                            errorEl.innerHTML = messages.join('<br>');
+                                            input.insertAdjacentElement('afterend', errorEl);
+                                        }
+                                    });
+                                } else {
+                                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาด");
+                                }
+
                                 return false;
                             }
+
 
                             Swal.fire({
                                 title: "สำเร็จ!",

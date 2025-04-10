@@ -41,7 +41,7 @@
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
-                <th class="py-3 px-4 text-left min-w-[150px]">ชื่อสาขา / ประเภท</th>
+                <th class="py-3 px-4 text-left min-w-[120px]">ชื่อสาขา / ประเภท</th>
                 <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
             </tr>
@@ -110,9 +110,9 @@
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td class="py-3 px-4 w-16">${branch.bs_id}</td>
-                <td class="py-3 px-4 ">
-                    <div class="font-semibold text-md" title="${branch.bs_name}">${branch.bs_name}</div>
-                    <div class="text-sm text-gray-400 " title="${branch.poit_name}">${branch.poit_name}</div>
+                <td class="py-3 px-4 max-w-[150px]">
+                    <div class="font-semibold text-md break-words whitespace-normal leading-tight">${branch.bs_name}</div>
+                    <div class="text-sm text-gray-400 break-words whitespace-normal leading-tight">${branch.poit_name}</div>
                 </td>
                 <td class="py-3 px-4 text-center">
                     <div class="font-semibold text-sm truncate w-[120px] mx-auto" title="${branch.bs_manager_name}">
