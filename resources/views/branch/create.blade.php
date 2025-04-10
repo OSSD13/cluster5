@@ -15,8 +15,7 @@
         <h2 class="text-2xl font-bold text-gray-800 mb-4">สร้างสาขา</h2>
 
         <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-        <input type="text" id="googleMapLink" name="googleMapLink"
-            class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="Link Google">
+        <input type="text" id="googleMapLink" name="googleMapLink" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="Link Google">
         <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
 
         <label class="block text-sm text-gray-600">ละติจูด</label>

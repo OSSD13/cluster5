@@ -81,7 +81,7 @@
                 <td class="py-3 px-4">${poit.poit_description || '-'}</td>
                 <td class="py-3 px-4 text-center relative">
                     <button class="cursor-pointer text-blue-600 hover:text-blue-800" onclick="toggleMenu(event, '${poit.poit_type}')">&#8230;</button>
-                    <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                    <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2 -translate-y-1/2">
                         <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" data-type="${poit.poit_type}">ดูรายละเอียด</button>
                         <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg" data-type="${poit.poit_type}">แก้ไข</button>
                         <button class="delete-btn block w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg" data-type="${poit.poit_type}">ลบ</button>

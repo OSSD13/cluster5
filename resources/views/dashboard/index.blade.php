@@ -81,8 +81,10 @@
                         .then(data => {
                             console.log('Branch report:', data);
 
-                            const branchCount = data.branch_count;
+                            let branchCount = data.branch_count;
                             const branches = data.branches;
+                            totalItems =  branchCount;
+                            console.log(totalItems);
 
                             let allMonthlySales = {};
                             let thisMonthTotalMoneyRange = {};
@@ -195,10 +197,12 @@
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) /
-                                lastMonthTotalPackage) * 100 : 0;
-                            let salesChange = lastMonthTotalSales > 0 ? ((thisMonthTotalSales - lastMonthTotalSales) /
-                                lastMonthTotalSales) * 100 : 0;
+                            let packageChange = lastMonthTotalPackage > 0 && isFinite(thisMonthTotalPackage) && isFinite(lastMonthTotalPackage) 
+                                ? ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 
+                                : 0;
+                            let salesChange = lastMonthTotalSales > 0 && isFinite(thisMonthTotalSales) && isFinite(lastMonthTotalSales) 
+                                ? ((thisMonthTotalSales - lastMonthTotalSales) / lastMonthTotalSales) * 100 
+                                : 0;
 
                             document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
                                 .toLocaleString();
@@ -222,25 +226,37 @@
                                         0));
                                 }
                             });
-
-                            // Calculate statistics
-                            let min = Math.min(...salesArray);
-                            let max = Math.max(...salesArray);
-                            let avg = salesArray.reduce((a, b) => a + b, 0) / salesArray.length || 0;
-                            let std = Math.sqrt(salesArray.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) /
-                                salesArray.length) || 0;
+                            let min = salesArray.length > 0 && salesArray.every(isFinite) ? Math.min(...salesArray) : 0;
+                            let max = salesArray.length > 0 && salesArray.every(isFinite) ? Math.max(...salesArray) : 0;
+                            let avg = salesArray.length > 0 && salesArray.every(isFinite) 
+                                ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length 
+                                : 0;
+                            let std = salesArray.length > 0 && salesArray.every(isFinite) 
+                                ? Math.sqrt(salesArray.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesArray.length) 
+                                : 0;
 
                             // Calculate changes compared to last month
-                            let lastMin = Math.min(...lastMonthSalesArray);
-                            let lastMax = Math.max(...lastMonthSalesArray);
-                            let lastAvg = lastMonthSalesArray.reduce((a, b) => a + b, 0) / lastMonthSalesArray.length || 0;
-                            let lastStd = Math.sqrt(lastMonthSalesArray.map(x => Math.pow(x - lastAvg, 2)).reduce((a, b) => a +
-                                b, 0) / lastMonthSalesArray.length) || 0;
+                            let lastMin = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.min(...lastMonthSalesArray) : 0;
+                            let lastMax = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.max(...lastMonthSalesArray) : 0;
+                            let lastAvg = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) 
+                                ? lastMonthSalesArray.reduce((a, b) => a + b, 0) / lastMonthSalesArray.length 
+                                : 0;
+                            let lastStd = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) 
+                                ? Math.sqrt(lastMonthSalesArray.map(x => Math.pow(x - lastAvg, 2)).reduce((a, b) => a + b, 0) / lastMonthSalesArray.length) 
+                                : 0;
 
-                            let minChange = lastMin > 0 ? ((min - lastMin) / lastMin) * 100 : 0;
-                            let maxChange = lastMax > 0 ? ((max - lastMax) / lastMax) * 100 : 0;
-                            let avgChange = lastAvg > 0 ? ((avg - lastAvg) / lastAvg) * 100 : 0;
-                            let stdChange = lastStd > 0 ? ((std - lastStd) / lastStd) * 100 : 0;
+                            let minChange = lastMin > 0 && isFinite(min) && isFinite(lastMin) 
+                                ? ((min - lastMin) / lastMin) * 100 
+                                : 0;
+                            let maxChange = lastMax > 0 && isFinite(max) && isFinite(lastMax) 
+                                ? ((max - lastMax) / lastMax) * 100 
+                                : 0;
+                            let avgChange = lastAvg > 0 && isFinite(avg) && isFinite(lastAvg) 
+                                ? ((avg - lastAvg) / lastAvg) * 100 
+                                : 0;
+                            let stdChange = lastStd > 0 && isFinite(std) && isFinite(lastStd) 
+                                ? ((std - lastStd) / lastStd) * 100 
+                                : 0;
 
                             // Update cards
                             updateCardData({
@@ -253,7 +269,6 @@
                                 stdChange,
                                 avgChange
                             });
-
 
                         })
                         .catch(error => console.error('Error fetching branch report:', error));
@@ -454,7 +469,7 @@
         
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <div class="overflow-x-auto w-full">
-            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden"
+            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg"
                 id="regionTable">
                 <thead class="bg-lightblue" style="background-color: #B6D2FF">
                     <tr>
@@ -482,10 +497,12 @@
     let province = null;
     let branches = [];
     let currentPage = 1;
-    const totalItems = 100; // Total number of items (you will fetch this from the server)
+    let totalItems = 100; // Total number of items (you will fetch this from the server)
     const rowsPerPage = 10; // Number of items per page
 
     function renderPagination(type = 'region', region, province, page = 1) {
+        console.log(totalItems);
+        
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = "";
 
@@ -584,7 +601,8 @@
 
 
             function buildRegionTable(page = 1) {
-                
+                currentPage = page; // Ensure currentPage is set correctly
+                totalItems = 100;
                 // fetch /api/getRegionBranch
                 // example response
                 // {
@@ -642,10 +660,12 @@
                         date,
                         user_id,
                         page: page || currentPage
-                        
                     }).toString())
                         .then(response => response.json())
                         .then(data => {
+                        console.log('Branches Data:', data);
+                        totalItems = data.branch_count;
+                        
                             console.log('Region Branch Data:', data);
                             clearTableBody();
                             const regionTableBody = document.getElementById('regionTableBody');
@@ -665,7 +685,6 @@
                             if (data.branches) {
                                 const tableBody = document.getElementById('tableBody');
                                 tableBody.innerHTML = ''; // Clear previous rows
-
                                 data.branches.forEach((branch, index) => {
                                     let row = `
                                                     <tr class="hover:bg-gray-100">
@@ -738,6 +757,7 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Province Branch Data:', data);
+                        totalItems = data.branch_count;
 
                         clearTableBody();
 
@@ -787,11 +807,12 @@
                         setBackButtonOnClick(() => {
                             buildRegionTable();
                         });
-                        renderPagination('province', region);  // Render pagination for province table
+                        renderPagination('province', region,);  // Render pagination for province table
                     })
                     .catch(error => console.error('Error fetching province branch data:', error));
 
             }
+            
 
 
             function buildBranchesTable(region, province, page = 1) {
@@ -842,7 +863,7 @@
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
-
+                        totalItems = data.branch_count;
                         clearTableBody();
 
                         const tableBody = document.getElementById('tableBody');
@@ -930,10 +951,10 @@
             });
         </script>
 
-        <div class="overflow-x-auto w-full rounded-lg">
+        <div class="overflow-x-auto w-full">
             <table class="table-auto w-full border-collapse rounded-lg text-sm" id="branchTable"
                 style="table-layout: fixed;">
-                <thead class="bg-blue-500 text-gray-800" style="background-color: #B6D2FF">
+                <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                     <tr>
                         <th class="px-2 py-2 text-center text-xs" style="min-width: 40px; width: 10%;">ID</th>
                         <th class="px-2 py-2 text-left text-xs" style="min-width: 150px; width: 40%;">ชื่อสาขา</th>
@@ -956,20 +977,6 @@
                 </tbody>
             </table>
         </div>
-        <!-- <div class="overflow-visible">
-            <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
-                <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
-                    <tr>
-                        <th class="py-3 px-4 text-left min-w-[0px]">ชื่อ / ประเภท</th>
-                        <th scope="col" class="py-2 px-4 text-left">Icon</th>
-                        <th class="py-3 px-4 text-center max-w-[120px]">คำอธิบาย</th>
-                        <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-                      </tr>
-                </thead>
-        
-                <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
-            </table>
-        </div> -->
 
 
         <!-- Pagination Controls -->
