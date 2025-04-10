@@ -207,10 +207,10 @@
 
                             document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
                                 .toLocaleString();
-                            document.getElementById('thisMonthTotalPackagePercent').textContent = packageChange.toFixed(2);
+                            document.getElementById('thisMonthTotalPackagePercent').textContent = Math.abs(packageChange).toFixed(2);
                             document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
                                 .toLocaleString();
-                            document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
+                            document.getElementById('thisMonthTotalMoneyPercent').textContent = Math.abs(salesChange).toFixed(2);
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
@@ -412,13 +412,13 @@
 
                 // Update Min Card
                 document.getElementById('minValue').textContent = min.toLocaleString();
-                document.getElementById('minPercent').textContent = minChange.toFixed(2);
+                document.getElementById('minPercent').textContent = Math.abs(minChange).toFixed(2);
                 document.getElementById('minArrow').classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
                 document.getElementById('minArrow').classList.add(minChange > 0 ? 'icon-[line-md--arrow-up]' : 'icon-[line-md--arrow-down]');
 
                 // Update Max Card
                 document.getElementById('maxValue').textContent = max.toLocaleString();
-                document.getElementById('maxPercent').textContent = maxChange.toFixed(2);
+                document.getElementById('maxPercent').textContent = Math.abs(maxChange).toFixed(2);
                 document.getElementById('maxArrow').classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
                 document.getElementById('maxArrow').classList.add(maxChange > 0 ? 'icon-[line-md--arrow-up]' : 'icon-[line-md--arrow-down]');
 
@@ -427,7 +427,7 @@
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
-                document.getElementById('stdPercent').textContent = stdChange.toFixed(2);
+                document.getElementById('stdPercent').textContent = Math.abs(stdChange).toFixed(2);
                 updateCardStyle('stdCard', 'stdArrow', stdChange);
 
 
@@ -436,7 +436,7 @@
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
-                document.getElementById('avgPercent').textContent = avgChange.toFixed(2);
+                document.getElementById('avgPercent').textContent = Math.abs(avgChange).toFixed(2);
                 updateCardStyle('avgCard', 'avgArrow', avgChange);
 
             }
