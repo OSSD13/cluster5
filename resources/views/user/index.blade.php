@@ -9,25 +9,9 @@
 
 @if ($user && $user->role_name === 'ceo')
 
-    @section('content')
-        <style>
-            .error-text {
-                font-size: 1rem;
-                color: #dc2626;
-                /* red-600 */
-            }
-        </style>
-        <!-- <form method="POST" action="{{ route('logout') }}">
-                            @csrf -->
-        <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-lg font-bold">จัดการสมาชิก</h2>
-                <button class="bg-blue-500 hover:bg-blue-700 text-white border border-gray-400 font-bold py-2 px-4 rounded"
-                    style="background-color: #3062B8" onclick="addMember()">
-                    สร้างสมาชิก
-                </button>
-            </div>
+@section('content')
+    
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 
     <!-- <form method="POST" action="{{ route('logout') }}">
             @csrf -->
@@ -639,88 +623,9 @@ function viewDetail(id) {
             const password = document.getElementById("memberPassword").value;
             const role = document.getElementById("memberRole").value;
 
-                        // 🧼 Clear old error messages
-                        const fields = ['memberEmail', 'memberPassword', 'memberName', 'memberRole',
-                            'supervisorDropdown'
-                        ];
-                        fields.forEach(id => {
-                            const el = document.getElementById(id);
-                            const next = el?.nextElementSibling;
-                            if (next && next.classList.contains('error-text')) next.remove();
-                        });
-                        
-                        let manager = null;
-                        if (role === "sale") {
-                            manager = document.getElementById("supervisorDropdown").value;
-                            if (!manager) {
-                                Swal.showValidationMessage("กรุณาเลือก Sales Supervisor");
-                                return false;
-                            }
-                        } else {
-                            manager = null
-                        }
-
-                        try {
-                            const response = await fetch("{{ route('api.user.edit') }}", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-                                        .getAttribute("content")
-                                },
-                                body: JSON.stringify({
-                                    user_id: id,
-                                    email: email,
-                                    name: name,
-                                    password: password || undefined,
-                                    role_name: role,
-                                    manager: manager ? parseInt(manager) : null,
-                                    user_status: "normal"
-                                })
-                            });
-
-                            const result = await response.json();
-
-                            if (!response.ok) {
-                                // 🚫 Show validation errors below each input
-                                if (result?.errors) {
-                                    Object.entries(result.errors).forEach(([field, messages]) => {
-                                        const targetId = field === "role_name" ? "memberRole" :
-                                            field === "manager" ? "supervisorDropdown" :
-                                            `member${field.charAt(0).toUpperCase() + field.slice(1)}`;
-                                        const input = document.getElementById(targetId);
-                                        if (input) {
-                                            const errorEl = document.createElement('div');
-                                            errorEl.className = 'text-xs text-red-600 mt-1 error-text';
-                                            errorEl.innerHTML = messages.join('<br>');
-                                            input.insertAdjacentElement('afterend', errorEl);
-                                        }
-                                    });
-                                } else {
-                                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาด");
-                                }
-
-                                return false;
-                            }
-
-
-                            Swal.fire({
-                                title: "สำเร็จ!",
-                                text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
-                                icon: "success",
-                                confirmButtonColor: "#2D8C42",
-                                confirmButtonText: "ตกลง"
-                            });
-
-                            fetchMembers();
-                        } catch (error) {
-                            Swal.showValidationMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ API");
-                            console.error("Edit API error:", error);
-                            return false;
-                        }
-                    }
-
-                });
+            if (!email || !name || !role) {
+                Swal.showValidationMessage("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return false;
             }
 
             let manager = null;
