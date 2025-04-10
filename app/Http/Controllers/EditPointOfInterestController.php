@@ -10,28 +10,18 @@ class EditPointOfInterestController extends Controller
     public function editPoiPage(Request $request)
     {
         // ค้นหาข้อมูล POI จาก ID
-        $poi = PointOfInterest::find($request->input('poi_id'));
+        $show = PointOfInterest::find($request->input('id'));
         // ตรวจสอบหากไม่พบข้อมูล POI
-        if (!$poi) {
+        if (!$show) {
             return redirect()->route('poi.index')->with('error', 'ไม่พบข้อมูล POI ที่ระบุ');
         }
         $poiTypes = \DB::table('point_of_interest_type')
             ->select('poit_type', 'poit_name', 'poit_icon')
             ->get();
 
-        $locations = null;
-        if ($poi->poi_location_id) {
-            $locations = \DB::table('locations')
-                ->where('location_id', $poi->poi_location_id)
-                ->first();
-        }
-
-        $poiTypes = \DB::table('point_of_interest_type')->get();
-
-
-            // ส่งตัวแปร $show ไปยัง View
-            return view('poi.edit', compact('poi', 'poiTypes', 'locations')); // ส่ง $show ผ่าน compact()
-        }
+        // ส่งตัวแปร $show ไปยัง View
+        return view('poi.edit', compact('show','poiTypes')); // ส่ง $show ผ่าน compact()
+    }
 
     public function queryPoi(Request $request)
     {
@@ -98,15 +88,15 @@ class EditPointOfInterestController extends Controller
             'amphoe' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255', 
-        
-        ],[
-            'latitude.required' => 'กรุณาระบุละติจูด',
-            'latitude.numeric' => 'ละติจูดต้องเป็นตัวเลข',
-            'longitude.required' => 'กรุณาระบุลองจิจูด',
-            'longitude.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
-            'postal_code.required' => 'กรุณาระบุรหัสไปรษณีย์',
-            'postal_code.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+            'type' => 'required|string|max:255',
+
+        ], [
+            'lat.required' => 'กรุณาระบุละติจูด',
+            'lat.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+            'lng.required' => 'กรุณาระบุลองจิจูด',
+            'lng.numeric' => 'ลองจิจูดต้องเป็นตัวอักษร',
+            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
             'province.required' => 'กรุณาระบุจังหวัด',
             'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
             'district.required' => 'กรุณาระบุอำเภอ',
@@ -125,7 +115,7 @@ class EditPointOfInterestController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'การตรวจสอบข้อมูลล้มเหลว',
-                'errors' => $validator->errors()
+                'errors' => $validator->error
             ], 422);
         }
         $type = \DB::table('point_of_interest_type')->where('point_type', $request->input('type'))->first();
@@ -136,12 +126,12 @@ class EditPointOfInterestController extends Controller
             ], 404);
         }
         $location = \DB::table('location')
-        ->where('postal_code',$request->input('postal_code'))
-        ->where('province',$request->inptu('province'))
-        ->where('district',$request->input('district'))
-        ->where('sub_district',$request->input('sub_district'))
-        ->first();
-        if(!$location){
+            ->where('zipcode', $request->input('postal_code'))
+            ->where('province', $request->inptu('province'))
+            ->where('district', $request->input('district'))
+            ->where('amphoe', $request->input('sub_district'))
+            ->first();
+        if (!$location) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'ไม่พบข้อมูลสถานที่ตั้งตรงกับที่ระบุ'
