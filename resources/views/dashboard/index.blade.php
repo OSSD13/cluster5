@@ -692,7 +692,7 @@
                                                         <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                             ${branch.branchName}
                                                         </td>
-                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
                                                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
                                                             <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                                                 ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
@@ -791,7 +791,7 @@
                                                         <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                             ${branch.branchName}
                                                         </td>
-                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
                                                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
                                                             <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                                                 ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
@@ -876,7 +876,7 @@
                                             <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                 ${branch.branchName}
                                             </td>
-                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
+                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap"> ${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
                                             <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
                                                 <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                                     ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}

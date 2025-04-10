@@ -163,7 +163,7 @@ class BranchController extends Controller
         $branch = new Branch_store();
         $branch->bs_name = $request->input('name');
         $branch->bs_address = $request->input('address');
-        $branch->bs_poi_id = $poi->id;
+        $branch->bs_poi_id = $poi->poi_id;
         $branch->bs_manager = $userId;
         $branch->bs_detail = $request->input('detail', null);
         $branch->save();
@@ -347,6 +347,7 @@ class BranchController extends Controller
     }
     
 
+
     public function deleteBranch(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -391,4 +392,5 @@ class BranchController extends Controller
             'message' => 'ลบข้อมูลสาขาเรียบร้อยแล้ว'
         ]);
     }
+
 }
