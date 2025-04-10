@@ -44,54 +44,37 @@
 
     <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-row gap-4">
-            <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark"
+            <div id="minCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark"
                 style="background-color: #F2DDD4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
                     <span id="minValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                 </div>
-                <div id="minChange" class="text-sm text-end">
-                    <span id="minArrow" class="icon-[line-md--arrow-down]"></span>
-                    <span id="minPercent">0</span>%
-                </div>
             </div>
 
-            <div id="maxCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-success"
+            <div id="maxCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success"
                 style="background-color: #D6F2D4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
                     <span id="maxValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                 </div>
-                <div id="maxChange" class="text-sm text-end">
-                    <span id="maxArrow" class="icon-[line-md--arrow-up]"></span>
-                    <span id="maxPercent">0</span>%
-                </div>
             </div>
         </div>
 
         <div class="flex flex-row gap-4">
-            <div id="stdCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+            <div id="stdCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark"
                 style="background-color: #FAEAFF;">
                 <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
                     <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                 </div>
-                <div id="stdChange" class="text-base text-end text-bold" style="color: #DA25BF;">
-                    <span id="stdArrow" class="icon-[line-md--arrow-down]"></span>
-                    <span id="stdPercent">0</span>%
-                </div>
             </div>
 
-            <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
+            <div id="avgCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark min-h-32"
                 style="background-color: #FAEAFF;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
-                <div class="flex justify-center items-center text-bold text-base gap-2 mt-5" style="color: #DA25BF;">
+                <div class="flex justify-center items-center text-bold text-base gap-2" style="color: #DA25BF;">
                     <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
-                    <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
-                </div>
-                <div id="avgChange" class="text-base text-end text-bold" style="color: #DA25BF;">
-                    <span id="avgArrow" class="icon-[line-md--arrow-down]"></span>
-                    <span id="avgPercent">0</span>%
                 </div>
             </div>
         </div>
@@ -132,7 +115,8 @@
 
                 // 💡 Format stats
                 const format = (val) => val.toLocaleString(undefined, {
-                    minimumFractionDigits: 2
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 });
                 minEl.textContent = format(min);
                 maxEl.textContent = format(max);
