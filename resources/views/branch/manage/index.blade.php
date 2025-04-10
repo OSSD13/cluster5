@@ -290,8 +290,8 @@
     </div>
 
 
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden">
-        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
+    <table class="w-full mt-5 border-collapse rounded-lg">
+        <thead class="text-gray-800 text-md rounded-lg" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 text-left">เดือน</th>
                 <th class="py-3 px-4 text-right">ยอดเงิน</th>

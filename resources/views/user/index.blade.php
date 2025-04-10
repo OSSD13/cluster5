@@ -54,7 +54,7 @@
 
 <!-- Pagination Controls -->
 <div class="overflow-x-auto">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+    <table class="w-full mt-5 border-collapse rounded-lg">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
@@ -67,6 +67,7 @@
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
     </table>
 </div>
+
 <!-- Pagination Controls -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>
 

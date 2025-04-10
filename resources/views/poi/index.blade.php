@@ -28,17 +28,17 @@
             </button>
         </a>
     </div>
-    <div class="overflow-x-auto">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+    <div class="overflow-visible">
+        <table class="w-full mt-5 border-collapse rounded-lg">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th scope="col" class="py-2 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left min-w-[200px]">ชื่อสถานที่ / ประเภท</th>
-                    <th class="py-3 px-4 text-center max-w-[150px]">จังหวัด</th>
+                    <th class="py-3 px-4 text-left min-w-[0px]">ชื่อสถานที่ / ประเภท</th>
+                    <th class="py-3 px-4 text-center max-w-[120px]">จังหวัด</th>
                     <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-                  </tr>
+                </tr>
             </thead>
-    
+
             <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
         </table>
     </div>
