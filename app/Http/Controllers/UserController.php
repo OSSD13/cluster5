@@ -108,11 +108,21 @@ class UserController extends Controller
             'user_status.in' => 'สถานะผู้ใช้งานไม่ถูกต้อง',
         ]);
 
+    
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'การตรวจสอบข้อมูลล้มเหลว',
                 'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        if ($request->input('role_name') === 'sale' && !$request->filled('manager')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'การตรวจสอบข้อมูลล้มเหลว',
+                'errors' => ['manager' => ['กรุณาเลือก Supervisor สำหรับผู้ใช้ Sale']]
             ], 422);
         }
 
