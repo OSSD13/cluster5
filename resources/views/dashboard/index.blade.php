@@ -455,7 +455,7 @@
         
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <div class="overflow-x-auto w-full">
-            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden"
+            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg"
                 id="regionTable">
                 <thead class="bg-lightblue" style="background-color: #B6D2FF">
                     <tr>

@@ -48,11 +48,6 @@
     <label class="block text-sm text-gray-600">รายละเอียด</label>
     <input type="text" name="detail" value="{{ $branch->bs_detail }}" class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รายละเอียดเพิ่มเติม">
 
-    <label class="block text-sm text-gray-600">ประเภท</label>
-        <select id="poi_type" name="poi_type" class="w-full p-2 border border-gray-300 rounded-lg mb-3">
-            <!-- ตัวเลือกจะเติมด้วย JS -->
-        </select>
-
     <div class="flex justify-between">
         <a href="{{ route('branch.index') }}">
             <button class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
@@ -155,33 +150,6 @@ document.getElementById("saveButton").addEventListener("click", async function (
             }
         });
     });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-    await loadPoiTypes(); // โหลดประเภท
-});
-
-async function loadPoiTypes() {
-    const select = document.getElementById("poi_type");
-    const currentType = `{{ $branch->poit_type }}`;
-
-    try {
-        const res = await fetch(`{{ route('api.poit.query.all') }}`);
-        const data = await res.json();
-
-        (data.data || []).forEach(poit => {
-            const option = document.createElement("option");
-            option.value = poit.poit_type;
-            option.textContent = `${poit.poit_icon ?? ''} ${poit.poit_name}`;
-            if (poit.poit_type === currentType) {
-                option.selected = true;
-            }
-            select.appendChild(option);
-        });
-    } catch (err) {
-        console.error("❌ ไม่สามารถโหลดประเภท POI:", err);
-    }
-}
 </script>
 
 <script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
