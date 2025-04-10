@@ -28,12 +28,6 @@
     </div>
 
 
-
-
-
-
-
-
     <div class="bg-white shadow-md rounded-lg p-4 my-6">
         <h3 class="text-lg font-bold mb-2">ยอดขายย้อนหลัง 12 เดือน</h3>
         <canvas id="branchSalesChart" height="200"></canvas>
@@ -45,7 +39,7 @@
     <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-row gap-4">
             <div id="minCard"
-                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark min-h-32"
                 style="background-color: #F2DDD4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
@@ -54,7 +48,7 @@
             </div>
 
             <div id="maxCard"
-                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success min-h-32"
                 style="background-color: #D6F2D4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
@@ -65,9 +59,9 @@
 
         <div class="flex flex-row gap-4">
             <div id="stdCard"
-                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark min-h-32"
                 style="background-color: #FAEAFF;">
-                <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
+                <div class="font-bold text-center" style="font-size: 14px; color:black;">Standard<br>Deviation (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
                     <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                 </div>
@@ -85,9 +79,6 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            fetchBranchSalesStats();
-        });
         async function fetchBranchSalesStats() {
             const chartEl = document.getElementById("branchSalesChart");
             const minEl = document.getElementById("minValue");
@@ -96,7 +87,7 @@
             const stdEl = document.getElementById("stdValue");
 
             try {
-                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}`);
                 const result = await response.json();
 
                 const sales = result.data || [];
@@ -114,8 +105,7 @@
                 const avg = sum / salesAmounts.length;
                 const min = Math.min(...salesAmounts);
                 const max = Math.max(...salesAmounts);
-                const std = Math.sqrt(salesAmounts.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / salesAmounts
-                    .length);
+                const std = Math.sqrt(salesAmounts.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / salesAmounts.length);
 
                 // 💡 Format stats
                 const format = (val) => val.toLocaleString(undefined, {
@@ -128,13 +118,13 @@
                 stdEl.textContent = format(std);
 
                 // 🎯 Build monthly sales chart
+                // Filter เฉพาะ 12 เดือนรวมเดือนปัจจุบัน
                 const now = new Date();
-                const last12Months = Array.from({
-                    length: 12
-                }, (_, i) => {
-                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                    return d.toISOString().slice(0, 7);
-                }).reverse();
+                const last12Months = Array.from({ length: 12 }, (_, i) => {
+                    const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
+                    return d.toISOString().slice(0, 7); // yyyy-mm
+                });
+
 
                 const monthlyTotals = {};
                 last12Months.forEach(month => monthlyTotals[month] = 0);
@@ -156,7 +146,6 @@
 
                 const values = last12Months.map(m => monthlyTotals[m]);
 
-                // 🔁 Destroy existing chart before re-creating
                 if (window.branchMonthlyChart) {
                     window.branchMonthlyChart.destroy();
                 }
@@ -199,18 +188,14 @@
                 const result = await response.json();
                 const data = result.data || [];
 
-                // Filter เฉพาะ 12 เดือนย้อนหลัง
+                // ✅ สร้าง array ของ 12 เดือน (รวมเดือนปัจจุบัน)
                 const now = new Date();
-                const last12Months = Array.from({
-                    length: 12
-                }, (_, i) => {
-                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                    return d.toISOString().slice(0, 7); // yyyy-mm
-                }).reverse();
+                const last12Months = Array.from({ length: 12 }, (_, i) => {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i +1, 1);
+                    return d.toISOString().slice(0, 7);
+                }).reverse(); // reverse ให้เรียงจากเก่า -> ใหม่
 
                 const monthlyTotals = {};
-
-                // เตรียมโครงสร้างเดือน
                 last12Months.forEach(month => {
                     monthlyTotals[month] = 0;
                 });
@@ -250,7 +235,10 @@
                         responsive: true,
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: value => value.toLocaleString()
+                                }
                             }
                         }
                     }
@@ -262,6 +250,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            fetchBranchSalesStats();
             drawLast12MonthsChart();
         });
     </script>
@@ -317,10 +306,10 @@
     <table class="w-full mt-5 border-collapse rounded-lg">
         <thead class="text-gray-800 text-md rounded-lg" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 text-left">เดือน</th>
+                <th class="py-3 px-4 text-left rounded-tl-lg">เดือน</th>
                 <th class="py-3 px-4 text-right">ยอดเงิน</th>
                 <th class="py-3 px-4 text-right">เพิ่มโดย</th>
-                <th class="py-3 px-4 text-right"></th>
+                <th class="py-3 px-4 text-right rounded-tr-lg"></th>
             </tr>
         </thead>
         <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200"></tbody>
@@ -351,8 +340,8 @@
             let added = false;
 
             for (let i = 0; i < 12; i++) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const ym = date.toISOString().slice(0, 7);
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 15); // ใช้วันที่ 15
+                const ym = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                 const fullDate = `${ym}-01`;
 
                 if (!existingMonths.includes(ym)) {
@@ -377,6 +366,10 @@
                 select.appendChild(opt);
             }
         }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await regenerateSaleMonthOptions();
+        });
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -466,13 +459,13 @@
                 const row = document.createElement("tr");
                 const monthLabel = formatThaiDate(sale.sales_month);
                 row.innerHTML = `
-                        <td class="py-3 px-4">${monthLabel}</td>
-                        <td class="py-3 px-4 text-left">${parseFloat(sale.sales_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        <td class="py-3 px-4 text-left">${sale.manager_name}</td>
-                        <td class="py-3 px-1 w-7 text-center relative">
-                            <button onclick="toggleMenu(event, ${sale.sales_id})">&#8230;</button>
-                        </td>
-                    `;
+                                            <td class="py-3 px-4">${monthLabel}</td>
+                                            <td class="py-3 px-4 text-left">${parseFloat(sale.sales_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                            <td class="py-3 px-4 text-left">${sale.manager_name}</td>
+                                            <td class="py-3 px-1 w-7 text-center relative">
+                                                <button onclick="toggleMenu(event, ${sale.sales_id})">&#8230;</button>
+                                            </td>
+                                        `;
                 tableBody.appendChild(row);
             });
         }
@@ -490,10 +483,10 @@
 
             activeMenuId = id;
             menu.innerHTML = `
-                <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8"  onclick="document.getElementById('contextMenu').classList.add('hidden'); viewSale(${id})">ดูรายละเอียด</button>
-                <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8"  onclick="document.getElementById('contextMenu').classList.add('hidden'); editSale(${id})">แก้ไข</button>
-                <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" onclick="document.getElementById('contextMenu').classList.add('hidden'); deleteSale(${id})">ลบ</button>
-            `;
+                                    <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8"  onclick="document.getElementById('contextMenu').classList.add('hidden'); viewSale(${id})">ดูรายละเอียด</button>
+                                    <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8"  onclick="document.getElementById('contextMenu').classList.add('hidden'); editSale(${id})">แก้ไข</button>
+                                    <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" onclick="document.getElementById('contextMenu').classList.add('hidden'); deleteSale(${id})">ลบ</button>
+                                `;
 
             menu.classList.remove("hidden");
             const top = parentCell.offsetTop + parentCell.offsetHeight - 120; // ลดลงมานิด (4px)
@@ -528,37 +521,37 @@
 
             Swal.fire({
                 html: `
-                        <div class="flex flex-col text-2xl font-bold text-center mb-6 mt-2">
-                            รายละเอียดข้อมูลสินค้า
-                        </div>
-                        <div class="flex flex-col space-y-3 text-left">
-                            <div class="w-full">
-                                <label class="font-medium text-gray-800 text-sm">เดือน</label>
-                                <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                                    value="${formatThaiMonth(sale.sales_month)}" readonly>
-                            </div>
-                            <div class="w-full">
-                                <label class="font-medium text-gray-800 text-sm">จำนวน</label>
-                                <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                                    value="${sale.sales_package_amount ?? '-'}" readonly>
-                            </div>
-                            <div class="w-full">
-                                <label class="font-medium text-gray-800 text-sm">ยอดเงิน (บาท)</label>
-                                <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                                    value="${parseFloat(sale.sales_amount).toLocaleString('th-TH', { minimumFractionDigits: 2 })}" readonly>
-                            </div>
-                            <div class="w-full">
-                                <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
-                                <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                                    value="${formatThaiDate(sale.sales_month)}" readonly>
-                            </div>
-                            <div class="w-full">
-                                <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
-                                <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
-                                    value="${sale.manager_email ?? '-'}" readonly>
-                            </div>
-                        </div>
-                    `,
+                                            <div class="flex flex-col text-2xl font-bold text-center mb-6 mt-2">
+                                                รายละเอียดข้อมูลสินค้า
+                                            </div>
+                                            <div class="flex flex-col space-y-3 text-left">
+                                                <div class="w-full">
+                                                    <label class="font-medium text-gray-800 text-sm">เดือน</label>
+                                                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
+                                                        value="${formatThaiMonth(sale.sales_month)}" readonly>
+                                                </div>
+                                                <div class="w-full">
+                                                    <label class="font-medium text-gray-800 text-sm">จำนวน</label>
+                                                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
+                                                        value="${sale.sales_package_amount ?? '-'}" readonly>
+                                                </div>
+                                                <div class="w-full">
+                                                    <label class="font-medium text-gray-800 text-sm">ยอดเงิน (บาท)</label>
+                                                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
+                                                        value="${parseFloat(sale.sales_amount).toLocaleString('th-TH', { minimumFractionDigits: 2 })}" readonly>
+                                                </div>
+                                                <div class="w-full">
+                                                    <label class="font-medium text-gray-800 text-sm">วันที่เพิ่ม</label>
+                                                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
+                                                        value="${formatThaiDate(sale.sales_month)}" readonly>
+                                                </div>
+                                                <div class="w-full">
+                                                    <label class="font-medium text-gray-800 text-sm">เพิ่มโดย</label>
+                                                    <input type="text" class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm" 
+                                                        value="${sale.manager_email ?? '-'}" readonly>
+                                                </div>
+                                            </div>
+                                        `,
                 confirmButtonText: "ยืนยัน",
                 confirmButtonColor: "#2D8C42",
                 customClass: {
@@ -578,6 +571,18 @@
                 activeMenuId = null;
             }
         });
+        function formatFullThaiDate(dateStr) {
+            const date = new Date(dateStr);
+
+            // ถ้า dateStr ไม่ valid
+            if (isNaN(date.getTime())) return "-";
+
+            const day = date.getDate();
+            const month = date.toLocaleString("th-TH", { month: "long" });
+            const year = date.getFullYear() + 543;
+
+            return `${day} ${month} ${year}`;
+        }
 
         function editSale(id) {
             const sale = sales.find(item => item.sales_id === id);
@@ -585,51 +590,27 @@
                 Swal.fire("ไม่พบข้อมูล", "รายการที่เลือกไม่มีอยู่ในระบบ", "error");
                 return;
             }
-
-            // ✅ เตรียม dropdown เดือนย้อนหลัง 12 เดือน
-            const monthOptions = [];
-            const now = new Date();
-            for (let i = 0; i < 12; i++) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
-
-                const label = date.toLocaleDateString("th-TH", {
-                    month: "long",
-                    year: "numeric"
-                });
-
-                monthOptions.push({
-                    value,
-                    label
-                });
-            }
-
-
-            const selectedMonth = `${sale.sales_month}-01`;
+            console.log(sale, new Date(sale.sales_month))
 
             Swal.fire({
                 html: `
-                    <div class="flex flex-col items-center mb-1">
-                        <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
-                    </div>
-                <div class="text-xl font-bold mt-2 mb-4">แก้ไขยอด</div>
-            </div>
+                                        <div class="flex flex-col items-center mb-1">
+                                            <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
+                                        </div>
+                                    <div class="text-xl font-bold mt-2 mb-4">แก้ไขยอด</div>
+                                </div>
 
-            <div class="flex flex-col space-y-3 text-left">
-                <label class="text-gray-800 text-sm">เดือน</label>
-                <select id="editMonth" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"">
-                    ${monthOptions.map(opt =>
-                        `<option value="${opt.value}" ${opt.value === selectedMonth ? 'selected' : ''}>${opt.label}</option>`
-                    ).join("")}
-                </select>
+                                <div class="flex flex-col space-y-3 text-left">
+                                    <label class="text-gray-800 text-sm">เดือน</label>
+                                    <input id="editMonth" type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" readonly value="${formatFullThaiDate(sale.sales_month)}">
 
-                <label class="text-gray-800 text-sm">จำนวน</label>
-                <input id="editBox" type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกจำนวนกล่อง" value="${sale.sales_package_amount || ''}">
+                                    <label class="text-gray-800 text-sm">จำนวน</label>
+                                    <input id="editBox" type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกจำนวนกล่อง" value="${sale.sales_package_amount || ''}">
 
-                <label class="text-gray-800 text-sm">ยอดเงิน</label>
-                <input id="editAmount" type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกยอดเงิน" value="${parseFloat(sale.sales_amount).toLocaleString()}">
-            </div>
-        `,
+                                    <label class="text-gray-800 text-sm">ยอดเงิน</label>
+                                    <input id="editAmount" type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกยอดเงิน" value="${sale.sales_amount}">
+                                </div>
+                            `,
                 showCancelButton: true,
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก",
@@ -640,7 +621,7 @@
                         .trim();
                     const sales_amount = parseFloat(sales_amount_raw);
                     const sales_package_amount = parseInt(document.getElementById("editBox").value.trim());
-                    const sales_month = document.getElementById("editMonth").value;
+                    const sales_month = sale.sales_month;
 
                     if (!sales_month) {
                         Swal.showValidationMessage("กรุณาเลือกเดือนให้ถูกต้อง");
@@ -658,18 +639,18 @@
                     }
 
                     return fetch(`{{ route('api.sales.edit') }}`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRF-TOKEN": '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                sales_id: id,
-                                sales_amount,
-                                sales_package_amount,
-                                sales_month
-                            })
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            sales_id: id,
+                            sales_amount,
+                            sales_package_amount,
+                            sales_month
                         })
+                    })
                         .then(res => res.json())
                         .then(result => {
                             if (result.status !== "success") {
@@ -705,15 +686,15 @@
             }).then(result => {
                 if (result.isConfirmed) {
                     fetch(`{{ route('api.sales.delete') }}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                sales_id: id
-                            })
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            sales_id: id
                         })
+                    })
                         .then(res => res.json())
                         .then(async result => {
                             if (result.status === 'success') {
@@ -864,6 +845,7 @@
                     await fetchSales(currentPage);
                     await updateResultCount();
                     await fetchBranchSalesStats(); // เพิ่มบรรทัดนี้
+                    await drawLast12MonthsChart(); // เพิ่มบรรทัดนี้
 
                 } else {
                     Swal.fire("เกิดข้อผิดพลาด", result.message || "ไม่สามารถเพิ่มข้อมูลได้", "error");

@@ -48,35 +48,26 @@ class MapService
      */
     public function convertLinkToLatLng(string $url): array
     {
-        Log::info('Converting Google Maps URL', ['url' => $url]);
-
         // Resolve shortened URLs
         if (strpos($url, 'maps.app.goo.gl') !== false) {
-            Log::info('Resolving shortened URL', ['url' => $url]);
             $url = $this->resolveShortUrl($url);
         }
-
-        Log::info('Resolved URL', ['resolved_url' => $url]);
 
         // Try to extract coordinates directly from the URL.
         $coords = $this->extractCoordinates($url);
         if ($coords) {
-            Log::info('Coordinates extracted from URL', ['coords' => $coords]);
             return $coords;
         }
 
         // If no coordinates found, extract the place name from the URL.
         $address = $this->extractPlaceName($url);
         if (!$address) {
-            Log::error('No address found in URL');
             return ['error' => 'Could not extract data from the provided URL.'];
         }
-        Log::info('Place name extracted from URL', ['address' => $address]);
 
         // Use the Geocoding API to get coordinates for the address.
         $coords = $this->getLatLngFromAddress($address);
         if ($coords) {
-            Log::info('Coordinates obtained via Geocoding API', ['coords' => $coords]);
             return $coords;
         }
 

@@ -10,7 +10,7 @@ class SalesController extends Controller
     public function querySales(Request $request)
     {
         $limit = $request->input('limit', 12); // default to 12 months per page
-        $page = $request->input('page', 1);
+        $page = $request->input('page', default: 1);
         $offset = ($page - 1) * $limit;
     
         $branchId = $request->input('bs_id');
