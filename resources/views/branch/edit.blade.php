@@ -70,8 +70,7 @@
 
             <div class="flex justify-between">
                 <a href="{{ route('branch.index') }}">
-                    <button type="button"
-                        class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
+                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
                 </a>
                 <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer"
                     id="saveButton">บันทึก</button>
@@ -290,7 +289,7 @@
         } = await google.maps.importLibrary("marker");
         let map, MapMarker;
 
-        functions.initMap = async function() {
+        functions.initMap = async function () {
             const position = {
                 lat: 13.2855079,
                 lng: 100.9246009
@@ -314,7 +313,7 @@
             });
         }
 
-        functions.setMapPosition = function(lat, lng) {
+        functions.setMapPosition = function (lat, lng) {
             const position = {
                 lat: parseFloat(lat),
                 lng: parseFloat(lng)
@@ -343,11 +342,11 @@
         window.functions = functions;
     </script>
     <!-- prettier-ignore -->
-<script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
-    ({ key: "AIzaSyCIqpKnIfAIP48YujVFbBISkubwaQNdIME", v: "weekly" });</script>
+    <script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+            ({ key: "AIzaSyCIqpKnIfAIP48YujVFbBISkubwaQNdIME", v: "weekly" });</script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.Thailand({
                 database: '{{ asset('assets/js/db.json') }}',
                 database_type: 'json',
@@ -357,30 +356,49 @@
                 $province: $('#province'),
                 $zipcode: $('#zipcode'),
 
-                onDataFill: function(data) {
+                onDataFill: function (data) {
                     console.info('Data Filled', data);
                 },
 
-                onLoad: function() {
+                onLoad: function () {
                     console.info('Thailand.js Autocomplete ready ✔️');
                 }
             });
 
             // Optional: log changes
-            $('#amphoe').on('change', function() {
+            $('#amphoe').on('change', function () {
                 console.log('ตำบล', this.value);
             });
-            $('#district').on('change', function() {
+            $('#district').on('change', function () {
                 console.log('อำเภอ', this.value);
             });
-            $('#province').on('change', function() {
+            $('#province').on('change', function () {
                 console.log('จังหวัด', this.value);
             });
-            $('#zipcode').on('change', function() {
+            $('#zipcode').on('change', function () {
                 console.log('รหัสไปรษณีย์', this.value);
             });
         });
     </script>
+    <script>
+        document.getElementById("branchForm").addEventListener("submit", function (e) {
+            const lat = document.getElementById("latitude").value.trim();
+            const lng = document.getElementById("longitude").value.trim();
+
+            // ตรวจสอบว่า latitude และ longitude เป็นตัวเลขหรือไม่
+            if (isNaN(lat) || isNaN(lng) || lat === '' || lng === '') {
+                e.preventDefault(); // ยกเลิกการ submit form
+                Swal.fire({
+                    icon: "error",
+                    title: "พิกัดไม่ถูกต้อง",
+                    text: "กรุณากรอก Latitude และ Longitude เป็นตัวเลขเท่านั้น",
+                    confirmButtonColor: "#d33",
+                    confirmButtonText: "ตกลง"
+                });
+            }
+        });
+    </script>
+
 
 
 @endsection

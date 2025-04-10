@@ -180,7 +180,7 @@
                     poit_name: 'poiName',
                     poit_icon: 'icon',
                     poit_color: 'color',
-                    poit_detail: 'poiDetails',
+                    poit_description: 'poiDetails',
                 };
                 return map[field] || field;
             }
