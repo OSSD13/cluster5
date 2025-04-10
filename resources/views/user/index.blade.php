@@ -136,9 +136,9 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                 <td class="py-3 px-4 w-16 text-md">${member.user_id}</td>
-                <td class="py-3 px-4 max-w-[200px]">
-                    <div class="font-semibold text-md" title="${member.name}">${member.name}</div>
-                    <div class="text-sm text-gray-400 truncate" title="${member.email}">${member.email}</div>
+                <td class="py-3 px-4 max-w-[150px]">
+                    <div class="font-semibold text-md break-words whitespace-normal leading-tight">${member.name}</div>
+                    <div class="text-sm text-gray-400 break-words whitespace-normal leading-tight">${member.email}</div>
                 </td>
                 <td class="py-3 px-4 w-32 truncate text-center text-md" title="${member.role_name}">${member.role_name}</td>
                 <td class="py-3 px-1 w-10 text-center relative">
