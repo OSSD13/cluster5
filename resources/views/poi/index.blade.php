@@ -57,7 +57,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             fetchPois();
 
-            document.getElementById("searchInput").addEventListener("input", function () {
+            document.getElementById("searchInput").addEventListener("input", function() {
                 clearTimeout(searchTimeout);
                 const keyword = this.value;
                 searchTimeout = setTimeout(() => {
@@ -68,7 +68,9 @@
         });
 
         async function fetchPois(search = '') {
-            const res = await fetch(`{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`);
+            const res = await fetch(
+                `{{ route('api.poi.query') }}?limit=${rowsPerPage}&page=${currentPage}&search=${encodeURIComponent(search)}`
+                );
             const result = await res.json();
             pois = result.data;
             total = result.total;
@@ -104,6 +106,7 @@
                 tableBody.appendChild(row);
             });
         }
+
         function renderPagination() {
             const pagination = document.getElementById("pagination");
             pagination.innerHTML = "";
@@ -118,7 +121,8 @@
             const createPageButton = (page, isActive = false) => {
                 const btn = document.createElement("button");
                 btn.innerText = page;
-                btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+                btn.className =
+                    `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
                 btn.onclick = () => goToPage(page);
                 return btn;
             };
@@ -132,13 +136,18 @@
                         title: "ไปยังหน้าที่...",
                         input: "number",
                         inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
-                        inputAttributes: { min: 1, max: totalPages, step: 1 },
+                        inputAttributes: {
+                            min: 1,
+                            max: totalPages,
+                            step: 1
+                        },
                         showCancelButton: true,
                         confirmButtonText: "ไปเลย!",
                         confirmButtonColor: "#3062B8",
                         inputValidator: (value) => {
                             if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
-                            if (value < 1 || value > totalPages) return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                            if (value < 1 || value > totalPages)
+                            return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
                             return null;
                         }
                     }).then(result => {
@@ -150,7 +159,8 @@
 
             const prevBtn = document.createElement("button");
             prevBtn.innerHTML = "&lt;";
-            prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+            prevBtn.className =
+                `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
@@ -171,7 +181,8 @@
 
             const nextBtn = document.createElement("button");
             nextBtn.innerHTML = "&gt;";
-            nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+            nextBtn.className =
+                `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
             nextBtn.disabled = currentPage === totalPages;
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
@@ -180,7 +191,7 @@
         function goToPage(pageNumber) {
             currentPage = pageNumber;
             const searchValue = document.getElementById("searchInput").value || '';
-            fetchPois(searchValue);  // แก้ไขจาก fetchPoits เป็น fetchPois
+            fetchPois(searchValue); // แก้ไขจาก fetchPoits เป็น fetchPois
         }
 
 
@@ -195,7 +206,7 @@
         });
 
         //deletePoi
-    function deletePoi(id) {
+        function deletePoi(id) {
             Swal.fire({
                 title: "ลบสถานที่",
                 text: "คุณต้องการลบ POI นี้ใช่หรือไม่?",
@@ -208,20 +219,23 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     console.log(id); //ไม่เกี่ยวกับการลบ เป็นการตรวจสอบค่า id ว่าที่ส่งมามีค่าไหม
-                    
+
                     const res = await fetch("{{ route('api.poi.delete') }}", {
                         method: 'DELETE',
                         headers: {
                             "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
-                        } ,
-                        body: JSON.stringify({ poi_id: id })
+                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
+                        },
+                        body: JSON.stringify({
+                            poi_id: id
+                        })
                     }).then(res => {
                         if (res.ok) {
                             Swal.fire("สำเร็จ", "ลบเรียบร้อย", "success");
                             fetchPois();
                         } else {
-                            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบได้ poiนี้เป็นสาขา กรุณาลบข้อมูลที่หน้าสาขา", "error");
+                            Swal.fire("เกิดข้อผิดพลาด",
+                                "ไม่สามารถลบได้ poiนี้เป็นสาขา กรุณาลบข้อมูลที่หน้าสาขา", "error");
                         }
                     });
                 }
@@ -235,7 +249,7 @@
             Swal.fire({
                 html: `
                     <div class="flex flex-col text-3xl mb-6 mt-4">
-                    <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
+                    <b class=text-gray-800>รายละเอียดข้อมูลสถานที่ที่สนใจ</b>
                     </div>
                     <div class="flex flex-col space-y-2 text-left">
                     <div class="w-full">
@@ -259,7 +273,7 @@
                         <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(poi.created_at)}" readonly>
                     </div>
                      </div>`,
-                        
+
                 confirmButtonText: "ปิด",
                 confirmButtonColor: "#3085d6"
             });
@@ -278,6 +292,5 @@
         function safeText(text) {
             return text ?? '-';
         }
-
     </script>
 @endsection
