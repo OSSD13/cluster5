@@ -107,6 +107,12 @@ class UserController extends Controller
             'user_status.required' => 'กรุณาเลือกสถานะผู้ใช้งาน',
             'user_status.in' => 'สถานะผู้ใช้งานไม่ถูกต้อง',
         ]);
+        
+        if ($request->input('role_name') === 'sale' && !$request->filled('manager')) {
+            $validator->after(function ($validator) {
+                $validator->errors()->add('manager', 'กรุณาเลือก Supervisor สำหรับ Sale');
+            });
+        }
 
         if ($validator->fails()) {
             return response()->json([
