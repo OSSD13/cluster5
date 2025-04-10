@@ -418,7 +418,27 @@
                 console.log('รหัสไปรษณีย์', this.value);
             });
         });
+
+        
     </script>
+    <script>
+    document.getElementById("poiForm").addEventListener("submit", function (e) {
+        const lat = document.getElementById("latitude").value.trim();
+        const lng = document.getElementById("longitude").value.trim();
+
+        // เช็คว่าค่าไม่ใช่ตัวเลข
+        if (isNaN(lat) || isNaN(lng) || lat === '' || lng === '') {
+            e.preventDefault(); // ป้องกันการ submit
+            Swal.fire({
+                icon: "error",
+                title: "พิกัดไม่ถูกต้อง",
+                text: "กรุณากรอก Latitude และ Longitude เป็นตัวเลขเท่านั้น",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "ตกลง"
+            });
+        }
+    });
+</script>
 
 
 @endsection
