@@ -35,16 +35,12 @@
             <label class="block text-sm text-gray-600">ละติจูด</label>
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ละติจูด"
                 name="latitude" value="{{ $poi->poi_gps_lat }}" id="latitude" inputmode="decimal">
-            @error('lattitude')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-latitude"></span>
 
             <label class="block text-sm text-gray-600">ลองจิจูด</label>
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ลองจิจูด"
                 name="longitude" value="{{ $poi->poi_gps_lng }}" id="longitude" inputmode="decimal">
-            @error('longitude')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-longitude"></span>
 
             <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
                 <div id="map" class="w-full h-48"></div>
@@ -55,51 +51,38 @@
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
                 placeholder="รหัสไปรษณีย์" name="zipcode" value="{{ $locations ? $locations->zipcode : '' }}" id="zipcode"
                 pattern="\d{5}" inputmode="numeric" {{ !$locations ? 'disabled' : '' }}>
-            @error('zipcode')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-zipcode"></span>
 
             <label class="block text-sm text-gray-600">จังหวัด</label>
             <input type="text"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
                 placeholder="จังหวัด" name="province" value="{{ $locations ? $locations->province : '' }}" id="province"
                 {{ !$locations ? 'disabled' : '' }}>
-            @error('province')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-province"></span>
 
             <label class="block text-sm text-gray-600">อำเภอ</label>
             <input type="text"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
                 placeholder="อำเภอ" name="amphoe" value="{{ $locations ? $locations->amphoe : '' }}" id="amphoe"
                 {{ !$locations ? 'disabled' : '' }}>
-            @error('amphoe')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-amphoe"></span>
 
             <label class="block text-sm text-gray-600">ตำบล</label>
             <input type="text"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
                 placeholder="ตำบล" name="district" value="{{ $locations ? $locations->district : '' }}" id="district"
                 {{ !$locations ? 'disabled' : '' }}>
-            @error('district')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-district"></span>
 
             <label class="block text-sm text-gray-600">ที่อยู่</label>
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ที่อยู่"
                 name="address" value="{{ $poi->poi_address }}" id="address">
-            @error('address')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-address"></span>
 
             <label class="block text-sm text-gray-600">ชื่อ</label>
             <input type="text" class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ชื่อ"
                 name="name" value="{{ $poi->poi_name }}" id="name">
-            @error('name')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
-
+            <span class="text-red-500 text-sm hidden" id="error-name"></span>
             <label class="block text-sm text-gray-600">ประเภท</label>
             <select class="w-full p-2 border border-gray-300 rounded-lg mb-3" name="type" id="type">
                 <option class="hidden" disabled {{ old('type') == '' ? 'selected' : '' }}>เลือกประเภทสถานที่
@@ -111,9 +94,7 @@
                     </option>
                 @endforeach
             </select>
-            @error('type')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
-            @enderror
+            <span class="text-red-500 text-sm hidden" id="error-type"></span>
 
             <div class="flex justify-between">
                 <a href="{{ route('poi.index') }}"
@@ -155,13 +136,21 @@
 
         function hasFormChanged() {
             const inputs = form.querySelectorAll("input, select");
-            return Array.from(inputs).some(input => input.value !== initialFormState[input.name]);
+            return Array.from(inputs).some(input => {
+                const original = (initialFormState[input.name] ?? '').trim();
+                const current = input.value.trim();
+                return original !== current;
+            });
         }
+
 
 
         const form = document.getElementById('poiForm');
         const submitButton = document.getElementById('saveButton');
         const googleMapLinkInput = document.getElementById('googleMapLink');
+        const allFields = [
+            'latitude', 'longitude', 'zipcode', 'province', 'district', 'amphoe', 'address', 'name', 'type'
+        ];
         const requiredFields = ['latitude', 'longitude', 'name', 'type'];
 
         if ({{ $locations ? 'true' : 'false' }}) {
@@ -183,8 +172,9 @@
             submitButton.classList.toggle('cursor-not-allowed', !(isComplete && changed));
         }
 
+
         // Attach input listeners for validation
-        requiredFields.forEach(id => {
+        allFields.forEach(id => {
             const input = document.getElementById(id);
             if (input) {
                 input.addEventListener('input', validateForm);
