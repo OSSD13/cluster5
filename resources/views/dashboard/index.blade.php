@@ -296,9 +296,9 @@
                     <span class="font-bold text-trinary flex-grow " style="font-size: 28px "
                         id="thisMonthTotalPackageNumber"></span>
                 </div>
-                <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent'>
-                    <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow'></span>
-                    <span id='thisMonthTotalPackagePercent'></span>% จากก่อนหน้านี้
+                <div class="text-success text-base text-end font-medium " id='thisMonthTotalPackagePercentParent' style="color: #28a745">
+                    <span class="icon-[line-md--arrow-up]" id='thisMonthTotalPackageArrow' style="color: #28a745;" ></span>
+                    <span id='thisMonthTotalPackagePercent' style="color: #28a745"></span>% จากก่อนหน้านี้
                 </div>
             </div>
         </div>
@@ -956,7 +956,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="overflow-visible">
+        <!-- <div class="overflow-visible">
             <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
                 <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                     <tr>
@@ -969,7 +969,7 @@
         
                 <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
             </table>
-        </div>
+        </div> -->
 
 
         <!-- Pagination Controls -->

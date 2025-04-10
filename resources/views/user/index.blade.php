@@ -674,14 +674,16 @@
                         user_id: id,
                         email: email,
                         name: name,
-                        password: password || undefined,
+                        password: password,
                         role_name: role,
                         manager: manager ? parseInt(manager) : null,
                         user_status: "normal"
 
                     })
                 });
-
+                
+                console.log("Password:", password);
+                
                 const result = await response.json();
 
                 if (!response.ok) {

@@ -135,7 +135,7 @@ class UserController extends Controller
             'user_id' => 'required|numeric',
             'email' => 'nullable|email',
             'name' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:6',
+            'password' => 'required|string|min:6',
             'role_name' => 'nullable|string|in:sale,supervisor,ceo',
             'user_status' => 'nullable|string|in:disabled,normal',
             'manager' => 'nullable|numeric',
