@@ -163,7 +163,7 @@ class BranchController extends Controller
         $branch = new Branch_store();
         $branch->bs_name = $request->input('name');
         $branch->bs_address = $request->input('address');
-        $branch->bs_poi_id = $poi->id;
+        $branch->bs_poi_id = $poi->poi_id;
         $branch->bs_manager = $userId;
         $branch->bs_detail = $request->input('detail', null);
         $branch->save();
@@ -213,10 +213,28 @@ class BranchController extends Controller
             'address' => 'string|max:255',
             'detail' => 'nullable|string',
             'bs_manager' => 'nullable|integer|exists:users,user_id',
+            'poi_gps_lat' => 'required|numeric',
+            'poi_gps_lng' => 'required|numeric',
+            'zipcode' => 'required|numeric',
+            'province' => 'required|string|max:255',
+            'amphoe' => 'required|string|max:255',
+            'district' => 'required|string|max:255',
         ], [
             'bs_id.required' => 'กรุณาระบุรหัสสาขา',
             'bs_id.integer' => 'รหัสสาขาต้องเป็นตัวเลข',
             'bs_id.exists' => 'ไม่พบสาขาที่ระบุ',
+            'poi_gps_lat.required' => 'กรุณาระบุละติจูด',
+            'poi_gps_lat.numeric' => 'ละติจูดต้องเป็นตัวเลข',
+            'poi_gps_lng.required' => 'กรุณาระบุลองจิจูด',
+            'poi_gps_lng.numeric' => 'ลองจิจูดต้องเป็นตัวเลข',
+            'zipcode.required' => 'กรุณาระบุรหัสไปรษณีย์',
+            'zipcode.numeric' => 'รหัสไปรษณีย์ต้องเป็นตัวเลข',
+            'province.required' => 'กรุณาระบุจังหวัด',
+            'province.string' => 'จังหวัดต้องเป็นตัวอักษร',
+            'amphoe.required' => 'กรุณาระบุอำเภอ',
+            'amphoe.string' => 'อำเภอต้องเป็นตัวอักษร',
+            'district.required' => 'กรุณาระบุตำบล',
+            'district.string' => 'ตำบลต้องเป็นตัวอักษร',
         ]);
 
         if ($validator->fails()) {
@@ -231,10 +249,39 @@ class BranchController extends Controller
 
         if (!$branch) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'ไม่พบข้อมูลสาขา'
+            'status' => 'error',
+            'message' => 'ไม่พบข้อมูลสาขา'
             ], 404);
         }
+
+        $poi = PointOfInterest::where('poi_id', $branch->bs_poi_id)->first();
+
+        if (!$poi) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'ไม่พบข้อมูลสถานที่ตั้ง'
+            ], 404);
+        }
+
+        $location = \DB::table('locations')
+            ->where('zipcode', $request->input('zipcode'))
+            ->where('province', $request->input('province'))
+            ->where('amphoe', $request->input('amphoe'))
+            ->where('district', $request->input('district'))
+            ->first();
+
+        if (!$location) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'ไม่พบข้อมูลสถานที่ตั้งที่ระบุ'
+            ], 404);
+        }
+
+        $poi->poi_gps_lat = $request->input('poi_gps_lat');
+        $poi->poi_gps_lng = $request->input('poi_gps_lng');
+        $poi->poi_address = $request->input('address');
+        $poi->poi_location_id = $location->location_id;
+        $poi->save();
 
         if ($request->has('name'))
             $branch->bs_name = $request->input('name');
@@ -249,7 +296,7 @@ class BranchController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'แก้ไขข้อมูลสาขาเรียบร้อยแล้ว',
+            'message' => 'แก้ไขข้อมูลสาขาและสถานที่ตั้งเรียบร้อยแล้ว',
             'data' => $branch
         ]);
     }
@@ -299,6 +346,7 @@ class BranchController extends Controller
         return view('branch.manage.index', compact('branch'));
     }
 
+
     public function deleteBranch(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -343,4 +391,5 @@ class BranchController extends Controller
             'message' => 'ลบข้อมูลสาขาเรียบร้อยแล้ว'
         ]);
     }
+
 }

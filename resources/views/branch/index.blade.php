@@ -237,27 +237,49 @@ pagination.appendChild(nextBtn);
 
     function deleteBranch(id) {
         Swal.fire({
-            title: "ลบสาขา",
-            text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
-            icon: "warning",
-            iconColor: "#d33",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3062B8",
-            confirmButtonText: "ยืนยัน",
-            cancelButtonText: "ยกเลิก"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                branches = branches.filter(branch => branch.bs_id !== id);
-                renderTable();
-                Swal.fire({
-                    title: "ลบแล้ว!",
-                    text: "สาขาถูกลบเรียบร้อย",
-                    icon: "success"
-                });
+    title: "ลบสาขา",
+    text: "คุณต้องการลบสาขานี้ ใช่หรือไม่?",
+    icon: "warning",
+    iconColor: "#d33",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3062B8",
+    confirmButtonText: "ยืนยัน",
+    cancelButtonText: "ยกเลิก"
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        try {
+            const res = await fetch(deleteBranchUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ bs_id: id })
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
             }
-        });
+
+            const json = await res.json();
+
+            if (json.status === 'success') {
+                Swal.fire("ลบแล้ว!", "สาขาถูกลบเรียบร้อย", "success");
+                fetchBranches(currentPage); // รีโหลดตาราง
+            } else {
+                Swal.fire("ผิดพลาด!", json.message || "ไม่สามารถลบได้", "error");
+            }
+
+        } catch (err) {
+            console.error("Delete error:", err);
+            Swal.fire("ผิดพลาด!", "ไม่สามารถติดต่อเซิร์ฟเวอร์ได้", "error");
+        }
     }
+});
+
+}
+
 
     // Initial load
     fetchBranches();
@@ -286,4 +308,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 </script>
+
+<script>
+    const deleteBranchUrl = `{{ route('api.branch.delete') }}`;
+    const csrfToken = `{{ csrf_token() }}`;
+</script>
+
 @endsection
