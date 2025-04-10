@@ -9,15 +9,13 @@ class SalesController extends Controller
 {
     public function querySales(Request $request)
     {
-        $limit = $request->input('limit', 10);
+        $limit = $request->input('limit', 12); // default to 12 months per page
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $limit;
-
+    
         $branchId = $request->input('bs_id');
         $userId = $request->input('user_id');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
+    
         $salesQuery = DB::table('sales')
             ->join('branch_stores', 'sales.sales_branch_id', '=', 'branch_stores.bs_id')
             ->join('users', 'branch_stores.bs_manager', '=', 'users.user_id')
@@ -30,22 +28,25 @@ class SalesController extends Controller
                 'sales.sales_package_amount',
                 'users.name as manager_name'
             );
-
+    
         if ($branchId) {
             $salesQuery->where('sales.sales_branch_id', $branchId);
         }
-
+    
         if ($userId) {
             $salesQuery->where('users.user_id', $userId);
         }
-
-        if ($startDate && $endDate) {
-            $salesQuery->whereBetween('sales.sales_month', [$startDate, $endDate]);
-        }
-
+    
+        // 🔥 NEW: Sort and paginate by most recent `sales_month`
+        $salesQuery->orderBy('sales.sales_month', 'desc');
+    
         $total = $salesQuery->count();
-        $sales = $salesQuery->offset($offset)->limit($limit)->get();
-
+    
+        $sales = $salesQuery
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+    
         return response()->json([
             'data' => $sales,
             'total' => $total,
@@ -53,6 +54,7 @@ class SalesController extends Controller
             'limit' => $limit
         ]);
     }
+    
     public function editSales(Request $request)
     {
         $validator = \Validator::make($request->all(), [

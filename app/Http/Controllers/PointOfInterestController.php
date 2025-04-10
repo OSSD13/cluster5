@@ -80,7 +80,7 @@ class PointOfInterestController extends Controller
         $poisQuery->join('locations', 'locations.location_id', '=', 'point_of_interests.poi_location_id', 'left');
         $poisQuery->join('point_of_interest_type', 'point_of_interest_type.poit_type', '=', 'point_of_interests.poi_type', 'left');
 
-        $poisQuery->select('point_of_interests.*', 'locations.*', 'point_of_interest_type.*');
+        $poisQuery->select('locations.*', 'point_of_interest_type.*', 'point_of_interests.*');
 
         if ($search) {
             $poisQuery->where(function ($query) use ($search) {

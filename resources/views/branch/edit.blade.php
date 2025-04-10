@@ -16,17 +16,19 @@
             <input type="hidden" name="bs_id" value="{{ $branch->bs_id }}">
 
             <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-            <input type="text" id="googleMapLink" class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+            <input type="text" id="googleMapLink" class="w-full p-2 border border-gray-300 rounded-lg mb-1"
                 placeholder="Link Google">
-                <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
+            <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
 
             <label class="block text-sm text-gray-600">ละติจูด</label>
             <input type="text" name="poi_gps_lat" id="latitude" value="{{ $branch->poi_gps_lat }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ละติจูด">
+            <span class="text-red-500 text-sm hidden" id="error-poi_gps_lat"></span>
 
             <label class="block text-sm text-gray-600">ลองจิจูด</label>
             <input type="text" name="poi_gps_lng" id="longitude" value="{{ $branch->poi_gps_lng }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ลองจิจูด">
+            <span class="text-red-500 text-sm hidden" id="error-poi_gps_lng"></span>
 
             <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
                 <div id="map" class="w-full h-48 rounded-lg"></div>
@@ -34,27 +36,33 @@
 
             <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
             <input type="text" name="zipcode" id="zipcode" value="{{ $branch->zipcode }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="รหัสไปรษณีย์">
+            <span class="text-red-500 text-sm hidden" id="error-zipcode"></span>
 
             <label class="block text-sm text-gray-600">จังหวัด</label>
             <input type="text" name="province" id="province" value="{{ $branch->province }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="จังหวัด">
+            <span class="text-red-500 text-sm hidden" id="error-province"></span>
 
             <label class="block text-sm text-gray-600">อำเภอ</label>
             <input type="text" name="amphoe" id="amphoe" value="{{ $branch->amphoe }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="อำเภอ">
+            <span class="text-red-500 text-sm hidden" id="error-amphoe"></span>
 
             <label class="block text-sm text-gray-600">ตำบล</label>
             <input type="text" name="district" id="district" value="{{ $branch->district }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ตำบล">
+            <span class="text-red-500 text-sm hidden" id="error-district"></span>
 
             <label class="block text-sm text-gray-600">ที่อยู่</label>
             <input type="text" name="address" id='address' value="{{ $branch->bs_address }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ที่อยู่">
+            <span class="text-red-500 text-sm hidden" id="error-address"></span>
 
             <label class="block text-sm text-gray-600">ชื่อ</label>
             <input type="text" name="name" id='name' value="{{ $branch->bs_name }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ชื่อ">
+            <span class="text-red-500 text-sm hidden" id="error-name"></span>
 
             <label class="block text-sm text-gray-600">รายละเอียด</label>
             <input type="text" name="detail" id='detail' value="{{ $branch->bs_detail }}"
@@ -62,9 +70,11 @@
 
             <div class="flex justify-between">
                 <a href="{{ route('branch.index') }}">
-                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
+                    <button type="button"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
                 </a>
-                <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
+                <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer"
+                    id="saveButton">บันทึก</button>
             </div>
         </div>
     </form>
@@ -72,13 +82,40 @@
 
 
 
-
-
 @section('script')
     <script>
+        let initialFormState = {};
+
+        function captureInitialFormState() {
+            const inputs = form.querySelectorAll("input, select");
+            inputs.forEach(input => {
+                initialFormState[input.name] = input.value;
+            });
+        }
+
+        function hasFormChanged() {
+            const inputs = form.querySelectorAll("input, select");
+            return Array.from(inputs).some(input => {
+                const original = (initialFormState[input.name] ?? '').trim();
+                const current = input.value.trim();
+                return original !== current;
+            });
+        }
+
+
         const form = document.getElementById('branchForm');
         const submitButton = document.getElementById('saveButton');
         const googleMapLinkInput = document.getElementById('googleMapLink');
+        const allFields = [
+            'latitude',
+            'longitude',
+            'zipcode',
+            'province',
+            'amphoe',
+            'district',
+            'address',
+            'name'
+        ];
         const requiredFields = ['latitude', 'longitude', 'zipcode', 'province', 'amphoe', 'district', 'address', 'name'];
 
 
@@ -86,19 +123,21 @@
         function validateForm() {
             const isComplete = requiredFields.every(id => {
                 const input = document.getElementById(id);
-                console.log(id, input.value, input && input.value.trim() !== '');
                 return input && input.value.trim() !== '';
             });
-            console.log(isComplete);
 
-            submitButton.disabled = !isComplete;
-            submitButton.classList.toggle('bg-green-700', isComplete);
-            submitButton.classList.toggle('bg-gray-400', !isComplete);
-            submitButton.classList.toggle('cursor-not-allowed', !isComplete);
+            const changed = hasFormChanged();
+
+            submitButton.disabled = !(isComplete && changed);
+            submitButton.classList.toggle('bg-green-700', isComplete && changed);
+            submitButton.classList.toggle('bg-gray-400', !(isComplete && changed));
+            submitButton.classList.toggle('cursor-not-allowed', !(isComplete && changed));
         }
 
+
+
         // Attach input listeners for validation
-        requiredFields.forEach(id => {
+        allFields.forEach(id => {
             const input = document.getElementById(id);
             if (input) {
                 input.addEventListener('input', validateForm);
@@ -227,7 +266,10 @@
         }
 
         // Initial validation state
-        validateForm();
+        document.addEventListener("DOMContentLoaded", () => {
+            captureInitialFormState(); // ✅ Save the initial form state
+            validateForm(); // ✅ Run validation once
+        });
     </script>
 
     <script type="module">
