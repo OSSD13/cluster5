@@ -318,7 +318,7 @@
         <thead class="text-gray-800 text-md rounded-lg" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 text-left">เดือน</th>
-d               <th class="py-3 px-4 text-right">ยอดเงิน</th>
+                <th class="py-3 px-4 text-right">ยอดเงิน</th>
                 <th class="py-3 px-4 text-right">เพิ่มโดย</th>
                 <th class="py-3 px-4 text-right"></th>
             </tr>
