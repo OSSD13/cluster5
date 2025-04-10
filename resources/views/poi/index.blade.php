@@ -185,7 +185,7 @@
             nextBtn.onclick = () => goToPage(currentPage + 1);
             pagination.appendChild(nextBtn);
         }
-
+        
         function goToPage(pageNumber) {
             currentPage = pageNumber;
             const searchValue = document.getElementById("searchInput").value || '';

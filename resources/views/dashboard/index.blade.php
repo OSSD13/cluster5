@@ -46,7 +46,7 @@
                 </script>
 
                 <script>
-                    document.addEventListener('DOMContentLoaded', function () {
+                    document.addEventListener('DOMContentLoaded', function() {
                         fetch('{{ route('api.report.getSubordinate') }}')
                             .then(response => response.json())
                             .then(data => {
@@ -70,7 +70,7 @@
                 function getBranchReport() {
                     const userId = document.getElementById('subordinateSelect') ?
                         document.getElementById('subordinateSelect').value :
-                                        {{ session()->get('user')->user_id }};
+                        {{ session()->get('user')->user_id }};
                     const date = document.getElementById('timePeriod') ?
                         document.getElementById('timePeriod').value :
                         new Date().toISOString().slice(0, 7); // Ensure YYYY-MM format
@@ -82,7 +82,7 @@
 
                             let branchCount = data.branch_count;
                             const branches = data.branches;
-                            totalItems =  branchCount;
+                            totalItems = branchCount;
                             console.log(totalItems);
 
                             let allMonthlySales = {};
@@ -196,19 +196,21 @@
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            let packageChange = lastMonthTotalPackage > 0 && isFinite(thisMonthTotalPackage) && isFinite(lastMonthTotalPackage) 
-                                ? ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 
-                                : 0;
-                            let salesChange = lastMonthTotalSales > 0 && isFinite(thisMonthTotalSales) && isFinite(lastMonthTotalSales) 
-                                ? ((thisMonthTotalSales - lastMonthTotalSales) / lastMonthTotalSales) * 100 
-                                : 0;
+                            let packageChange = lastMonthTotalPackage > 0 && isFinite(thisMonthTotalPackage) && isFinite(
+                                    lastMonthTotalPackage) ?
+                                ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 :
+                                0;
+                            let salesChange = lastMonthTotalSales > 0 && isFinite(thisMonthTotalSales) && isFinite(
+                                    lastMonthTotalSales) ?
+                                ((thisMonthTotalSales - lastMonthTotalSales) / lastMonthTotalSales) * 100 :
+                                0;
 
                             document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
                                 .toLocaleString();
-                            document.getElementById('thisMonthTotalPackagePercent').textContent = packageChange.toFixed(2);
+                            document.getElementById('thisMonthTotalPackagePercent').textContent = Math.abs(packageChange).toFixed(2);
                             document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
                                 .toLocaleString();
-                            document.getElementById('thisMonthTotalMoneyPercent').textContent = salesChange.toFixed(2);
+                            document.getElementById('thisMonthTotalMoneyPercent').textContent = Math.abs(salesChange).toFixed(2);
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
@@ -227,35 +229,39 @@
                             });
                             let min = salesArray.length > 0 && salesArray.every(isFinite) ? Math.min(...salesArray) : 0;
                             let max = salesArray.length > 0 && salesArray.every(isFinite) ? Math.max(...salesArray) : 0;
-                            let avg = salesArray.length > 0 && salesArray.every(isFinite) 
-                                ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length 
-                                : 0;
-                            let std = salesArray.length > 0 && salesArray.every(isFinite) 
-                                ? Math.sqrt(salesArray.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesArray.length) 
-                                : 0;
+                            let avg = salesArray.length > 0 && salesArray.every(isFinite) ?
+                                salesArray.reduce((a, b) => a + b, 0) / salesArray.length :
+                                0;
+                            let std = salesArray.length > 0 && salesArray.every(isFinite) ?
+                                Math.sqrt(salesArray.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesArray
+                                    .length) :
+                                0;
 
                             // Calculate changes compared to last month
-                            let lastMin = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.min(...lastMonthSalesArray) : 0;
-                            let lastMax = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.max(...lastMonthSalesArray) : 0;
-                            let lastAvg = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) 
-                                ? lastMonthSalesArray.reduce((a, b) => a + b, 0) / lastMonthSalesArray.length 
-                                : 0;
-                            let lastStd = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) 
-                                ? Math.sqrt(lastMonthSalesArray.map(x => Math.pow(x - lastAvg, 2)).reduce((a, b) => a + b, 0) / lastMonthSalesArray.length) 
-                                : 0;
+                            let lastMin = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.min(...
+                                lastMonthSalesArray) : 0;
+                            let lastMax = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.max(...
+                                lastMonthSalesArray) : 0;
+                            let lastAvg = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ?
+                                lastMonthSalesArray.reduce((a, b) => a + b, 0) / lastMonthSalesArray.length :
+                                0;
+                            let lastStd = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ?
+                                Math.sqrt(lastMonthSalesArray.map(x => Math.pow(x - lastAvg, 2)).reduce((a, b) => a + b, 0) /
+                                    lastMonthSalesArray.length) :
+                                0;
 
-                            let minChange = lastMin > 0 && isFinite(min) && isFinite(lastMin) 
-                                ? ((min - lastMin) / lastMin) * 100 
-                                : 0;
-                            let maxChange = lastMax > 0 && isFinite(max) && isFinite(lastMax) 
-                                ? ((max - lastMax) / lastMax) * 100 
-                                : 0;
-                            let avgChange = lastAvg > 0 && isFinite(avg) && isFinite(lastAvg) 
-                                ? ((avg - lastAvg) / lastAvg) * 100 
-                                : 0;
-                            let stdChange = lastStd > 0 && isFinite(std) && isFinite(lastStd) 
-                                ? ((std - lastStd) / lastStd) * 100 
-                                : 0;
+                            let minChange = lastMin > 0 && isFinite(min) && isFinite(lastMin) ?
+                                ((min - lastMin) / lastMin) * 100 :
+                                0;
+                            let maxChange = lastMax > 0 && isFinite(max) && isFinite(lastMax) ?
+                                ((max - lastMax) / lastMax) * 100 :
+                                0;
+                            let avgChange = lastAvg > 0 && isFinite(avg) && isFinite(lastAvg) ?
+                                ((avg - lastAvg) / lastAvg) * 100 :
+                                0;
+                            let stdChange = lastStd > 0 && isFinite(std) && isFinite(lastStd) ?
+                                ((std - lastStd) / lastStd) * 100 :
+                                0;
 
                             // Update cards
                             updateCardData({
@@ -293,7 +299,7 @@
                     }
                 }
 
-                document.addEventListener('DOMContentLoaded', function () {
+                document.addEventListener('DOMContentLoaded', function() {
                     console.log("Fetching report...");
                     getBranchReport();
                 });
@@ -379,7 +385,7 @@
                 <div id="avgCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-primary-dark"
                     style="background-color: #FAEAFF;">
                     <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
-                    <div class="flex justify-center items-center text-bold  text-base gap-2 mt-5" style="color: #DA25BF;">
+                    <div class="flex justify-center items-center text-bold  text-base gap-2" style="color: #DA25BF;">
                         <span id="avgValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                         <span class="text-2xl font-bold" style="font-size: 16px">บาท</span>
                     </div>
@@ -406,20 +412,22 @@
 
                 // Update Min Card
                 document.getElementById('minValue').textContent = min.toLocaleString();
-                document.getElementById('minPercent').textContent = minChange.toFixed(2);
-                updateCardStyle('minCard', 'minArrow', minChange);
+                document.getElementById('minPercent').textContent = Math.abs(minChange).toFixed(2);
+                document.getElementById('minArrow').classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
+                document.getElementById('minArrow').classList.add(minChange > 0 ? 'icon-[line-md--arrow-up]' : 'icon-[line-md--arrow-down]');
 
                 // Update Max Card
                 document.getElementById('maxValue').textContent = max.toLocaleString();
-                document.getElementById('maxPercent').textContent = maxChange.toFixed(2);
-                updateCardStyle('maxCard', 'maxArrow', maxChange);
+                document.getElementById('maxPercent').textContent = Math.abs(maxChange).toFixed(2);
+                document.getElementById('maxArrow').classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
+                document.getElementById('maxArrow').classList.add(maxChange > 0 ? 'icon-[line-md--arrow-up]' : 'icon-[line-md--arrow-down]');
 
                 // Update Std Card
                 document.getElementById('stdValue').textContent = std.toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
-                document.getElementById('stdPercent').textContent = stdChange.toFixed(2);
+                document.getElementById('stdPercent').textContent = Math.abs(stdChange).toFixed(2);
                 updateCardStyle('stdCard', 'stdArrow', stdChange);
 
 
@@ -428,26 +436,24 @@
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
-                document.getElementById('avgPercent').textContent = avgChange.toFixed(2);
+                document.getElementById('avgPercent').textContent = Math.abs(avgChange).toFixed(2);
                 updateCardStyle('avgCard', 'avgArrow', avgChange);
 
             }
 
             function updateCardStyle(cardId, arrowId, change) {
-            const card = document.getElementById(cardId);
-            const arrow = document.getElementById(arrowId);
+                const card = document.getElementById(cardId);
+                const arrow = document.getElementById(arrowId);
 
-            if (change > 0) {
-            card.classList.add('bg-green');
-            arrow.classList.add('icon-[line-md--arrow-up]', 'text-success');
-            } 
-            else {
-                card.classList.add('bg-red-light');
-                arrow.classList.add('icon-[line-md--arrow-down]', 'text-danger');
+                if (change > 0) {
+                    card.classList.add('bg-green');
+                    arrow.classList.add('icon-[line-md--arrow-up]', 'text-success');
+                } else {
+                    card.classList.add('bg-red-light');
+                    arrow.classList.add('icon-[line-md--arrow-down]', 'text-danger');
+                }
+
             }
-            
-         }
-
         </script>
 
         <!-- กรอบหัวเรื่องภูมิภาค -->
@@ -465,20 +471,21 @@
                 ย้อนกลับ
             </button>
         </div>
-        
+
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <div class="overflow-x-auto w-full">
-            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg"
-                id="regionTable">
+            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg" id="regionTable">
                 <thead class="bg-lightblue" style="background-color: #B6D2FF">
                     <tr>
                         <th scope="col"
                             class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
                             style="color: black;">#</th>
-                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                        <th scope="col"
+                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
                             จังหวัด</th>
-                        <th scope="col" class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                        <th scope="col"
+                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
                             จำนวนสาขา</th>
                         <th scope="col" class="py-3" id="regionBranchCount"></th>
@@ -491,109 +498,117 @@
 
 
 
- <script>
-    let region = null;
-    let province = null;
-    let branches = [];
-    let currentPage = 1;
-    let totalItems = 100; // Total number of items (you will fetch this from the server)
-    const rowsPerPage = 10; // Number of items per page
+        <script>
+            let region = null;
+            let province = null;
+            let branches = [];
+            let currentPage = 1;
+            let totalItems = 100; // Total number of items (you will fetch this from the server)
+            const rowsPerPage = 10; // Number of items per page
 
-    function renderPagination(type = 'region', region, province, page = 1) {
-        console.log(totalItems);
-        
-        const pagination = document.getElementById("pagination");
-        pagination.innerHTML = "";
+            function renderPagination(type = 'region', region, province, page = 1) {
+                console.log(totalItems);
 
-        const totalPages = Math.ceil(totalItems / rowsPerPage);
-        const maxVisible = 1;  // Number of pages before and after the current page to display
-        let startPage = Math.max(1, currentPage - maxVisible);
-        let endPage = Math.min(totalPages, currentPage + maxVisible);
+                const pagination = document.getElementById("pagination");
+                pagination.innerHTML = "";
 
-        if (totalPages <= 1) return;  // If only one page, no pagination needed
+                const totalPages = Math.ceil(totalItems / rowsPerPage);
+                const maxVisible = 1; // Number of pages before and after the current page to display
+                let startPage = Math.max(1, currentPage - maxVisible);
+                let endPage = Math.min(totalPages, currentPage + maxVisible);
 
-        // Function to create a page button
-        const createPageButton = (page, isActive = false) => {
-            const btn = document.createElement("button");
-            btn.innerText = page;
-            btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
-            btn.onclick = () => goToPage(type, region, province, page); // Pass region and province too
-            return btn;
-        };
+                if (totalPages <= 1) return; // If only one page, no pagination needed
 
-        // Function to create ellipsis button ("...")
-        const createEllipsis = () => {
-            const btn = document.createElement("button");
-            btn.innerText = "...";
-            btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
-            btn.onclick = () => {
-                Swal.fire({
-                    title: "Go to page...",
-                    input: "number",
-                    inputLabel: `Enter page number (1 - ${totalPages})`,
-                    inputAttributes: { min: 1, max: totalPages, step: 1 },
-                    showCancelButton: true,
-                    confirmButtonText: "Go!",
-                    confirmButtonColor: "#3062B8",
-                    inputValidator: (value) => {
-                        if (!value || isNaN(value)) return "Please enter a valid number.";
-                        if (value < 1 || value > totalPages) return `Page number must be between 1 and ${totalPages}.`;
-                        return null;
-                    }
-                }).then(result => {
-                    if (result.isConfirmed) goToPage(type, region, province, parseInt(result.value));
-                });
-            };
-            return btn;
-        };
+                // Function to create a page button
+                const createPageButton = (page, isActive = false) => {
+                    const btn = document.createElement("button");
+                    btn.innerText = page;
+                    btn.className =
+                        `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+                    btn.onclick = () => goToPage(type, region, province, page); // Pass region and province too
+                    return btn;
+                };
 
-        // Previous button
-        const prevBtn = document.createElement("button");
-        prevBtn.innerHTML = "&lt;";
-        prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
-        prevBtn.disabled = currentPage === 1;
-        prevBtn.onclick = () => goToPage(type, region, province, currentPage - 1);
-        pagination.appendChild(prevBtn);
+                // Function to create ellipsis button ("...")
+                const createEllipsis = () => {
+                    const btn = document.createElement("button");
+                    btn.innerText = "...";
+                    btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+                    btn.onclick = () => {
+                        Swal.fire({
+                            title: "Go to page...",
+                            input: "number",
+                            inputLabel: `Enter page number (1 - ${totalPages})`,
+                            inputAttributes: {
+                                min: 1,
+                                max: totalPages,
+                                step: 1
+                            },
+                            showCancelButton: true,
+                            confirmButtonText: "Go!",
+                            confirmButtonColor: "#3062B8",
+                            inputValidator: (value) => {
+                                if (!value || isNaN(value)) return "Please enter a valid number.";
+                                if (value < 1 || value > totalPages)
+                                return `Page number must be between 1 and ${totalPages}.`;
+                                return null;
+                            }
+                        }).then(result => {
+                            if (result.isConfirmed) goToPage(type, region, province, parseInt(result.value));
+                        });
+                    };
+                    return btn;
+                };
 
-        // Display first page button and ellipsis if necessary
-        if (startPage > 1) {
-            pagination.appendChild(createPageButton(1));
-            if (startPage > 2) pagination.appendChild(createEllipsis());
-        }
+                // Previous button
+                const prevBtn = document.createElement("button");
+                prevBtn.innerHTML = "&lt;";
+                prevBtn.className =
+                    `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => goToPage(type, region, province, currentPage - 1);
+                pagination.appendChild(prevBtn);
 
-        // Display page numbers in the current range
-        for (let i = startPage; i <= endPage; i++) {
-            pagination.appendChild(createPageButton(i, i === currentPage));
-        }
+                // Display first page button and ellipsis if necessary
+                if (startPage > 1) {
+                    pagination.appendChild(createPageButton(1));
+                    if (startPage > 2) pagination.appendChild(createEllipsis());
+                }
 
-        // Display last page button and ellipsis if necessary
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
-            pagination.appendChild(createPageButton(totalPages));
-        }
+                // Display page numbers in the current range
+                for (let i = startPage; i <= endPage; i++) {
+                    pagination.appendChild(createPageButton(i, i === currentPage));
+                }
 
-        // Next button
-        const nextBtn = document.createElement("button");
-        nextBtn.innerHTML = "&gt;";
-        nextBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
-        nextBtn.disabled = currentPage === totalPages;
-        nextBtn.onclick = () => goToPage(type, region, province, currentPage + 1);
-        pagination.appendChild(nextBtn);
-    }
+                // Display last page button and ellipsis if necessary
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+                    pagination.appendChild(createPageButton(totalPages));
+                }
 
-    // Function to navigate to a specific page
-    function goToPage(type = 'region', region = null, province = null, pageNumber) {
-        currentPage = pageNumber;
+                // Next button
+                const nextBtn = document.createElement("button");
+                nextBtn.innerHTML = "&gt;";
+                nextBtn.className =
+                    `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => goToPage(type, region, province, currentPage + 1);
+                pagination.appendChild(nextBtn);
+            }
 
-        if (type == 'region') {
-            buildRegionTable(pageNumber);  // This should fetch data for the current page
-        } else if (type == 'province') {
-            buildProvinceTable(region, pageNumber);  // This should fetch data for the current page
-        } else if (type == 'branches') {
-            buildBranchesTable(region, province, pageNumber);  // This should fetch data for the current page
-        }
-        renderPagination(type, region, province);  // Re-render pagination
-    }
+            // Function to navigate to a specific page
+            function goToPage(type = 'region', region = null, province = null, pageNumber) {
+                currentPage = pageNumber;
+
+                if (type == 'region') {
+                    buildRegionTable(pageNumber); // This should fetch data for the current page
+                } else if (type == 'province') {
+                    buildProvinceTable(region, pageNumber); // This should fetch data for the current page
+                } else if (type == 'branches') {
+                    buildBranchesTable(region, province, pageNumber); // This should fetch data for the current page
+                }
+                renderPagination(type, region, province); // Re-render pagination
+            }
 
 
             // Call renderPagination whenever you need to update the pagination (e.g., after fetching data)
@@ -655,37 +670,37 @@
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
                     {{ session()->get('user')->user_id }}
-                    fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
+                fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
                         date,
                         user_id,
                         page: page || currentPage
                     }).toString())
-                        .then(response => response.json())
-                        .then(data => {
+                    .then(response => response.json())
+                    .then(data => {
                         console.log('Branches Data:', data);
                         totalItems = data.branch_count;
-                        
-                            console.log('Region Branch Data:', data);
-                            clearTableBody();
-                            const regionTableBody = document.getElementById('regionTableBody');
-                            regionTableBody.innerHTML = ''; // Clear existing data
-                            data.branch_count_by_region.forEach((region, index) => {
-                                let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
+
+                        console.log('Region Branch Data:', data);
+                        clearTableBody();
+                        const regionTableBody = document.getElementById('regionTableBody');
+                        regionTableBody.innerHTML = ''; // Clear existing data
+                        data.branch_count_by_region.forEach((region, index) => {
+                            let row = `<tr class="cursor-pointer" onclick="buildProvinceTable('${region.region}')">
                                                         <td class="px-6 py-2 whitespace-nowrap">${index + 1}</td>
                                                         <td class="px-3 py-2 whitespace-nowrap">${regions[region.region]}</td>
                                                         <td class="px-3 py-2 whitespace-nowrap text-center">${region.branch_count}</td>
                                                         <td class="px-3 py-2 whitespace-nowrap text-center"><span class="icon-[material-symbols--chevron-right-rounded]"></span></td>
                                                      </tr>`;
-                                regionTableBody.innerHTML += row;
-                            });
-                            let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
-                            document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
-                            // Render full branch list if available
-                            if (data.branches) {
-                                const tableBody = document.getElementById('tableBody');
-                                tableBody.innerHTML = ''; // Clear previous rows
-                                data.branches.forEach((branch, index) => {
-                                    let row = `
+                            regionTableBody.innerHTML += row;
+                        });
+                        let branchCount = data.branch_count_by_region.reduce((acc, region) => acc + region.branch_count, 0);
+                        document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${branchCount} สาขา`;
+                        // Render full branch list if available
+                        if (data.branches) {
+                            const tableBody = document.getElementById('tableBody');
+                            tableBody.innerHTML = ''; // Clear previous rows
+                            data.branches.forEach((branch, index) => {
+                                let row = `
                                                     <tr class="hover:bg-gray-100">
                                                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
                                                         <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
@@ -699,16 +714,16 @@
                                                         </td>
                                                     </tr>
                                                 `;
-                                    tableBody.innerHTML += row;
-                                });
-                            }
-                            hideBackButton();
-                            showRegionTable();
-                            setBackButtonOnClick(() => {
-                                buildRegionTable();
+                                tableBody.innerHTML += row;
                             });
-                            renderPagination('region', region);  // Render pagination for region table
-                        }).catch(error => console.error('Error fetching region branch data:', error));
+                        }
+                        hideBackButton();
+                        showRegionTable();
+                        setBackButtonOnClick(() => {
+                            buildRegionTable();
+                        });
+                        renderPagination('region', region); // Render pagination for region table
+                    }).catch(error => console.error('Error fetching region branch data:', error));
 
 
             }
@@ -745,14 +760,14 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                                    {{ session()->get('user')->user_id }};
+                    {{ session()->get('user')->user_id }};
 
                 fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
-                    region,
-                    date,
-                    user_id,
-                    page: page || currentPage
-                }).toString())
+                        region,
+                        date,
+                        user_id,
+                        page: page || currentPage
+                    }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Province Branch Data:', data);
@@ -806,12 +821,12 @@
                         setBackButtonOnClick(() => {
                             buildRegionTable();
                         });
-                        renderPagination('province', region,);  // Render pagination for province table
+                        renderPagination('province', region, ); // Render pagination for province table
                     })
                     .catch(error => console.error('Error fetching province branch data:', error));
 
             }
-            
+
 
 
             function buildBranchesTable(region, province, page = 1) {
@@ -850,15 +865,15 @@
 
                 const user_id = document.getElementById('subordinateSelect') ?
                     document.getElementById('subordinateSelect').value :
-                                    {{ session()->get('user')->user_id }};
+                    {{ session()->get('user')->user_id }};
 
                 fetch('{{ route('api.report.getRegionBranch') }}?' + new URLSearchParams({
-                    region,
-                    province,
-                    date,
-                    user_id,
-                    page: page || currentPage
-                }).toString())
+                        region,
+                        province,
+                        date,
+                        user_id,
+                        page: page || currentPage
+                    }).toString())
                     .then(response => response.json())
                     .then(data => {
                         console.log('Branches Data:', data);
@@ -900,7 +915,7 @@
 
                         // อัปเดตจำนวนสาขา
                         document.getElementById("regionBranchCount").textContent = `สาขาทั้งหมด ${data.branch_count} สาขา`;
-                        renderPagination('branches', region, province);  // Render pagination for branches table
+                        renderPagination('branches', region, province); // Render pagination for branches table
                     })
                     .catch(error => console.error('Error fetching branches data:', error));
             }
@@ -932,7 +947,7 @@
 
             function setBackButtonOnClick(func) {
                 const backButton = document.getElementById('regionTableBack');
-                backButton.onclick = function () {
+                backButton.onclick = function() {
                     // เปลี่ยนชื่อหัวเรื่องกลับเป็น "ภูมิภาค"
                     const regionTitle = document.getElementById('regionTitle');
                     regionTitle.textContent = "ภูมิภาค";
@@ -945,7 +960,7 @@
             }
 
 
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 buildRegionTable();
             });
         </script>
@@ -995,6 +1010,7 @@
             white-space: nowrap;
             /* ป้องกันการตัดบรรทัด */
         }
+
         table {
             boarder-radius: 12px;
             overflow: hidden;

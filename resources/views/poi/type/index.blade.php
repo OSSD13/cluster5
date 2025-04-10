@@ -405,6 +405,13 @@
 
                         const data = await res.json();
                         if (data.status === "success") {
+                            Swal.fire({
+                                title: "สำเร็จ!",
+                                text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                                icon: "success",
+                                confirmButtonColor: "#2D8C42",
+                                confirmButtonText: "ตกลง"
+                            });
                             fetchPoits(document.getElementById("searchInput").value);
                             return true;
                         } else {
