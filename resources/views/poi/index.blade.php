@@ -5,7 +5,7 @@
 @section('content')
     <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md mx-auto">
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-2xl font-bold text-gray-800">POI จัดการสถานที่ที่สนใจ</h2>
+            <h2 class="text-2xl font-bold text-gray-800">POI จัดการสถานที่สนใจ</h2>
 
             <a href="{{ route('poi.create') }}">
                 <button
@@ -33,7 +33,7 @@
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th scope="col" class="py-2 px-4 text-left">ID</th>
-                    <th class="py-3 px-4 text-left min-w-[0px]">ชื่อสถานที่ / ประเภท</th>
+                    <th class="py-3 px-4 text-left min-w-[150px]">ชื่อสถานที่ / ประเภท</th>
                     <th class="py-3 px-4 text-center max-w-[120px]">จังหวัด</th>
                     <th class="py-3 px-1 w-7 text-center">&#8230;</th>
                 </tr>
@@ -95,9 +95,9 @@
                         <td class="py-3 px-1 w-10 text-center relative">
                             <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
                             <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2 -translate-y-1/2">
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?poi_id=${poi.poi_id}'">แก้ไข</button>
-                                <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" onclick="deletePoi(${poi.poi_id})">ลบ</button>
+                                <button class="block w-full px-4 py-2 text-white bg-blue-600 border border-gray-400 rounded-lg shadow-md hover:bg-blue-700" style="background-color: #3062B8"  onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
+                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg border border-gray-400 shadow-md hover:bg-blue-700" style="background-color: #3062B8"  onclick="window.location.href='{{ route('poi.edit') }}?poi_id=${poi.poi_id}'">แก้ไข</button>
+                                <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg border border-gray-400 shadow-md hover:bg-red-700" style="background-color: #CF3434"   onclick="deletePoi(${poi.poi_id})">ลบ</button>
                             </div>
                         </td>
                     `;
@@ -234,8 +234,8 @@
 
             Swal.fire({
                 html: `
-                    <div class="flex flex-col text-3xl mb-6 mt-4">
-                    <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
+                    <div class="flex flex-col text-2xl mb-6 mt-4">
+                    <b class=text-gray-800>รายละเอียดข้อมูลสถานที่สนใจ</b>
                     </div>
                     <div class="flex flex-col space-y-2 text-left">
                     <div class="w-full">
