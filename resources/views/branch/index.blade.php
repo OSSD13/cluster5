@@ -22,7 +22,7 @@
 
     <!-- Role Dropdown -->
     <div class="mb-3">
-        <label class="block text-gray-800 mb-1">บทบาท</label>
+        <label class="block text-gray-800 mb-1">Sale</label>
         <select id="roleFilter" class="w-full p-2 border border-gray-300 rounded-md shadow-lg">
             <option value="">ทั้งหมด</option>
             <option value="sale">Sale</option>
