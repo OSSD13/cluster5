@@ -155,13 +155,21 @@
 
         function hasFormChanged() {
             const inputs = form.querySelectorAll("input, select");
-            return Array.from(inputs).some(input => input.value !== initialFormState[input.name]);
+            return Array.from(inputs).some(input => {
+                const original = (initialFormState[input.name] ?? '').trim();
+                const current = input.value.trim();
+                return original !== current;
+            });
         }
+
 
 
         const form = document.getElementById('poiForm');
         const submitButton = document.getElementById('saveButton');
         const googleMapLinkInput = document.getElementById('googleMapLink');
+        const allFields = [
+            'latitude', 'longitude', 'zipcode', 'province', 'district', 'amphoe', 'address', 'name', 'type'
+        ];
         const requiredFields = ['latitude', 'longitude', 'name', 'type'];
 
         if ({{ $locations ? 'true' : 'false' }}) {
@@ -183,8 +191,9 @@
             submitButton.classList.toggle('cursor-not-allowed', !(isComplete && changed));
         }
 
+
         // Attach input listeners for validation
-        requiredFields.forEach(id => {
+        allFields.forEach(id => {
             const input = document.getElementById(id);
             if (input) {
                 input.addEventListener('input', validateForm);
