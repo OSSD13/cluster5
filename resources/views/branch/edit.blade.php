@@ -16,17 +16,19 @@
             <input type="hidden" name="bs_id" value="{{ $branch->bs_id }}">
 
             <label class="block text-sm text-gray-600">Link Google (Optional)</label>
-            <input type="text" id="googleMapLink" class="w-full p-2 border border-gray-300 rounded-lg mb-3"
+            <input type="text" id="googleMapLink" class="w-full p-2 border border-gray-300 rounded-lg mb-1"
                 placeholder="Link Google">
             <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
 
             <label class="block text-sm text-gray-600">ละติจูด</label>
             <input type="text" name="poi_gps_lat" id="latitude" value="{{ $branch->poi_gps_lat }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ละติจูด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ละติจูด">
+            <span class="text-red-500 text-sm hidden" id="error-poi_gps_lat"></span>
 
             <label class="block text-sm text-gray-600">ลองจิจูด</label>
             <input type="text" name="poi_gps_lng" id="longitude" value="{{ $branch->poi_gps_lng }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ลองจิจูด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ลองจิจูด">
+            <span class="text-red-500 text-sm hidden" id="error-poi_gps_lng"></span>
 
             <div class="w-full h-48 bg-gray-200 rounded-lg mb-3">
                 <div id="map" class="w-full h-48 rounded-lg"></div>
@@ -34,27 +36,33 @@
 
             <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
             <input type="text" name="zipcode" id="zipcode" value="{{ $branch->zipcode }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="รหัสไปรษณีย์">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="รหัสไปรษณีย์">
+            <span class="text-red-500 text-sm hidden" id="error-zipcode"></span>
 
             <label class="block text-sm text-gray-600">จังหวัด</label>
             <input type="text" name="province" id="province" value="{{ $branch->province }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="จังหวัด">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="จังหวัด">
+            <span class="text-red-500 text-sm hidden" id="error-province"></span>
 
             <label class="block text-sm text-gray-600">อำเภอ</label>
             <input type="text" name="amphoe" id="amphoe" value="{{ $branch->amphoe }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="อำเภอ">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="อำเภอ">
+            <span class="text-red-500 text-sm hidden" id="error-amphoe"></span>
 
             <label class="block text-sm text-gray-600">ตำบล</label>
             <input type="text" name="district" id="district" value="{{ $branch->district }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ตำบล">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ตำบล">
+            <span class="text-red-500 text-sm hidden" id="error-district"></span>
 
             <label class="block text-sm text-gray-600">ที่อยู่</label>
             <input type="text" name="address" id='address' value="{{ $branch->bs_address }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ที่อยู่">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ที่อยู่">
+            <span class="text-red-500 text-sm hidden" id="error-address"></span>
 
             <label class="block text-sm text-gray-600">ชื่อ</label>
             <input type="text" name="name" id='name' value="{{ $branch->bs_name }}"
-                class="w-full p-2 border border-gray-300 rounded-lg mb-3" placeholder="ชื่อ">
+                class="w-full p-2 border border-gray-300 rounded-lg mb-1" placeholder="ชื่อ">
+            <span class="text-red-500 text-sm hidden" id="error-name"></span>
 
             <label class="block text-sm text-gray-600">รายละเอียด</label>
             <input type="text" name="detail" id='detail' value="{{ $branch->bs_detail }}"
@@ -71,8 +79,6 @@
         </div>
     </form>
 @endsection
-
-
 
 
 
