@@ -275,12 +275,16 @@
                     supervisors = result.data || [];
 
                     populateSupervisorDropdownFromArray(); // เติม dropdown ตอนโหลดหน้า
-                    fetchMembers(); // แล้วค่อย fetch สมาชิก
+                    fetchMembers();
+                    function searchAgain(){
+                        currentPage = 1;
+                        fetchMembers(); // แล้วค่อย fetch สมาชิก
+                    }
 
                     // เพิ่ม event listener
-                    document.getElementById("searchInput").addEventListener("input", fetchMembers);
-                    document.getElementById("supervisorSelect").addEventListener("change", fetchMembers);
-                    document.getElementById("roleSelect").addEventListener("change", fetchMembers);
+                    document.getElementById("searchInput").addEventListener("input", searchAgain);
+                    document.getElementById("supervisorSelect").addEventListener("change", searchAgain);
+                    document.getElementById("roleSelect").addEventListener("change", searchAgain);
                 } catch (e) {
                     console.error("โหลด supervisor ไม่ได้:", e);
                 }
