@@ -32,14 +32,8 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader \
-    && php artisan view:clear \
-    && php artisan route:clear \
     && php artisan cache:clear \
-    && php artisan config:clear \
-    && php artisan config:cache \
-    && php artisan optimize:clear \
     && composer require predis/predis
-RUN composer install --no-dev --optimize-autoloader
 # Build frontend assets
 RUN npm install && npm run build
 
