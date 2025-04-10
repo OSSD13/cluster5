@@ -20,7 +20,7 @@
         <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
     </div>
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+        <table class="w-full mt-5 border-collapse rounded-lg ">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th class="py-3 px-4 text-left min-w-[0px]">ชื่อ / ประเภท</th>
@@ -39,7 +39,6 @@
         table {
             border-radius: 12px;
             /* ทำให้ขอบตารางโค้ง */
-            overflow: hidden;
             /* ป้องกันไม่ให้เนื้อหาเกินขอบ */
         }
 
@@ -147,7 +146,7 @@
                     <button class="cursor-pointer text-blue-600 hover:text-blue-800 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200" onclick="toggleMenu(event, '${poit.poit_type}')">
                         <span class="text-lg font-bold">⋯</span>
                     </button>
-                    <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                    <div id="menu-${poit.poit_type}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2 -translate-y-1/2">
                         <button class="view-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" data-type="${poit.poit_type}">ดูรายละเอียด</button>
                         <button class="edit-btn block w-full px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" data-type="${poit.poit_type}">แก้ไข</button>
                         <button class="delete-btn block w-full px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434"  data-type="${poit.poit_type}">ลบ</button>
@@ -406,6 +405,13 @@
 
                         const data = await res.json();
                         if (data.status === "success") {
+                            Swal.fire({
+                                title: "สำเร็จ!",
+                                text: "แก้ไขข้อมูลสมาชิกเรียบร้อยแล้ว",
+                                icon: "success",
+                                confirmButtonColor: "#2D8C42",
+                                confirmButtonText: "ตกลง"
+                            });
                             fetchPoits(document.getElementById("searchInput").value);
                             return true;
                         } else {
