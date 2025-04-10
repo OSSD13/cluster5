@@ -120,8 +120,9 @@
                     poit_name: form.poiName.value,
                     poit_icon: form.iconInput.value,
                     poit_color: form.colorInput.value,
-                    poit_detail: form.poiDetails.value,
+                    poit_description: document.getElementById('poiDetails').value,
                 };
+                console.log('รายละเอียด:', form.poiDetails.value); 
 
                 submitButton.disabled = true;
                 submitButton.innerText = 'กำลังบันทึก...';
