@@ -133,7 +133,7 @@ class EditPointOfInterestController extends Controller
     // Optional: only check location if all fields exist
     $hasLocationFields = $request->filled(['zipcode', 'province', 'district', 'amphoe']);
     if ($hasLocationFields) {
-        $location = \DB::table('location')
+        $location = \DB::table('locations')
             ->where('zipcode', $request->input('zipcode'))
             ->where('province', $request->input('province'))
             ->where('district', $request->input('district'))
