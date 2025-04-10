@@ -31,8 +31,14 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Install dependencies
-RUN composer install --no-dev --optimize-autoloader \
-    && composer require predis/predis
+RUN composer require predis/predis \
+    && php artisan view:clear \
+    && php artisan route:clear \
+    && php artisan cache:clear \
+    && php artisan config:clear \
+    && php artisan config:cache \
+    && php artisan optimize:clear \
+    && composer install --no-dev --optimize-autoloader
 
 # Build frontend assets
 RUN npm install && npm run build
