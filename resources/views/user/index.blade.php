@@ -406,14 +406,17 @@ function viewDetail(id) {
                     <div class="w-full">
                         <label class="font-semibold text-gray-800 text-sm">Email</label>
                         <input type="email" id="memberEmail" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                        <div id="errorEmail" class="text-red-500 text-sm mt-1"></div>
                     </div>
                 <div class="w-full">
                     <label class="font-semibold text-gray-800 text-sm">Password</label>
                     <input type="password" id="memberPassword" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" >
+                    <div id="errorPassword" class="text-red-500 text-sm mt-1"></div>
                 </div>
                 <div class="w-full">
                     <label class="font-medium text-gray-800 text-sm">ชื่อผู้ใช้</label>
                     <input type="text" id="memberName" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm">
+                    <div id="errorName" class="text-red-500 text-sm mt-1"></div>
                 </div>
                 <div class="w-full">
                     <label class="font-medium text-gray-800 text-sm">บทบาท</label>
@@ -423,6 +426,7 @@ function viewDetail(id) {
                         <option value="ceo">CEO</option>
                         <option value="supervisor">Sale Supervisor</option>
                     </select>
+                    <div id="errorRole" class="text-red-500 text-sm mt-1"></div>
                 </div>
                 <div class="w-full">
                     <!-- ตรงนี้จะแสดงเมื่อเลือก Sale -->
@@ -434,6 +438,7 @@ function viewDetail(id) {
                                 `<option value="${supervisor.user_id}">${supervisor.name} - ${supervisor.email}</option>`
                             ).join('')}
                         </select>
+                        <div id="errorSupervisor" class="text-red-500 text-sm mt-1"></div>
                     </div>
                 </div>
                 </div>
@@ -458,6 +463,9 @@ function viewDetail(id) {
             if (role === "sale") {
                 manager = document.getElementById("supervisorDropdown").value;
             }
+            ["errorEmail", "errorPassword", "errorName", "errorRole", "errorSupervisor"].forEach(id => {
+                document.getElementById(id).innerText = "";
+            });
 
             try {
                 const response = await fetch("{{ route('api.user.create') }}", {
@@ -477,16 +485,16 @@ function viewDetail(id) {
                 });
 
                 const result = await response.json();
-
-                if (!response.ok) {
-                    
-                    if (result?.errors) {
-                        const errorMessages = Object.values(result.errors).flat().join('<br>');
-                        Swal.showValidationMessage(errorMessages);
-                    } else {
-                        Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
+                
+                if (result?.errors) {
+                    for (const [key, messages] of Object.entries(result.errors)) {
+                        const errorElement = document.getElementById(`error${capitalizeFirstLetter(key)}`);
+                        if (errorElement) {
+                            errorElement.innerText = messages.join(" ");
+                        }
                     }
-                    return false;
+                } else {
+                    Swal.showValidationMessage(result?.message || "เกิดข้อผิดพลาดในการเพิ่มสมาชิก");
                 }
 
                 Swal.fire({
