@@ -87,7 +87,7 @@ class UserController extends Controller
     public function createUser(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:6',
             'role_name' => 'required|string|in:sale,supervisor,ceo',
@@ -96,6 +96,7 @@ class UserController extends Controller
         ], [
             'email.required' => 'กรุณากรอกอีเมล',
             'email.email' => 'รูปแบบอีเมลไม่ถูกต้อง',
+            'email.unique' => 'อีเมลนี้ถูกใช้งานแล้ว',
             'name.required' => 'กรุณากรอกชื่อ',
             'password.required' => 'กรุณากรอกรหัสผ่าน',
             'password.min' => 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร',
@@ -169,7 +170,19 @@ class UserController extends Controller
         if ($request->input('password')) $user->password = bcrypt($request->input('password'));
         if ($request->input('role_name')) $user->role_name = $request->input('role_name');
         if ($request->input('user_status')) $user->user_status = $request->input('user_status');
-        if ($request->input('manager')) $user->manager = $request->input('manager');
+        if ($request->has('role_name') && $request->input('role_name') !== 'sale') {
+            $user->manager = null;
+        } elseif ($request->has('manager')) {
+            $user->manager = $request->input('manager');
+        }
+        
+        // ห้ามเลือกตัวเองเป็นหัวหน้า
+        if ($request->has('manager') && $request->input('manager') == $user->user_id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ไม่สามารถเลือกตัวเองเป็นหัวหน้าได้'
+            ], 422);
+        }
 
         $user->save();
 
@@ -188,7 +201,7 @@ class UserController extends Controller
             'user_id.required' => 'กรุณาระบุรหัสผู้ใช้งาน',
             'user_id.numeric' => 'รหัสผู้ใช้งานต้องเป็นตัวเลข',
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -196,7 +209,7 @@ class UserController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+    
         $user = User::where('user_id', $request->input('user_id'))->first();
         if (!$user) {
             return response()->json([
@@ -204,14 +217,22 @@ class UserController extends Controller
                 'message' => 'ไม่พบผู้ใช้งานที่ต้องการลบ'
             ], 404);
         }
-
+    
+        
+        User::where('manager', $user->user_id)->update([
+            'manager' => null
+        ]);
+    
+        
         $user->delete();
-
+    
         return response()->json([
             'status' => 'success',
-            'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว'
+            'message' => 'ลบผู้ใช้งานเรียบร้อยแล้ว และลูกน้องถูกย้ายออกจากหัวหน้าเรียบร้อย'
         ]);
     }
+    
+    
 
     public function getUserOptionsForBranchFilter(Request $request)
     {

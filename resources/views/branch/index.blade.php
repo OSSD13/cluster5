@@ -37,7 +37,7 @@
 
 <!-- Results Table -->
 <div class="overflow-visible">
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+    <table class="w-full mt-5 border-collapse rounded-lg">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
@@ -72,27 +72,28 @@
     document.getElementById("roleFilter").addEventListener("change", () => fetchBranches(1));
 
     async function fetchBranches(page = 1) {
-        const search = document.getElementById("searchInput").value.trim();
-        const role = document.getElementById("roleFilter").value;
+    const search = document.getElementById("searchInput").value.trim();
+    const userId = document.getElementById("roleFilter").value; // เปลี่ยนจาก role → userId
 
-        const params = new URLSearchParams({ page, limit: rowsPerPage });
-        if (search) params.append('search', search);
-        if (role) params.append('role', role);
+    const params = new URLSearchParams({ page, limit: rowsPerPage });
+    if (search) params.append('search', search);
+    if (userId) params.append('user_id', userId); // ส่ง user_id ไปยัง API
 
-        try {
-            const response = await fetch(`${apiUrl}?${params.toString()}`);
-            const json = await response.json();
-            branches = json.data || [];
-            totalItems = json.total || 0;
-            rowsPerPage = json.limit || 10;
-            renderTable();
-        } catch (error) {
-            console.error("ไม่สามารถโหลดข้อมูลได้:", error);
-            document.getElementById("tableBody").innerHTML = `
-                <tr><td colspan="5" class="text-center py-4 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>
-            `;
-        }
+    try {
+        const response = await fetch(`${apiUrl}?${params.toString()}`);
+        const json = await response.json();
+        branches = json.data || [];
+        totalItems = json.total || 0;
+        rowsPerPage = json.limit || 10;
+        renderTable();
+    } catch (error) {
+        console.error("ไม่สามารถโหลดข้อมูลได้:", error);
+        document.getElementById("tableBody").innerHTML = `
+            <tr><td colspan="5" class="text-center py-4 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>
+        `;
     }
+}
+
 
     function renderTable() {
         const tableBody = document.getElementById("tableBody");
@@ -125,7 +126,7 @@
 
                 <td class="py-3 px-1 w-10 text-center relative">
                     <button class="cursor-pointer" onclick="toggleMenu(event, ${branch.bs_id})">&#8230;</button>
-                    <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2">
+                    <div id="menu-${branch.bs_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-xl w-32 z-50 p-2 space-y-2 -translate-y-1/2">
                         <button class="block w-full px-4 py-2 text-white border border-gray-400 rounded-md shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
                             onclick="window.location.href='{{ route('branch.manage.index') }}?bs_id=${branch.bs_id}'">จัดการ</button>
                         <button class="block w-full px-4 py-2 text-white rounded-md border border-gray-400 shadow-lg hover:bg-blue-700 cursor-pointer" style="background-color: #3062B8"
@@ -260,5 +261,29 @@ pagination.appendChild(nextBtn);
 
     // Initial load
     fetchBranches();
+
+    async function fetchFilterOptions() {
+    const roleSelect = document.getElementById("roleFilter");
+    roleSelect.innerHTML = `<option value="">ทั้งหมด</option>`; // ✅ fixed
+
+    try {
+        const res = await fetch(`/getUserOptionsForBranchFilter`);
+        const data = await res.json();
+
+        (data.users || []).forEach(user => {
+            const option = document.createElement("option");
+            option.value = user.user_id;
+            option.textContent = `${user.role_name} - ${user.name}`;
+            roleSelect.appendChild(option);
+        });
+    } catch (err) {
+        console.error("Error fetching role filter options:", err);
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+        fetchFilterOptions(); // ✅ load dropdown
+        fetchBranches();      // ✅ load table
+    });
+
 </script>
 @endsection
