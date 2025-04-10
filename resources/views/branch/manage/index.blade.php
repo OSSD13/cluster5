@@ -310,49 +310,48 @@
 
     <script>
         async function regenerateSaleMonthOptions() {
-    const select = document.getElementById("saleMonth");
-    select.innerHTML = "";
+            const select = document.getElementById("saleMonth");
+            select.innerHTML = "";
 
-    let existingMonths = [];
-    try {
-        const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
-        const result = await response.json();
-        existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
-    } catch (err) {
-        console.error("Error fetching existing sales:", err);
-    }
+            let existingMonths = [];
+            try {
+                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+                const result = await response.json();
+                existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
+            } catch (err) {
+                console.error("Error fetching existing sales:", err);
+            }
 
-    const now = new Date();
-    let added = false;
+            const now = new Date();
+            let added = false;
 
-    for (let i = 0; i < 12; i++) {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const ym = date.toISOString().slice(0, 7);
-        const fullDate = `${ym}-01`;
+            for (let i = 0; i < 12; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const ym = date.toISOString().slice(0, 7);
+                const fullDate = `${ym}-01`;
 
-        if (!existingMonths.includes(ym)) {
-            const month = date.toLocaleString('th-TH', {
-                year: 'numeric',
-                month: 'long'
-            });
-            const option = document.createElement("option");
-            option.value = fullDate;
-            option.textContent = `${month}`;
-            select.appendChild(option);
-            added = true;
+                if (!existingMonths.includes(ym)) {
+                    const month = date.toLocaleString('th-TH', {
+                        year: 'numeric',
+                        month: 'long'
+                    });
+                    const option = document.createElement("option");
+                    option.value = fullDate;
+                    option.textContent = `${month}`;
+                    select.appendChild(option);
+                    added = true;
+                }
+            }
+
+            if (!added) {
+                const opt = document.createElement("option");
+                opt.value = "";
+                opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
+                opt.disabled = true;
+                opt.selected = true;
+                select.appendChild(opt);
+            }
         }
-    }
-
-    if (!added) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
-        opt.disabled = true;
-        opt.selected = true;
-        select.appendChild(opt);
-    }
-}
-
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -578,7 +577,10 @@
                         month: "long",
                         year: "numeric"
                     });
-                    monthOptions.push({ value, label });
+                    monthOptions.push({
+                        value,
+                        label
+                    });
                 }
             }
 
@@ -817,7 +819,7 @@
             if (isNaN(box) || isNaN(amount)) {
                 Swal.fire("กรุณากรอกจำนวนกล่องและยอดเงินให้ถูกต้อง");
                 return;
-    }
+            }
 
             try {
                 const response = await fetch(`{{ route('api.sales.create') }}`, {
