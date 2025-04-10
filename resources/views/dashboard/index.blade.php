@@ -207,10 +207,12 @@
 
                             document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
                                 .toLocaleString();
-                            document.getElementById('thisMonthTotalPackagePercent').textContent = Math.abs(packageChange).toFixed(2);
+                            document.getElementById('thisMonthTotalPackagePercent').textContent = Math.abs(packageChange)
+                                .toFixed(2);
                             document.getElementById('thisMonthTotalMoneyNumber').textContent = thisMonthTotalSales
                                 .toLocaleString();
-                            document.getElementById('thisMonthTotalMoneyPercent').textContent = Math.abs(salesChange).toFixed(2);
+                            document.getElementById('thisMonthTotalMoneyPercent').textContent = Math.abs(salesChange).toFixed(
+                            2);
 
                             updateIndicator('thisMonthTotalPackage', packageChange);
                             updateIndicator('thisMonthTotalMoney', salesChange);
@@ -414,13 +416,15 @@
                 document.getElementById('minValue').textContent = min.toLocaleString();
                 document.getElementById('minPercent').textContent = Math.abs(minChange).toFixed(2);
                 document.getElementById('minArrow').classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
-                document.getElementById('minArrow').classList.add(minChange > 0 ? 'icon-[line-md--arrow-up]' : 'icon-[line-md--arrow-down]');
+                document.getElementById('minArrow').classList.add(minChange > 0 ? 'icon-[line-md--arrow-up]' :
+                    'icon-[line-md--arrow-down]');
 
                 // Update Max Card
                 document.getElementById('maxValue').textContent = max.toLocaleString();
                 document.getElementById('maxPercent').textContent = Math.abs(maxChange).toFixed(2);
                 document.getElementById('maxArrow').classList.remove('icon-[line-md--arrow-up]', 'icon-[line-md--arrow-down]');
-                document.getElementById('maxArrow').classList.add(maxChange > 0 ? 'icon-[line-md--arrow-up]' : 'icon-[line-md--arrow-down]');
+                document.getElementById('maxArrow').classList.add(maxChange > 0 ? 'icon-[line-md--arrow-up]' :
+                    'icon-[line-md--arrow-down]');
 
                 // Update Std Card
                 document.getElementById('stdValue').textContent = std.toLocaleString(undefined, {
@@ -478,14 +482,14 @@
                 <thead class="bg-lightblue" style="background-color: #B6D2FF">
                     <tr>
                         <th scope="col"
-                            class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle"
+                            class="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider align-middle rounded-tl-lg"
                             style="color: black;">#</th>
                         <th scope="col"
                             class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
                             จังหวัด</th>
                         <th scope="col"
-                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider"
+                            class="py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg"
                             style="color: black; text-align: left; padding-left: 1rem; font-weight: 500;">
                             จำนวนสาขา</th>
                         <th scope="col" class="py-3" id="regionBranchCount"></th>
@@ -550,7 +554,7 @@
                             inputValidator: (value) => {
                                 if (!value || isNaN(value)) return "Please enter a valid number.";
                                 if (value < 1 || value > totalPages)
-                                return `Page number must be between 1 and ${totalPages}.`;
+                                    return `Page number must be between 1 and ${totalPages}.`;
                                 return null;
                             }
                         }).then(result => {
@@ -700,20 +704,32 @@
                             const tableBody = document.getElementById('tableBody');
                             tableBody.innerHTML = ''; // Clear previous rows
                             data.branches.forEach((branch, index) => {
+                                console.log(branch)
                                 let row = `
-                                                    <tr class="hover:bg-gray-100">
-                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
-                                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
-                                                            ${branch.branchName}
-                                                        </td>
-                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
-                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                `;
+                                    <tr class="hover:bg-gray-100">
+                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                            ${branch.branchName}
+                                        </td>
+                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap ${
+                                            branch.branchSaleChange > 0 ? 'text-green-600' :
+                                            branch.branchSaleChange < 0 ? 'text-red-600' : 'text-black'
+                                        }">
+                                            ${
+                                                typeof branch.branchSaleChange === 'number'
+                                                    ? (branch.branchSaleChange > 0 ? '+ ' : branch.branchSaleChange < 0 ? '- ' : '') +
+                                                    Math.abs(branch.branchSaleChange).toFixed(2) + '%'
+                                                    : '-'
+                                            }
+                                        </td>
+
+                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                `;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -800,19 +816,30 @@
 
                             data.branches.forEach((branch, index) => {
                                 let row = `
-                                                    <tr class="hover:bg-gray-100">
-                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
-                                                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
-                                                            ${branch.branchName}
-                                                        </td>
-                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
-                                                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                                                            <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                                                ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                `;
+                                        <tr class="hover:bg-gray-100">
+                                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                            <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                                ${branch.branchName}
+                                            </td>
+                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap ${
+                                                branch.branchSaleChange > 0 ? 'text-green-600' :
+                                                branch.branchSaleChange < 0 ? 'text-red-600' : 'text-black'
+                                            }">
+                                                ${
+                                                    typeof branch.branchSaleChange === 'number'
+                                                        ? (branch.branchSaleChange > 0 ? '+ ' : branch.branchSaleChange < 0 ? '- ' : '') +
+                                                        Math.abs(branch.branchSaleChange).toFixed(2) + '%'
+                                                        : '-'
+                                                }
+                                            </td>
+
+                                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                                <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                                    ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `;
                                 tableBody.innerHTML += row;
                             });
                         }
@@ -824,7 +851,6 @@
                         renderPagination('province', region, ); // Render pagination for province table
                     })
                     .catch(error => console.error('Error fetching province branch data:', error));
-
             }
 
 
@@ -885,19 +911,30 @@
 
                         data.branches.forEach((branch, index) => {
                             let row = `
-                                        <tr class="hover:bg-gray-100">
-                                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
-                                            <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
-                                                ${branch.branchName}
-                                            </td>
-                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap"> ${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
-                                            <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                                                <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
-                                                    ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        `;
+                                <tr class="hover:bg-gray-100">
+                                    <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
+                                    <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
+                                        ${branch.branchName}
+                                    </td>
+                                    <td class="py-2 px-2 text-right text-xs whitespace-nowrap ${
+                                        branch.branchSaleChange > 0 ? 'text-green-600' :
+                                        branch.branchSaleChange < 0 ? 'text-red-600' : 'text-black'
+                                    }">
+                                        ${
+                                            typeof branch.branchSaleChange === 'number'
+                                                ? (branch.branchSaleChange > 0 ? '+ ' : branch.branchSaleChange < 0 ? '- ' : '') +
+                                                Math.abs(branch.branchSaleChange).toFixed(2) + '%'
+                                                : '-'
+                                        }
+                                    </td>
+
+                                    <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
+                                        <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
+                                            ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
+                                        </span>
+                                    </td>
+                                </tr>
+                                `;
 
                             tableBody.innerHTML += row;
                         });
@@ -970,10 +1007,10 @@
                 style="table-layout: fixed;">
                 <thead class="bg-blue-500 text-white" style="background-color: #B6D2FF">
                     <tr>
-                        <th class="px-2 py-2 text-center text-xs" style="min-width: 40px; width: 10%;">ID</th>
+                        <th class="px-2 py-2 text-center text-xs rounded-tl-lg" style="min-width: 40px; width: 10%;">ID</th>
                         <th class="px-2 py-2 text-left text-xs" style="min-width: 150px; width: 40%;">ชื่อสาขา</th>
                         <th class="px-2 py-2 text-right text-xs" style="min-width: 80px; width: 25%;">ยอดขาย</th>
-                        <th class="px-2 py-2 text-center text-xs" style="min-width: 100px; width: 25%;">เพิ่มยอด</th>
+                        <th class="px-2 py-2 text-center text-xs rounded-tr-lg" style="min-width: 100px; width: 25%;">เพิ่มยอด</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody" class="bg-white divide-y divide-gray-200">

@@ -28,12 +28,6 @@
     </div>
 
 
-
-
-
-
-
-
     <div class="bg-white shadow-md rounded-lg p-4 my-6">
         <h3 class="text-lg font-bold mb-2">ยอดขายย้อนหลัง 12 เดือน</h3>
         <canvas id="branchSalesChart" height="200"></canvas>
@@ -45,7 +39,7 @@
     <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-row gap-4">
             <div id="minCard"
-                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark min-h-32"
                 style="background-color: #F2DDD4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
@@ -54,7 +48,7 @@
             </div>
 
             <div id="maxCard"
-                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success min-h-32"
                 style="background-color: #D6F2D4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
@@ -65,9 +59,9 @@
 
         <div class="flex flex-row gap-4">
             <div id="stdCard"
-                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark min-h-32"
                 style="background-color: #FAEAFF;">
-                <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
+                <div class="font-bold text-center" style="font-size: 14px; color:black;">Standard<br>Deviation (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
                     <span id="stdValue" class="text-2xl font-bold" style="font-size: 20px">0</span>
                 </div>
@@ -93,7 +87,7 @@
             const stdEl = document.getElementById("stdValue");
 
             try {
-                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}`);
                 const result = await response.json();
 
                 const sales = result.data || [];
@@ -256,6 +250,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            fetchBranchSalesStats();
             drawLast12MonthsChart();
         });
     </script>
@@ -311,10 +306,10 @@
     <table class="w-full mt-5 border-collapse rounded-lg">
         <thead class="text-gray-800 text-md rounded-lg" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 text-left">เดือน</th>
+                <th class="py-3 px-4 text-left rounded-tl-lg">เดือน</th>
                 <th class="py-3 px-4 text-right">ยอดเงิน</th>
                 <th class="py-3 px-4 text-right">เพิ่มโดย</th>
-                <th class="py-3 px-4 text-right"></th>
+                <th class="py-3 px-4 text-right rounded-tr-lg"></th>
             </tr>
         </thead>
         <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200"></tbody>

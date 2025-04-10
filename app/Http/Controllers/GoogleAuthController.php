@@ -18,8 +18,8 @@ class GoogleAuthController extends Controller
     public function callbackGoogle(Request $req)
     {
         // try {
-            $google_user = Socialite::driver('google')->user();
-
+            $google_user = Socialite::driver('google')->stateless()->user();
+            \Log::info(json_encode($google_user));
             $user = User::where('email', '=', $google_user->getEmail())->first();
 
 

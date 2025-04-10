@@ -65,10 +65,10 @@
             <table class="w-full mt-5 border-collapse rounded-lg">
                 <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                     <tr>
-                        <th scope="col" class="py-2 px-4 text-left">ID</th>
+                        <th scope="col" class="py-2 px-4 text-left rounded-tl-lg">ID</th>
                         <th class="py-3 px-4 text-left min-w-[200px]">ชื่อ / อีเมล</th>
                         <th class="py-3 px-4 text-center max-w-[150px]">บทบาท</th>
-                        <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+                        <th class="py-3 px-1 w-7 text-center rounded-tr-lg">&#8230;</th>
                     </tr>
                 </thead>
 
@@ -164,8 +164,7 @@
                 const createPageButton = (page, isActive = false) => {
                     const btn = document.createElement("button");
                     btn.innerText = page;
-                    btn.className =
-                        `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+                    btn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-sm font-medium flex items-center justify-center whitespace-nowrap ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
                     btn.onclick = () => goToPage(page);
                     return btn;
                 };
@@ -309,19 +308,19 @@
                 activeMenuId = id;
 
                 menu.innerHTML = `
-            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8" 
-                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
-                ดูรายละเอียด
-            </button>
-            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" 
-                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
-                แก้ไข
-            </button>
-            <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" 
-                onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
-                ลบ
-            </button>
-        `;
+                    <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700 whitespace-nowrap" style="background-color: #3062B8" 
+                        onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; viewDetail(${id})">
+                        ดูรายละเอียด
+                    </button>
+                    <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-blue-600 rounded-lg hover:bg-blue-700" style="background-color: #3062B8" 
+                        onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; editMember(${id})">
+                        แก้ไข
+                    </button>
+                    <button class="block w-full px-4 py-2 text-white border border-gray-400 bg-red-600 rounded-lg hover:bg-red-700" style="background-color: #CF3434" 
+                        onclick="document.getElementById('contextMenu').classList.add('hidden'); activeMenuId = null; deleteMember(${id})">
+                        ลบ
+                    </button>
+                `;
 
                 menu.classList.remove("hidden");
 

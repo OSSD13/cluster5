@@ -66,14 +66,6 @@ class EditPointOfInterestController extends Controller
             $poisQuery->where('province', $province);
         }
 
-        \Illuminate\Support\Facades\DB::listen(function ($query) {
-            \Log::info('SQL Query:', [
-                'sql' => $query->sql,
-                'bindings' => $query->bindings,
-                'time' => $query->time,
-            ]);
-        });
-
         $total = $poisQuery->count();
         $pois = $poisQuery->offset($offset)->limit($limit)->get();
         return response()->json([

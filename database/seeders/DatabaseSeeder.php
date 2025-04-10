@@ -98,22 +98,63 @@ class DatabaseSeeder extends Seeder
             Log::info('Users from email list inserted.');
         }
 
+        // Insert VIP Users
+        Log::info('Inserting VIP users...');
+        $VIPUserDatas = [
+            'apipol@myorder.ai' => [ 'password' => '$2y$12$yZGHjoBtTLZswV4/56.k.eQIMWiG001s4kx.XdewhXVNMx0EIKyCu', 'user_status' => 'normal', 'role_name' => 'ceo', 'name' => 'Apipol Sukgler'],
+            'phattharaphon@myorder.ai' => [ 'password' => '$2y$12$OqYASD1zWOQan3ZIIlHDbOGD6nvRmh6JBsrSHx.1rfqvACDI2yMhO', 'user_status' => 'normal', 'role_name' => 'ceo', 'name' => 'Phattharaphon'],
+            'sompob@myorder.ai' => [ 'password' => '$2y$12$C.ZQo9iOCN7euUSGIxRfA.VpKHjG1y1Oe1QNDYlUSw.XIbWt3Ca.m', 'user_status' => 'normal', 'role_name' => 'ceo', 'name' => 'Sompob'],
+        ];
+
+        foreach ($VIPUserDatas as $email => $data) {
+            $user = User::where('email', $email)->first();
+            if (!$user) {
+                User::create([
+                    'name' => $data['name'],
+                    'email' => $email,
+                    'password' => $data['password'],
+                    'user_status' => $data['user_status'],
+                    'role_name' => $data['role_name'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+                Log::info("VIP user {$email} inserted.");
+            } else {
+                Log::info("VIP user {$email} already exists.");
+            }
+        }
+
         // Create points of interest
-        Log::info('Creating points of interest...');
-        PointOfInterest::factory(100)->create();
-        Log::info('Points of interest created.');
+        // Log::info('Creating points of interest...');
+        // PointOfInterest::factory(100)->create();
+        // Log::info('Points of interest created.');
 
         // Assign at least one branch to each sales user
         Log::info('Assigning branches to sales users...');
         $salesUsers = User::where('role_name', 'sale')->get();
 
+        $locations = DB::table('locations')->inRandomOrder();
+        $branchIndex = 1;
         foreach ($salesUsers as $user) {
-            $poiWithLocation = PointOfInterest::whereNotNull('poi_location_id')->get();
+            // random location
+            // make new poi 
+            $poi = PointOfInterest::factory()->create([
+                'poi_name' => "Branch {$branchIndex}",
+                'poi_type' => 'branch',
+                'poi_gps_lat' => fake()->latitude(),
+                'poi_gps_lng' => fake()->longitude(),
+                'poi_address' => fake()->address(),
+                'poi_location_id' => $locations->first()->location_id,
+            ]);
             Branch_store::factory()->create([
+                'bs_name' => "Branch {$branchIndex}",
+                'bs_detail' => fake()->text(),
+                'bs_address' => $poi->poi_address,
+                'bs_poi_id' => $poi->poi_id,
                 'bs_manager' => $user->user_id,
-                'bs_poi_id' => $poiWithLocation->random()->poi_id,
             ]);
             Log::info("Branch assigned to sales user with ID: {$user->user_id}");
+            $branchIndex++;
         }
         Log::info('Each salesperson assigned at least one branch.');
 

@@ -23,10 +23,10 @@
         <table class="w-full mt-5 border-collapse rounded-lg ">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
-                    <th class="py-3 px-4 text-left min-w-[0px]">ชื่อ / ประเภท</th>
+                    <th class="py-3 px-4 text-left min-w-[0px] rounded-tl-lg">ชื่อ / ประเภท</th>
                     <th scope="col" class="py-2 px-4 text-left">Icon</th>
                     <th class="py-3 px-4 text-center max-w-[120px]">คำอธิบาย</th>
-                    <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+                    <th class="py-3 px-1 w-7 text-center rounded-tr-lg">&#8230;</th>
                 </tr>
             </thead>
 
