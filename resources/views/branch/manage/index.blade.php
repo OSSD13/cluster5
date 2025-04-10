@@ -44,7 +44,8 @@
 
     <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-row gap-4">
-            <div id="minCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark"
+            <div id="minCard"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-red-dark"
                 style="background-color: #F2DDD4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Min (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
@@ -52,7 +53,8 @@
                 </div>
             </div>
 
-            <div id="maxCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success"
+            <div id="maxCard"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-success"
                 style="background-color: #D6F2D4;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Max (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2">
@@ -62,7 +64,8 @@
         </div>
 
         <div class="flex flex-row gap-4">
-            <div id="stdCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark"
+            <div id="stdCard"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark"
                 style="background-color: #FAEAFF;">
                 <div class="font-bold" style="font-size: 14px; color:black;">Standard Deviation (บาท)</div>
                 <div class="flex justify-center items-center text-bold gap-2" style="color: #DA25BF;">
@@ -70,7 +73,8 @@
                 </div>
             </div>
 
-            <div id="avgCard" class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark min-h-32"
+            <div id="avgCard"
+                class="flex-1 flex justify-center items-center shadow-md rounded-lg  flex-col p-4 gap-2 text-primary-dark min-h-32"
                 style="background-color: #FAEAFF;">
                 <div class="font-bold" style="font-size: 14px; color: black;">Average (บาท)</div>
                 <div class="flex justify-center items-center text-bold text-base gap-2" style="color: #DA25BF;">
@@ -344,10 +348,12 @@
             }
 
             const now = new Date();
+            let added = false;
+
             for (let i = 0; i < 12; i++) {
                 const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const value = date.toISOString().slice(0, 10);
                 const ym = date.toISOString().slice(0, 7);
+                const fullDate = `${ym}-01`;
 
                 if (!existingMonths.includes(ym)) {
                     const month = date.toLocaleString('th-TH', {
@@ -355,13 +361,14 @@
                         month: 'long'
                     });
                     const option = document.createElement("option");
-                    option.value = value;
+                    option.value = fullDate;
                     option.textContent = `${month}`;
                     select.appendChild(option);
+                    added = true;
                 }
             }
 
-            if (select.options.length === 0) {
+            if (!added) {
                 const opt = document.createElement("option");
                 opt.value = "";
                 opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
@@ -591,7 +598,10 @@
                     year: "numeric"
                 });
 
-                monthOptions.push({ value, label });
+                monthOptions.push({
+                    value,
+                    label
+                });
             }
 
 
