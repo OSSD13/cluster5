@@ -101,106 +101,70 @@
         document.addEventListener("DOMContentLoaded", function() {
             fetchBranchSalesStats();
         });
-        async function fetchBranchSalesStats() {
-            const chartEl = document.getElementById("branchSalesChart");
-            const minEl = document.getElementById("minValue");
-            const maxEl = document.getElementById("maxValue");
-            const avgEl = document.getElementById("avgValue");
-            const stdEl = document.getElementById("stdValue");
 
+        async function fetchBranchSalesStats() {
             try {
                 const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
                 const result = await response.json();
+                const data = result.data || [];
+                const salesAmounts = data.map(s => parseFloat(s.sales_amount));
 
-                const sales = result.data || [];
-                const salesAmounts = sales
-                    .map(s => parseFloat(s.sales_amount))
-                    .filter(amount => !isNaN(amount) && isFinite(amount));
+                if (salesAmounts.length === 0) return;
 
-                if (salesAmounts.length === 0) {
-                    minEl.textContent = maxEl.textContent = avgEl.textContent = stdEl.textContent = "0.00";
-                    return;
-                }
-
-                // 📊 Calculate stats
-                const sum = salesAmounts.reduce((a, b) => a + b, 0);
-                const avg = sum / salesAmounts.length;
                 const min = Math.min(...salesAmounts);
                 const max = Math.max(...salesAmounts);
-                const std = Math.sqrt(salesAmounts.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / salesAmounts
-                    .length);
+                const avg = salesAmounts.reduce((a, b) => a + b, 0) / salesAmounts.length;
+                const std = Math.sqrt(salesAmounts.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) /
+                    salesAmounts.length);
 
-                // 💡 Format stats
-                const format = (val) => val.toLocaleString(undefined, {
+                document.getElementById('minValue').textContent = min.toLocaleString(undefined, {
                     minimumFractionDigits: 2
                 });
-                minEl.textContent = format(min);
-                maxEl.textContent = format(max);
-                avgEl.textContent = format(avg);
-                stdEl.textContent = format(std);
-
-                // 🎯 Build monthly sales chart
-                const now = new Date();
-                const last12Months = Array.from({
-                    length: 12
-                }, (_, i) => {
-                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                    return d.toISOString().slice(0, 7);
-                }).reverse();
-
-                const monthlyTotals = {};
-                last12Months.forEach(month => monthlyTotals[month] = 0);
-
-                sales.forEach(sale => {
-                    const month = sale.sales_month.slice(0, 7);
-                    if (monthlyTotals.hasOwnProperty(month)) {
-                        monthlyTotals[month] += parseFloat(sale.sales_amount);
-                    }
+                document.getElementById('maxValue').textContent = max.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
+                });
+                document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
+                });
+                document.getElementById('stdValue').textContent = std.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
                 });
 
-                const labels = last12Months.map(m => {
-                    const [y, mo] = m.split("-");
-                    return new Date(y, mo - 1).toLocaleString("th-TH", {
-                        month: "short",
-                        year: "numeric"
-                    });
+                const bins = Array(10).fill(0);
+                const maxSale = Math.max(...salesAmounts);
+                const step = maxSale / bins.length;
+                salesAmounts.forEach(amount => {
+                    const index = Math.min(Math.floor(amount / step), bins.length - 1);
+                    bins[index]++;
                 });
 
-                const values = last12Months.map(m => monthlyTotals[m]);
-
-                // 🔁 Destroy existing chart before re-creating
-                if (window.branchMonthlyChart) {
-                    window.branchMonthlyChart.destroy();
-                }
-
-                const ctx = chartEl.getContext("2d");
-                window.branchMonthlyChart = new Chart(ctx, {
-                    type: "bar",
+                const labels = bins.map((_, i) => `${Math.round(i * step / 1000)}k`);
+                const ctx = document.getElementById("branchSalesChart").getContext("2d");
+                new Chart(ctx, {
+                    type: 'bar',
                     data: {
                         labels,
                         datasets: [{
-                            label: "ยอดขายรายเดือน (บาท)",
-                            data: values,
-                            backgroundColor: "#4F77BE"
+                            label: "จำนวนสาขา",
+                            data: bins,
+                            backgroundColor: "#3366C0"
                         }]
                     },
                     options: {
                         responsive: true,
                         scales: {
                             y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: value => value.toLocaleString()
-                                }
+                                beginAtZero: true
                             }
                         }
                     }
                 });
 
             } catch (error) {
-                console.error("🔥 Error fetching branch sales stats:", error);
+                console.error("Error fetching stats:", error);
             }
         }
+
 
 
         async function drawLast12MonthsChart() {
