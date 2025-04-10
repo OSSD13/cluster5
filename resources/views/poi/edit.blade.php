@@ -53,8 +53,8 @@
             <label class="block text-sm text-gray-600">รหัสไปรษณีย์</label>
             <input type="text"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
-                placeholder="รหัสไปรษณีย์" name="zipcode" value="{{ $locations ? $locations->zipcode : '' }}" id="zipcode" pattern="\d{5}"
-                inputmode="numeric" {{ !$locations ? 'disabled' : '' }} >
+                placeholder="รหัสไปรษณีย์" name="zipcode" value="{{ $locations ? $locations->zipcode : '' }}" id="zipcode"
+                pattern="\d{5}" inputmode="numeric" {{ !$locations ? 'disabled' : '' }}>
             @error('zipcode')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
@@ -63,7 +63,7 @@
             <input type="text"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
                 placeholder="จังหวัด" name="province" value="{{ $locations ? $locations->province : '' }}" id="province"
-                {{ !$locations ? 'disabled' : '' }} >
+                {{ !$locations ? 'disabled' : '' }}>
             @error('province')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
@@ -72,7 +72,7 @@
             <input type="text"
                 class="w-full p-2 border border-gray-300 rounded-lg mb-1 {{ !$locations ? 'bg-gray-200 cursor-not-allowed' : '' }}"
                 placeholder="อำเภอ" name="amphoe" value="{{ $locations ? $locations->amphoe : '' }}" id="amphoe"
-                {{ !$locations ? 'disabled' : '' }} >
+                {{ !$locations ? 'disabled' : '' }}>
             @error('amphoe')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
@@ -105,7 +105,8 @@
                 <option class="hidden" disabled {{ old('type') == '' ? 'selected' : '' }}>เลือกประเภทสถานที่
                 </option>
                 @foreach ($poiTypes as $type)
-                    <option value="{{ $type->poit_type }}" {{ (old('type') ?? $poi->poi_type) == $type->poit_type ? 'selected' : '' }}>
+                    <option value="{{ $type->poit_type }}"
+                        {{ (old('type') ?? $poi->poi_type) == $type->poit_type ? 'selected' : '' }}>
                         {{ $type->poit_icon }} {{ $type->poit_name }}
                     </option>
                 @endforeach
@@ -143,9 +144,32 @@
 
 @section('script')
     <script>
+        let initialFormState = {};
+
+        function captureInitialFormState() {
+            const inputs = form.querySelectorAll("input, select");
+            inputs.forEach(input => {
+                initialFormState[input.name] = input.value;
+            });
+        }
+
+        function hasFormChanged() {
+            const inputs = form.querySelectorAll("input, select");
+            return Array.from(inputs).some(input => {
+                const original = (initialFormState[input.name] ?? '').trim();
+                const current = input.value.trim();
+                return original !== current;
+            });
+        }
+
+
+
         const form = document.getElementById('poiForm');
         const submitButton = document.getElementById('saveButton');
         const googleMapLinkInput = document.getElementById('googleMapLink');
+        const allFields = [
+            'latitude', 'longitude', 'zipcode', 'province', 'district', 'amphoe', 'address', 'name', 'type'
+        ];
         const requiredFields = ['latitude', 'longitude', 'name', 'type'];
 
         if ({{ $locations ? 'true' : 'false' }}) {
@@ -159,14 +183,17 @@
                 return input && input.value.trim() !== '';
             });
 
-            submitButton.disabled = !isComplete;
-            submitButton.classList.toggle('bg-green-700', isComplete);
-            submitButton.classList.toggle('bg-gray-400', !isComplete);
-            submitButton.classList.toggle('cursor-not-allowed', !isComplete);
+            const changed = hasFormChanged();
+
+            submitButton.disabled = !(isComplete && changed);
+            submitButton.classList.toggle('bg-green-700', isComplete && changed);
+            submitButton.classList.toggle('bg-gray-400', !(isComplete && changed));
+            submitButton.classList.toggle('cursor-not-allowed', !(isComplete && changed));
         }
 
+
         // Attach input listeners for validation
-        requiredFields.forEach(id => {
+        allFields.forEach(id => {
             const input = document.getElementById(id);
             if (input) {
                 input.addEventListener('input', validateForm);
@@ -296,7 +323,10 @@
         }
 
         // Initial validation state
-        validateForm();
+        document.addEventListener("DOMContentLoaded", () => {
+            captureInitialFormState(); // ✅ Save the initial form state
+            validateForm(); // ✅ Run validation once
+        });
     </script>
 
     <script type="module">
