@@ -18,7 +18,7 @@
             <label class="block text-sm text-gray-600">Link Google (Optional)</label>
             <input type="text" id="googleMapLink" class="w-full p-2 border border-gray-300 rounded-lg mb-3"
                 placeholder="Link Google">
-                <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
+            <span id="googleLink-error" class="text-red-500 text-sm hidden">ลิงก์ไม่ถูกต้อง</span>
 
             <label class="block text-sm text-gray-600">ละติจูด</label>
             <input type="text" name="poi_gps_lat" id="latitude" value="{{ $branch->poi_gps_lat }}"
@@ -62,9 +62,11 @@
 
             <div class="flex justify-between">
                 <a href="{{ route('branch.index') }}">
-                    <button type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
+                    <button type="button"
+                        class="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer">ยกเลิก</button>
                 </a>
-                <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer" id="saveButton">บันทึก</button>
+                <button type="submit" class="px-4 py-2 bg-green-700 text-white rounded-lg cursor-pointer"
+                    id="saveButton">บันทึก</button>
             </div>
         </div>
     </form>
@@ -76,6 +78,20 @@
 
 @section('script')
     <script>
+        let initialFormState = {};
+
+        function captureInitialFormState() {
+            const inputs = form.querySelectorAll("input, select");
+            inputs.forEach(input => {
+                initialFormState[input.name] = input.value;
+            });
+        }
+
+        function hasFormChanged() {
+            const inputs = form.querySelectorAll("input, select");
+            return Array.from(inputs).some(input => input.value !== initialFormState[input.name]);
+        }
+
         const form = document.getElementById('branchForm');
         const submitButton = document.getElementById('saveButton');
         const googleMapLinkInput = document.getElementById('googleMapLink');
@@ -86,16 +102,17 @@
         function validateForm() {
             const isComplete = requiredFields.every(id => {
                 const input = document.getElementById(id);
-                console.log(id, input.value, input && input.value.trim() !== '');
                 return input && input.value.trim() !== '';
             });
-            console.log(isComplete);
 
-            submitButton.disabled = !isComplete;
-            submitButton.classList.toggle('bg-green-700', isComplete);
-            submitButton.classList.toggle('bg-gray-400', !isComplete);
-            submitButton.classList.toggle('cursor-not-allowed', !isComplete);
+            const changed = hasFormChanged();
+
+            submitButton.disabled = !(isComplete && changed);
+            submitButton.classList.toggle('bg-green-700', isComplete && changed);
+            submitButton.classList.toggle('bg-gray-400', !(isComplete && changed));
+            submitButton.classList.toggle('cursor-not-allowed', !(isComplete && changed));
         }
+
 
         // Attach input listeners for validation
         requiredFields.forEach(id => {
@@ -227,7 +244,10 @@
         }
 
         // Initial validation state
-        validateForm();
+        document.addEventListener("DOMContentLoaded", () => {
+            captureInitialFormState(); // ✅ Save the initial form state
+            validateForm(); // ✅ Run validation once
+        });
     </script>
 
     <script type="module">
