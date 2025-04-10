@@ -277,8 +277,7 @@
         <!-- ปุ่ม -->
         <div class="text-center">
             <button onclick="addSale()" type="button"
-                class="bg-[#3062B8] hover:bg-[#204A90] text-white font-semibold text-sm py-2 px-4 rounded-md shadow-md transition-all duration-200"
-                {{ session('user')->role_name === 'sale' ? 'disabled' : '' }}>
+                class="bg-[#3062B8] hover:bg-[#204A90] text-white font-semibold text-sm py-2 px-4 rounded-md shadow-md transition-all duration-200">
                 เพิ่มรายการ
             </button>
         </div>
@@ -311,45 +310,49 @@
 
     <script>
         async function regenerateSaleMonthOptions() {
-            const select = document.getElementById("saleMonth");
-            select.innerHTML = "";
+    const select = document.getElementById("saleMonth");
+    select.innerHTML = "";
 
-            let existingMonths = [];
-            try {
-                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
-                const result = await response.json();
-                existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
-            } catch (err) {
-                console.error("Error fetching existing sales:", err);
-            }
+    let existingMonths = [];
+    try {
+        const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+        const result = await response.json();
+        existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
+    } catch (err) {
+        console.error("Error fetching existing sales:", err);
+    }
 
-            const now = new Date();
-            for (let i = 0; i < 12; i++) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const value = date.toISOString().slice(0, 10);
-                const ym = date.toISOString().slice(0, 7);
+    const now = new Date();
+    let added = false;
 
-                if (!existingMonths.includes(ym)) {
-                    const month = date.toLocaleString('th-TH', {
-                        year: 'numeric',
-                        month: 'long'
-                    });
-                    const option = document.createElement("option");
-                    option.value = value;
-                    option.textContent = `${month}`;
-                    select.appendChild(option);
-                }
-            }
+    for (let i = 0; i < 12; i++) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const ym = date.toISOString().slice(0, 7);
+        const fullDate = `${ym}-01`;
 
-            if (select.options.length === 0) {
-                const opt = document.createElement("option");
-                opt.value = "";
-                opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
-                opt.disabled = true;
-                opt.selected = true;
-                select.appendChild(opt);
-            }
+        if (!existingMonths.includes(ym)) {
+            const month = date.toLocaleString('th-TH', {
+                year: 'numeric',
+                month: 'long'
+            });
+            const option = document.createElement("option");
+            option.value = fullDate;
+            option.textContent = `${month}`;
+            select.appendChild(option);
+            added = true;
         }
+    }
+
+    if (!added) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
+        opt.disabled = true;
+        opt.selected = true;
+        select.appendChild(opt);
+    }
+}
+
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -560,18 +563,23 @@
             }
 
             // ✅ เตรียม dropdown เดือนย้อนหลัง 12 เดือน
-            const monthOptions = [];
+            const existingMonths = sales.map(s => s.sales_month.slice(0, 7));
             const now = new Date();
+            const monthOptions = [];
+
             for (let i = 0; i < 12; i++) {
                 const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
+                const ym = date.toISOString().slice(0, 7); // yyyy-mm
+                const value = `${ym}-01`;
 
-                const label = date.toLocaleDateString("th-TH", {
-                    month: "long",
-                    year: "numeric"
-                });
-
-                monthOptions.push({ value, label });
+                // ✅ เงื่อนไข: เดือนนี้ยังไม่ถูกใช้ หรือเป็นเดือนเดิมของรายการที่กำลังแก้
+                if (!existingMonths.includes(ym) || `${sale.sales_month}-01` === value) {
+                    const label = date.toLocaleDateString("th-TH", {
+                        month: "long",
+                        year: "numeric"
+                    });
+                    monthOptions.push({ value, label });
+                }
             }
 
 
@@ -800,10 +808,16 @@
             const box = parseInt(document.getElementById("saleBox").value);
             const amount = parseFloat(document.getElementById("saleAmount").value);
 
+            // 🛑 ถ้าไม่มีเดือนให้เลือก (value = "")
+            if (!month) {
+                Swal.fire("ไม่สามารถเพิ่มได้", "ไม่มีเดือนที่สามารถเพิ่มได้ กรุณาลบหรือแก้ไขรายการเก่าก่อน", "warning");
+                return;
+            }
+
             if (isNaN(box) || isNaN(amount)) {
                 Swal.fire("กรุณากรอกจำนวนกล่องและยอดเงินให้ถูกต้อง");
                 return;
-            }
+    }
 
             try {
                 const response = await fetch(`{{ route('api.sales.create') }}`, {
