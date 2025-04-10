@@ -36,20 +36,21 @@
 </div>
 
 <!-- Results Table -->
-<div class="overflow-visible">
-    <table class="w-full mt-5 border-collapse rounded-lg">
+<div class="overflow-x-auto">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
                 <th scope="col" class="py-2 px-4 text-left">ID</th>
                 <th class="py-3 px-4 text-left min-w-[150px]">ชื่อสาขา / ประเภท</th>
                 <th class="py-3 px-4 text-center max-w-[120px]">เพิ่มโดย</th>
                 <th class="py-3 px-1 w-7 text-center">&#8230;</th>
-            </tr>
+              </tr>
         </thead>
 
         <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
     </table>
 </div>
+
 
 <!-- Pagination -->
 <div class="flex justify-center items-center mt-4 space-x-2" id="pagination"></div>

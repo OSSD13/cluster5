@@ -19,18 +19,18 @@
 
     <p class="text-gray-700">ผลลัพธ์ <span id="resultCount">0</span> รายการ</p>
 </div>
-
 <div class="overflow-x-auto">
-    <table class="min-w-full mt-5 table-auto border-collapse rounded-lg bg-gray-100">
+    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
         <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
             <tr>
-                <th class="py-3 px-4 text-left">ชื่อ / ประเภท</th>
-                <th class="py-3 px-4 text-center">Icon</th>
-                <th class="py-3 px-4 text-left">คำอธิบาย</th>
-                <th class="py-3 px-4 text-center">การจัดการ</th>
-            </tr>
+                <th class="py-3 px-4 text-left min-w-[120px]">ชื่อ / ประเภท</th>
+                <th scope="col" class="py-2 px-4 text-left">Icon</th>
+                <th class="py-3 px-4 text-center max-w-[150px]">คำอธิบาย</th>
+                <th class="py-3 px-1 w-7 text-center">&#8230;</th>
+              </tr>
         </thead>
-        <tbody id="tableBody" class="text-sm text-gray-700 bg-white"></tbody>
+
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
     </table>
 </div>
 
