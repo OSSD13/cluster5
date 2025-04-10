@@ -120,7 +120,7 @@
                     poit_name: form.poiName.value,
                     poit_icon: form.iconInput.value,
                     poit_color: form.colorInput.value,
-                    poit_detail: form.poiDetails.value,
+                    poit_description: form.poiDetails.value,
                 };
 
                 submitButton.disabled = true;
@@ -179,7 +179,7 @@
                     poit_name: 'poiName',
                     poit_icon: 'icon',
                     poit_color: 'color',
-                    poit_detail: 'poiDetails',
+                    poit_description: 'poiDetails',
                 };
                 return map[field] || field;
             }
