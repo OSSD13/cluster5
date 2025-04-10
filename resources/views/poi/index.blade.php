@@ -28,9 +28,8 @@
             </button>
         </a>
     </div>
-
     <div class="overflow-visible">
-        <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
+        <table class="w-full mt-5 border-collapse rounded-lg">
             <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
                 <tr>
                     <th scope="col" class="py-2 px-4 text-left">ID</th>
@@ -95,9 +94,9 @@
 
                         <td class="py-3 px-1 w-10 text-center relative">
                             <button class="cursor-pointer" onclick="toggleMenu(event, ${poi.poi_id})">&#8230;</button>
-                            <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2">
+                            <div id="menu-${poi.poi_id}" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-32 z-50 p-2 space-y-2 -translate-y-1/2">
                                 <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="viewDetail(${poi.poi_id})">ดูรายละเอียด</button>
-                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?id=${poi.poi_id}'">แก้ไข</button>
+                                <button class="block w-full px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700" onclick="window.location.href='{{ route('poi.edit') }}?poi_id=${poi.poi_id}'">แก้ไข</button>
                                 <button class="block w-full px-4 py-2 text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700" onclick="deletePoi(${poi.poi_id})">ลบ</button>
                             </div>
                         </td>
@@ -195,7 +194,8 @@
             document.querySelectorAll('[id^="menu-"]').forEach(menu => menu.classList.add("hidden"));
         });
 
-        function deletePoi(id) {
+        //deletePoi
+    function deletePoi(id) {
             Swal.fire({
                 title: "ลบสถานที่",
                 text: "คุณต้องการลบ POI นี้ใช่หรือไม่?",
@@ -205,19 +205,23 @@
                 cancelButtonColor: "#aaa",
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก"
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    fetch(`/poi/${id}`, {
+                    console.log(id); //ไม่เกี่ยวกับการลบ เป็นการตรวจสอบค่า id ว่าที่ส่งมามีค่าไหม
+                    
+                    const res = await fetch("{{ route('api.poi.delete') }}", {
                         method: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        }
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content 
+                        } ,
+                        body: JSON.stringify({ poi_id: id })
                     }).then(res => {
                         if (res.ok) {
                             Swal.fire("สำเร็จ", "ลบเรียบร้อย", "success");
                             fetchPois();
                         } else {
-                            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบได้", "error");
+                            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบได้ poiนี้เป็นสาขา กรุณาลบข้อมูลที่หน้าสาขา", "error");
                         }
                     });
                 }
@@ -229,16 +233,33 @@
             if (!poi) return;
 
             Swal.fire({
-                title: "รายละเอียดสถานที่",
                 html: `
-                            <div class="text-left space-y-2 text-sm text-gray-700">
-                                <div><b>ชื่อสถานที่:</b> ${poi.poi_name || '-'}</div>
-                                <div><b>ประเภท:</b> ${poi.poit_name || '-'}</div>
-                                <div><b>จังหวัด:</b> ${poi.province || '-'}</div>
-                                <div><b>ที่อยู่:</b> ${poi.poi_address || '-'}</div>
-                                <div><b>เพิ่มเมื่อ:</b> ${formatThaiDate(poi.created_at)}</div>
-                            </div>
-                        `,
+                    <div class="flex flex-col text-3xl mb-6 mt-4">
+                    <b class=text-gray-800>รายละเอียดข้อมูลสมาชิก</b>
+                    </div>
+                    <div class="flex flex-col space-y-2 text-left">
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ชื่อสถานที่</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value=" ${poi.poi_name || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ประเภท</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poi.poit_name || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ประเภท</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poi.province || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">ที่อยู่</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${poi.poi_address || '-'}" readonly>
+                    </div>
+                    <div class="w-full">
+                        <label class="font-medium text-gray-800 text-sm">เพิ่มเมื่อ</label>
+                        <input type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" value="${formatThaiDate(poi.created_at)}" readonly>
+                    </div>
+                     </div>`,
+                        
                 confirmButtonText: "ปิด",
                 confirmButtonColor: "#3085d6"
             });

@@ -196,10 +196,12 @@
                             let lastMonthTotalPackage = allMonthlySales[lastMonth]?.sales_package_amount ?? 0;
                             let lastMonthTotalSales = allMonthlySales[lastMonth]?.sales_amount ?? 0;
 
-                            let packageChange = lastMonthTotalPackage > 0 ? ((thisMonthTotalPackage - lastMonthTotalPackage) /
-                                lastMonthTotalPackage) * 100 : 0;
-                            let salesChange = lastMonthTotalSales > 0 ? ((thisMonthTotalSales - lastMonthTotalSales) /
-                                lastMonthTotalSales) * 100 : 0;
+                            let packageChange = lastMonthTotalPackage > 0 && isFinite(thisMonthTotalPackage) && isFinite(lastMonthTotalPackage) 
+                                ? ((thisMonthTotalPackage - lastMonthTotalPackage) / lastMonthTotalPackage) * 100 
+                                : 0;
+                            let salesChange = lastMonthTotalSales > 0 && isFinite(thisMonthTotalSales) && isFinite(lastMonthTotalSales) 
+                                ? ((thisMonthTotalSales - lastMonthTotalSales) / lastMonthTotalSales) * 100 
+                                : 0;
 
                             document.getElementById('thisMonthTotalPackageNumber').textContent = thisMonthTotalPackage
                                 .toLocaleString();
@@ -223,25 +225,37 @@
                                         0));
                                 }
                             });
-
-                            // Calculate statistics
-                            let min = Math.min(...salesArray);
-                            let max = Math.max(...salesArray);
-                            let avg = salesArray.reduce((a, b) => a + b, 0) / salesArray.length || 0;
-                            let std = Math.sqrt(salesArray.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) /
-                                salesArray.length) || 0;
+                            let min = salesArray.length > 0 && salesArray.every(isFinite) ? Math.min(...salesArray) : 0;
+                            let max = salesArray.length > 0 && salesArray.every(isFinite) ? Math.max(...salesArray) : 0;
+                            let avg = salesArray.length > 0 && salesArray.every(isFinite) 
+                                ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length 
+                                : 0;
+                            let std = salesArray.length > 0 && salesArray.every(isFinite) 
+                                ? Math.sqrt(salesArray.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesArray.length) 
+                                : 0;
 
                             // Calculate changes compared to last month
-                            let lastMin = Math.min(...lastMonthSalesArray);
-                            let lastMax = Math.max(...lastMonthSalesArray);
-                            let lastAvg = lastMonthSalesArray.reduce((a, b) => a + b, 0) / lastMonthSalesArray.length || 0;
-                            let lastStd = Math.sqrt(lastMonthSalesArray.map(x => Math.pow(x - lastAvg, 2)).reduce((a, b) => a +
-                                b, 0) / lastMonthSalesArray.length) || 0;
+                            let lastMin = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.min(...lastMonthSalesArray) : 0;
+                            let lastMax = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) ? Math.max(...lastMonthSalesArray) : 0;
+                            let lastAvg = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) 
+                                ? lastMonthSalesArray.reduce((a, b) => a + b, 0) / lastMonthSalesArray.length 
+                                : 0;
+                            let lastStd = lastMonthSalesArray.length > 0 && lastMonthSalesArray.every(isFinite) 
+                                ? Math.sqrt(lastMonthSalesArray.map(x => Math.pow(x - lastAvg, 2)).reduce((a, b) => a + b, 0) / lastMonthSalesArray.length) 
+                                : 0;
 
-                            let minChange = lastMin > 0 ? ((min - lastMin) / lastMin) * 100 : 0;
-                            let maxChange = lastMax > 0 ? ((max - lastMax) / lastMax) * 100 : 0;
-                            let avgChange = lastAvg > 0 ? ((avg - lastAvg) / lastAvg) * 100 : 0;
-                            let stdChange = lastStd > 0 ? ((std - lastStd) / lastStd) * 100 : 0;
+                            let minChange = lastMin > 0 && isFinite(min) && isFinite(lastMin) 
+                                ? ((min - lastMin) / lastMin) * 100 
+                                : 0;
+                            let maxChange = lastMax > 0 && isFinite(max) && isFinite(lastMax) 
+                                ? ((max - lastMax) / lastMax) * 100 
+                                : 0;
+                            let avgChange = lastAvg > 0 && isFinite(avg) && isFinite(lastAvg) 
+                                ? ((avg - lastAvg) / lastAvg) * 100 
+                                : 0;
+                            let stdChange = lastStd > 0 && isFinite(std) && isFinite(lastStd) 
+                                ? ((std - lastStd) / lastStd) * 100 
+                                : 0;
 
                             // Update cards
                             updateCardData({
@@ -254,7 +268,6 @@
                                 stdChange,
                                 avgChange
                             });
-
 
                         })
                         .catch(error => console.error('Error fetching branch report:', error));
@@ -455,7 +468,7 @@
         
         <h3 class="text-left px-2" id='regionBranchCount'></h3>
         <div class="overflow-x-auto w-full">
-            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden"
+            <table class="table-auto w-full min-w-full divide-y divide-gray-200 rounded-lg"
                 id="regionTable">
                 <thead class="bg-lightblue" style="background-color: #B6D2FF">
                     <tr>
@@ -678,7 +691,7 @@
                                                         <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                             ${branch.branchName}
                                                         </td>
-                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
                                                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
                                                             <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                                                 ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
@@ -777,7 +790,7 @@
                                                         <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                             ${branch.branchName}
                                                         </td>
-                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange?.toFixed(2) ?? '-'}</td>
+                                                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
                                                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
                                                             <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                                                 ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}
@@ -862,7 +875,7 @@
                                             <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                 ${branch.branchName}
                                             </td>
-                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap">${branch.branchSaleChange.toFixed(2)}</td>
+                                            <td class="py-2 px-2 text-right text-xs whitespace-nowrap"> ${Number(branch.branchSaleChange?.toFixed(2)?? '-').toLocaleString()}</td>
                                             <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
                                                 <span class="px-3 py-1 text-white rounded-full ${branch.saleAdded ? "bg-green-500" : "bg-red-500"}">
                                                     ${branch.saleAdded ? "เพิ่มแล้ว" : "ยังไม่เพิ่ม"}

@@ -30,50 +30,19 @@
 
 
 
-    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto mb-5">
-        <!-- Dropdown เดือน -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
-            <select id="saleMonth"
-                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </select>
-        </div>
 
-        <!-- จำนวนกล่อง -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-800 mb-1">จำนวนกล่อง</label>
-            <input id="saleBox" type="number" placeholder="กรอกจำนวนกล่อง"
-                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
 
-        <!-- ยอดเงิน -->
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-800 mb-1">ยอดเงิน</label>
-            <input id="saleAmount" type="number" placeholder="กรอกยอดเงิน"
-                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
 
-        <!-- ปุ่ม -->
-        <div class="text-center">
-            <button onclick="addSale()" type="button"
-                class="bg-[#3062B8] hover:bg-[#204A90] text-white font-semibold text-sm py-2 px-4 rounded-md shadow-md transition-all duration-200">
-                เพิ่มรายการ
-            </button>
-        </div>
 
-        <!-- ข้อความผลลัพธ์ -->
-        <div class="text-sm text-gray-700 mt-3" id="resultCount">
-            ผลลัพธ์ 0 รายการ
-        </div>
+    <div class="bg-white shadow-md rounded-lg p-4 my-6">
+        <h3 class="text-lg font-bold mb-2">ยอดขายย้อนหลัง 12 เดือน</h3>
+        <canvas id="branchSalesChart" height="200"></canvas>
     </div>
-
-
-
 
     <!-- กราฟและการ์ดสถิติยอดขาย -->
 
 
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-row gap-4">
             <div id="minCard" class="flex-1 shadow-md rounded-lg flex flex-col p-4 gap-2 text-red-dark"
                 style="background-color: #F2DDD4;">
@@ -128,53 +97,165 @@
         </div>
     </div>
 
-
-
-
-
-
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             fetchBranchSalesStats();
         });
-
         async function fetchBranchSalesStats() {
+            const chartEl = document.getElementById("branchSalesChart");
+            const minEl = document.getElementById("minValue");
+            const maxEl = document.getElementById("maxValue");
+            const avgEl = document.getElementById("avgValue");
+            const stdEl = document.getElementById("stdValue");
+
+            try {
+                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+                const result = await response.json();
+
+                const sales = result.data || [];
+                const salesAmounts = sales
+                    .map(s => parseFloat(s.sales_amount))
+                    .filter(amount => !isNaN(amount) && isFinite(amount));
+
+                if (salesAmounts.length === 0) {
+                    minEl.textContent = maxEl.textContent = avgEl.textContent = stdEl.textContent = "0.00";
+                    return;
+                }
+
+                // 📊 Calculate stats
+                const sum = salesAmounts.reduce((a, b) => a + b, 0);
+                const avg = sum / salesAmounts.length;
+                const min = Math.min(...salesAmounts);
+                const max = Math.max(...salesAmounts);
+                const std = Math.sqrt(salesAmounts.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / salesAmounts
+                    .length);
+
+                // 💡 Format stats
+                const format = (val) => val.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
+                });
+                minEl.textContent = format(min);
+                maxEl.textContent = format(max);
+                avgEl.textContent = format(avg);
+                stdEl.textContent = format(std);
+
+                // 🎯 Build monthly sales chart
+                const now = new Date();
+                const last12Months = Array.from({
+                    length: 12
+                }, (_, i) => {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    return d.toISOString().slice(0, 7);
+                }).reverse();
+
+                const monthlyTotals = {};
+                last12Months.forEach(month => monthlyTotals[month] = 0);
+
+                sales.forEach(sale => {
+                    const month = sale.sales_month.slice(0, 7);
+                    if (monthlyTotals.hasOwnProperty(month)) {
+                        monthlyTotals[month] += parseFloat(sale.sales_amount);
+                    }
+                });
+
+                const labels = last12Months.map(m => {
+                    const [y, mo] = m.split("-");
+                    return new Date(y, mo - 1).toLocaleString("th-TH", {
+                        month: "short",
+                        year: "numeric"
+                    });
+                });
+
+                const values = last12Months.map(m => monthlyTotals[m]);
+
+                // 🔁 Destroy existing chart before re-creating
+                if (window.branchMonthlyChart) {
+                    window.branchMonthlyChart.destroy();
+                }
+
+                const ctx = chartEl.getContext("2d");
+                window.branchMonthlyChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: "ยอดขายรายเดือน (บาท)",
+                            data: values,
+                            backgroundColor: "#4F77BE"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: value => value.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("🔥 Error fetching branch sales stats:", error);
+            }
+        }
+
+
+        async function drawLast12MonthsChart() {
+            const ctx = document.getElementById("branchSalesChart").getContext("2d");
+
             try {
                 const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
                 const result = await response.json();
                 const data = result.data || [];
-                const salesAmounts = data.map(s => parseFloat(s.sales_amount));
 
-                if (salesAmounts.length === 0) return;
+                // Filter เฉพาะ 12 เดือนย้อนหลัง
+                const now = new Date();
+                const last12Months = Array.from({
+                    length: 12
+                }, (_, i) => {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    return d.toISOString().slice(0, 7); // yyyy-mm
+                }).reverse();
 
-                const min = Math.min(...salesAmounts);
-                const max = Math.max(...salesAmounts);
-                const avg = salesAmounts.reduce((a, b) => a + b, 0) / salesAmounts.length;
-                const std = Math.sqrt(salesAmounts.map(x => Math.pow(x - avg, 2)).reduce((a, b) => a + b, 0) / salesAmounts.length);
+                const monthlyTotals = {};
 
-                document.getElementById('minValue').textContent = min.toLocaleString(undefined, { minimumFractionDigits: 2 });
-                document.getElementById('maxValue').textContent = max.toLocaleString(undefined, { minimumFractionDigits: 2 });
-                document.getElementById('avgValue').textContent = avg.toLocaleString(undefined, { minimumFractionDigits: 2 });
-                document.getElementById('stdValue').textContent = std.toLocaleString(undefined, { minimumFractionDigits: 2 });
-
-                const bins = Array(10).fill(0);
-                const maxSale = Math.max(...salesAmounts);
-                const step = maxSale / bins.length;
-                salesAmounts.forEach(amount => {
-                    const index = Math.min(Math.floor(amount / step), bins.length - 1);
-                    bins[index]++;
+                // เตรียมโครงสร้างเดือน
+                last12Months.forEach(month => {
+                    monthlyTotals[month] = 0;
                 });
 
-                const labels = bins.map((_, i) => `${Math.round(i * step / 1000)}k`);
-                const ctx = document.getElementById("branchSalesChart").getContext("2d");
-                new Chart(ctx, {
-                    type: 'bar',
+                data.forEach(sale => {
+                    const month = sale.sales_month.slice(0, 7);
+                    if (monthlyTotals.hasOwnProperty(month)) {
+                        monthlyTotals[month] += parseFloat(sale.sales_amount);
+                    }
+                });
+
+                const labels = last12Months.map(m => {
+                    const [y, mo] = m.split("-");
+                    return new Date(y, mo - 1).toLocaleString("th-TH", {
+                        month: "short",
+                        year: "numeric"
+                    });
+                });
+
+                const values = last12Months.map(m => monthlyTotals[m]);
+
+                if (window.branchMonthlyChart) {
+                    window.branchMonthlyChart.destroy();
+                }
+
+                window.branchMonthlyChart = new Chart(ctx, {
+                    type: "bar",
                     data: {
                         labels,
                         datasets: [{
-                            label: "จำนวนสาขา",
-                            data: bins,
-                            backgroundColor: "#3366C0"
+                            label: "ยอดขายรายเดือน (บาท)",
+                            data: values,
+                            backgroundColor: "#4F77BE"
                         }]
                     },
                     options: {
@@ -187,15 +268,66 @@
                     }
                 });
 
-            } catch (error) {
-                console.error("Error fetching stats:", error);
+            } catch (err) {
+                console.error("Error drawing monthly chart:", err);
             }
         }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            drawLast12MonthsChart();
+        });
     </script>
 
+    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto relative mb-4">
+        @if (session('user')->role_name === 'sale')
+            <div class="absolute inset-0 rounded-lg bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-10">
+                <p class="text-center text-red-600 font-semibold">คุณไม่มีสิทธิ์ในการเพิ่มข้อมูล</p>
+            </div>
+        @endif
 
-    <table class="w-full mt-5 border-collapse rounded-lg overflow-hidden ">
-        <thead class="text-gray-800 text-md" style="background-color: #B5CFF5">
+        <!-- Dropdown เดือน -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-800 mb-1">เดือน</label>
+            <select id="saleMonth"
+                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                {{ session('user')->role_name === 'sale' ? 'disabled' : '' }}>
+            </select>
+        </div>
+
+        <!-- จำนวนกล่อง -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-800 mb-1">จำนวนกล่อง</label>
+            <input id="saleBox" type="number" placeholder="กรอกจำนวนกล่อง"
+                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                {{ session('user')->role_name === 'sale' ? 'disabled' : '' }} />
+        </div>
+
+        <!-- ยอดเงิน -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-800 mb-1">ยอดเงิน</label>
+            <input id="saleAmount" type="number" placeholder="กรอกยอดเงิน"
+                class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                {{ session('user')->role_name === 'sale' ? 'disabled' : '' }} />
+        </div>
+
+        <!-- ปุ่ม -->
+        <div class="text-center">
+            <button onclick="addSale()" type="button"
+                class="bg-[#3062B8] hover:bg-[#204A90] text-white font-semibold text-sm py-2 px-4 rounded-md shadow-md transition-all duration-200"
+                {{ session('user')->role_name === 'sale' ? 'disabled' : '' }}>
+                เพิ่มรายการ
+            </button>
+        </div>
+
+        <!-- ข้อความผลลัพธ์ -->
+        <div class="text-sm text-gray-700 mt-3" id="resultCount">
+            ผลลัพธ์ 0 รายการ
+        </div>
+    </div>
+
+
+    <table class="w-full mt-5 border-collapse rounded-lg">
+        <thead class="text-gray-800 text-md rounded-lg" style="background-color: #B5CFF5">
             <tr>
                 <th class="py-3 px-4 text-left">เดือน</th>
                 <th class="py-3 px-4 text-right">ยอดเงิน</th>
@@ -214,6 +346,48 @@
 @section('script')
 
     <script>
+        async function regenerateSaleMonthOptions() {
+            const select = document.getElementById("saleMonth");
+            select.innerHTML = "";
+
+            let existingMonths = [];
+            try {
+                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+                const result = await response.json();
+                existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
+            } catch (err) {
+                console.error("Error fetching existing sales:", err);
+            }
+
+            const now = new Date();
+            for (let i = 0; i < 12; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const value = date.toISOString().slice(0, 10);
+                const ym = date.toISOString().slice(0, 7);
+
+                if (!existingMonths.includes(ym)) {
+                    const month = date.toLocaleString('th-TH', {
+                        year: 'numeric',
+                        month: 'long'
+                    });
+                    const option = document.createElement("option");
+                    option.value = value;
+                    option.textContent = `${month}`;
+                    select.appendChild(option);
+                }
+            }
+
+            if (select.options.length === 0) {
+                const opt = document.createElement("option");
+                opt.value = "";
+                opt.textContent = "ไม่มีเดือนที่สามารถเพิ่มได้";
+                opt.disabled = true;
+                opt.selected = true;
+                select.appendChild(opt);
+            }
+        }
+    </script>
+    <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const select = document.getElementById("saleMonth");
 
@@ -221,7 +395,8 @@
             let existingMonths = [];
 
             try {
-                const response = await fetch(`{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
+                const response = await fetch(
+                    `{{ route('api.sales.query') }}?bs_id={{ $branch->bs_id }}&limit=1000`);
                 const result = await response.json();
                 existingMonths = (result.data || []).map(s => s.sales_month.slice(0, 7));
             } catch (err) {
@@ -266,18 +441,26 @@
         let activeMenuId = null;
 
         async function fetchSales(page = 1) {
-            const params = new URLSearchParams({ bs_id: branchId, page, limit: rowsPerPage });
+            const params = new URLSearchParams({
+                bs_id: branchId,
+                page,
+                limit: rowsPerPage
+            });
             try {
                 const response = await fetch(`{{ route('api.sales.query') }}?${params.toString()}`);
                 const result = await response.json();
-                sales = result.data || [];
+
+                // 🔽 เรียงจากเดือนล่าสุด -> เก่าสุด
+                sales = (result.data || []).sort((a, b) => new Date(b.sales_month) - new Date(a.sales_month));
                 currentPage = result.page || 1;
+
                 renderSalesTable();
                 renderPagination(result.total || 0);
             } catch (error) {
                 console.error("Error fetching sales data:", error);
             }
         }
+
 
         function renderSalesTable() {
             const tableBody = document.getElementById("salesTableBody");
@@ -293,8 +476,8 @@
                 const monthLabel = formatThaiDate(sale.sales_month);
                 row.innerHTML = `
                         <td class="py-3 px-4">${monthLabel}</td>
-                        <td class="py-3 px-4 text-right">${parseFloat(sale.sales_amount).toLocaleString()}</td>
-                        <td class="py-3 px-4 text-right">${sale.manager_name}</td>
+                        <td class="py-3 px-4 text-left">${parseFloat(sale.sales_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="py-3 px-4 text-left">${sale.manager_name}</td>
                         <td class="py-3 px-1 w-7 text-center relative">
                             <button onclick="toggleMenu(event, ${sale.sales_id})">&#8230;</button>
                         </td>
@@ -322,7 +505,7 @@
             `;
 
             menu.classList.remove("hidden");
-            const top = parentCell.offsetTop + parentCell.offsetHeight;
+            const top = parentCell.offsetTop + parentCell.offsetHeight - 120; // ลดลงมานิด (4px)
             const left = parentCell.offsetLeft + parentCell.offsetWidth - menu.offsetWidth;
             console.log(top, left)
             menu.style.top = `${top}px`;
@@ -332,7 +515,10 @@
 
         function formatThaiDate(dateStr) {
             const date = new Date(dateStr);
-            return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'short' });
+            return date.toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'short'
+            });
         }
 
         function formatThaiMonth(dateStr) {
@@ -401,6 +587,7 @@
                 activeMenuId = null;
             }
         });
+
         function editSale(id) {
             const sale = sales.find(item => item.sales_id === id);
             if (!sale) {
@@ -408,55 +595,64 @@
                 return;
             }
 
-            // สร้าง options เดือนในรูปแบบ กุมภาพันธ์ - 2568
-            const monthOptions = [
-                { value: "2025-01-01", label: "มกราคม - 2568" },
-                { value: "2025-02-01", label: "กุมภาพันธ์ - 2568" },
-                { value: "2025-03-01", label: "มีนาคม - 2568" },
-                { value: "2025-04-01", label: "เมษายน - 2568" },
-                { value: "2025-05-01", label: "พฤษภาคม - 2568" },
-            ];
+            // ✅ เตรียม dropdown เดือนย้อนหลัง 12 เดือน
+            const monthOptions = [];
+            const now = new Date();
+            for (let i = 0; i < 12; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-01`;
 
-            const selectedMonth = new Date(sale.sales_month).toISOString().split("T")[0];
+                const label = date.toLocaleDateString("th-TH", {
+                    month: "long",
+                    year: "numeric"
+                });
+
+                monthOptions.push({ value, label });
+            }
+
+
+            const selectedMonth = `${sale.sales_month}-01`;
 
             Swal.fire({
                 html: `
-                    <div class="flex flex-col items-center mb-4">
-                        <span class="iconify" data-icon="material-symbols:edit" data-width="60" data-height="60"></span>
-                        <div class="text-xl font-bold mt-2 mb-4">แก้ไขยอด</div>
+                    <div class="flex flex-col items-center mb-1">
+                        <span class="iconify" data-icon="material-symbols-light:edit-square-rounded" data-width="70" data-height="70"></span>
                     </div>
+                <div class="text-xl font-bold mt-2 mb-4">แก้ไขยอด</div>
+            </div>
 
-                    <div class="flex flex-col space-y-3 text-left">
-                        <label class="text-sm font-semibold text-gray-700">เดือน</label>
-                        <select id="editMonth" class="swal2-select">
-                            ${monthOptions.map(opt =>
-                    `<option value="${opt.value}" ${opt.value === selectedMonth ? 'selected' : ''}>${opt.label}</option>`
-                ).join("")}
-                        </select>
+            <div class="flex flex-col space-y-3 text-left">
+                <label class="text-gray-800 text-sm">เดือน</label>
+                <select id="editMonth" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm"">
+                    ${monthOptions.map(opt =>
+                        `<option value="${opt.value}" ${opt.value === selectedMonth ? 'selected' : ''}>${opt.label}</option>`
+                    ).join("")}
+                </select>
 
-                        <label class="text-sm font-semibold text-gray-700">จำนวน</label>
-                        <input id="editBox" type="number" class="swal2-input" placeholder="กรอกจำนวนกล่อง" value="${sale.sales_package_amount || ''}">
+                <label class="text-gray-800 text-sm">จำนวน</label>
+                <input id="editBox" type="number" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกจำนวนกล่อง" value="${sale.sales_package_amount || ''}">
 
-                        <label class="text-sm font-semibold text-gray-700">ยอดเงิน</label>
-                        <input id="editAmount" type="text" class="swal2-input" placeholder="กรอกยอดเงิน" value="${parseFloat(sale.sales_amount).toLocaleString()}">
-                    </div>
-                `,
+                <label class="text-gray-800 text-sm">ยอดเงิน</label>
+                <input id="editAmount" type="text" class="w-full h-10 text-sm px-3 text-gray-800 border border-gray-300 rounded-md shadow-sm" placeholder="กรอกยอดเงิน" value="${parseFloat(sale.sales_amount).toLocaleString()}">
+            </div>
+        `,
                 showCancelButton: true,
                 confirmButtonText: "ยืนยัน",
                 cancelButtonText: "ยกเลิก",
                 confirmButtonColor: "#2D8C42",
                 cancelButtonColor: "#6B7280",
-                customClass: {
-                    actions: "mt-6 flex justify-between w-full px-4",
-                    confirmButton: "w-full",
-                    cancelButton: "w-full"
-                },
                 preConfirm: () => {
-                    const sales_amount = parseFloat(document.getElementById("editAmount").value.replace(/,/g, ''));
-                    const sales_package_amount = parseInt(document.getElementById("editBox").value);
+                    const sales_amount_raw = document.getElementById("editAmount").value.replace(/,/g, '')
+                        .trim();
+                    const sales_amount = parseFloat(sales_amount_raw);
+                    const sales_package_amount = parseInt(document.getElementById("editBox").value.trim());
                     const sales_month = document.getElementById("editMonth").value;
 
-                    // ✅ ตรวจสอบค่าที่ไม่ใช่ตัวเลขหรือค่าติดลบ
+                    if (!sales_month) {
+                        Swal.showValidationMessage("กรุณาเลือกเดือนให้ถูกต้อง");
+                        return false;
+                    }
+
                     if (isNaN(sales_amount) || isNaN(sales_package_amount)) {
                         Swal.showValidationMessage("กรุณากรอกจำนวนและยอดเงินให้ถูกต้อง");
                         return false;
@@ -468,162 +664,18 @@
                     }
 
                     return fetch(`{{ route('api.sales.edit') }}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            sales_id: id,
-                            sales_amount,
-                            sales_package_amount,
-                            sales_month
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                sales_id: id,
+                                sales_amount,
+                                sales_package_amount,
+                                sales_month
+                            })
                         })
-                    })
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.status !== "success") {
-                            throw new Error(result.message || "เกิดข้อผิดพลาด");
-                        }
-                        return result;
-                    })
-                    .catch(error => {
-                        Swal.showValidationMessage(`ผิดพลาด: ${error.message}`);
-                    });
-                }
-
-            }).then(result => {
-                if (result.isConfirmed) {
-                    Swal.fire("สำเร็จ!", "อัปเดตข้อมูลเรียบร้อยแล้ว", "success");
-                    fetchSales(currentPage);
-                }
-            });
-            document.addEventListener("DOMContentLoaded", updateResultCount);
-        }
-
-        function deleteSale(id) {
-            Swal.fire({
-                title: "ลบยอดขาย",
-                text: "คุณต้องการลบรายการนี้ใช่ไหม?",
-                icon: "warning",
-                iconColor: "#d33",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก"
-            }).then(result => {
-                if (result.isConfirmed) {
-                    fetch(`{{ route('api.sales.delete') }}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ sales_id: id })
-                    })
-                        .then(res => res.json())
-                        .then(result => {
-                            if (result.status === 'success') {
-                                Swal.fire("ลบแล้ว!", "รายการถูกลบเรียบร้อย", "success");
-                                fetchSales(currentPage);
-                                updateResultCount();
-                            } else {
-                                Swal.fire("ผิดพลาด", result.message || "ไม่สามารถลบได้", "error");
-                            }
-                        })
-                        .catch(() => {
-                            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาดในการเชื่อมต่อ", "error");
-                        });
-                }
-            });
-        }
-
-
-        function editSale(id) {
-            const sale = sales.find(item => item.sales_id === id);
-            if (!sale) {
-                Swal.fire("ไม่พบข้อมูล", "รายการที่เลือกไม่มีอยู่ในระบบ", "error");
-                return;
-            }
-
-            const monthOptions = [
-                { value: "2025-01-01", label: "มกราคม - 2568" },
-                { value: "2025-02-01", label: "กุมภาพันธ์ - 2568" },
-                { value: "2025-03-01", label: "มีนาคม - 2568" },
-                { value: "2025-04-01", label: "เมษายน - 2568" },
-                { value: "2025-05-01", label: "พฤษภาคม - 2568" },
-            ];
-
-            const selectedMonth = new Date(sale.sales_month).toISOString().split("T")[0];
-
-            Swal.fire({
-                html: `
-                        <div class="flex flex-col items-center mb-2">
-                            <span class="iconify text-black" data-icon="mdi:pen" data-width="60" data-height="60"></span>
-                            <div class="text-lg font-bold text-black mt-2 mb-4">แก้ไขยอด</div>
-                        </div>
-
-                        <div class="flex flex-col space-y-3 text-left">
-
-                            <div>
-                                <label class="text-sm text-gray-700 mb-1 block">เดือน</label>
-                                <select id="editMonth"
-                                    class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow">
-                                    ${monthOptions.map(opt =>
-                    `<option value="${opt.value}" ${opt.value === selectedMonth ? 'selected' : ''}>${opt.label}</option>`
-                ).join("")}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="text-sm text-gray-700 mb-1 block">จำนวน</label>
-                                <input id="editBox" type="number"
-                                    class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow"
-                                    placeholder="จำนวนกล่อง" value="${sale.sales_package_amount ?? ''}">
-                            </div>
-
-                            <div>
-                                <label class="text-sm text-gray-700 mb-1 block">ยอดเงิน</label>
-                                <input id="editAmount" type="text"
-                                    class="w-full h-10 px-3 text-sm border border-gray-300 rounded-md shadow"
-                                    placeholder="ยอดเงิน" value="${parseFloat(sale.sales_amount).toLocaleString()}">
-                            </div>
-                        </div>
-                    `,
-                showCancelButton: true,
-                confirmButtonText: "ยืนยัน",
-                cancelButtonText: "ยกเลิก",
-                confirmButtonColor: "#2D8C42", // เขียว
-                cancelButtonColor: "#6B7280",  // เทา
-                customClass: {
-                    actions: "mt-6 flex justify-between w-full px-4",
-                    confirmButton: "ml-auto w-[45%] text-white bg-green-700 hover:bg-green-800 rounded-md font-semibold py-2",
-                    cancelButton: "w-[45%] text-white bg-gray-500 hover:bg-gray-600 rounded-md font-semibold py-2",
-                },
-                preConfirm: () => {
-                    const sales_amount = parseFloat(document.getElementById("editAmount").value.replace(/,/g, ''));
-                    const sales_package_amount = parseInt(document.getElementById("editBox").value);
-                    const sales_month = document.getElementById("editMonth").value;
-
-                    if (isNaN(sales_amount) || isNaN(sales_package_amount)) {
-                        Swal.showValidationMessage("กรุณากรอกจำนวนและยอดเงินให้ถูกต้อง");
-                        return false;
-                    }
-
-                    return fetch(`{{ route('api.sales.edit') }}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            sales_id: id,
-                            sales_amount,
-                            sales_package_amount,
-                            sales_month
-                        })
-                    })
                         .then(res => res.json())
                         .then(result => {
                             if (result.status !== "success") {
@@ -639,10 +691,145 @@
                 if (result.isConfirmed) {
                     Swal.fire("สำเร็จ!", "อัปเดตข้อมูลเรียบร้อยแล้ว", "success");
                     fetchSales(currentPage);
+                    fetchBranchSalesStats();
                 }
             });
-
         }
+
+
+        function deleteSale(id) {
+            Swal.fire({
+                title: "ลบยอดขาย",
+                text: "คุณต้องการลบรายการนี้ใช่ไหม?",
+                icon: "warning",
+                iconColor: "#d33",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(`{{ route('api.sales.delete') }}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                sales_id: id
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(async result => {
+                            if (result.status === 'success') {
+                                Swal.fire("ลบแล้ว!", "รายการถูกลบเรียบร้อย", "success");
+                                await fetchSales(currentPage);
+                                await updateResultCount();
+                                await fetchBranchSalesStats();
+
+                                // ✅ อัปเดต dropdown ให้เพิ่มเดือนนั้นกลับมาได้
+                                await regenerateSaleMonthOptions();
+
+                            } else {
+                                Swal.fire("ผิดพลาด", result.message || "ไม่สามารถลบได้", "error");
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire("ผิดพลาด", "เกิดข้อผิดพลาดในการเชื่อมต่อ", "error");
+                        });
+                }
+            });
+        }
+
+
+        function renderPagination(total) {
+            const pagination = document.getElementById("pagination");
+            pagination.innerHTML = "";
+
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const maxVisible = 1;
+            let startPage = Math.max(1, currentPage - maxVisible);
+            let endPage = Math.min(totalPages, currentPage + maxVisible);
+
+            if (totalPages <= 1) return;
+
+            const createPageButton = (page, isActive = false) => {
+                const btn = document.createElement("button");
+                btn.innerText = page;
+                btn.className =
+                    `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+                btn.onclick = () => goToPage(page);
+                return btn;
+            };
+
+            const createEllipsis = () => {
+                const btn = document.createElement("button");
+                btn.innerText = "...";
+                btn.className = "px-3 text-gray-500 hover:text-black rounded hover:bg-gray-100";
+                btn.onclick = () => {
+                    Swal.fire({
+                        title: "ไปยังหน้าที่...",
+                        input: "number",
+                        inputLabel: `กรอกหมายเลขหน้า (1 - ${totalPages})`,
+                        inputAttributes: {
+                            min: 1,
+                            max: totalPages,
+                            step: 1
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "ไปเลย!",
+                        confirmButtonColor: "#3062B8",
+                        inputValidator: (value) => {
+                            if (!value || isNaN(value)) return "กรุณากรอกตัวเลข";
+                            if (value < 1 || value > totalPages)
+                                return `หน้าต้องอยู่ระหว่าง 1 ถึง ${totalPages}`;
+                            return null;
+                        }
+                    }).then(result => {
+                        if (result.isConfirmed) goToPage(parseInt(result.value));
+                    });
+                };
+                return btn;
+            };
+
+            const prevBtn = document.createElement("button");
+            prevBtn.innerHTML = "&lt;";
+            prevBtn.className =
+                `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => goToPage(currentPage - 1);
+            pagination.appendChild(prevBtn);
+
+            if (startPage > 1) {
+                pagination.appendChild(createPageButton(1));
+                if (startPage > 2) pagination.appendChild(createEllipsis());
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.appendChild(createPageButton(i, i === currentPage));
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) pagination.appendChild(createEllipsis());
+                pagination.appendChild(createPageButton(totalPages));
+            }
+
+            const nextBtn = document.createElement("button");
+            nextBtn.innerHTML = "&gt;";
+            nextBtn.className =
+                `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === totalPages ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => goToPage(currentPage + 1);
+            pagination.appendChild(nextBtn);
+        }
+
+        function goToPage(pageNumber) {
+            currentPage = pageNumber;
+            fetchSales(currentPage); // เปลี่ยนเป็น fetchSales แทน
+        }
+
+
 
         async function addSale() {
             const month = document.getElementById("saleMonth").value;
@@ -673,8 +860,17 @@
 
                 if (result.status === 'success') {
                     Swal.fire("สำเร็จ", "เพิ่มรายการเรียบร้อยแล้ว", "success");
-                    fetchSales(currentPage); // รีโหลดตาราง
-                    updateResultCount();     // อัปเดตจำนวนผลลัพธ์
+
+                    // ✅ เคลียร์ฟอร์ม
+                    document.getElementById("saleBox").value = "";
+                    document.getElementById("saleAmount").value = "";
+                    regenerateSaleMonthOptions();
+
+                    // ✅ อัปเดตตาราง & count
+                    await fetchSales(currentPage);
+                    await updateResultCount();
+                    await fetchBranchSalesStats(); // เพิ่มบรรทัดนี้
+
                 } else {
                     Swal.fire("เกิดข้อผิดพลาด", result.message || "ไม่สามารถเพิ่มข้อมูลได้", "error");
                 }
@@ -683,6 +879,7 @@
                 Swal.fire("ผิดพลาด", "ไม่สามารถเชื่อมต่อ API", "error");
             }
         }
+
 
         async function updateResultCount() {
             try {
@@ -705,6 +902,5 @@
 
         // โหลด count เมื่อเข้าเพจ
         document.addEventListener("DOMContentLoaded", updateResultCount);
-
     </script>
 @endsection
