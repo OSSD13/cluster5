@@ -120,7 +120,7 @@
             const createPageButton = (page, isActive = false) => {
                 const btn = document.createElement("button");
                 btn.innerText = page;
-                btn.className = `min-w-[36px] h-10 px-3 mx-1 rounded-lg text-sm font-medium ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
+                btn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-sm font-medium flex items-center justify-center whitespace-nowrap ${isActive ? "bg-blue-600 text-white" : "bg-white border border-gray-300 text-black hover:bg-gray-100"}`;
                 btn.onclick = () => goToPage(page);
                 return btn;
             };
@@ -152,7 +152,7 @@
 
             const prevBtn = document.createElement("button");
             prevBtn.innerHTML = "&lt;";
-            prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
+            prevBtn.className = `min-w-[40px] h-10 px-3 mx-1 rounded-lg text-xl font-bold flex items-center justify-center ${currentPage === 1 ? "text-gray-300 bg-white border border-gray-200 cursor-not-allowed" : "text-blue-600 bg-white border border-gray-300 hover:bg-blue-50"}`;
             prevBtn.disabled = currentPage === 1;
             prevBtn.onclick = () => goToPage(currentPage - 1);
             pagination.appendChild(prevBtn);
