@@ -476,14 +476,19 @@
             const radius = parseFloat(document.getElementById("distance").value);
 
             try {
-                let nearbyPlaces = await functions.getNearbyPlaces(
-                    pos,
-                    'ส่งของ',
-                    radius
-                );
-                log("nearbyPlaces", nearbyPlaces);
+                let keywords = ['ส่งของ', 'เซเว่นอีเลฟเว่น'];
+                let promises = keywords.map(keyword => {
+                    return functions.getNearbyPlaces(pos, keyword, radius);
+                });
+                let results = await Promise.all(promises);
+                let allPlaces = [];
+                results.forEach((places, index) => {
+                    allPlaces = [...allPlaces, ...places];
+                });
+                log("allPlaces", allPlaces);
+                
                 removeAllMarkers();
-                nearbyPlaces.forEach(async (place, index) => {
+                allPlaces.forEach(async (place, index) => {
                     let gMapEmoji = '🗺️';
                     let formatted = {
                         "poi_name": place.name,

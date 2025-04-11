@@ -706,7 +706,7 @@
                             data.branches.forEach((branch, index) => {
                                 console.log(branch)
                                 let row = `
-                                    <tr class="hover:bg-gray-100">
+                                    <tr class="hover:bg-gray-100 cursor-pointer" onclick="window.open('/branch/manage?bs_id=${branch.branchId}', '_blank')">
                                         <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
                                         <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                             ${branch.branchName}
@@ -816,7 +816,7 @@
 
                             data.branches.forEach((branch, index) => {
                                 let row = `
-                                        <tr class="hover:bg-gray-100">
+                                        <tr class="hover:bg-gray-100 cursor-pointer" onclick="window.open('/branch/manage?bs_id=${branch.branchId}', '_blank')">
                                             <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
                                             <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                                 ${branch.branchName}
@@ -911,7 +911,7 @@
 
                         data.branches.forEach((branch, index) => {
                             let row = `
-                                <tr class="hover:bg-gray-100">
+                                <tr class="hover:bg-gray-100 cursor-pointer" onclick="window.open('/branch/manage?bs_id=${branch.branchId}', '_blank')">
                                     <td class="py-2 px-2 text-center text-xs whitespace-nowrap">${branch.branchId}</td>
                                     <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]" title="${branch.branchName}">
                                         ${branch.branchName}
@@ -1014,17 +1014,6 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-                    <tr>
-                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">1</td>
-                        <td class="py-2 px-2 text-xs whitespace-normal break-words max-w-[150px]"
-                            title="Prof. Sabryna Tromp Sr.">
-                            Prof. Sabryna Tromp Sr.
-                        </td>
-                        <td class="py-2 px-2 text-right text-xs whitespace-nowrap">-39.06</td>
-                        <td class="py-2 px-2 text-center text-xs whitespace-nowrap">
-                            <span class="bg-green-500 text-white px-4 py-1 rounded-full">เพิ่มแล้ว</span>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
